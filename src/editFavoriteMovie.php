@@ -44,14 +44,14 @@ if (filter_input(INPUT_SERVER,
             // et que nous ne sommes pas en train de modifier une préférence
             if ($sanitizedEntries['modificationInProgress'] == NULL) {
                 // on ajoute la préférence de l'utilisateur
-                $preferesMgr->insertNewFavoriteMovie($sanitizedEntries['userID'],
+                $managers['preferesMgr']->insertNewFavoriteMovie($sanitizedEntries['userID'],
                         $sanitizedEntries['filmID'],
                         $sanitizedEntries['comment']);
             }
             // sinon, nous sommes dans le cas d'une modification
             else {
                 // mise à jour de la préférence
-                $preferesMgr->updateFavoriteMovie($sanitizedEntries['userID'],
+                $managers['preferesMgr']->updateFavoriteMovie($sanitizedEntries['userID'],
                         $sanitizedEntries['filmID'],
                         $sanitizedEntries['comment']);
             }
@@ -64,7 +64,7 @@ if (filter_input(INPUT_SERVER,
             // 
             $aFilmIsSelected = false;
             $isItACreation = true;
-            $films = $preferesMgr->getMoviesNonAlreadyMarkedAsFavorite($_SESSION['userID']);
+            $films = $managers['preferesMgr']->getMoviesNonAlreadyMarkedAsFavorite($_SESSION['userID']);
             // initialisation des champs du formulaire
             $preference = [
                 "userID" => $sanitizedEntries["userID"],
@@ -85,14 +85,14 @@ if (filter_input(INPUT_SERVER,
 
     if ($sanitizedEntries && $sanitizedEntries['filmID'] !== NULL && $sanitizedEntries['filmID'] !== '' && $sanitizedEntries['userID'] !== NULL && $sanitizedEntries['userID'] !== '') {
         // on récupère les informations manquantes (le commentaire afférent)
-        $preference = $preferesMgr->getFavoriteMovieInformations($sanitizedEntries['userID'],
+        $preference = $managers['preferesMgr']->getFavoriteMovieInformations($sanitizedEntries['userID'],
                 $sanitizedEntries['filmID']);
         // sinon, c'est une création
     } else {
         // C'est une création
         $isItACreation = true;
 
-        $films = $preferesMgr->getMoviesNonAlreadyMarkedAsFavorite($_SESSION['userID']);
+        $films = $managers['preferesMgr']->getMoviesNonAlreadyMarkedAsFavorite($_SESSION['userID']);
         // on initialise les autres variables de formulaire à vide
         $preference = [
             "userID" => $_SESSION['userID'],

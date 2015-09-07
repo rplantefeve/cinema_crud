@@ -19,7 +19,7 @@
                 <ul>
                     <?php
                     // on récupère pour chaque cinéma de ce film, la liste des séances
-                    $seances = $seancesMgr->getMovieShowtimes($cinema['CINEMAID'],
+                    $seances = $managers['seancesMgr']->getMovieShowtimes($cinema['CINEMAID'],
                             $filmID);
                     // boucle sur les séances
                     foreach ($seances as $seance) {

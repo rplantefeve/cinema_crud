@@ -17,7 +17,7 @@ if (filter_input(INPUT_SERVER,
         // on récupère l'identifiant du cinéma
         $cinemaID = $sanitizedEntries['cinemaID'];
         // puis on récupère les informations du cinéma en question
-        $cinema = $cinemasMgr->getCinemaInformationsByID($cinemaID);
+        $cinema = $managers['cinemasMgr']->getCinemaInformationsByID($cinemaID);
     }
     // sinon, on retourne à l'accueil
     else {
@@ -30,7 +30,7 @@ if (filter_input(INPUT_SERVER,
 }
 
 // on récupère la liste des films de ce cinéma
-$films = $filmsMgr->getCinemaMoviesByCinemaID($cinemaID);
+$films = $managers['filmsMgr']->getCinemaMoviesByCinemaID($cinemaID);
 
 // On appelle la vue
 include __DIR__ . './views/viewCinemaShowtimes.php';

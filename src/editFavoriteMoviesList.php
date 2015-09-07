@@ -14,11 +14,11 @@ if (!array_key_exists("user",
 }
 // l'utilisateur est loggué
 else {
-    $utilisateur = $utilisateursMgr->getCompleteUsernameByEmailAddress($_SESSION['user']);
+    $utilisateur = $managers['utilisateursMgr']->getCompleteUsernameByEmailAddress($_SESSION['user']);
 }
 
 // on récupère la liste des films préférés grâce à l'utilisateur identifié
-$films = $preferesMgr->getFavoriteMoviesFromUser($utilisateur['userID']);
+$films = $managers['preferesMgr']->getFavoriteMoviesFromUser($utilisateur['userID']);
 
 // on inclut la vue correspondante
 include __DIR__ . './views/viewFavoriteMoviesList.php';

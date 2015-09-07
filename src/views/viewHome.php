@@ -44,7 +44,8 @@
         <div>
             <header>
                 <h1>Gestion des cinémas</h1>
-                <form name="cinemasList" action="cinemasList.php">
+                <form name="cinemasList" method="GET" action="index.php">
+                    <input name="action" type="hidden" value="cinemasList"/>
                     <input type="submit" value="Consulter la liste des cinémas"/>
                 </form>
                 <form name="moviesList" action="moviesList.php">

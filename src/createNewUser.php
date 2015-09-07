@@ -38,7 +38,7 @@ if (filter_input(INPUT_SERVER,
         $isEmailAddressEmpty = true;
     } else {
         // On vérifie l'existence de l'utilisateur
-        $userID = $utilisateursMgr->getUserIDByEmailAddress($sanitizedEntries['email']);
+        $userID = $managers['utilisateursMgr']->getUserIDByEmailAddress($sanitizedEntries['email']);
         // si on a un résultat, cela signifie que cette adresse email existe déjà
         if ($userID) {
             $isUserUnique = false;
@@ -64,7 +64,7 @@ if (filter_input(INPUT_SERVER,
         $password = password_hash($sanitizedEntries['password'],
                 PASSWORD_DEFAULT);
         // créer l'utilisateur
-        $utilisateursMgr->createUser($sanitizedEntries['firstName'],
+        $managers['utilisateursMgr']->createUser($sanitizedEntries['firstName'],
                 $sanitizedEntries['lastName'],
                 $sanitizedEntries['email'],
                 $password);
@@ -72,7 +72,7 @@ if (filter_input(INPUT_SERVER,
         session_start();
         // authentifier l'utilisateur
         $_SESSION['user'] = $sanitizedEntries['email'];
-        $_SESSION['userID'] = $utilisateursMgr->getUserIDByEmailAddress($_SESSION['user']);
+        $_SESSION['userID'] = $managers['utilisateursMgr']->getUserIDByEmailAddress($_SESSION['user']);
         // on redirige vers la page d'édition des films préférés
         header("Location: editFavoriteMoviesList.php");
         exit;
