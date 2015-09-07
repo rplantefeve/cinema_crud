@@ -37,7 +37,7 @@
                 <form action="editFavoriteMoviesList.php">
                     <input type="submit" value="Editer ma liste de films préférés"/>
                 </form>
-                <a href="logout.php">Se déconnecter</a>
+                <a href="index.php?action=logout">Se déconnecter</a>
             <?php endif; ?>
         </div>
         <!-- Gestion des cinémas -->
@@ -48,7 +48,8 @@
                     <input name="action" type="hidden" value="cinemasList"/>
                     <input type="submit" value="Consulter la liste des cinémas"/>
                 </form>
-                <form name="moviesList" action="moviesList.php">
+                <form name="moviesList" method="GET" action="index.php">
+                    <input name="action" type="hidden" value="moviesList"/>
                     <input type="submit" value="Consulter la liste des films"/>
                 </form>
             </header>

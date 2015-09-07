@@ -47,7 +47,8 @@
             }
             ?>
         </ul>
-        <form action="moviesList.php">
+        <form method="GET" action="index.php">
+            <input name="action" type="hidden" value="moviesList"/>
             <input type="submit" value="Retour à la liste des films"/>
         </form>
     </body>
