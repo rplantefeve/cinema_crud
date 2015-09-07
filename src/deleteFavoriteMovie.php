@@ -14,7 +14,7 @@ if (filter_input(INPUT_SERVER,
         'filmID' => FILTER_SANITIZE_NUMBER_INT]);
 
     // suppression de la préférence de film
-    $preferesMgr->deleteFavoriteMovie($sanitizedEntries['userID'],
+    $managers['preferesMgr']->deleteFavoriteMovie($sanitizedEntries['userID'],
             $sanitizedEntries['filmID']);
 }
 // redirection vers la liste des préférences de films

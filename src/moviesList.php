@@ -13,7 +13,7 @@ if (array_key_exists("user", $_SESSION) and $_SESSION['user'] == 'admin@adm.adm'
 }
 
 // on récupère la liste des films ainsi que leurs informations
-$films = $filmsMgr->getMoviesList();
+$films = $managers['filmsMgr']->getMoviesList();
 
 // on inclut la vue correspondante
 include __DIR__ . '/views/viewMoviesList.php';

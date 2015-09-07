@@ -27,9 +27,8 @@ if (filter_input(INPUT_SERVER, 'REQUEST_METHOD') === "GET") {
         // on récupère l'identifiant du cinéma
         $cinemaID = $sanitizedEntries['cinemaID'];
         // puis on récupère les informations du cinéma en question
-        $cinema = $cinemasMgr->getCinemaInformationsByID($cinemaID);
-        // on récupère les films pas encore projetés
-        $filmsUnplanned = $cinemasMgr->getNonPlannedMovies($cinemaID);
+        $cinema = $managers['cinemasMgr']->getCinemaInformationsByID($cinemaID);
+        $filmsUnplanned = $managers['cinemasMgr']->getNonPlannedMovies($cinemaID);
     }
     // sinon, on retourne à l'accueil
     else {
@@ -42,7 +41,7 @@ if (filter_input(INPUT_SERVER, 'REQUEST_METHOD') === "GET") {
 }
 
 // on récupère la liste des films de ce cinéma
-$films = $filmsMgr->getCinemaMoviesByCinemaID($cinemaID);
+$films = $managers['filmsMgr']->getCinemaMoviesByCinemaID($cinemaID);
 
 // On appelle la vue
 include __DIR__ . '/views/viewCinemaShowtimes.php';

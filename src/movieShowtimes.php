@@ -26,9 +26,8 @@ if (filter_input(
         // on récupère l'identifiant du cinéma
         $filmID = $sanitizedEntries['filmID'];
         // puis on récupère les informations du film en question
-        $film = $filmsMgr->getMovieInformationsByID($filmID);
-        // on récupère les cinémas qui ne projettent pas encore le film
-        $cinemasUnplanned = $filmsMgr->getNonPlannedCinemas($filmID);
+        $film = $managers['filmsMgr']->getMovieInformationsByID($filmID);
+        $cinemasUnplanned = $managers['filmsMgr']->getNonPlannedCinemas($filmID);
     }
     // sinon, on retourne à l'accueil
     else {
@@ -41,7 +40,7 @@ if (filter_input(
 }
 
 // on récupère la liste des cinémas de ce film
-$cinemas = $cinemasMgr->getMovieCinemasByMovieID($filmID);
+$cinemas = $managers['cinemasMgr']->getMovieCinemasByMovieID($filmID);
 
 // on inclut la vue correspondante
 include __DIR__ . '/views/viewMovieShowtimes.php';

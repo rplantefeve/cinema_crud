@@ -48,7 +48,7 @@
                         </tr>
                         <?php
                         // on récupère pour chaque cinéma de ce film, la liste des séances
-                        $seances = $seancesMgr->getMovieShowtimes(
+                        $seances = $managers['seancesMgr']->getMovieShowtimes(
                             $cinema['CINEMAID'],
                                 $filmID
                         );
