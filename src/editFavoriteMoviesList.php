@@ -1,7 +1,7 @@
 <?php
 require_once __DIR__ . '/vendor/autoload.php';
 
-require __DIR__ . './includes/fctManager.php';
+require_once __DIR__ . './includes/fctManager.php';
 
 session_start();
 // si l'utilisateur n'est pas connecté
@@ -46,6 +46,20 @@ and open the template in the editor.
                     <tr>
                         <td><?= $film['titre'] ?></td>
                         <td><?= $film['commentaire'] ?></td>
+                        <td>
+                            <form name="modifyFavoriteMovie" action="editFavoriteMovie.php" method="GET">
+                                <input type="hidden" name="userID" value="<?= $utilisateur['userID'] ?>"/>
+                                <input type="hidden" name="filmID" value="<?= $film['filmID'] ?>"/>
+                                <input type="image" src="images/modifyIcon.png" alt="Modify"/>
+                            </form>
+                        </td>
+                        <td>
+                            <form name="deleteFavoriteMovie" action="deleteFavoriteMovie.php" method="POST">
+                                <input type="hidden" name="userID" value="<?= $utilisateur['userID'] ?>"/>
+                                <input type="hidden" name="filmID" value="<?= $film['filmID'] ?>"/>
+                                <input type="image" src="images/deleteIcon.png" alt="Delete"/>
+                            </form>
+                        </td>
                     </tr>
                     <?php
                 }

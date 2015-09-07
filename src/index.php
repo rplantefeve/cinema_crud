@@ -1,7 +1,7 @@
 <?php
 require_once __DIR__ . '/vendor/autoload.php';
 
-require __DIR__ . './includes/fctManager.php';
+require_once __DIR__ . './includes/fctManager.php';
 
 // initialisation de l'application
 require_once __DIR__ . './init.php';
@@ -85,6 +85,18 @@ if (array_key_exists("user",
                 </form>
                 <a href="logout.php">Se déconnecter</a>
             <?php endif; ?>
+        </div>
+        <!-- Gestion des cinémas -->
+        <div>
+            <header>
+                <h1>Gestion des cinémas</h1>
+                <form name="cinemasList" action="cinemasList.php">
+                    <input type="submit" value="Consulter la liste des cinémas"/>
+                </form>
+                <form name="moviesList" action="moviesList.php">
+                    <input type="submit" value="Consulter la liste des films"/>
+                </form>
+            </header>
         </div>
     </body>
 </html>

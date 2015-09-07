@@ -177,6 +177,25 @@ class DBFunctions {
     }
 
     /*
+     * Méthode qui met à jour une préférence de film pour un utilisateur
+     * @param int userID Identifiant de l'utilisateur
+     * @param int filmID Identifiant du film
+     * @param string comment Commentaire de l'utilisateur à propos de ce film
+     */
+
+    public function updateFavoriteMovie($userID, $filmID, $comment) {
+        // on construit la requête d'insertion
+        $requete = "UPDATE prefere SET commentaire = "
+                . "'" . $comment . "'"
+                . " WHERE filmID = "
+                . $filmID
+                . " AND userID = "
+                . $userID;
+        // exécution de la requête
+        $this->executeQuery($requete);
+    }
+
+    /*
      * Méthode qui ajoute un utilisateur dans la BDD
      * @param string $firstName Prénom de l'utilisateur
      * @param string $lastName Nom de l'utilisateur
@@ -261,6 +280,72 @@ class DBFunctions {
 
         if ($this->logger) {
             $this->logger->info('Movie ' . $filmID . ' successfully added to ' . $userID . '\'s preferences.');
+        }
+    }
+
+    public function getCinemasList() {
+        $requete = "SELECT * FROM cinema";
+        // on retourne le résultat
+        return $this->extraireNxN($requete);
+    }
+
+    public function getCinemaInformationsByID($cinemaID) {
+        $requete = "SELECT * FROM cinema WHERE cinemaID = "
+                . $cinemaID;
+        $resultat = $this->extraire1xN($requete);
+        // on retourne le résultat extrait
+        return $resultat;
+    }
+
+    public function getCinemaMoviesByCinemaID($cinemaID) {
+        // requête qui nous permet de récupérer la liste des films pour un cinéma donné
+        $requete = "SELECT DISTINCT f.* FROM film f"
+                . " INNER JOIN seance s ON f.filmID = s.filmID"
+                . " AND s.cinemaID = " . $cinemaID;
+        // on extrait les résultats
+        $resultat = $this->extraireNxN($requete);
+        // on retourne le résultat
+        return $resultat;
+    }
+
+    public function getMovieShowtimes($cinemaID, $filmID) {
+        // requête qui permet de récupérer la liste des séances d'un film donné dans un cinéma donné
+        $requete = "SELECT s.* FROM seance s"
+                . " WHERE s.filmID = " . $filmID
+                . " AND s.cinemaID = " . $cinemaID;
+        // on extrait les résultats
+        $resultat = $this->extraireNxN($requete);
+        // on retourne la requête
+        return $resultat;
+    }
+
+    public function getMovieInformationsByID($filmID) {
+        $requete = "SELECT * FROM film WHERE filmID = "
+                . $filmID;
+        $resultat = $this->extraire1xN($requete);
+        // on retourne le résultat extrait
+        return $resultat;
+    }
+
+    public function getMovieCinemasByMovieID($filmID) {
+        // requête qui nous permet de récupérer la liste des cinémas pour un film donné
+        $requete = "SELECT DISTINCT c.* FROM cinema c"
+                . " INNER JOIN seance s ON c.cinemaID = s.cinemaID"
+                . " AND s.filmID = " . $filmID;
+        // on extrait les résultats
+        $resultat = $this->extraireNxN($requete);
+        // on retourne le résultat
+        return $resultat;
+    }
+
+    public function deleteFavoriteMovie($userID, $filmID) {
+        $this->executeQuery("DELETE FROM prefere WHERE userID = "
+                . $userID
+                . " AND filmID = "
+                . $filmID);
+
+        if ($this->logger) {
+            $this->logger->info('Movie ' . $filmID . ' successfully deleted from ' . $userID . '\'s preferences.');
         }
     }
 
