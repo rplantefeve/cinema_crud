@@ -12,7 +12,7 @@ require_once __DIR__ . '/init.php';
 require __DIR__ . './controllers/controleur.php';
 
 try {
-// on "sainifie" les entrées
+    // on "sainifie" les entrées
     $sanitizedEntries = filter_input_array(INPUT_GET,
             ['action' => FILTER_SANITIZE_STRING]);
     if ($sanitizedEntries && $sanitizedEntries['action'] !== '') {
@@ -20,6 +20,18 @@ try {
         if ($sanitizedEntries['action'] == "cinemasList") {
             // Activation de la route cinemasList
             cinemasList($managers);
+        } elseif ($sanitizedEntries['action'] == "moviesList") {
+            // Activation de la route moviesList
+            moviesList($managers);
+        } elseif ($sanitizedEntries['action'] == "movieShowtimes") {
+            // Activation de la route movieShowtimes
+            movieShowtimes($managers);
+        } elseif ($sanitizedEntries['action'] == "cinemaShowtimes") {
+            // Activation de la route cinemaShowtimes
+            cinemaShowtimes($managers);
+        } elseif ($sanitizedEntries['action'] == "logout") {
+            // Activation de la route cinemaShowtimes
+            logout();
         } else {
             // Activation de la route par défaut (page d'accueil)
             home($managers);
@@ -29,5 +41,5 @@ try {
         home($managers);
     }
 } catch (Exception $e) {
-    error($e->getMessage());
+    error($e);
 }
