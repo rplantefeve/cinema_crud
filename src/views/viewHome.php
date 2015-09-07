@@ -29,12 +29,13 @@
                     </div>
                     <input type="submit" value="Editer ma liste de films préférés"/>
                 </form>
-                <p>Pas encore d'espace personnel ? <a href="createNewUser.php">Créer sa liste de films préférés.</a></p>
+                <p>Pas encore d'espace personnel ? <a href="index.php?action=createNewUser">Créer sa liste de films préférés.</a></p>
                 <?php
             // sinon (utilisateur authentifié)
             else:
                 ?>
-                <form action="editFavoriteMoviesList.php">
+                <form method="GET" action="index.php">
+                    <input type="hidden" name="action" value="editFavoriteMoviesList"/>
                     <input type="submit" value="Editer ma liste de films préférés"/>
                 </form>
                 <a href="index.php?action=logout">Se déconnecter</a>

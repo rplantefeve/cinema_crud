@@ -6,7 +6,7 @@
         <link rel="stylesheet" type="text/css" href="css/cinema.css"/>
     </head>
     <body>
-        <form method="POST" name="editFavoriteMovie" action="editFavoriteMovie.php">
+        <form method="POST" name="editFavoriteMovie" action="index.php?action=editFavoriteMovie">
             <label>Titre :</label>
             <select name="filmID" <?php
             if (!$isItACreation): echo "disabled";

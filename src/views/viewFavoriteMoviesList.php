@@ -23,14 +23,15 @@
                         <td><?= $film['titre'] ?></td>
                         <td><?= $film['commentaire'] ?></td>
                         <td>
-                            <form name="modifyFavoriteMovie" action="editFavoriteMovie.php" method="GET">
+                            <form name="modifyFavoriteMovie" action="index.php" method="GET">
+                                <input type="hidden" name="action" value="editFavoriteMovie"/>
                                 <input type="hidden" name="userID" value="<?= $utilisateur['userID'] ?>"/>
                                 <input type="hidden" name="filmID" value="<?= $film['filmID'] ?>"/>
                                 <input type="image" src="images/modifyIcon.png" alt="Modify"/>
                             </form>
                         </td>
                         <td>
-                            <form name="deleteFavoriteMovie" action="deleteFavoriteMovie.php" method="POST">
+                            <form name="deleteFavoriteMovie" action="index.php?action=deleteFavoriteMovie" method="POST">
                                 <input type="hidden" name="userID" value="<?= $utilisateur['userID'] ?>"/>
                                 <input type="hidden" name="filmID" value="<?= $film['filmID'] ?>"/>
                                 <input type="image" src="images/deleteIcon.png" alt="Delete"/>
@@ -43,7 +44,8 @@
             ?>
             <tr class="new">
                 <td colspan="4">
-                    <form name="addFavoriteMovie" action="editFavoriteMovie.php">
+                    <form name="addFavoriteMovie" action="index.php">
+                        <input type="hidden" name="action" value="editFavoriteMovie" />
                         <button class="add" type="submit">Cliquer pour ajouter un film préféré...</button>
                     </form>
                 </td>
