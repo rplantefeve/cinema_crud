@@ -1,0 +1,23 @@
+{
+    "name": "semeformation/cinema-crud",
+    "description": "Description of project Cinema_crud.",
+    "license": "GPL-3.0",
+    "authors": [
+        {
+            "name": "Seme formation",
+            "email": "contact@semeformation.fr"
+        }
+    ],
+    "require": {
+        "psr/log": "1.0.0",
+        "monolog/monolog": "1.17.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "Semeformation\\Mvc\\Cinema_crud\\": "src/"
+        }
+    },
+    "config": {
+        "vendor-dir": "src/vendor"
+    }
+}

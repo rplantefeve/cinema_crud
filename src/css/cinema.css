@@ -1,0 +1,65 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : 3 mars 2014, 16:55:53
+    Author     : ShaFaX
+*/
+body {
+    font-family: arial, helvetica;
+    font-size: 12px;
+    background-color: #fafaaa;
+}
+
+td {
+    font-family: arial, helvetica;
+    font-size: 12px;
+}
+
+th {
+    font-family: arial, helvetica;
+    font-size: 14px;
+}
+
+label {
+    font-size: 14px;
+    font-weight: bold;
+    display: block;
+    margin-top:10px;
+    margin-bottom: 2px;
+}
+
+table.std {
+    margin-bottom: 15px;
+    border-collapse: separate;
+    border-spacing: 0px;
+    border: 1px solid #ccc;
+}
+
+table.std th {
+    background-color: #cbe3f3;
+    padding: 6px 12px;
+    color: #4c2c00;
+    font-weight: bold;
+    border-bottom: 1px solid #acc7dd;
+    border-right: 1px solid #acc7dd;
+    border-top: 1px solid #dceffd;
+    border-left: 1px solid #dceffd;
+}
+table.std td {
+    padding: 6px 12px;
+    border-bottom: 1px solid #c7d8e5;
+    border-right: 1px solid #c7d8e5;
+    border-top: 1px solid #fff;
+    border-left: 1px solid #fff;
+    color:#333;
+    background-color: #eaf1f7;
+}
+
+.error {
+    color: #c00;
+    margin-bottom: 10px;
+}
+
