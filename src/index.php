@@ -29,8 +29,20 @@ try {
         } elseif ($sanitizedEntries['action'] == "cinemaShowtimes") {
             // Activation de la route cinemaShowtimes
             cinemaShowtimes($managers);
+        } elseif ($sanitizedEntries['action'] == "editFavoriteMoviesList") {
+            // Activation de la route editFavoriteMoviesList
+            editFavoriteMoviesList($managers);
+        } elseif ($sanitizedEntries['action'] == "editFavoriteMovie") {
+            // Activation de la route editFavoriteMovie
+            editFavoriteMovie($managers);
+        } elseif ($sanitizedEntries['action'] == "deleteFavoriteMovie") {
+            // Activation de la route deleteFavoriteMovie
+            deleteFavoriteMovie($managers);
+        } elseif ($sanitizedEntries['action'] == "createNewUser") {
+            // Activation de la route createNewUser
+            createNewUser($managers);
         } elseif ($sanitizedEntries['action'] == "logout") {
-            // Activation de la route cinemaShowtimes
+            // Activation de la route logout
             logout();
         } else {
             // Activation de la route par défaut (page d'accueil)
