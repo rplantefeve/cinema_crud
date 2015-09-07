@@ -1,7 +1,8 @@
 <?php
+
 require_once __DIR__ . '/vendor/autoload.php';
 
-require_once __DIR__ . './includes/fctManager.php';
+require_once __DIR__ . './includes/managers.php';
 
 session_start();
 // si l'utilisateur n'est pas connecté
@@ -43,14 +44,14 @@ if (filter_input(INPUT_SERVER,
             // et que nous ne sommes pas en train de modifier une préférence
             if ($sanitizedEntries['modificationInProgress'] == NULL) {
                 // on ajoute la préférence de l'utilisateur
-                $fctManager->insertNewFavoriteMovie($sanitizedEntries['userID'],
+                $preferesMgr->insertNewFavoriteMovie($sanitizedEntries['userID'],
                         $sanitizedEntries['filmID'],
                         $sanitizedEntries['comment']);
             }
             // sinon, nous sommes dans le cas d'une modification
             else {
                 // mise à jour de la préférence
-                $fctManager->updateFavoriteMovie($sanitizedEntries['userID'],
+                $preferesMgr->updateFavoriteMovie($sanitizedEntries['userID'],
                         $sanitizedEntries['filmID'],
                         $sanitizedEntries['comment']);
             }
@@ -63,6 +64,7 @@ if (filter_input(INPUT_SERVER,
             // 
             $aFilmIsSelected = false;
             $isItACreation = true;
+            $films = $preferesMgr->getMoviesNonAlreadyMarkedAsFavorite($_SESSION['userID']);
             // initialisation des champs du formulaire
             $preference = [
                 "userID" => $sanitizedEntries["userID"],
@@ -83,12 +85,14 @@ if (filter_input(INPUT_SERVER,
 
     if ($sanitizedEntries && $sanitizedEntries['filmID'] !== NULL && $sanitizedEntries['filmID'] !== '' && $sanitizedEntries['userID'] !== NULL && $sanitizedEntries['userID'] !== '') {
         // on récupère les informations manquantes (le commentaire afférent)
-        $preference = $fctManager->getFavoriteMovieInformations($sanitizedEntries['userID'],
+        $preference = $preferesMgr->getFavoriteMovieInformations($sanitizedEntries['userID'],
                 $sanitizedEntries['filmID']);
         // sinon, c'est une création
     } else {
         // C'est une création
         $isItACreation = true;
+
+        $films = $preferesMgr->getMoviesNonAlreadyMarkedAsFavorite($_SESSION['userID']);
         // on initialise les autres variables de formulaire à vide
         $preference = [
             "userID" => $_SESSION['userID'],
@@ -97,64 +101,6 @@ if (filter_input(INPUT_SERVER,
             "commentaire" => ""];
     }
 }
-?>
-<!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="UTF-8">
-        <title>Espace Personnel - Editer un film préféré</title>
-        <link rel="stylesheet" type="text/css" href="css/cinema.css"/>
-    </head>
-    <body>
-        <form method="POST" name="editFavoriteMovie" action="editFavoriteMovie.php">
-            <label>Titre :</label>
-            <select name="filmID" <?php
-            if (!$isItACreation): echo "disabled";
-            endif;
-            ?>>
-                        <?php
-                        // si c'est une création, on crée la liste des films dynamiquement
-                        if ($isItACreation) {
-                            $films = $fctManager->getMoviesNonAlreadyMarkedAsFavorite($_SESSION['userID']);
-                            // s'il y a des résultats
-                            if ($films) {
-                                foreach ($films as $film) {
-                                    ?>
-                            <option value="<?= $film['filmID'] ?>"><?= $film['titre'] ?></option>
-                            <?php
-                        }
-                    }
-                }
-                // sinon, c'est une modification, nous n'avons qu'une seule option dans la liste
-                else {
-                    ?>
-                    <option selected="selected" value="<?= $preference['filmID'] ?>"><?= $preference['titre'] ?></option>
-                    <?php
-                }
-                ?>
-            </select>
-            <div class="error">
-                <?php
-                if (!$aFilmIsSelected) {
-                    echo "Veuillez renseigner un titre de film.";
-                }
-                ?>
-            </div>
-            <label>Commentaire :</label>
-            <textarea name="comment"><?= $preference['commentaire'] ?></textarea>
-            <br/>
-            <input type="hidden" value="<?= $preference['userID'] ?>" name="userID"/>
-            <?php
-            // si c'est une modification, c'est une information dont nous avons besoin
-            if (!$isItACreation) {
-                ?>
-                <input type="hidden" name="modificationInProgress" value="true"/>
-                <input type="hidden" name="filmID" value="<?= $preference['filmID'] ?>"/>
-                <?php
-            }
-            ?>
-            <input type="submit" name="saveEntry" value="Sauvegarder"/>
-            <input type="submit" name="backToList" value="Retour à la liste"/>
-        </form>
-    </body>
-</html>
+
+// on inclut la vue correspondante
+include __DIR__ . './views/viewFavoriteMovie.php';

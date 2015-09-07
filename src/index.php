@@ -1,7 +1,8 @@
 <?php
 require_once __DIR__ . '/vendor/autoload.php';
 
-require_once __DIR__ . './includes/fctManager.php';
+// init. des managers
+require_once __DIR__ . './includes/managers.php';
 
 // initialisation de l'application
 require_once __DIR__ . './init.php';
@@ -28,12 +29,12 @@ if (array_key_exists("user",
             'password' => FILTER_DEFAULT]);
         try {
             // On vérifie l'existence de l'utilisateur
-            $utilisateur->verifyUserCredentials($sanitizedEntries['email'],
+            $utilisateursMgr->verifyUserCredentials($sanitizedEntries['email'],
                     $sanitizedEntries['password']);
 
             // on enregistre l'utilisateur
             $_SESSION['user'] = $sanitizedEntries['email'];
-            $_SESSION['userID'] = $utilisateur->getUserIDByEmailAddress($_SESSION['user']);
+            $_SESSION['userID'] = $utilisateursMgr->getUserIDByEmailAddress($_SESSION['user']);
             // on redirige vers la page d'édition des films préférés
             header("Location: editFavoriteMoviesList.php");
             exit;
@@ -45,4 +46,4 @@ if (array_key_exists("user",
 }
 
 // On inclut la vue principale
-require __DIR__ . './views/viewHome.php';
+include __DIR__ . './views/viewHome.php';

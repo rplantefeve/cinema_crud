@@ -2,7 +2,7 @@
 
 require_once __DIR__ . '/vendor/autoload.php';
 
-require_once __DIR__ . './includes/fctManager.php';
+require_once __DIR__ . './includes/managers.php';
 
 // si la méthode de formulaire est la méthode POST
 if (filter_input(INPUT_SERVER,
@@ -14,7 +14,7 @@ if (filter_input(INPUT_SERVER,
         'filmID' => FILTER_SANITIZE_NUMBER_INT]);
 
     // suppression de la préférence de film
-    $fctManager->deleteFavoriteMovie($sanitizedEntries['userID'],
+    $preferesMgr->deleteFavoriteMovie($sanitizedEntries['userID'],
             $sanitizedEntries['filmID']);
 }
 // redirection vers la liste des préférences de films
