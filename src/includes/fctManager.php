@@ -1,6 +1,7 @@
 <?php
 
 use Semeformation\Mvc\Cinema_crud\includes\DBFunctions;
+use Semeformation\Mvc\Cinema_crud\models\Utilisateur;
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
 
@@ -8,4 +9,5 @@ use Monolog\Handler\StreamHandler;
 $logger = new Logger("Functions");
 $logger->pushHandler(new StreamHandler(dirname(__DIR__) . './logs/functions.log'));
 $fctManager = new DBFunctions($logger);
+$utilisateur = new Utilisateur($logger);
 
