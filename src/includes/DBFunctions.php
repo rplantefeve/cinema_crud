@@ -29,7 +29,7 @@ abstract class DBFunctions {
      */
     public function executeQuery($sql, $params = null) {
         // si pas de paramètres
-        if ($params == null) {
+        if (is_null($params)) {
             // exécution directe
             $resultat = DBFactory::getFactory($this->logger)->getConnection()->query($sql);
         } else {
