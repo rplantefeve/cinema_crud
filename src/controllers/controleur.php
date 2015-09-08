@@ -1,5 +1,7 @@
 <?php
 
+use Semeformation\Mvc\Cinema_crud\views\View;
+
 /*
  * Route Accueil
  */
@@ -44,8 +46,12 @@ function home($managers) {
         }
     }
 
-    // On inclut la vue principale
-    include dirname(__DIR__) . './views/viewHome.php';
+    // On génère la vue Accueil
+    $vue = new View("Home");
+    // En passant les variables nécessaires à son bon affichage
+    $vue->generer([
+        'areCredentialsOK' => $areCredentialsOK,
+        'loginSuccess' => $loginSuccess]);
 }
 
 /*
@@ -64,8 +70,10 @@ function moviesList($managers) {
     // on récupère la liste des films ainsi que leurs informations
     $films = $managers['filmsMgr']->getMoviesList();
 
-    // on inclut la vue correspondante
-    include dirname(__DIR__) . './views/viewMoviesList.php';
+    // On génère la vue films
+    $vue = new View("MoviesList");
+    // En passant les variables nécessaires à son bon affichage
+    $vue->generer(['films' => $films]);
 }
 
 function movieShowtimes($managers) {
@@ -88,9 +96,16 @@ function movieShowtimes($managers) {
 
     // on récupère la liste des cinémas de ce film
     $cinemas = $managers['cinemasMgr']->getMovieCinemasByMovieID($filmID);
+    $seances = $managers['seancesMgr']->getAllCinemasShowtimesByMovieID($cinemas,
+            $filmID);
 
-    // on inclut la vue correspondante
-    include dirname(__DIR__) . './views/viewMovieShowtimes.php';
+    // On génère la vue séances du film
+    $vue = new View("MovieShowtimes");
+    // En passant les variables nécessaires à son bon affichage
+    $vue->generer([
+        'cinemas' => $cinemas,
+        'film' => $film,
+        'seances' => $seances]);
 }
 
 function cinemaShowtimes($managers) {
@@ -113,9 +128,17 @@ function cinemaShowtimes($managers) {
 
     // on récupère la liste des films de ce cinéma
     $films = $managers['filmsMgr']->getCinemaMoviesByCinemaID($cinemaID);
+    // on récupère toutes les séances de films pour un cinéma donné
+    $seances = $managers['seancesMgr']->getAllMoviesShowtimesByCinemaID($films,
+            $cinemaID);
 
-    // On appelle la vue
-    include dirname(__DIR__) . './views/viewCinemaShowtimes.php';
+    // On génère la vue séances du cinéma
+    $vue = new View("CinemaShowtimes");
+    // En passant les variables nécessaires à son bon affichage
+    $vue->generer([
+        'cinema' => $cinema,
+        'films' => $films,
+        'seances' => $seances]);
 }
 
 function editFavoriteMoviesList($managers) {
@@ -341,8 +364,19 @@ function createNewUser($managers) {
         $sanitizedEntries['email'] = '';
     }
 
-    // on inclut la vue correspondante
-    include dirname(__DIR__) . './views/viewCreateUser.php';
+    $donnees = [
+        'sanitizedEntries' => $sanitizedEntries,
+        'isFirstNameEmpty' => $isFirstNameEmpty,
+        'isLastNameEmpty' => $isLastNameEmpty,
+        'isEmailAddressEmpty' => $isEmailAddressEmpty,
+        'isUserUnique' => $isUserUnique,
+        'isPasswordEmpty' => $isPasswordEmpty,
+        'isPasswordConfirmationEmpty' => $isPasswordConfirmationEmpty,
+        'isPasswordValid' => $isPasswordValid];
+    // On génère la vue Création d'un utilisateur
+    $vue = new View("CreateUser");
+    // En passant les variables nécessaires à son bon affichage
+    $vue->generer($donnees);
 }
 
 function logout() {
@@ -352,7 +386,7 @@ function logout() {
 }
 
 function error($e) {
-    $messageErreur = $e->getMessage();
 
-    include dirname(__DIR__) . './views/viewError.php';
+    $vue = new View("Error");
+    $vue->generer(['messageErreur' => $e->getMessage()]);
 }
