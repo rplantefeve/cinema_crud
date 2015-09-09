@@ -1,5 +1,7 @@
 <?php
 
+use Semeformation\Mvc\Cinema_crud\controllers\HomeController;
+
 require_once __DIR__ . '/vendor/autoload.php';
 
 // init. des managers
@@ -10,6 +12,8 @@ require_once __DIR__ . './init.php';
 
 // appel au contrôleur serviteur
 require __DIR__ . './controllers/controleur.php';
+
+$homeCtrl = new HomeController($logger);
 
 try {
     // on "sainifie" les entrées
@@ -40,18 +44,18 @@ try {
             deleteFavoriteMovie($managers);
         } elseif ($sanitizedEntries['action'] == "createNewUser") {
             // Activation de la route createNewUser
-            createNewUser($managers);
+            $homeCtrl->createNewUser();
         } elseif ($sanitizedEntries['action'] == "logout") {
             // Activation de la route logout
-            logout();
+            $homeCtrl->logout();
         } else {
             // Activation de la route par défaut (page d'accueil)
-            home($managers);
+            $homeCtrl->home();
         }
     } else {
         // Activation de la route par défaut (page d'accueil)
-        home($managers);
+        $homeCtrl->home();
     }
 } catch (Exception $e) {
-    error($e);
+    $homeCtrl->error($e);
 }
