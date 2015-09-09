@@ -2,14 +2,14 @@
 
 namespace Semeformation\Mvc\Cinema_crud\models;
 
-use Semeformation\Mvc\Cinema_crud\includes\DBFunctions;
+use Semeformation\Mvc\Cinema_crud\includes\Model;
 
 /**
  * Description of Prefere
  *
  * @author User
  */
-class Prefere extends DBFunctions {
+class Prefere extends Model {
     /*
      * Méthode qui retourne les films préférés d'un utilisateur donné
      * @param string $utilisateur Adresse email de l'utilisateur

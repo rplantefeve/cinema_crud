@@ -7,7 +7,7 @@ use Semeformation\Mvc\Cinema_crud\includes\Utils;
 use Psr\Log\LoggerInterface;
 use PDO;
 
-abstract class DBFunctions {
+abstract class Model {
 
     // logger
     protected $logger;

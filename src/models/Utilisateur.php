@@ -2,10 +2,10 @@
 
 namespace Semeformation\Mvc\Cinema_crud\models;
 
-use Semeformation\Mvc\Cinema_crud\includes\DBFunctions;
+use Semeformation\Mvc\Cinema_crud\includes\Model;
 use Exception;
 
-class Utilisateur extends DBFunctions {
+class Utilisateur extends Model {
     /*
      * Méthode qui teste si l'utilisateur est bien présent dans la BDD
      * @param string $email Email de l'utilisateur

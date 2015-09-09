@@ -2,14 +2,14 @@
 
 namespace Semeformation\Mvc\Cinema_crud\models;
 
-use Semeformation\Mvc\Cinema_crud\includes\DBFunctions;
+use Semeformation\Mvc\Cinema_crud\includes\Model;
 
 /**
  * Description of Seance
  *
  * @author User
  */
-class Seance extends DBFunctions {
+class Seance extends Model {
 
     public function getMovieShowtimes($cinemaID, $filmID) {
         // requête qui permet de récupérer la liste des séances d'un film donné dans un cinéma donné

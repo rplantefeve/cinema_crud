@@ -2,14 +2,14 @@
 
 namespace Semeformation\Mvc\Cinema_crud\models;
 
-use Semeformation\Mvc\Cinema_crud\includes\DBFunctions;
+use Semeformation\Mvc\Cinema_crud\includes\Model;
 
 /**
  * Description of Cinema
  *
  * @author User
  */
-class Cinema extends DBFunctions {
+class Cinema extends Model {
 
     public function getCinemasList() {
         $requete = "SELECT * FROM cinema";
