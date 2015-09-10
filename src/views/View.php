@@ -2,6 +2,8 @@
 
 namespace Semeformation\Mvc\Cinema_crud\views;
 
+use Exception;
+
 /**
  * Description of View
  *
@@ -11,6 +13,8 @@ class View {
 
     // Nom du fichier associé à la vue
     private $fichier;
+    // titre de la vue
+    private $title;
 
     public function __construct($action) {
         // La vue à générer dépend de l'action demandée
@@ -23,9 +27,13 @@ class View {
 
     public function generer($donnees = null) {
         // Génération de la partie spécifique de la vue
-        $vue = $this->genererFichier($this->fichier,
+        $content = $this->genererFichier($this->fichier,
                 $donnees);
-        // Renvoi de la vue au navigateur
+        // utilisation du template avec chargement des données spécifiques
+        $vue = $this->genererFichier(__DIR__ . './viewTemplate.php',
+                ['title' => $this->titre,
+            'content' => $content]);
+        // Renvoi de la vue générée au navigateur
         echo $vue;
     }
 
@@ -49,4 +57,5 @@ class View {
             throw new Exception('Impossible de find a view named ' . $fichier);
         }
     }
+
 }
