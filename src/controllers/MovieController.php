@@ -2,7 +2,7 @@
 
 namespace Semeformation\Mvc\Cinema_crud\controllers;
 
-use Semeformation\Mvc\Cinema_crud\models\Film;
+use Semeformation\Mvc\Cinema_crud\dao\FilmDAO;
 use Semeformation\Mvc\Cinema_crud\views\View;
 use Psr\Log\LoggerInterface;
 
@@ -13,10 +13,10 @@ use Psr\Log\LoggerInterface;
  */
 class MovieController {
 
-    private $film;
+    private $filmDAO;
 
     public function __construct(LoggerInterface $logger) {
-        $this->film = new Film($logger);
+        $this->filmDAO = new FilmDAO($logger);
     }
 
     /**
@@ -24,7 +24,7 @@ class MovieController {
      */
     function moviesList() {
         // on récupère la liste des films ainsi que leurs informations
-        $films = $this->film->getMoviesList();
+        $films = $this->filmDAO->getMoviesList();
 
         // On génère la vue films
         $vue = new View("MoviesList");

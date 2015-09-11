@@ -51,7 +51,7 @@ class CinemaDAO extends DAO {
                 . " AND s.filmID = " . $filmID;
         // on extrait les résultats
         $resultat = $this->extraireNxN($requete);
-        // on récupère tous mes objets cinema
+        // on récupère tous les objets cinema concernés
         $cinemas = $this->buildCinemas($resultat);
         // on retourne le résultat
         return $cinemas;
@@ -61,7 +61,7 @@ class CinemaDAO extends DAO {
         $requete = "SELECT * FROM cinema";
         // on extrait les résultats
         $resultat = $this->extraireNxN($requete);
-        // on récupère tous mes objets cinema
+        // on récupère tous les objets cinema
         $cinemas = $this->buildCinemas($resultat);
         // on retourne le résultat
         return $cinemas;

@@ -3,145 +3,78 @@
 namespace Semeformation\Mvc\Cinema_crud\dao;
 
 use Semeformation\Mvc\Cinema_crud\includes\DAO;
-use Semeformation\Mvc\Cinema_crud\models\Utilisateur;
-use Exception;
+use Semeformation\Mvc\Cinema_crud\models\Film;
 
 /**
- * Description of UtilisateurDAO
+ * Description of FilmDAO
  *
  * @author User
  */
-class UtilisateurDAO extends DAO {
+class FilmDAO extends DAO {
 
     /**
-     * Crée un utilisateur à partir d'une ligne de la BDD.
+     * Crée un film à partir d'une ligne de la BDD.
      *
      * @param array $row La ligne de résultat de la BDD.
-     * @return Utilisateur
+     * @return Film
      */
-    private function buildUtilisateur($row) {
-        $utilisateur = new Utilisateur();
-        $utilisateur->setUserId($row['USERID']);
-        $utilisateur->setNom($row['NOM']);
-        $utilisateur->setPrenom($row['PRENOM']);
-        $utilisateur->setAdresseCourriel($row['ADRESSECOURRIEL']);
-        $utilisateur->setPassword($row['PASSWORD']);
-        return $utilisateur;
+    private function buildFilm($row) {
+        $film = new Film();
+        $film->setFilmId($row['FILMID']);
+        $film->setTitre($row['TITRE']);
+        $film->setTitreOriginal($row['TITREORIGINAL']);
+        return $film;
     }
 
-    /*
-     * Méthode qui teste si l'utilisateur est bien présent dans la BDD
-     * @param string $email Email de l'utilisateur
-     * @param string $password Mot de passe de l'utilisateur
-     * @throw Exception si on ne trouve pas l'utilisateur en BDD
-     */
-
-    public function verifyUserCredentials($email, $passwordSaisi) {
-        // extraction du mdp de l'utilisateur
-        $requete = "SELECT password FROM utilisateur WHERE adresseCourriel = :email";
-        // on prépare la requête
-        $statement = $this->executeQuery($requete,
-                ['email' => $email]);
-
-        // on teste le nombre de lignes renvoyées
-        if ($statement->rowCount() > 0) {
-            // on récupère le mot de passe
-            $passwordBDD = $statement->fetch()[0];
-            $this->testPasswords($passwordSaisi,
-                    $passwordBDD,
-                    $email);
-        } else {
-            throw new Exception('The user ' . $email . ' doesn\'t exist.');
+    private function buildFilms($rows) {
+        foreach ($rows as $row) {
+            $cinemas[] = $this->buildFilm($row);
         }
+        return $cinemas;
     }
 
     /*
-     * 
+     * Méthode qui renvoie la liste des films
+     * @return array[][]
      */
 
-    private function testPasswords($passwordSaisi, $passwordBDD, $email) {
-        // on teste si les mots de passe correspondent
-        if (password_verify($passwordSaisi,
-                        $passwordBDD)) {
-            if ($this->logger) {
-                $this->logger->info('User ' . $email . ' now connected.');
-            }
-        } else {
-            throw new Exception('Bad password for the user ' . $email);
-        }
+    public function getMoviesList() {
+        $requete = "SELECT * FROM film";
+        // on extrait les résultats
+        $resultat = $this->extraireNxN($requete);
+        // on récupère tous les objets Film
+        $films = $this->buildFilms($resultat);
+        // on retourne le résultat
+        return $films;
     }
 
     /*
-     * Méthode qui retourne l'id d'un utilisateur passé en paramètre
-     * @param string $utilisateur Adresse email de l'utilisateur
-     * @return string $id Identifiant de l'utilisateur
+     * Méthode qui renvoie toutes les informations d'un film
+     * @return array[]
      */
 
-    public function getUserIDByEmailAddress($utilisateur) {
-        // requête qui récupère l'ID grâce à l'adresse email
-        $requete = "SELECT userID FROM utilisateur WHERE adresseCourriel = :email";
-
-        // on récupère le résultat de la requête
-        $resultat = $this->executeQuery($requete,
-                ['email' => $utilisateur]);
-
-        // on teste le nombre de lignes renvoyées
-        if ($resultat->rowCount() > 0) {
-            // on récupère la première (et seule) ligne retournée
-            $row = $resultat->fetch();
-            // l'id est le premier élément du tableau de résultats
-            return $row[0];
-        } else {
-            return null;
-        }
-    }
-
-    /*
-     * Méthode qui retourne l'utilisateur initialisé
-     * @param string $utilisateur Adresse email de l'utilisateur
-     * @return Utilisateur L'Utilisateur initialisé
-     */
-
-    public function getUserByEmailAddress($email) {
-        // on construit la requête qui va récupérer les informations de l'utilisateur
-        $requete = "SELECT * FROM utilisateur "
-                . "WHERE adresseCourriel = :email";
-
-        // on extrait le résultat de la BDD sous forme de tableau associatif
+    public function getMovieByID($filmID) {
+        $requete = "SELECT * FROM film WHERE filmID = :filmID";
         $resultat = $this->extraire1xN($requete,
-                ['email' => $email],
-                false);
-
-        // on construit l'objet Utilisateur
-        $utilisateur = $this->buildUtilisateur($resultat);
-
-        // on retourne l'utilisateur
-        return $utilisateur;
+                ['filmID' => $filmID]);
+        // on récupère l'objet Film
+        $film = $this->buildFilm($resultat);
+        // on retourne le résultat extrait
+        return $film;
     }
 
-    /*
-     * Méthode qui ajoute un utilisateur dans la BDD
-     * @param string $firstName Prénom de l'utilisateur
-     * @param string $lastName Nom de l'utilisateur
-     * @param string $email Adresse email de l'utilisateur
-     * @param string $password Mot de passe de l'utilisateur
-     */
-
-    public function createUser($firstName, $lastName, $email, $password) {
-        // construction de la requête
-        $requete = "INSERT INTO utilisateur (prenom, nom, adresseCourriel, password) "
-                . "VALUES (:firstName, :lastName, :email, :password)";
-
-        // exécution de la requête
-        $this->executeQuery($requete,
-                [':firstName' => $firstName,
-            'lastName' => $lastName,
-            'email' => $email,
-            'password' => $password]);
-
-        if ($this->logger) {
-            $this->logger->info('User ' . $email . ' successfully created.');
-        }
+    public function getCinemaMoviesByCinemaID($cinemaID) {
+        // requête qui nous permet de récupérer la liste des films pour un cinéma donné
+        $requete = "SELECT DISTINCT f.* FROM film f"
+                . " INNER JOIN seance s ON f.filmID = s.filmID"
+                . " AND s.cinemaID = :cinemaID";
+        // on extrait les résultats
+        $resultat = $this->extraireNxN($requete,
+                ['cinemaID' => $cinemaID]);
+        // on récupère tous les objets Film
+        $films = $this->buildFilms($resultat);
+        // on retourne le résultat
+        return $films;
     }
 
 }

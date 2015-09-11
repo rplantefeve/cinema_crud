@@ -37,8 +37,8 @@ class Seance extends DAO {
             array());
         // Boucle de récupération de toutes les séances indexés sur l'identifiant du film
         foreach ($films as $film) {
-            $seances[$film['FILMID']] = $this->getMovieShowtimes($cinemaID,
-                    $film['FILMID']);
+            $seances[$film->getFilmId()] = $this->getMovieShowtimes($cinemaID,
+                    $film->getFilmId());
         }
         // on retourne le résultat
         return $seances;
@@ -50,15 +50,17 @@ class Seance extends DAO {
      * @param int $filmID Identifiant du film concerné
      * @return Les séances du film projeté dans ces cinémas
      */
-    public function getAllCinemasShowtimesByMovieID($cinemas, $filmID)
-    {
+
+    public function getAllCinemasShowtimesByMovieID($cinemas, $filmID) {
         $seances = array(
             array());
         // Boucle de récupération de toutes les séances indexés sur l'identifiant du film
         foreach ($cinemas as $cinema) {
-            $seances[$cinema->getCinemaId()] = $this->getMovieShowtimes($cinema->getCinemaId(), $filmID);
+            $seances[$cinema->getCinemaId()] = $this->getMovieShowtimes($cinema->getCinemaId(),
+                    $filmID);
         }
         // on retourne le résultat
         return $seances;
     }
+
 }

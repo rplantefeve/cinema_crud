@@ -8,11 +8,11 @@
     // on boucle sur les résultats
     foreach ($films as $film) {
         ?>
-        <li><?= $film['TITRE'] ?></li>
+        <li><?= $film->getTitre() ?></li>
         <ul>
             <?php
             // boucle sur les séances
-            foreach ($seances[$film['FILMID']] as $seance) {
+            foreach ($seances[$film->getFilmId()] as $seance) {
                 /*
                  * Formatage des dates
                  */
