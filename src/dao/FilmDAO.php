@@ -18,7 +18,7 @@ class FilmDAO extends DAO {
      * @param array $row La ligne de résultat de la BDD.
      * @return Film
      */
-    private function buildFilm($row) {
+    protected function buildBusinessObject($row) {
         $film = new Film();
         $film->setFilmId($row['FILMID']);
         $film->setTitre($row['TITRE']);
@@ -28,9 +28,9 @@ class FilmDAO extends DAO {
 
     private function buildFilms($rows) {
         foreach ($rows as $row) {
-            $cinemas[] = $this->buildFilm($row);
+            $films[] = $this->buildBusinessObject($row);
         }
-        return $cinemas;
+        return $films;
     }
 
     /*
@@ -58,7 +58,7 @@ class FilmDAO extends DAO {
         $resultat = $this->extraire1xN($requete,
                 ['filmID' => $filmID]);
         // on récupère l'objet Film
-        $film = $this->buildFilm($resultat);
+        $film = $this->buildBusinessObject($resultat);
         // on retourne le résultat extrait
         return $film;
     }
@@ -72,6 +72,33 @@ class FilmDAO extends DAO {
         $resultat = $this->extraireNxN($requete,
                 ['cinemaID' => $cinemaID]);
         // on récupère tous les objets Film
+        $films = $this->buildFilms($resultat);
+        // on retourne le résultat
+        return $films;
+    }
+
+    /*
+     * Méthode qui ne renvoie que les films non encore marqués
+     * comme favoris par l'utilisateur passé en paramètre
+     * @param int $userID Identifiant de l'utilisateur
+     * @return Film[] Films présents dans la base respectant les critères
+     */
+
+    public function getMoviesNonAlreadyMarkedAsFavorite($userID) {
+        // requête de récupération des titres et des identifiants des films
+        // qui n'ont pas encore été marqués comme favoris par l'utilisateur
+        $requete = "SELECT f.filmID, f.titre "
+                . "FROM film f"
+                . " WHERE f.filmID NOT IN ("
+                . "SELECT filmID"
+                . " FROM prefere"
+                . " WHERE userID = :id"
+                . ")";
+        // extraction de résultat
+        $resultat = $this->extraireNxN($requete,
+                ['id' => $userID],
+                false);
+        // on crée les objets métiers
         $films = $this->buildFilms($resultat);
         // on retourne le résultat
         return $films;

@@ -3,7 +3,8 @@
 namespace Semeformation\Mvc\Cinema_crud\controllers;
 
 use Semeformation\Mvc\Cinema_crud\dao\UtilisateurDAO;
-use Semeformation\Mvc\Cinema_crud\models\Prefere;
+use Semeformation\Mvc\Cinema_crud\dao\FilmDAO;
+use Semeformation\Mvc\Cinema_crud\dao\PrefereDAO;
 use Semeformation\Mvc\Cinema_crud\views\View;
 use Psr\Log\LoggerInterface;
 
@@ -14,14 +15,14 @@ use Psr\Log\LoggerInterface;
  */
 class FavoriteController {
 
-    private $prefere;
+    private $prefereDAO;
     private $utilisateurDAO;
 
     /**
      * Constructeur de la classe
      */
     public function __construct(LoggerInterface $logger) {
-        $this->prefere = new Prefere($logger);
+        $this->prefereDAO = new PrefereDAO($logger);
         $this->utilisateurDAO = new UtilisateurDAO($logger);
     }
 
@@ -40,7 +41,7 @@ class FavoriteController {
         }
 
         // on récupère la liste des films préférés grâce à l'utilisateur identifié
-        $films = $this->prefere->getFavoriteMoviesFromUser($utilisateur->getUserId());
+        $films = $this->prefereDAO->getFavoriteMoviesFromUser($utilisateur->getUserId());
 
         // On génère la vue Films préférés
         $vue = new View("FavoriteMoviesList");
@@ -92,14 +93,14 @@ class FavoriteController {
                     // et que nous ne sommes pas en train de modifier une préférence
                     if (is_null($sanitizedEntries['modificationInProgress'])) {
                         // on ajoute la préférence de l'utilisateur
-                        $this->prefere->insertNewFavoriteMovie($sanitizedEntries['userID'],
+                        $this->prefereDAO->insertNewFavoriteMovie($sanitizedEntries['userID'],
                                 $sanitizedEntries['filmID'],
                                 $sanitizedEntries['comment']);
                     }
                     // sinon, nous sommes dans le cas d'une modification
                     else {
                         // mise à jour de la préférence
-                        $this->prefere->updateFavoriteMovie($sanitizedEntries['userID'],
+                        $this->prefereDAO->updateFavoriteMovie($sanitizedEntries['userID'],
                                 $sanitizedEntries['filmID'],
                                 $sanitizedEntries['comment']);
                     }
@@ -113,7 +114,7 @@ class FavoriteController {
                     // 
                     $aFilmIsSelected = false;
                     $isItACreation = true;
-                    $films = $this->prefere->getMoviesNonAlreadyMarkedAsFavorite($_SESSION['userID']);
+                    $films = $this->prefereDAO->getMoviesNonAlreadyMarkedAsFavorite($_SESSION['userID']);
                     // initialisation des champs du formulaire
                     $preference = [
                         "userID" => $sanitizedEntries["userID"],
@@ -134,14 +135,14 @@ class FavoriteController {
 
             if ($sanitizedEntries && !is_null($sanitizedEntries['filmID']) && $sanitizedEntries['filmID'] !== '' && !is_null($sanitizedEntries['userID']) && $sanitizedEntries['userID'] !== '') {
                 // on récupère les informations manquantes (le commentaire afférent)
-                $preference = $this->prefere->getFavoriteMovieInformations($sanitizedEntries['userID'],
+                $preference = $this->prefereDAO->getFavoriteMovieInformations($sanitizedEntries['userID'],
                         $sanitizedEntries['filmID']);
                 // sinon, c'est une création
             } else {
                 // C'est une création
                 $isItACreation = true;
 
-                $films = $this->prefere->getMoviesNonAlreadyMarkedAsFavorite($_SESSION['userID']);
+                $films = $this->prefereDAO->getMoviesNonAlreadyMarkedAsFavorite($_SESSION['userID']);
                 // on initialise les autres variables de formulaire à vide
                 $preference = [
                     "userID" => $_SESSION['userID'],
@@ -170,7 +171,7 @@ class FavoriteController {
             'filmID' => FILTER_SANITIZE_NUMBER_INT]);
 
         // suppression de la préférence de film
-        $this->prefere->deleteFavoriteMovie($sanitizedEntries['userID'],
+        $this->prefereDAO->deleteFavoriteMovie($sanitizedEntries['userID'],
                 $sanitizedEntries['filmID']);
         // redirection vers la liste des préférences de films
         header("Location: index.php?action=editFavoriteMoviesList");

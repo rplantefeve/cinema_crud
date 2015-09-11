@@ -19,7 +19,7 @@ class CinemaDAO extends DAO {
      * @param array $row La ligne de résultat de la BDD.
      * @return Cinema
      */
-    private function buildCinema($row) {
+    protected function buildBusinessObject($row) {
         $cinema = new Cinema();
         $cinema->setCinemaId($row['CINEMAID']);
         $cinema->setDenomination($row['DENOMINATION']);
@@ -29,7 +29,7 @@ class CinemaDAO extends DAO {
 
     private function buildCinemas($rows) {
         foreach ($rows as $row) {
-            $cinemas[] = $this->buildCinema($row);
+            $cinemas[] = $this->buildBusinessObject($row);
         }
         return $cinemas;
     }
@@ -39,7 +39,7 @@ class CinemaDAO extends DAO {
                 . $cinemaID;
         $resultat = $this->extraire1xN($requete);
         // on crée l'objet métier Cinema
-        $cinema = $this->buildCinema($resultat);
+        $cinema = $this->buildBusinessObject($resultat);
         // on retourne le résultat extrait
         return $cinema;
     }

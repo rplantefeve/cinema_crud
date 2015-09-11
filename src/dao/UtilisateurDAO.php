@@ -19,7 +19,7 @@ class UtilisateurDAO extends DAO {
      * @param array $row La ligne de résultat de la BDD.
      * @return Utilisateur
      */
-    private function buildUtilisateur($row) {
+    protected function buildBusinessObject($row) {
         $utilisateur = new Utilisateur();
         $utilisateur->setUserId($row['USERID']);
         $utilisateur->setNom($row['NOM']);
@@ -113,10 +113,25 @@ class UtilisateurDAO extends DAO {
                 false);
 
         // on construit l'objet Utilisateur
-        $utilisateur = $this->buildUtilisateur($resultat);
+        $utilisateur = $this->buildBusinessObject($resultat);
 
         // on retourne l'utilisateur
         return $utilisateur;
+    }
+
+    /*
+     * Méthode qui renvoie toutes les informations d'un utilisateur
+     * @return Utilisateur
+     */
+
+    public function getUserByID($userID) {
+        $requete = "SELECT * FROM utilisateur WHERE userID = :userID";
+        $resultat = $this->extraire1xN($requete,
+                ['userID' => $userID]);
+        // on récupère l'objet Film
+        $user = $this->buildBusinessObject($resultat);
+        // on retourne le résultat extrait
+        return $user;
     }
 
     /*

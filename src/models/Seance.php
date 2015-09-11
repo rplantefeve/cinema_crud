@@ -10,6 +10,10 @@ use Semeformation\Mvc\Cinema_crud\includes\DAO;
  * @author User
  */
 class Seance extends DAO {
+    
+    protected function buildBusinessObject($row) {
+        null;
+    }
 
     public function getMovieShowtimes($cinemaID, $filmID) {
         // requête qui permet de récupérer la liste des séances d'un film donné dans un cinéma donné

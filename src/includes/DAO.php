@@ -21,6 +21,12 @@ abstract class DAO {
     }
 
     /**
+     * Méthode abstraite de construction d'un objet métier à partir d'une ligne de la BDD
+     * Cette méthode DOIT être redéfinie dans les classes filles
+     */
+    protected abstract function buildBusinessObject($row);
+
+    /**
      * Exécute une requête SQL
      *
      * @param string $sql Requête SQL
