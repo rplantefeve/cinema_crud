@@ -2,7 +2,7 @@
 
 namespace Semeformation\Mvc\Cinema_crud\controllers;
 
-use Semeformation\Mvc\Cinema_crud\models\Utilisateur;
+use Semeformation\Mvc\Cinema_crud\dao\UtilisateurDAO;
 use Semeformation\Mvc\Cinema_crud\views\View;
 use Psr\Log\LoggerInterface;
 use Exception;
@@ -17,13 +17,13 @@ class HomeController {
     /**
      * L'utilisateur de l'application
      */
-    private $utilisateur;
+    private $utilisateurDAO;
 
     /**
      * Constructeur de la classe
      */
     public function __construct(LoggerInterface $logger) {
-        $this->utilisateur = new Utilisateur($logger);
+        $this->utilisateurDAO = new UtilisateurDAO($logger);
     }
 
     /*
@@ -68,19 +68,19 @@ class HomeController {
     private function login($sanitizedEntries, &$areCredentialsOK) {
         try {
             // On vérifie l'existence de l'utilisateur
-            $this->utilisateur->verifyUserCredentials($sanitizedEntries['email'],
+            $this->utilisateurDAO->verifyUserCredentials($sanitizedEntries['email'],
                     $sanitizedEntries['password']);
 
             // on enregistre l'utilisateur
             $_SESSION['user'] = $sanitizedEntries['email'];
-            $_SESSION['userID'] = $this->utilisateur->getUserIDByEmailAddress($_SESSION['user']);
+            $_SESSION['userID'] = $this->utilisateurDAO->getUserIDByEmailAddress($_SESSION['user']);
             // on redirige vers la page d'édition des films préférés
             // redirection vers la liste des préférences de films
             header("Location: index.php?action=editFavoriteMoviesList");
             exit;
         } catch (Exception $ex) {
             $areCredentialsOK = false;
-            $this->utilisateur->getLogger()->error($ex->getMessage());
+            $this->utilisateurDAO->getLogger()->error($ex->getMessage());
         }
     }
 
@@ -120,7 +120,7 @@ class HomeController {
                 $isEmailAddressEmpty = true;
             } else {
                 // On vérifie l'existence de l'utilisateur
-                $userID = $this->utilisateur->getUserIDByEmailAddress($sanitizedEntries['email']);
+                $userID = $this->utilisateurDAO->getUserIDByEmailAddress($sanitizedEntries['email']);
                 // si on a un résultat, cela signifie que cette adresse email existe déjà
                 if ($userID) {
                     $isUserUnique = false;
@@ -146,7 +146,7 @@ class HomeController {
                 $password = password_hash($sanitizedEntries['password'],
                         PASSWORD_DEFAULT);
                 // créer l'utilisateur
-                $this->utilisateur->createUser($sanitizedEntries['firstName'],
+                $this->utilisateurDAO->createUser($sanitizedEntries['firstName'],
                         $sanitizedEntries['lastName'],
                         $sanitizedEntries['email'],
                         $password);
@@ -154,7 +154,7 @@ class HomeController {
                 session_start();
                 // authentifier l'utilisateur
                 $_SESSION['user'] = $sanitizedEntries['email'];
-                $_SESSION['userID'] = $this->utilisateur->getUserIDByEmailAddress($_SESSION['user']);
+                $_SESSION['userID'] = $this->utilisateurDAO->getUserIDByEmailAddress($_SESSION['user']);
                 // redirection vers la liste des préférences de films
                 header("Location: index.php?action=editFavoriteMoviesList");
                 exit;
@@ -191,7 +191,7 @@ class HomeController {
 
     public function error($e) {
 
-        $this->utilisateur->getLogger()->error('Exception : ' . $e->getMessage() . ', File : ' . $e->getFile() . ', Line : ' . $e->getLine() . ', Stack trace : ' . $e->getTraceAsString());
+        $this->utilisateurDAO->getLogger()->error('Exception : ' . $e->getMessage() . ', File : ' . $e->getFile() . ', Line : ' . $e->getLine() . ', Stack trace : ' . $e->getTraceAsString());
         $vue = new View("Error");
         $vue->generer(['messageErreur' => $e->getMessage()]);
     }

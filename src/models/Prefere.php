@@ -2,14 +2,14 @@
 
 namespace Semeformation\Mvc\Cinema_crud\models;
 
-use Semeformation\Mvc\Cinema_crud\includes\Model;
+use Semeformation\Mvc\Cinema_crud\includes\DAO;
 
 /**
  * Description of Prefere
  *
  * @author User
  */
-class Prefere extends Model {
+class Prefere extends DAO {
     /*
      * Méthode qui retourne les films préférés d'un utilisateur donné
      * @param string $utilisateur Adresse email de l'utilisateur

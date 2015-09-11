@@ -2,7 +2,7 @@
 
 namespace Semeformation\Mvc\Cinema_crud\controllers;
 
-use Semeformation\Mvc\Cinema_crud\models\Utilisateur;
+use Semeformation\Mvc\Cinema_crud\dao\UtilisateurDAO;
 use Semeformation\Mvc\Cinema_crud\models\Prefere;
 use Semeformation\Mvc\Cinema_crud\views\View;
 use Psr\Log\LoggerInterface;
@@ -15,14 +15,14 @@ use Psr\Log\LoggerInterface;
 class FavoriteController {
 
     private $prefere;
-    private $utilisateur;
+    private $utilisateurDAO;
 
     /**
      * Constructeur de la classe
      */
     public function __construct(LoggerInterface $logger) {
         $this->prefere = new Prefere($logger);
-        $this->utilisateur = new Utilisateur($logger);
+        $this->utilisateurDAO = new UtilisateurDAO($logger);
     }
 
     public function editFavoriteMoviesList() {
@@ -36,11 +36,11 @@ class FavoriteController {
         }
         // l'utilisateur est loggué
         else {
-            $utilisateur = $this->utilisateur->getCompleteUsernameByEmailAddress($_SESSION['user']);
+            $utilisateur = $this->utilisateurDAO->getUserByEmailAddress($_SESSION['user']);
         }
 
         // on récupère la liste des films préférés grâce à l'utilisateur identifié
-        $films = $this->prefere->getFavoriteMoviesFromUser($utilisateur['userID']);
+        $films = $this->prefere->getFavoriteMoviesFromUser($utilisateur->getUserId());
 
         // On génère la vue Films préférés
         $vue = new View("FavoriteMoviesList");

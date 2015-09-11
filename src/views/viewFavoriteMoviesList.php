@@ -1,5 +1,5 @@
 <?php $this->titre = "Films préférés"; ?>
-<header><h1><?= $utilisateur['prenom'] ?> <?= $utilisateur['nom'] ?>, ci-dessous vos films préférés</h1></header>
+<header><h1><?= $utilisateur->getPrenom(); ?> <?= $utilisateur->getNom(); ?>, ci-dessous vos films préférés</h1></header>
 <table class="std">
     <tr>
         <th>Titre</th>
@@ -17,14 +17,14 @@
                 <td>
                     <form name="modifyFavoriteMovie" action="index.php" method="GET">
                         <input type="hidden" name="action" value="editFavoriteMovie"/>
-                        <input type="hidden" name="userID" value="<?= $utilisateur['userID'] ?>"/>
+                        <input type="hidden" name="userID" value="<?= $utilisateur->getUserId(); ?>"/>
                         <input type="hidden" name="filmID" value="<?= $film['filmID'] ?>"/>
                         <input type="image" src="images/modifyIcon.png" alt="Modify"/>
                     </form>
                 </td>
                 <td>
                     <form name="deleteFavoriteMovie" action="index.php?action=deleteFavoriteMovie" method="POST">
-                        <input type="hidden" name="userID" value="<?= $utilisateur['userID'] ?>"/>
+                        <input type="hidden" name="userID" value="<?= $utilisateur->getUserId(); ?>"/>
                         <input type="hidden" name="filmID" value="<?= $film['filmID'] ?>"/>
                         <input type="image" src="images/deleteIcon.png" alt="Delete"/>
                     </form>
