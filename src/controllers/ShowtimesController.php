@@ -3,7 +3,7 @@
 namespace Semeformation\Mvc\Cinema_crud\controllers;
 
 use Semeformation\Mvc\Cinema_crud\models\Film;
-use Semeformation\Mvc\Cinema_crud\models\Cinema;
+use Semeformation\Mvc\Cinema_crud\dao\CinemaDAO;
 use Semeformation\Mvc\Cinema_crud\models\Seance;
 use Semeformation\Mvc\Cinema_crud\views\View;
 use Psr\Log\LoggerInterface;
@@ -15,12 +15,12 @@ use Psr\Log\LoggerInterface;
  */
 class ShowtimesController {
 
-    private $cinema;
+    private $cinemaDAO;
     private $film;
     private $seance;
 
     public function __construct(LoggerInterface $logger) {
-        $this->cinema = new Cinema($logger);
+        $this->cinemaDAO = new CinemaDAO($logger);
         $this->film = new Film($logger);
         $this->seance = new Seance($logger);
     }
@@ -47,7 +47,7 @@ class ShowtimesController {
         }
 
         // on récupère la liste des cinémas de ce film
-        $cinemas = $this->cinema->getMovieCinemasByMovieID($filmID);
+        $cinemas = $this->cinemaDAO->getMovieCinemasByMovieID($filmID);
         $seances = $this->seance->getAllCinemasShowtimesByMovieID($cinemas,
                 $filmID);
 
@@ -73,7 +73,7 @@ class ShowtimesController {
             // on récupère l'identifiant du cinéma
             $cinemaID = $sanitizedEntries['cinemaID'];
             // puis on récupère les informations du cinéma en question
-            $cinema = $this->cinema->getCinemaInformationsByID($cinemaID);
+            $cinema = $this->cinemaDAO->getCinemaByID($cinemaID);
         }
         // sinon, on retourne à l'accueil
         else {

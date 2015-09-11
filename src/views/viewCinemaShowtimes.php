@@ -1,7 +1,7 @@
 <?php $this->titre = "Séances par cinéma"; ?>
 <header>
-    <h1>Séances du cinéma <?= $cinema['DENOMINATION'] ?></h1>
-    <h2><?= $cinema['ADRESSE'] ?></h2>
+    <h1>Séances du cinéma <?= $cinema->getDenomination(); ?></h1>
+    <h2><?= $cinema->getAdresse(); ?></h2>
 </header>
 <ul>
     <?php

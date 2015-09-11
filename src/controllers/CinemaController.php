@@ -2,7 +2,7 @@
 
 namespace Semeformation\Mvc\Cinema_crud\controllers;
 
-use Semeformation\Mvc\Cinema_crud\models\Cinema;
+use Semeformation\Mvc\Cinema_crud\dao\CinemaDAO;
 use Semeformation\Mvc\Cinema_crud\views\View;
 use Psr\Log\LoggerInterface;
 
@@ -13,10 +13,10 @@ use Psr\Log\LoggerInterface;
  */
 class CinemaController {
 
-    private $cinema;
+    private $cinemaDAO;
 
     public function __construct(LoggerInterface $logger) {
-        $this->cinema = new Cinema($logger);
+        $this->cinemaDAO = new CinemaDAO($logger);
     }
 
     /**
@@ -24,7 +24,7 @@ class CinemaController {
      */
     public function cinemasList() {
         // on récupère la liste des cinémas ainsi que leurs informations
-        $cinemas = $this->cinema->getCinemasList();
+        $cinemas = $this->cinemaDAO->getCinemasList();
 
         // On génère la vue films
         $vue = new View("CinemasList");

@@ -56,7 +56,7 @@ class Seance extends DAO {
             array());
         // Boucle de récupération de toutes les séances indexés sur l'identifiant du film
         foreach ($cinemas as $cinema) {
-            $seances[$cinema['CINEMAID']] = $this->getMovieShowtimes($cinema['CINEMAID'], $filmID);
+            $seances[$cinema->getCinemaId()] = $this->getMovieShowtimes($cinema->getCinemaId(), $filmID);
         }
         // on retourne le résultat
         return $seances;
