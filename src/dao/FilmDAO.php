@@ -29,13 +29,6 @@ class FilmDAO extends DAO {
         return $film;
     }
 
-    private function buildFilms($rows) {
-        foreach ($rows as $row) {
-            $films[] = $this->buildBusinessObject($row);
-        }
-        return $films;
-    }
-
     /*
      * Méthode qui renvoie la liste des films
      * @return array[][]
@@ -44,11 +37,9 @@ class FilmDAO extends DAO {
     public function getMoviesList() {
         $requete = "SELECT * FROM film";
         // on extrait les résultats
-        $resultat = $this->extraireNxN($requete);
-        // on récupère tous les objets Film
-        $films = $this->buildFilms($resultat);
-        // on retourne le résultat
-        return $films;
+        $resultats = $this->extraireNxN($requete);
+        // on extrait les objets métiers des résultats
+        return $this->extractObjects($resultats);
     }
 
     /*
@@ -72,12 +63,10 @@ class FilmDAO extends DAO {
                 . " INNER JOIN seance s ON f.filmID = s.filmID"
                 . " AND s.cinemaID = :cinemaID";
         // on extrait les résultats
-        $resultat = $this->extraireNxN($requete,
+        $resultats = $this->extraireNxN($requete,
                 ['cinemaID' => $cinemaID]);
-        // on récupère tous les objets Film
-        $films = $this->buildFilms($resultat);
-        // on retourne le résultat
-        return $films;
+        // on extrait les objets métiers des résultats
+        return $this->extractObjects($resultats);
     }
 
     /*
@@ -98,17 +87,11 @@ class FilmDAO extends DAO {
                 . " WHERE userID = :id"
                 . ")";
         // extraction de résultat
-        $resultat = $this->extraireNxN($requete,
+        $resultats = $this->extraireNxN($requete,
                 ['id' => $userID],
                 false);
-        if (!is_null($resultat)) {
-            // on crée les objets métiers
-            $films = $this->buildFilms($resultat);
-            // on retourne le résultat
-            return $films;
-        } else {
-            return null;
-        }
+        // on extrait les objets métiers des résultats
+        return $this->extractObjects($resultats);
     }
 
 }

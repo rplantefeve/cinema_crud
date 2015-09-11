@@ -4,7 +4,6 @@ namespace Semeformation\Mvc\Cinema_crud\dao;
 
 use Semeformation\Mvc\Cinema_crud\includes\DAO;
 use Semeformation\Mvc\Cinema_crud\models\Cinema;
-use Exception;
 
 /**
  * Description of CinemaDAO
@@ -27,13 +26,6 @@ class CinemaDAO extends DAO {
         return $cinema;
     }
 
-    private function buildCinemas($rows) {
-        foreach ($rows as $row) {
-            $cinemas[] = $this->buildBusinessObject($row);
-        }
-        return $cinemas;
-    }
-
     public function getCinemaByID($cinemaID) {
         $requete = "SELECT * FROM cinema WHERE cinemaID = "
                 . $cinemaID;
@@ -50,21 +42,17 @@ class CinemaDAO extends DAO {
                 . " INNER JOIN seance s ON c.cinemaID = s.cinemaID"
                 . " AND s.filmID = " . $filmID;
         // on extrait les résultats
-        $resultat = $this->extraireNxN($requete);
-        // on récupère tous les objets cinema concernés
-        $cinemas = $this->buildCinemas($resultat);
-        // on retourne le résultat
-        return $cinemas;
+        $resultats = $this->extraireNxN($requete);
+        // on extrait les objets métiers des résultats
+        return $this->extractObjects($resultats);
     }
 
     public function getCinemasList() {
         $requete = "SELECT * FROM cinema";
         // on extrait les résultats
-        $resultat = $this->extraireNxN($requete);
-        // on récupère tous les objets cinema
-        $cinemas = $this->buildCinemas($resultat);
-        // on retourne le résultat
-        return $cinemas;
+        $resultats = $this->extraireNxN($requete);
+        // on extrait les objets métiers des résultats
+        return $this->extractObjects($resultats);
     }
 
 }

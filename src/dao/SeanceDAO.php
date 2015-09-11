@@ -1,147 +1,124 @@
-<?php //
+<?php
+
+//
 
 namespace Semeformation\Mvc\Cinema_crud\dao;
 
+use Semeformation\Mvc\Cinema_crud\models\Seance;
 use Semeformation\Mvc\Cinema_crud\includes\DAO;
-use Semeformation\Mvc\Cinema_crud\models\Utilisateur;
-use Exception;
+use Semeformation\Mvc\Cinema_crud\dao\FilmDAO;
+use Semeformation\Mvc\Cinema_crud\dao\CinemaDAO;
+use DateTime;
 
 /**
  * Description of SeanceDAO
  *
  * @author User
  */
-abstract class SeanceDAO extends DAO {
+class SeanceDAO extends DAO {
 
-//    /**
-//     * Crée un utilisateur à partir d'une ligne de la BDD.
-//     *
-//     * @param array $row La ligne de résultat de la BDD.
-//     * @return Seance
-//     */
-//    private function buildSeance($row) {
-//        $utilisateur = new Seance();
-//        $utilisateur->setUserId($row['USERID']);
-//        $utilisateur->setNom($row['NOM']);
-//        $utilisateur->setPrenom($row['PRENOM']);
-//        $utilisateur->setAdresseCourriel($row['ADRESSECOURRIEL']);
-//        $utilisateur->setPassword($row['PASSWORD']);
-//        return $utilisateur;
-//    }
-//
-//    /*
-//     * Méthode qui teste si l'utilisateur est bien présent dans la BDD
-//     * @param string $email Email de l'utilisateur
-//     * @param string $password Mot de passe de l'utilisateur
-//     * @throw Exception si on ne trouve pas l'utilisateur en BDD
-//     */
-//
-//    public function verifyUserCredentials($email, $passwordSaisi) {
-//        // extraction du mdp de l'utilisateur
-//        $requete = "SELECT password FROM utilisateur WHERE adresseCourriel = :email";
-//        // on prépare la requête
-//        $statement = $this->executeQuery($requete,
-//                ['email' => $email]);
-//
-//        // on teste le nombre de lignes renvoyées
-//        if ($statement->rowCount() > 0) {
-//            // on récupère le mot de passe
-//            $passwordBDD = $statement->fetch()[0];
-//            $this->testPasswords($passwordSaisi,
-//                    $passwordBDD,
-//                    $email);
-//        } else {
-//            throw new Exception('The user ' . $email . ' doesn\'t exist.');
-//        }
-//    }
-//
-//    /*
-//     * 
-//     */
-//
-//    private function testPasswords($passwordSaisi, $passwordBDD, $email) {
-//        // on teste si les mots de passe correspondent
-//        if (password_verify($passwordSaisi,
-//                        $passwordBDD)) {
-//            if ($this->logger) {
-//                $this->logger->info('User ' . $email . ' now connected.');
-//            }
-//        } else {
-//            throw new Exception('Bad password for the user ' . $email);
-//        }
-//    }
-//
-//    /*
-//     * Méthode qui retourne l'id d'un utilisateur passé en paramètre
-//     * @param string $utilisateur Adresse email de l'utilisateur
-//     * @return string $id Identifiant de l'utilisateur
-//     */
-//
-//    public function getUserIDByEmailAddress($utilisateur) {
-//        // requête qui récupère l'ID grâce à l'adresse email
-//        $requete = "SELECT userID FROM utilisateur WHERE adresseCourriel = :email";
-//
-//        // on récupère le résultat de la requête
-//        $resultat = $this->executeQuery($requete,
-//                ['email' => $utilisateur]);
-//
-//        // on teste le nombre de lignes renvoyées
-//        if ($resultat->rowCount() > 0) {
-//            // on récupère la première (et seule) ligne retournée
-//            $row = $resultat->fetch();
-//            // l'id est le premier élément du tableau de résultats
-//            return $row[0];
-//        } else {
-//            return null;
-//        }
-//    }
-//
-//    /*
-//     * Méthode qui retourne l'utilisateur initialisé
-//     * @param string $utilisateur Adresse email de l'utilisateur
-//     * @return Seance L'Seance initialisé
-//     */
-//
-//    public function getUserByEmailAddress($email) {
-//        // on construit la requête qui va récupérer les informations de l'utilisateur
-//        $requete = "SELECT * FROM utilisateur "
-//                . "WHERE adresseCourriel = :email";
-//
-//        // on extrait le résultat de la BDD sous forme de tableau associatif
-//        $resultat = $this->extraire1xN($requete,
-//                ['email' => $email],
-//                false);
-//
-//        // on construit l'objet Seance
-//        $utilisateur = $this->buildSeance($resultat);
-//
-//        // on retourne l'utilisateur
-//        return $utilisateur;
-//    }
-//
-//    /*
-//     * Méthode qui ajoute un utilisateur dans la BDD
-//     * @param string $firstName Prénom de l'utilisateur
-//     * @param string $lastName Nom de l'utilisateur
-//     * @param string $email Adresse email de l'utilisateur
-//     * @param string $password Mot de passe de l'utilisateur
-//     */
-//
-//    public function createUser($firstName, $lastName, $email, $password) {
-//        // construction de la requête
-//        $requete = "INSERT INTO utilisateur (prenom, nom, adresseCourriel, password) "
-//                . "VALUES (:firstName, :lastName, :email, :password)";
-//
-//        // exécution de la requête
-//        $this->executeQuery($requete,
-//                [':firstName' => $firstName,
-//            'lastName' => $lastName,
-//            'email' => $email,
-//            'password' => $password]);
-//
-//        if ($this->logger) {
-//            $this->logger->info('User ' . $email . ' successfully created.');
-//        }
-//    }
-//
+    /**
+     *
+     * @var FilmDAO
+     */
+    private $filmDAO;
+
+    /**
+     *
+     * @var CinemaDAO
+     */
+    private $cinemaDAO;
+
+    public function getFilmDAO() {
+        return $this->filmDAO;
+    }
+
+    public function getCinemaDAO() {
+        return $this->cinemaDAO;
+    }
+
+    public function setFilmDAO(FilmDAO $filmDAO) {
+        $this->filmDAO = $filmDAO;
+    }
+
+    public function setCinemaDAO(CinemaDAO $cinemaDAO) {
+        $this->cinemaDAO = $cinemaDAO;
+    }
+
+    /**
+     * Crée une séance à partir d'une ligne de la BDD.
+     *
+     * @param array $row La ligne de résultat de la BDD.
+     * @return Seance
+     */
+    protected function buildBusinessObject($row) {
+        $seance = new Seance();
+        $seance->setHeureDebut(new DateTime($row['HEUREDEBUT']));
+        $seance->setHeureFin(new DateTime($row['HEUREFIN']));
+        $seance->setVersion($row['VERSION']);
+        // trouver le film concerné grâce à son identifiant
+        if (array_key_exists('FILMID',
+                        $row)) {
+            $filmID = $row['FILMID'];
+            $film = $this->filmDAO->getMovieByID($filmID);
+            $seance->setFilm($film);
+        }
+        // trouver le cinéma concerné grâce à son identifiant
+        if (array_key_exists('CINEMAID',
+                        $row)) {
+            $cinemaID = $row['FILMID'];
+            $cinema = $this->cinemaDAO->getCinemaByID($cinemaID);
+            $seance->setCinema($cinema);
+        }
+        return $seance;
+    }
+
+    public function getMovieShowtimes($cinemaID, $filmID) {
+        // requête qui permet de récupérer la liste des séances d'un film donné dans un cinéma donné
+        $requete = "SELECT s.* FROM seance s"
+                . " WHERE s.filmID = :filmID"
+                . " AND s.cinemaID = :cinemaID";
+        // on extrait les résultats
+        $resultats = $this->extraireNxN($requete,
+                array(
+            'filmID' => $filmID,
+            'cinemaID' => $cinemaID));
+        // on extrait les objets métiers des résultats
+        return $this->extractObjects($resultats);
+    }
+
+    /*
+     * Méthode qui retourne toutes les séances de tous les films présents dans un cinéma donné
+     * @param array $films Liste des films du cinéma donné
+     * @param int $cinemaID Identifiant du cinéma concerné
+     * @return Les séances des films projetés dans ce cinéma
+     */
+
+    public function getAllMoviesShowtimesByCinemaID($films, $cinemaID) {
+        // Boucle de récupération de toutes les séances indexés sur l'identifiant du film
+        foreach ($films as $film) {
+            $seances[$film->getFilmId()] = $this->getMovieShowtimes($cinemaID,
+                    $film->getFilmId());
+        }
+        // on retourne le résultat
+        return $seances;
+    }
+
+    /*
+     * Méthode qui retourne toutes les séances de tous les cinémas d'un film donné
+     * @param array $cinemas Liste des cinémas qui projettent ce film
+     * @param int $filmID Identifiant du film concerné
+     * @return Les séances du film projeté dans ces cinémas
+     */
+
+    public function getAllCinemasShowtimesByMovieID($cinemas, $filmID) {
+        // Boucle de récupération de toutes les séances indexés sur l'identifiant du film
+        foreach ($cinemas as $cinema) {
+            $seances[$cinema->getCinemaId()] = $this->getMovieShowtimes($cinema->getCinemaId(),
+                    $filmID);
+        }
+        // on retourne le résultat
+        return $seances;
+    }
+
 }

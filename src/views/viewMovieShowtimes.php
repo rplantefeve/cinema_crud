@@ -20,15 +20,15 @@
                 setlocale(LC_TIME,
                         'fra_fra');
                 // date du jour de projection de la séance
-                $jour = new DateTime($seance['HEUREDEBUT']);
+                $jour = $seance->getHeureDebut();
                 // On convertit pour un affichage en français
                 $jourConverti = utf8_encode(strftime('%d %B %Y',
                                 $jour->getTimestamp()));
 
-                $heureDebut = (new DateTime($seance['HEUREDEBUT']))->format('H\hi');
-                $heureFin = (new DateTime($seance['HEUREFIN']))->format('H\hi');
+                $heureDebut = $seance->getHeureDebut()->format('H\hi');
+                $heureFin = $seance->getHeureFin()->format('H\hi');
                 ?>
-                <li>Séance du <?= $jourConverti ?>. Heure de début : <?= $heureDebut ?>. Heure de fin : <?= $heureFin ?>. Version : <?= $seance['VERSION'] ?></li>
+                <li>Séance du <?= $jourConverti ?>. Heure de début : <?= $heureDebut ?>. Heure de fin : <?= $heureFin ?>. Version : <?= $seance->getVersion(); ?></li>
                 <?php
             }
             ?>

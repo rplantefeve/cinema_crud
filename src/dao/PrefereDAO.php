@@ -59,13 +59,6 @@ class PrefereDAO extends DAO {
         return $prefere;
     }
 
-    private function buildPreferes($rows) {
-        foreach ($rows as $row) {
-            $preferes[] = $this->buildBusinessObject($row);
-        }
-        return $preferes;
-    }
-
     /*
      * Méthode qui retourne les films préférés d'un utilisateur donné
      * @param string $utilisateur Adresse email de l'utilisateur
@@ -79,16 +72,10 @@ class PrefereDAO extends DAO {
                 " AND p.userID = :userID";
 
         // on extrait le résultat de la BDD sous forme de tableau associatif
-        $resultat = $this->extraireNxN($requete,
+        $resultats = $this->extraireNxN($requete,
                 ['userID' => $id]);
-        if (!is_null($resultat)) {
-            // on crée les objets métiers
-            $preferes = $this->buildPreferes($resultat);
-            // on retourne le résultat
-            return $preferes;
-        } else {
-            return null;
-        }
+        // on extrait les objets métiers des résultats
+        return $this->extractObjects($resultats);
     }
 
     /*

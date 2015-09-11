@@ -4,7 +4,7 @@ namespace Semeformation\Mvc\Cinema_crud\controllers;
 
 use Semeformation\Mvc\Cinema_crud\dao\FilmDAO;
 use Semeformation\Mvc\Cinema_crud\dao\CinemaDAO;
-use Semeformation\Mvc\Cinema_crud\models\Seance;
+use Semeformation\Mvc\Cinema_crud\dao\SeanceDAO;
 use Semeformation\Mvc\Cinema_crud\views\View;
 use Psr\Log\LoggerInterface;
 
@@ -15,14 +15,12 @@ use Psr\Log\LoggerInterface;
  */
 class ShowtimesController {
 
-    private $cinemaDAO;
-    private $filmDAO;
-    private $seance;
+    private $seanceDAO;
 
     public function __construct(LoggerInterface $logger) {
-        $this->cinemaDAO = new CinemaDAO($logger);
-        $this->filmDAO = new FilmDAO($logger);
-        $this->seance = new Seance($logger);
+        $this->seanceDAO = new SeanceDAO($logger);
+        $this->seanceDAO->setCinemaDAO(new CinemaDAO($logger));
+        $this->seanceDAO->setFilmDAO(new FilmDAO($logger));
     }
 
     /**
@@ -38,7 +36,7 @@ class ShowtimesController {
             // on récupère l'identifiant du cinéma
             $filmID = $sanitizedEntries['filmID'];
             // puis on récupère les informations du film en question
-            $film = $this->filmDAO->getMovieByID($filmID);
+            $film = $this->seanceDAO->getFilmDAO()->getMovieByID($filmID);
         }
         // sinon, on retourne à l'accueil
         else {
@@ -47,8 +45,8 @@ class ShowtimesController {
         }
 
         // on récupère la liste des cinémas de ce film
-        $cinemas = $this->cinemaDAO->getMovieCinemasByMovieID($filmID);
-        $seances = $this->seance->getAllCinemasShowtimesByMovieID($cinemas,
+        $cinemas = $this->seanceDAO->getCinemaDAO()->getMovieCinemasByMovieID($filmID);
+        $seances = $this->seanceDAO->getAllCinemasShowtimesByMovieID($cinemas,
                 $filmID);
 
         // On génère la vue séances du film
@@ -73,7 +71,7 @@ class ShowtimesController {
             // on récupère l'identifiant du cinéma
             $cinemaID = $sanitizedEntries['cinemaID'];
             // puis on récupère les informations du cinéma en question
-            $cinema = $this->cinemaDAO->getCinemaByID($cinemaID);
+            $cinema = $this->seanceDAO->getCinemaDAO()->getCinemaByID($cinemaID);
         }
         // sinon, on retourne à l'accueil
         else {
@@ -82,9 +80,9 @@ class ShowtimesController {
         }
 
         // on récupère la liste des films de ce cinéma
-        $films = $this->filmDAO->getCinemaMoviesByCinemaID($cinemaID);
+        $films = $this->seanceDAO->getFilmDAO()->getCinemaMoviesByCinemaID($cinemaID);
         // on récupère toutes les séances de films pour un cinéma donné
-        $seances = $this->seance->getAllMoviesShowtimesByCinemaID($films,
+        $seances = $this->seanceDAO->getAllMoviesShowtimesByCinemaID($films,
                 $cinemaID);
 
         // On génère la vue séances du cinéma

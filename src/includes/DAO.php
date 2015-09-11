@@ -26,6 +26,29 @@ abstract class DAO {
      */
     protected abstract function buildBusinessObject($row);
 
+    protected function buildBusinessObjects($rows) {
+        foreach ($rows as $row) {
+            $objets[] = $this->buildBusinessObject($row);
+        }
+        return $objets;
+    }
+
+    /**
+     * Extrait des résultats, un vecteur d'objets métiers
+     * @param type $results
+     * @return Object[]
+     */
+    protected function extractObjects($results) {
+        if (!is_null($results)) {
+            // on crée les objets métiers
+            $objects = $this->buildBusinessObjects($results);
+            // on retourne le résultat
+            return $objects;
+        } else {
+            return null;
+        }
+    }
+
     /**
      * Exécute une requête SQL
      *
