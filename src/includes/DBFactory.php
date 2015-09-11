@@ -41,7 +41,8 @@ class DBFactory {
             $this->pdoInstance = new PDO($this->dataSourceName,
                     $this->user,
                     $this->pass,
-                    [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
+                    [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+                PDO::ATTR_CASE => PDO::CASE_UPPER]);
             if ($this->logger) {
                 $this->logger->info('Database connection succeeded.');
             }

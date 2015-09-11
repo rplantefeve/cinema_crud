@@ -22,7 +22,10 @@ class FilmDAO extends DAO {
         $film = new Film();
         $film->setFilmId($row['FILMID']);
         $film->setTitre($row['TITRE']);
-        $film->setTitreOriginal($row['TITREORIGINAL']);
+        if (array_key_exists('TITREORIGINAL',
+                        $row)) {
+            $film->setTitreOriginal($row['TITREORIGINAL']);
+        }
         return $film;
     }
 
@@ -98,10 +101,14 @@ class FilmDAO extends DAO {
         $resultat = $this->extraireNxN($requete,
                 ['id' => $userID],
                 false);
-        // on crée les objets métiers
-        $films = $this->buildFilms($resultat);
-        // on retourne le résultat
-        return $films;
+        if (!is_null($resultat)) {
+            // on crée les objets métiers
+            $films = $this->buildFilms($resultat);
+            // on retourne le résultat
+            return $films;
+        } else {
+            return null;
+        }
     }
 
 }

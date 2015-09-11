@@ -12,7 +12,7 @@
                     if ($films) {
                         foreach ($films as $film) {
                             ?>
-                    <option value="<?= $film['filmID'] ?>"><?= $film['titre'] ?></option>
+                    <option value="<?= $film->getFilmId(); ?>"><?= $film->getTitre(); ?></option>
                     <?php
                 }
             }

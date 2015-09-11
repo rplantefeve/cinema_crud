@@ -17,6 +17,14 @@ class PrefereDAO extends DAO {
     private $filmDAO;
     private $utilisateurDAO;
 
+    public function getFilmDAO() {
+        return $this->filmDAO;
+    }
+
+    public function getUtilisateurDAO() {
+        return $this->utilisateurDAO;
+    }
+
     public function setFilmDAO(FilmDAO $filmDAO) {
         $this->filmDAO = $filmDAO;
     }
@@ -33,18 +41,18 @@ class PrefereDAO extends DAO {
      */
     protected function buildBusinessObject($row) {
         $prefere = new Prefere();
-        $prefere->setCommentaire($row['commentaire']);
+        $prefere->setCommentaire($row['COMMENTAIRE']);
         // trouver l'utilisateur concerné grâce à son identifiant
-        if (array_key_exists('userID',
+        if (array_key_exists('USERID',
                         $row)) {
-            $userId = $row['userID'];
+            $userId = $row['USERID'];
             $utilisateur = $this->utilisateurDAO->getUserByID($userId);
             $prefere->setUtilisateur($utilisateur);
         }
         // trouver le film concerné grâce à son identifiant
-        if (array_key_exists('filmID',
+        if (array_key_exists('FILMID',
                         $row)) {
-            $filmId = $row['filmID'];
+            $filmId = $row['FILMID'];
             $film = $this->filmDAO->getMovieByID($filmId);
             $prefere->setFilm($film);
         }
@@ -73,10 +81,14 @@ class PrefereDAO extends DAO {
         // on extrait le résultat de la BDD sous forme de tableau associatif
         $resultat = $this->extraireNxN($requete,
                 ['userID' => $id]);
-        // on crée les objets métiers
-        $preferes = $this->buildPreferes($resultat);
-        // on retourne le résultat
-        return $preferes;
+        if (!is_null($resultat)) {
+            // on crée les objets métiers
+            $preferes = $this->buildPreferes($resultat);
+            // on retourne le résultat
+            return $preferes;
+        } else {
+            return null;
+        }
     }
 
     /*

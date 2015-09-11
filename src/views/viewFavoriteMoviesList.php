@@ -7,25 +7,25 @@
     </tr>
     <?php
     // si des films ont été trouvés
-    if ($films) {
+    if ($preferes) {
         // boucle de création du tableau
-        foreach ($films as $film) {
+        foreach ($preferes as $prefere) {
             ?>
             <tr>
-                <td><?= $film['titre'] ?></td>
-                <td><?= $film['commentaire'] ?></td>
+                <td><?= $prefere->getFilm()->getTitre(); ?></td>
+                <td><?= $prefere->getCommentaire(); ?></td>
                 <td>
                     <form name="modifyFavoriteMovie" action="index.php" method="GET">
                         <input type="hidden" name="action" value="editFavoriteMovie"/>
                         <input type="hidden" name="userID" value="<?= $utilisateur->getUserId(); ?>"/>
-                        <input type="hidden" name="filmID" value="<?= $film['filmID'] ?>"/>
+                        <input type="hidden" name="filmID" value="<?= $prefere->getFilm()->getFilmId(); ?>"/>
                         <input type="image" src="images/modifyIcon.png" alt="Modify"/>
                     </form>
                 </td>
                 <td>
                     <form name="deleteFavoriteMovie" action="index.php?action=deleteFavoriteMovie" method="POST">
                         <input type="hidden" name="userID" value="<?= $utilisateur->getUserId(); ?>"/>
-                        <input type="hidden" name="filmID" value="<?= $film['filmID'] ?>"/>
+                        <input type="hidden" name="filmID" value="<?= $prefere->getFilm()->getFilmId() ?>"/>
                         <input type="image" src="images/deleteIcon.png" alt="Delete"/>
                     </form>
                 </td>

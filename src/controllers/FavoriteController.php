@@ -16,14 +16,15 @@ use Psr\Log\LoggerInterface;
 class FavoriteController {
 
     private $prefereDAO;
-    private $utilisateurDAO;
 
     /**
      * Constructeur de la classe
      */
     public function __construct(LoggerInterface $logger) {
         $this->prefereDAO = new PrefereDAO($logger);
-        $this->utilisateurDAO = new UtilisateurDAO($logger);
+        // Ajout du DAO Utilisateur et Film pour le DAO Prefere
+        $this->prefereDAO->setUtilisateurDAO(new UtilisateurDAO($logger));
+        $this->prefereDAO->setFilmDAO(new FilmDAO($logger));
     }
 
     public function editFavoriteMoviesList() {
@@ -37,18 +38,18 @@ class FavoriteController {
         }
         // l'utilisateur est loggué
         else {
-            $utilisateur = $this->utilisateurDAO->getUserByEmailAddress($_SESSION['user']);
+            $utilisateur = $this->prefereDAO->getUtilisateurDAO()->getUserByEmailAddress($_SESSION['user']);
         }
 
         // on récupère la liste des films préférés grâce à l'utilisateur identifié
-        $films = $this->prefereDAO->getFavoriteMoviesFromUser($utilisateur->getUserId());
+        $preferes = $this->prefereDAO->getFavoriteMoviesFromUser($utilisateur->getUserId());
 
         // On génère la vue Films préférés
         $vue = new View("FavoriteMoviesList");
         // En passant les variables nécessaires à son bon affichage
         $vue->generer(array(
             'utilisateur' => $utilisateur,
-            'films' => $films));
+            'preferes' => $preferes));
     }
 
     public function editFavoriteMovie() {
@@ -114,7 +115,7 @@ class FavoriteController {
                     // 
                     $aFilmIsSelected = false;
                     $isItACreation = true;
-                    $films = $this->prefereDAO->getMoviesNonAlreadyMarkedAsFavorite($_SESSION['userID']);
+                    $films = $this->prefereDAO->getFilmDAO()->getMoviesNonAlreadyMarkedAsFavorite($_SESSION['userID']);
                     // initialisation des champs du formulaire
                     $preference = [
                         "userID" => $sanitizedEntries["userID"],
@@ -135,14 +136,20 @@ class FavoriteController {
 
             if ($sanitizedEntries && !is_null($sanitizedEntries['filmID']) && $sanitizedEntries['filmID'] !== '' && !is_null($sanitizedEntries['userID']) && $sanitizedEntries['userID'] !== '') {
                 // on récupère les informations manquantes (le commentaire afférent)
-                $preference = $this->prefereDAO->getFavoriteMovieInformations($sanitizedEntries['userID'],
+                $prefere = $this->prefereDAO->getFavoriteMovieInformations($sanitizedEntries['userID'],
                         $sanitizedEntries['filmID']);
+                // TODO : faire autrement qu'avec un vecteur
+                $preference = [
+                    "userID" => $_SESSION['userID'],
+                    "filmID" => $prefere->getFilm()->getFilmId(),
+                    "titre" => $prefere->getFilm()->getTitre(),
+                    "commentaire" => $prefere->getCommentaire()];
                 // sinon, c'est une création
             } else {
                 // C'est une création
                 $isItACreation = true;
 
-                $films = $this->prefereDAO->getMoviesNonAlreadyMarkedAsFavorite($_SESSION['userID']);
+                $films = $this->prefereDAO->getFilmDAO()->getMoviesNonAlreadyMarkedAsFavorite($_SESSION['userID']);
                 // on initialise les autres variables de formulaire à vide
                 $preference = [
                     "userID" => $_SESSION['userID'],
