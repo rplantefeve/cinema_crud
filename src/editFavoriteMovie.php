@@ -1,76 +1,9 @@
 <?php
 require_once __DIR__ . '/vendor/autoload.php';
 
-require __DIR__ . './includes/fctManager.php';
+require __DIR__ . './includes/Manager.php';
 
-session_start();
-// si l'utilisateur n'est pas connecté
-if (!array_key_exists("user",
-                $_SESSION)) {
-    // renvoi à la page d'accueil
-    header('Location: index.php');
-    exit;
-}
-
-// variable de contrôle de formulaire
-$aFilmIsSelected = true;
-
-// si la méthode de formulaire est la méthode POST
-if (filter_input(INPUT_SERVER,
-                'REQUEST_METHOD') === "POST") {
-
-    // on "sainifie" les entrées
-    $sanitizedEntries = filter_input_array(INPUT_POST,
-            ['backToList' => FILTER_DEFAULT,
-        'filmID' => FILTER_SANITIZE_NUMBER_INT,
-        'userID' => FILTER_SANITIZE_NUMBER_INT,
-        'comment' => FILTER_SANITIZE_STRING]);
-
-    // si l'action demandée est retour en arrière
-    if (array_key_exists("backToList",
-                    $sanitizedEntries) && $sanitizedEntries['backToList'] !== NULL) {
-        // on redirige vers la page d'édition des films favoris
-        header('Location: editFavoriteMoviesList.php');
-        exit;
-    }
-    // sinon (l'action demandée est la sauvegarde d'un favori)
-    else {
-        // si un film a été selectionné 
-        if (array_key_exists('filmID',
-                        $sanitizedEntries) && $sanitizedEntries['filmID'] !== NULL) {
-
-            // on ajoute la préférence de l'utilisateur
-            $fctManager->insertNewFavoriteMovie($sanitizedEntries['userID'],
-                    $sanitizedEntries['filmID'],
-                    $sanitizedEntries['comment']);
-
-            // on revient à la liste des préférences
-            header('Location: editFavoriteMoviesList.php');
-            exit;
-        }
-        // sinon (un film n'a pas été sélectionné)
-        else {
-            // 
-            $aFilmIsSelected = false;
-            // initialisation des champs du formulaire
-            $preference = [
-                "userID" => $sanitizedEntries["userID"],
-                "filmID" => "",
-                "titre" => "",
-                "commentaire" => $sanitizedEntries["comment"]];
-            $userID = $sanitizedEntries['userID'];
-        }
-    }
-}
-// sinon, c'est une création
-else {
-    // on initialise les autres variables de formulaire à vide
-    $preference = [
-        "userID" => $_SESSION['userID'],
-        "filmID" => "",
-        "titre" => "",
-        "commentaire" => ""];
-}
+// TODO
 ?>
 <!DOCTYPE html>
 <html>
@@ -84,28 +17,18 @@ else {
             <label>Titre :</label>
             <select name="filmID">
                 <?php
-                $films = $fctManager->getMoviesNonAlreadyMarkedAsFavorite($_SESSION['userID']);
-                // s'il y a des résultats
-                if ($films) {
-                    foreach ($films as $film) {
-                        ?>
-                        <option value="<?= $film['filmID'] ?>"><?= $film['titre'] ?></option>
-                        <?php
-                    }
-                }
+                // TODO
                 ?>
             </select>
             <div class="error">
                 <?php
-                if (!$aFilmIsSelected) {
-                    echo "Veuillez renseigner un titre de film.";
-                }
+                // TODO
                 ?>
             </div>
             <label>Commentaire :</label>
-            <textarea name="comment"><?= $preference['commentaire'] ?></textarea>
+            <textarea name="comment"><?php //TODO ?></textarea>
             <br/>
-            <input type="hidden" value="<?= $preference['userID'] ?>" name="userID"/>
+            <input type="hidden" value="<?php //TODO ?>" name="userID"/>
             <input type="submit" name="saveEntry" value="Sauvegarder"/>
             <input type="submit" name="backToList" value="Retour à la liste"/>
         </form>

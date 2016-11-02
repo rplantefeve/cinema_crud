@@ -8,10 +8,6 @@
             "email": "contact@semeformation.fr"
         }
     ],
-    "require": {
-        "psr/log": "1.0.0",
-        "monolog/monolog": "1.17.1"
-    },
     "autoload": {
         "psr-4": {
             "Semeformation\\Mvc\\Cinema_crud\\": "src/"

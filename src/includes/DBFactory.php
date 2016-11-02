@@ -3,12 +3,13 @@
 namespace Semeformation\Mvc\Cinema_crud\includes;
 
 use PDO;
-use Psr\Log\LoggerInterface;
 
+/*
+ * Classe de connexion à la BDD. C'est elle qui va fournir à qui mieux-mieux
+ * une connexion à la BDD afin de l'interroger.
+ */
 class DBFactory {
 
-    // logger
-    private $logger;
     // instance unique de la classe (singleton)
     private static $factory;
     // instance de la classe PDO
@@ -22,10 +23,10 @@ class DBFactory {
      * Méthode utile pour récupérer le singleton depuis le programme appelant
      */
 
-    public static function getFactory(LoggerInterface $logger = null) {
+    public static function getFactory() {
         // si l'instance n'a encore jamais été instanciée
         if (!self::$factory) {
-            self::$factory = new DBFactory($logger);
+            self::$factory = new DBFactory();
         }
         // on retourne l'instance de la classe
         return self::$factory;
@@ -42,17 +43,11 @@ class DBFactory {
                     $this->user,
                     $this->pass,
                     [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
-            if ($this->logger) {
-                $this->logger->info('Database connection succeeded.');
-            }
         }
         return $this->pdoInstance;
     }
 
-    private function __construct(LoggerInterface $logger = null) {
-        if ($logger) {
-            $this->logger = $logger;
-        }
+    private function __construct() {
     }
 
     // The clone and wakeup methods prevents external instantiation of copies of the Singleton class,

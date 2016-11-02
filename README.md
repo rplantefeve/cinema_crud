@@ -1,4 +1,4 @@
 cinema_crud
 ===========
 
-Apprentissage MVC
+Coder une application CRUD style Allociné

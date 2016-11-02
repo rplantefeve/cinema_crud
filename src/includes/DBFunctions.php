@@ -4,22 +4,19 @@ namespace Semeformation\Mvc\Cinema_crud\includes;
 
 use Semeformation\Mvc\Cinema_crud\includes\DBFactory;
 use Semeformation\Mvc\Cinema_crud\includes\Utils;
-use Psr\Log\LoggerInterface;
 use PDO;
 use Exception;
 
+/*
+ * Classe d'interrogation de la BDD. C'est elle qui contient toutes les fonctions
+ * de manipulation des données de la base.
+ */
 class DBFunctions {
 
-    // logger
-    private $logger;
 
-    public function __construct(LoggerInterface $logger = null) {
-        $this->logger = $logger;
+    public function __construct() {
     }
 
-    public function getLogger() {
-        return $this->logger;
-    }
 
     /**
      * Exécute une requête SQL
@@ -32,14 +29,11 @@ class DBFunctions {
         // si pas de paramètres
         if ($params == null) {
             // exécution directe
-            $resultat = DBFactory::getFactory($this->logger)->getConnection()->query($sql);
+            $resultat = DBFactory::getFactory()->getConnection()->query($sql);
         } else {
             // requête préparée
-            $resultat = DBFactory::getFactory($this->logger)->getConnection()->prepare($sql);
+            $resultat = DBFactory::getFactory()->getConnection()->prepare($sql);
             $resultat->execute($params);
-        }
-        if ($this->logger) {
-            $this->logger->debug('Query successfully executed : ' . $sql);
         }
         return $resultat;
     }
@@ -52,38 +46,18 @@ class DBFunctions {
      */
 
     public function verifyUserCredentials($email, $passwordSaisi) {
-        // extraction du mdp de l'utilisateur
-        $requete = "SELECT password FROM utilisateur WHERE adresseCourriel = :email";
-        // on prépare la requête
-        $statement = $this->executeQuery($requete,
-                ['email' => $email]);
-
-        // on teste le nombre de lignes renvoyées
-        if ($statement->rowCount() > 0) {
-            // on récupère le mot de passe
-            $passwordBDD = $statement->fetch()[0];
-            $this->testPasswords($passwordSaisi,
-                    $passwordBDD,
-                    $email);
-        } else {
-            throw new Exception('The user ' . $email . ' doesn\'t exist.');
-        }
+        // TODO
     }
 
     /*
-     * 
+     * Méthode qui teste si les passwords saisis sont identiques
+     * @param string $passwordSaisi
+     * @param string $passwordBDD
+     * @param string $email Adresse email de l'utilisateur
      */
 
     private function testPasswords($passwordSaisi, $passwordBDD, $email) {
-        // on teste si les mots de passe correspondent
-        if (password_verify($passwordSaisi,
-                        $passwordBDD)) {
-            if ($this->logger) {
-                $this->logger->info('User ' . $email . ' now connected.');
-            }
-        } else {
-            throw new Exception('Bad password for the user ' . $email);
-        }
+        // TODO
     }
 
     /*
@@ -93,22 +67,7 @@ class DBFunctions {
      */
 
     public function getUserIDByEmailAddress($utilisateur) {
-        // requête qui récupère l'ID grâce à l'adresse email
-        $requete = "SELECT userID FROM utilisateur WHERE adresseCourriel = :email";
-
-        // on récupère le résultat de la requête
-        $resultat = $this->executeQuery($requete,
-                ['email' => $utilisateur]);
-
-        // on teste le nombre de lignes renvoyées
-        if ($resultat->rowCount() > 0) {
-            // on récupère la première (et seule) ligne retournée
-            $row = $resultat->fetch();
-            // l'id est le premier élément du tableau de résultats
-            return $row[0];
-        } else {
-            return null;
-        }
+        // TODO
     }
 
     /*
@@ -138,18 +97,7 @@ class DBFunctions {
      */
 
     public function getFavoriteMoviesFromUser($id) {
-        // on construit la requête qui va récupérer les films de l'utilisateur
-        $requete = "SELECT f.filmID, f.titre, p.commentaire from film f" .
-                " INNER JOIN prefere p ON f.filmID = p.filmID" .
-                " AND p.userID = " . $id;
-
-        // on extrait le résultat de la BDD sous forme de tableau associatif
-        $resultat = $this->extraireNxN($requete,
-                null,
-                false);
-
-        // on retourne le résultat
-        return $resultat;
+        // TODO
     }
 
     /*
@@ -160,20 +108,7 @@ class DBFunctions {
      */
 
     public function getFavoriteMovieInformations($userID, $filmID) {
-        // requête qui récupère les informations d'une préférence de film pour un utilisateur donné
-        $requete = "SELECT f.titre, p.userID, p.filmID, p.commentaire"
-                . " FROM prefere p INNER JOIN film f ON p.filmID = f.filmID"
-                . " WHERE p.userID = "
-                . $userID
-                . " AND p.filmID = "
-                . $filmID;
-
-        // on extrait les résultats de la BDD
-        $resultat = $this->extraire1xN($requete,
-                null,
-                false);
-        // on retourne le résultat
-        return $resultat;
+        // TODO
     }
 
     /*
@@ -185,33 +120,7 @@ class DBFunctions {
      */
 
     public function createUser($firstName, $lastName, $email, $password) {
-        // construction de la requête
-        $requete = "INSERT INTO utilisateur (prenom, nom, adresseCourriel, password) "
-                . "VALUES (:firstName, :lastName, :email, :password)";
-
-        // exécution de la requête
-        $this->executeQuery($requete,
-                [':firstName' => $firstName,
-            'lastName' => $lastName,
-            'email' => $email,
-            'password' => $password]);
-
-        if ($this->logger) {
-            $this->logger->info('User ' . $email . ' successfully created.');
-        }
-    }
-
-    /*
-     * Méthode qui renvoie la liste des films
-     * @return array[][]
-     */
-
-    public function getMoviesList() {
-        $requete = "SELECT * FROM film";
-        // on retourne le résultat
-        return $this->extraireNxN($requete,
-                        null,
-                        false);
+        // TODO
     }
 
     /*
@@ -222,21 +131,7 @@ class DBFunctions {
      */
 
     public function getMoviesNonAlreadyMarkedAsFavorite($userID) {
-        // requête de récupération des titres et des identifiants des films
-        // qui n'ont pas encore été marqués comme favoris par l'utilisateur
-        $requete = "SELECT f.filmID, f.titre "
-                . "FROM film f"
-                . " WHERE f.filmID NOT IN ("
-                . "SELECT filmID"
-                . " FROM prefere"
-                . " WHERE userID = :id"
-                . ")";
-        // extraction de résultat
-        $resultat = $this->extraireNxN($requete,
-                ['id' => $userID],
-                false);
-        // retour du résultat
-        return $resultat;
+        // TODO
     }
 
     /*
@@ -247,21 +142,7 @@ class DBFunctions {
      */
 
     public function insertNewFavoriteMovie($userID, $filmID, $comment = "") {
-        // on construit la requête d'insertion
-        $requete = "INSERT INTO prefere (filmID, userID, commentaire) VALUES ("
-                . ":filmID"
-                . ", :userID"
-                . ", :comment)";
-
-        // exécution de la requête
-        $this->executeQuery($requete,
-                ['filmID' => $filmID,
-            'userID' => $userID,
-            'comment' => $comment]);
-
-        if ($this->logger) {
-            $this->logger->info('Movie ' . $filmID . ' successfully added to ' . $userID . '\'s preferences.');
-        }
+        // TODO
     }
 
     /*
