@@ -17,6 +17,7 @@ require_once __DIR__ . './includes/fctManager.php';
             <tr>
                 <th>Nom</th>
                 <th>Adresse</th>
+                <th colspan="3">Action</th>
             </tr>
             <?php
             // on récupère la liste des cinémas ainsi que leurs informations
@@ -33,11 +34,26 @@ require_once __DIR__ . './includes/fctManager.php';
                             <input type="submit" value="Consulter les séances"/>
                         </form>
                     </td>
+                    <td>
+                        <form name="modifyCinema" action="editCinema.php" method="GET">
+                            <input type="hidden" name="cinemaID" value="<?= $cinema['CINEMAID'] ?>"/>
+                            <input type="image" src="images/modifyIcon.png" alt="Modify"/>
+                        </form>
+                    </td>
+                    <td>
+                        <form name="deleteCinema" action="deleteCinema.php" method="POST">
+                            <input type="hidden" name="cinemaID" value="<?= $cinema['CINEMAID'] ?>"/>
+                            <input type="image" src="images/deleteIcon.png" alt="Delete"/>
+                        </form>
+                    </td>
                 </tr>
                 <?php
             }
             ?>
         </table>
+        <form name="addCinema" action="editCinema.php">
+            <input type="submit" value="Ajouter un cinéma"/>
+        </form>
         <form name="backToMainPage" action="index.php">
             <input type="submit" value="Retour à l'accueil"/>
         </form>

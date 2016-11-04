@@ -55,29 +55,28 @@ class DBFunctions {
         // extraction du mdp de l'utilisateur
         $requete = "SELECT password FROM utilisateur WHERE adresseCourriel = :email";
         // on prépare la requête
-        $statement = $this->executeQuery($requete,
-                ['email' => $email]);
+        $statement = $this->executeQuery($requete, ['email' => $email]);
 
         // on teste le nombre de lignes renvoyées
         if ($statement->rowCount() > 0) {
             // on récupère le mot de passe
             $passwordBDD = $statement->fetch()[0];
-            $this->testPasswords($passwordSaisi,
-                    $passwordBDD,
-                    $email);
+            $this->testPasswords($passwordSaisi, $passwordBDD, $email);
         } else {
             throw new Exception('The user ' . $email . ' doesn\'t exist.');
         }
     }
 
-    /*
+    /**
      * 
+     * @param type $passwordSaisi
+     * @param type $passwordBDD
+     * @param type $email
+     * @throws Exception
      */
-
     private function testPasswords($passwordSaisi, $passwordBDD, $email) {
         // on teste si les mots de passe correspondent
-        if (password_verify($passwordSaisi,
-                        $passwordBDD)) {
+        if (password_verify($passwordSaisi, $passwordBDD)) {
             if ($this->logger) {
                 $this->logger->info('User ' . $email . ' now connected.');
             }
@@ -86,19 +85,17 @@ class DBFunctions {
         }
     }
 
-    /*
+    /**
      * Méthode qui retourne l'id d'un utilisateur passé en paramètre
      * @param string $utilisateur Adresse email de l'utilisateur
      * @return string $id Identifiant de l'utilisateur
      */
-
     public function getUserIDByEmailAddress($utilisateur) {
         // requête qui récupère l'ID grâce à l'adresse email
         $requete = "SELECT userID FROM utilisateur WHERE adresseCourriel = :email";
 
         // on récupère le résultat de la requête
-        $resultat = $this->executeQuery($requete,
-                ['email' => $utilisateur]);
+        $resultat = $this->executeQuery($requete, ['email' => $utilisateur]);
 
         // on teste le nombre de lignes renvoyées
         if ($resultat->rowCount() > 0) {
@@ -111,32 +108,28 @@ class DBFunctions {
         }
     }
 
-    /*
+    /**
      * Méthode qui retourne le nom et le prénom d'un utilisateur donné
      * @param string $utilisateur Adresse email de l'utilisateur
      * @return array[] Le nom et prénom de l'utilisateur
      */
-
     public function getCompleteUsernameByEmailAddress($utilisateur) {
         // on construit la requête qui va récupérer le nom et le prénom de l'utilisateur
         $requete = "SELECT userID, prenom, nom FROM utilisateur "
                 . "WHERE adresseCourriel = :email";
 
         // on extrait le résultat de la BDD sous forme de tableau associatif
-        $resultat = $this->extraire1xN($requete,
-                ['email' => $utilisateur],
-                false);
+        $resultat = $this->extraire1xN($requete, ['email' => $utilisateur], false);
 
         // on retourne le résultat
         return $resultat;
     }
 
-    /*
+    /**
      * Méthode qui retourne les films préférés d'un utilisateur donné
      * @param string $utilisateur Adresse email de l'utilisateur
      * @return array[][] Les films préférés (sous forme de tableau associatif) de l'utilisateur
      */
-
     public function getFavoriteMoviesFromUser($id) {
         // on construit la requête qui va récupérer les films de l'utilisateur
         $requete = "SELECT f.filmID, f.titre, p.commentaire from film f" .
@@ -144,21 +137,18 @@ class DBFunctions {
                 " AND p.userID = " . $id;
 
         // on extrait le résultat de la BDD sous forme de tableau associatif
-        $resultat = $this->extraireNxN($requete,
-                null,
-                false);
+        $resultat = $this->extraireNxN($requete, null, false);
 
         // on retourne le résultat
         return $resultat;
     }
 
-    /*
+    /**
      * Méthode qui renvoie les informations sur un film favori donné pour un utilisateur donné
      * @param int $userID Identifiant de l'utilisateur
      * @param int $filmID Identifiant du film
      * @return array[]
      */
-
     public function getFavoriteMovieInformations($userID, $filmID) {
         // requête qui récupère les informations d'une préférence de film pour un utilisateur donné
         $requete = "SELECT f.titre, p.userID, p.filmID, p.commentaire"
@@ -169,20 +159,17 @@ class DBFunctions {
                 . $filmID;
 
         // on extrait les résultats de la BDD
-        $resultat = $this->extraire1xN($requete,
-                null,
-                false);
+        $resultat = $this->extraire1xN($requete, null, false);
         // on retourne le résultat
         return $resultat;
     }
 
-    /*
+    /**
      * Méthode qui met à jour une préférence de film pour un utilisateur
      * @param int userID Identifiant de l'utilisateur
      * @param int filmID Identifiant du film
      * @param string comment Commentaire de l'utilisateur à propos de ce film
      */
-
     public function updateFavoriteMovie($userID, $filmID, $comment) {
         // on construit la requête d'insertion
         $requete = "UPDATE prefere SET commentaire = "
@@ -195,22 +182,20 @@ class DBFunctions {
         $this->executeQuery($requete);
     }
 
-    /*
+    /**
      * Méthode qui ajoute un utilisateur dans la BDD
      * @param string $firstName Prénom de l'utilisateur
      * @param string $lastName Nom de l'utilisateur
      * @param string $email Adresse email de l'utilisateur
      * @param string $password Mot de passe de l'utilisateur
      */
-
     public function createUser($firstName, $lastName, $email, $password) {
         // construction de la requête
         $requete = "INSERT INTO utilisateur (prenom, nom, adresseCourriel, password) "
                 . "VALUES (:firstName, :lastName, :email, :password)";
 
         // exécution de la requête
-        $this->executeQuery($requete,
-                [':firstName' => $firstName,
+        $this->executeQuery($requete, [':firstName' => $firstName,
             'lastName' => $lastName,
             'email' => $email,
             'password' => $password]);
@@ -220,26 +205,22 @@ class DBFunctions {
         }
     }
 
-    /*
+    /**
      * Méthode qui renvoie la liste des films
      * @return array[][]
      */
-
     public function getMoviesList() {
         $requete = "SELECT * FROM film";
         // on retourne le résultat
-        return $this->extraireNxN($requete,
-                        null,
-                        false);
+        return $this->extraireNxN($requete, null, false);
     }
 
-    /*
+    /**
      * Méthode qui ne renvoie que les titres et ID de films non encore marqués
      * comme favoris par l'utilisateur passé en paramètre
      * @param int $userID Identifiant de l'utilisateur
      * @return array[][] Titres et ID des films présents dans la base
      */
-
     public function getMoviesNonAlreadyMarkedAsFavorite($userID) {
         // requête de récupération des titres et des identifiants des films
         // qui n'ont pas encore été marqués comme favoris par l'utilisateur
@@ -251,20 +232,17 @@ class DBFunctions {
                 . " WHERE userID = :id"
                 . ")";
         // extraction de résultat
-        $resultat = $this->extraireNxN($requete,
-                ['id' => $userID],
-                false);
+        $resultat = $this->extraireNxN($requete, ['id' => $userID], false);
         // retour du résultat
         return $resultat;
     }
 
-    /*
+    /**
      * Méthode qui ajoute une préférence de film à un utilisateur
      * @param int userID Identifiant de l'utilisateur
      * @param int filmID Identifiant du film
      * @param string comment Commentaire de l'utilisateur à propos de ce film
      */
-
     public function insertNewFavoriteMovie($userID, $filmID, $comment = "") {
         // on construit la requête d'insertion
         $requete = "INSERT INTO prefere (filmID, userID, commentaire) VALUES ("
@@ -273,8 +251,7 @@ class DBFunctions {
                 . ", :comment)";
 
         // exécution de la requête
-        $this->executeQuery($requete,
-                ['filmID' => $filmID,
+        $this->executeQuery($requete, ['filmID' => $filmID,
             'userID' => $userID,
             'comment' => $comment]);
 
@@ -283,12 +260,72 @@ class DBFunctions {
         }
     }
 
+    /**
+     * 
+     * @param type $denomination
+     * @param type $adresse
+     */
+    public function insertNewCinema($denomination, $adresse) {
+        // construction
+        $requete = "INSERT INTO cinema (denomination, adresse) VALUES ("
+                . ":denomination"
+                . ", :adresse)";
+        // exécution
+        $this->executeQuery($requete, ['denomination' => $denomination,
+            'adresse' => $adresse]);
+        // log
+        if ($this->logger) {
+            $this->logger->info('Cinema ' . $denomination . ' successfully added.');
+        }
+    }
+
+    /**
+     * 
+     * @param type $cinemaID
+     * @param type $denomination
+     * @param type $adresse
+     */
+    public function updateCinema($cinemaID, $denomination, $adresse) {
+        // on construit la requête d'insertion
+        $requete = "UPDATE cinema SET "
+                . "denomination = "
+                . "'" . $denomination . "'"
+                . ", adresse = "
+                . "'" . $adresse . "'"
+                . " WHERE cinemaID = "
+                . $cinemaID;
+        // exécution de la requête
+        $this->executeQuery($requete);
+    }
+
+    /**
+     * 
+     * @param type $cinemaID
+     */
+    public function deleteCinema($cinemaID) {
+        $this->executeQuery("DELETE FROM cinema WHERE cinemaID = "
+                . $cinemaID);
+
+        if ($this->logger) {
+            $this->logger->info('Cinema ' . $cinemaID . ' successfully deleted.');
+        }
+    }
+
+    /**
+     * 
+     * @return type
+     */
     public function getCinemasList() {
         $requete = "SELECT * FROM cinema";
         // on retourne le résultat
         return $this->extraireNxN($requete);
     }
 
+    /**
+     * 
+     * @param type $cinemaID
+     * @return type
+     */
     public function getCinemaInformationsByID($cinemaID) {
         $requete = "SELECT * FROM cinema WHERE cinemaID = "
                 . $cinemaID;
@@ -297,6 +334,11 @@ class DBFunctions {
         return $resultat;
     }
 
+    /**
+     * 
+     * @param type $cinemaID
+     * @return type
+     */
     public function getCinemaMoviesByCinemaID($cinemaID) {
         // requête qui nous permet de récupérer la liste des films pour un cinéma donné
         $requete = "SELECT DISTINCT f.* FROM film f"
@@ -308,6 +350,12 @@ class DBFunctions {
         return $resultat;
     }
 
+    /**
+     * 
+     * @param type $cinemaID
+     * @param type $filmID
+     * @return type
+     */
     public function getMovieShowtimes($cinemaID, $filmID) {
         // requête qui permet de récupérer la liste des séances d'un film donné dans un cinéma donné
         $requete = "SELECT s.* FROM seance s"
@@ -319,6 +367,11 @@ class DBFunctions {
         return $resultat;
     }
 
+    /**
+     * 
+     * @param type $filmID
+     * @return type
+     */
     public function getMovieInformationsByID($filmID) {
         $requete = "SELECT * FROM film WHERE filmID = "
                 . $filmID;
@@ -327,6 +380,11 @@ class DBFunctions {
         return $resultat;
     }
 
+    /**
+     * 
+     * @param type $filmID
+     * @return type
+     */
     public function getMovieCinemasByMovieID($filmID) {
         // requête qui nous permet de récupérer la liste des cinémas pour un film donné
         $requete = "SELECT DISTINCT c.* FROM cinema c"
@@ -338,6 +396,11 @@ class DBFunctions {
         return $resultat;
     }
 
+    /**
+     * 
+     * @param type $userID
+     * @param type $filmID
+     */
     public function deleteFavoriteMovie($userID, $filmID) {
         $this->executeQuery("DELETE FROM prefere WHERE userID = "
                 . $userID
@@ -365,8 +428,7 @@ class DBFunctions {
         // tableau des résultats
         $tableau = array();
         // résultat de la requête
-        $resultat = $this->executeQuery($unSQLSelect,
-                $parametres);
+        $resultat = $this->executeQuery($unSQLSelect, $parametres);
 
         // boucle de construction du tableau de résultats
         while ($ligne = $resultat->fetch(PDO::FETCH_ASSOC)) {
@@ -381,8 +443,7 @@ class DBFunctions {
 
         // si l'on souhaite afficher le contenu du tableau (DEBUG MODE)
         if ($estVisible) {
-            Utils::afficherResultat($tableau,
-                    $unSQLSelect);
+            Utils::afficherResultat($tableau, $unSQLSelect);
         }
 
         // on retourne le tableau de résultats
@@ -397,15 +458,12 @@ class DBFunctions {
      * @return array[] ou null
      */
     private function extraire1xN($unSQLSelect, $parametres = null, $estVisible = false) {
-        $result = $this->extraireNxN($unSQLSelect,
-                $parametres,
-                false);
+        $result = $this->extraireNxN($unSQLSelect, $parametres, false);
         if (isset($result[0])) {
             $result = $result[0];
         }
         if ($estVisible) {
-            Utils::afficherResultat($result,
-                    $unSQLSelect);
+            Utils::afficherResultat($result, $unSQLSelect);
         }
         return $result;
     }

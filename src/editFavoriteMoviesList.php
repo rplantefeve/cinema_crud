@@ -34,6 +34,7 @@ and open the template in the editor.
             <tr>
                 <th>Titre</th>
                 <th>Commentaire</th>
+                <th>Action</th>
             </tr>
             <?php
             // on récupère la liste des films préférés grâce à l'utilisateur identifié
