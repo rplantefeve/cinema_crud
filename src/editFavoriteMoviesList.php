@@ -1,7 +1,7 @@
 <?php
 require_once __DIR__ . '/vendor/autoload.php';
 
-require_once __DIR__ . './includes/fctManager.php';
+require_once __DIR__ . './includes/Manager.php';
 
 session_start();
 // si l'utilisateur n'est pas connecté
@@ -34,7 +34,7 @@ and open the template in the editor.
             <tr>
                 <th>Titre</th>
                 <th>Commentaire</th>
-                <th>Action</th>
+                <th colspan="2">Action</th>
             </tr>
             <?php
             // on récupère la liste des films préférés grâce à l'utilisateur identifié

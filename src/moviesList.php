@@ -1,7 +1,15 @@
 <?php
 require_once __DIR__ . '/vendor/autoload.php';
 
-require_once __DIR__ . './includes/fctManager.php';
+require_once __DIR__ . './includes/Manager.php';
+
+$isUserAdmin = false;
+
+session_start();
+// si l'utilisateur est pas connecté et qu'il est amdinistrateur
+if (array_key_exists("user", $_SESSION) and $_SESSION['user'] == 'admin@adm.adm') {
+    $isUserAdmin = true;
+}
 ?>
 <!DOCTYPE html>
 <html>
@@ -16,6 +24,7 @@ require_once __DIR__ . './includes/fctManager.php';
             <tr>
                 <th>Titre</th>
                 <th>Titre original</th>
+                <th colspan="3">Action</th>
             </tr>
             <?php
             // on récupère la liste des films ainsi que leurs informations
@@ -32,11 +41,28 @@ require_once __DIR__ . './includes/fctManager.php';
                             <input type="submit" value="Consulter les séances"/>
                         </form>
                     </td>
+                    <?php if ($isUserAdmin): ?>
+                        <td>
+                            <form name="modifyMovie" action="editMovie.php" method="GET">
+                                <input type="hidden" name="filmID" value="<?= $film['FILMID'] ?>"/>
+                                <input type="image" src="images/modifyIcon.png" alt="Modify"/>
+                            </form>
+                        </td>
+                        <td>
+                            <form name="deleteMovie" action="deleteMovie.php" method="POST">
+                                <input type="hidden" name="filmID" value="<?= $film['FILMID'] ?>"/>
+                                <input type="image" src="images/deleteIcon.png" alt="Delete"/>
+                            </form>
+                        </td>
+                    <?php endif; ?>
                 </tr>
                 <?php
             }
             ?>
         </table>
+        <form name="addMovie" action="editMovie.php">
+            <input type="submit" value="Ajouter un film"/>
+        </form>
         <form name="backToMainPage" action="index.php">
             <input type="submit" value="Retour à l'accueil"/>
         </form>

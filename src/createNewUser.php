@@ -1,7 +1,7 @@
 <?php
 require_once __DIR__ . '/vendor/autoload.php';
 
-require_once __DIR__ . './includes/fctManager.php';
+require_once __DIR__ . './includes/Manager.php';
 
 // variables de contrôles du formulaire de création
 $isFirstNameEmpty = false;

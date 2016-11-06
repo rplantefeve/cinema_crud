@@ -216,6 +216,57 @@ class DBFunctions {
     }
 
     /**
+     * 
+     * @param type $titre
+     * @param type $titreOriginal
+     */
+    public function insertNewMovie($titre, $titreOriginal = null) {
+        // construction
+        $requete = "INSERT INTO film (titre, titreOriginal) VALUES ("
+                . ":titre"
+                . ", :titreOriginal)";
+        // exécution
+        $this->executeQuery($requete, ['titre' => $titre,
+            'titreOriginal' => $titreOriginal]);
+        // log
+        if ($this->logger) {
+            $this->logger->info('Movie ' . $titre . ' successfully added.');
+        }
+    }
+
+    /**
+     * 
+     * @param type $filmID
+     * @param type $titre
+     * @param type $titreOriginal
+     */
+    public function updateMovie($filmID, $titre, $titreOriginal) {
+        // on construit la requête d'insertion
+        $requete = "UPDATE film SET "
+                . "titre = "
+                . "'" . $titre . "'"
+                . ", titreOriginal = "
+                . "'" . $titreOriginal . "'"
+                . " WHERE filmID = "
+                . $filmID;
+        // exécution de la requête
+        $this->executeQuery($requete);
+    }
+
+    /**
+     * 
+     * @param type $movieID
+     */
+    public function deleteMovie($movieID) {
+        $this->executeQuery("DELETE FROM film WHERE filmID = "
+                . $movieID);
+
+        if ($this->logger) {
+            $this->logger->info('Movie ' . $movieID . ' successfully deleted.');
+        }
+    }
+
+    /**
      * Méthode qui ne renvoie que les titres et ID de films non encore marqués
      * comme favoris par l'utilisateur passé en paramètre
      * @param int $userID Identifiant de l'utilisateur

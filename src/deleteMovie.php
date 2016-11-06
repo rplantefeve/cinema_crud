@@ -16,12 +16,12 @@ if (!array_key_exists("user", $_SESSION) or $_SESSION['user'] !== 'admin@adm.adm
 if (filter_input(INPUT_SERVER, 'REQUEST_METHOD') === "POST") {
 
     // on "sainifie" les entrées
-    $sanitizedEntries = filter_input_array(INPUT_POST, ['cinemaID' => FILTER_SANITIZE_NUMBER_INT]);
+    $sanitizedEntries = filter_input_array(INPUT_POST, ['filmID' => FILTER_SANITIZE_NUMBER_INT]);
 
     // suppression de la préférence de film
-    $fctManager->deleteCinema($sanitizedEntries['cinemaID']);
+    $fctManager->deleteMovie($sanitizedEntries['filmID']);
 }
-// redirection vers la liste des cinémas
-header("Location: cinemasList.php");
+// redirection vers la liste des films
+header("Location: moviesList.php");
 exit;
 

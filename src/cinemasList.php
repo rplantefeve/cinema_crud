@@ -1,7 +1,15 @@
 <?php
 require_once __DIR__ . '/vendor/autoload.php';
 
-require_once __DIR__ . './includes/fctManager.php';
+require_once __DIR__ . './includes/Manager.php';
+
+$isUserAdmin = false;
+
+session_start();
+// si l'utilisateur est pas connecté et qu'il est amdinistrateur
+if (array_key_exists("user", $_SESSION) and $_SESSION['user'] == 'admin@adm.adm') {
+    $isUserAdmin = true;
+}
 ?>
 
 <!DOCTYPE html>
@@ -34,18 +42,22 @@ require_once __DIR__ . './includes/fctManager.php';
                             <input type="submit" value="Consulter les séances"/>
                         </form>
                     </td>
-                    <td>
-                        <form name="modifyCinema" action="editCinema.php" method="GET">
-                            <input type="hidden" name="cinemaID" value="<?= $cinema['CINEMAID'] ?>"/>
-                            <input type="image" src="images/modifyIcon.png" alt="Modify"/>
-                        </form>
-                    </td>
-                    <td>
-                        <form name="deleteCinema" action="deleteCinema.php" method="POST">
-                            <input type="hidden" name="cinemaID" value="<?= $cinema['CINEMAID'] ?>"/>
-                            <input type="image" src="images/deleteIcon.png" alt="Delete"/>
-                        </form>
-                    </td>
+                    <?php
+                    if ($isUserAdmin):
+                        ?>
+                        <td>
+                            <form name="modifyCinema" action="editCinema.php" method="GET">
+                                <input type="hidden" name="cinemaID" value="<?= $cinema['CINEMAID'] ?>"/>
+                                <input type="image" src="images/modifyIcon.png" alt="Modify"/>
+                            </form>
+                        </td>
+                        <td>
+                            <form name="deleteCinema" action="deleteCinema.php" method="POST">
+                                <input type="hidden" name="cinemaID" value="<?= $cinema['CINEMAID'] ?>"/>
+                                <input type="image" src="images/deleteIcon.png" alt="Delete"/>
+                            </form>
+                        </td>
+                    <?php endif; ?>
                 </tr>
                 <?php
             }

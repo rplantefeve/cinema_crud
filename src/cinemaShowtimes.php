@@ -1,7 +1,7 @@
 <?php
 require_once __DIR__ . '/vendor/autoload.php';
 
-require_once __DIR__ . './includes/fctManager.php';
+require_once __DIR__ . './includes/Manager.php';
 
 // si la méthode de formulaire est la méthode GET
 if (filter_input(INPUT_SERVER, 'REQUEST_METHOD') === "GET") {
