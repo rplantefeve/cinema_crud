@@ -39,7 +39,7 @@ if (filter_input(INPUT_SERVER, 'REQUEST_METHOD') === "GET") {
         </header>
         <ul>
             <?php
-// on récupère la liste des cinémas de ce film
+            // on récupère la liste des cinémas de ce film
             $cinemas = $fctManager->getMovieCinemasByMovieID($filmID);
             if (count($cinemas) > 0):
                 // on boucle sur les résultats
