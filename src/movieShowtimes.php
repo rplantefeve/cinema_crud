@@ -7,9 +7,11 @@ require_once __DIR__ . './includes/Manager.php';
 if (filter_input(INPUT_SERVER, 'REQUEST_METHOD') === "GET") {
 
     // on "sainifie" les entrées
-    $sanitizedEntries = filter_input_array(INPUT_GET, ['filmID' => FILTER_SANITIZE_NUMBER_INT]);
+    $sanitizedEntries = filter_input_array(INPUT_GET,
+            ['filmID' => FILTER_SANITIZE_NUMBER_INT]);
     // si l'identifiant du film a bien été passé en GET'
-    if ($sanitizedEntries && $sanitizedEntries['filmID'] !== NULL && $sanitizedEntries['filmID'] !== '') {
+    if ($sanitizedEntries && $sanitizedEntries['filmID'] !== NULL && $sanitizedEntries['filmID'] !==
+            '') {
         // on récupère l'identifiant du cinéma
         $filmID = $sanitizedEntries['filmID'];
         // puis on récupère les informations du film en question
@@ -45,11 +47,12 @@ if (filter_input(INPUT_SERVER, 'REQUEST_METHOD') === "GET") {
                 // on boucle sur les résultats
                 foreach ($cinemas as $cinema) {
                     ?>
-                    <li><?= $cinema['DENOMINATION'] ?></li>
+                    <li><h3><?= $cinema['DENOMINATION'] ?></h3></li>
                     <ul>
                         <?php
                         // on récupère pour chaque cinéma de ce film, la liste des séances
-                        $seances = $fctManager->getMovieShowtimes($cinema['CINEMAID'], $filmID);
+                        $seances = $fctManager->getMovieShowtimes($cinema['CINEMAID'],
+                                $filmID);
                         // boucle sur les séances
                         foreach ($seances as $seance) {
                             /*
@@ -60,7 +63,8 @@ if (filter_input(INPUT_SERVER, 'REQUEST_METHOD') === "GET") {
                             // date du jour de projection de la séance
                             $jour = new DateTime($seance['HEUREDEBUT']);
                             // On convertit pour un affichage en français
-                            $jourConverti = utf8_encode(strftime('%d %B %Y', $jour->getTimestamp()));
+                            $jourConverti = utf8_encode(strftime('%d %B %Y',
+                                            $jour->getTimestamp()));
 
                             $heureDebut = (new DateTime($seance['HEUREDEBUT']))->format('H\hi');
                             $heureFin = (new DateTime($seance['HEUREFIN']))->format('H\hi');
@@ -70,6 +74,13 @@ if (filter_input(INPUT_SERVER, 'REQUEST_METHOD') === "GET") {
                         }
                         ?>
                     </ul>
+                    <br>
+                    <form action="editShowtime.php" method="get">
+                        <input name="cinemaID" type="hidden" value="<?= $cinema['CINEMAID'] ?>">
+                        <input name="filmID" type="hidden" value="<?= $filmID ?>">
+                        <input name="from" type="hidden" value="<?= $_SERVER['SCRIPT_NAME'] ?>">
+                        <button type="submit">Ajouter une séance</button>
+                    </form>
                     <?php
                 } // fin de la boucle
             endif;
