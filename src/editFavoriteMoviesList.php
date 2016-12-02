@@ -5,8 +5,7 @@ require_once __DIR__ . './includes/Manager.php';
 
 session_start();
 // si l'utilisateur n'est pas connecté
-if (!array_key_exists("user",
-                $_SESSION)) {
+if (!array_key_exists("user", $_SESSION)) {
     // renvoi à la page d'accueil
     header('Location: index.php');
     exit;
@@ -66,10 +65,15 @@ and open the template in the editor.
                 }
             }
             ?>
+            <tr class="new">
+                <td colspan="4">
+                    <form name="addFavoriteMovie" action="editFavoriteMovie.php">
+                        <button class="add" type="submit">Cliquer pour ajouter un film préféré...</button>
+                    </form>
+                </td>
+            </tr>        
         </table>
-        <form name="addFavoriteMovie" action="editFavoriteMovie.php">
-            <input type="submit" value="Ajouter un film préféré"/>
-        </form>
+
         <form name="backToMainPage" action="index.php">
             <input type="submit" value="Retour à l'accueil"/>
         </form>

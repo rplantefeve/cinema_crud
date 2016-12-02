@@ -59,12 +59,16 @@ if (array_key_exists("user", $_SESSION) and $_SESSION['user'] == 'admin@adm.adm'
                 <?php
             }
             ?>
+            <?php if ($isUserAdmin): ?>
+                <tr class="new">
+                    <td colspan="5">
+                        <form name="addMovie" action="editMovie.php">
+                            <button class="add" type="submit">Cliquer ici pour ajouter un film...</button>
+                        </form>
+                    </td>
+                </tr>
+            <?php endif; ?>
         </table>
-        <?php if ($isUserAdmin): ?>
-            <form name="addMovie" action="editMovie.php">
-                <input type="submit" value="Ajouter un film"/>
-            </form>
-        <?php endif; ?>
         <form name="backToMainPage" action="index.php">
             <input type="submit" value="Retour à l'accueil"/>
         </form>
