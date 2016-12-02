@@ -1,7 +1,14 @@
 <?php
 require_once __DIR__ . '/vendor/autoload.php';
-
 require_once __DIR__ . './includes/Manager.php';
+
+$adminConnected = false;
+
+session_start();
+// si l'utilisateur admin est connexté
+if (array_key_exists("user", $_SESSION) and $_SESSION['user'] == 'admin@adm.adm') {
+    $adminConnected = true;
+}
 
 // si la méthode de formulaire est la méthode GET
 if (filter_input(INPUT_SERVER, 'REQUEST_METHOD') === "GET") {
@@ -48,7 +55,16 @@ if (filter_input(INPUT_SERVER, 'REQUEST_METHOD') === "GET") {
                 foreach ($cinemas as $cinema) {
                     ?>
                     <li><h3><?= $cinema['DENOMINATION'] ?></h3></li>
-                    <ul>
+                    <table class="std">
+                        <tr>
+                            <th>Date</th>
+                            <th>Début</th>
+                            <th>Fin</th>
+                            <th>Version</th>
+                            <?php if ($adminConnected): ?>
+                                <th colspan="2">Action</th>
+                            <?php endif; ?>
+                        </tr>
                         <?php
                         // on récupère pour chaque cinéma de ce film, la liste des séances
                         $seances = $fctManager->getMovieShowtimes($cinema['CINEMAID'],
@@ -69,11 +85,40 @@ if (filter_input(INPUT_SERVER, 'REQUEST_METHOD') === "GET") {
                             $heureDebut = (new DateTime($seance['HEUREDEBUT']))->format('H\hi');
                             $heureFin = (new DateTime($seance['HEUREFIN']))->format('H\hi');
                             ?>
-                            <li>Séance du <?= $jourConverti ?>. Heure de début : <?= $heureDebut ?>. Heure de fin : <?= $heureFin ?>. Version : <?= $seance['VERSION'] ?></li>
+                            <tr>
+                                <td><?= $jourConverti ?></td>
+                                <td><?= $heureDebut ?></td>
+                                <td><?= $heureFin ?></td>
+                                <td><?= $seance['VERSION'] ?></td>
+                                <?php if ($adminConnected): ?>
+                                    <td>
+                                        <form name="modifyMovieShowtime" action="editShowtime.php" method="GET">
+                                            <input type="hidden" name="cinemaID" value="<?= $cinema['CINEMAID'] ?>"/>
+                                            <input type="hidden" name="filmID" value="<?= $filmID ?>"/>
+                                            <input type="hidden" name="heureDebut" value="<?= $seance['HEUREDEBUT'] ?>"/>
+                                            <input type="hidden" name="heureFin" value="<?= $seance['HEUREFIN'] ?>"/>
+                                            <input type="hidden" name="version" value="<?= $seance['VERSION'] ?>"/>
+                                            <input type="image" src="images/modifyIcon.png" alt="Modify"/>
+                                            <input name="from" type="hidden" value="<?= $_SERVER['SCRIPT_NAME'] ?>">
+                                        </form>
+                                    </td>
+                                    <td>
+                                        <form name="deleteMovieShowtime" action="deleteShowtime.php" method="POST">
+                                            <input type="hidden" name="cinemaID" value="<?= $cinema['CINEMAID'] ?>"/>
+                                            <input type="hidden" name="filmID" value="<?= $filmID ?>"/>
+                                            <input type="hidden" name="heureDebut" value="<?= $seance['HEUREDEBUT'] ?>"/>
+                                            <input type="hidden" name="heureFin" value="<?= $seance['HEUREFIN'] ?>"/>
+                                            <input type="hidden" name="version" value="<?= $seance['VERSION'] ?>"/>
+                                            <input type="image" src="images/deleteIcon.png" alt="Delete"/>
+                                            <input name="from" type="hidden" value="<?= $_SERVER['SCRIPT_NAME'] ?>">
+                                        </form>
+                                    </td>
+                                <?php endif; ?>
+                            </tr>
                             <?php
                         }
-                        ?>
-                    </ul>
+                        ?>  
+                    </table>
                     <br>
                     <form action="editShowtime.php" method="get">
                         <input name="cinemaID" type="hidden" value="<?= $cinema['CINEMAID'] ?>">

@@ -10,9 +10,21 @@ if (!array_key_exists("user", $_SESSION) or $_SESSION['user'] !== 'admin@adm.adm
     exit;
 }
 
-// init. des flags. Etat par défaut => je viens du cinéma
+// init. des flags. Etat par défaut => je viens du cinéma et je créé
 $fromCinema = true;
 $fromFilm = false;
+$isItACreation = true;
+
+// init. des variables du formulaire
+$seance = ['dateDebut' => '',
+    'heureDebut' => '',
+    'dateFin' => '',
+    'heureFin' => '',
+    'dateDebutOld' => '',
+    'heureDebutOld' => '',
+    'dateFinOld' => '',
+    'heureFinOld' => '',
+    'version' => ''];
 
 // si l'on est en GET
 if (filter_input(INPUT_SERVER, 'REQUEST_METHOD') == 'GET') {
@@ -20,8 +32,11 @@ if (filter_input(INPUT_SERVER, 'REQUEST_METHOD') == 'GET') {
     $sanitizedEntries = filter_input_array(INPUT_GET,
             ['cinemaID' => FILTER_SANITIZE_NUMBER_INT,
         'filmID' => FILTER_SANITIZE_NUMBER_INT,
-        'from' => FILTER_SANITIZE_STRING]);
-    // si l'on souhaite ajouter une nouvelle séance
+        'from' => FILTER_SANITIZE_STRING,
+        'heureDebut' => FILTER_SANITIZE_STRING,
+        'heureFin' => FILTER_SANITIZE_STRING,
+        'version' => FILTER_SANITIZE_STRING]);
+    // pour l'instant, on vérifie les données en GET
     if ($sanitizedEntries && isset($sanitizedEntries['cinemaID'],
                     $sanitizedEntries['filmID'], $sanitizedEntries['from'])) {
         // on récupère l'identifiant du cinéma
@@ -41,6 +56,28 @@ if (filter_input(INPUT_SERVER, 'REQUEST_METHOD') == 'GET') {
             // on vient du film
             $fromFilm = true;
         }
+
+        // ici, on veut savoir si on modifie ou si on ajoute
+        if (isset($sanitizedEntries['heureDebut'],
+                        $sanitizedEntries['heureFin'],
+                        $sanitizedEntries['version'])) {
+            // nous sommes dans le cas d'une modification
+            $isItACreation = false;
+            // on récupère les anciennes valeurs (utile pour retrouver la séance avant de la modifier
+            $seance['dateheureDebutOld'] = $sanitizedEntries['heureDebut'];
+            $seance['dateheureFinOld'] = $sanitizedEntries['heureFin'];
+            // dates PHP
+            $dateheureDebut = new DateTime($sanitizedEntries['heureDebut']);
+            $dateheureFin = new DateTime($sanitizedEntries['heureFin']);
+            // découpage en heures
+            $seance['heureDebut'] = $dateheureDebut->format("H:i");
+            $seance['heureFin'] = $dateheureFin->format("H:i");
+            // découpage en jour/mois/année
+            $seance['dateDebut'] = $dateheureDebut->format("d/m/Y");
+            $seance['dateFin'] = $dateheureFin->format("d/m/Y");
+            // on récupère la version
+            $seance['version'] = $sanitizedEntries['version'];
+        }
     }
     // sinon, on retourne à l'accueil
     else {
@@ -57,25 +94,42 @@ if (filter_input(INPUT_SERVER, 'REQUEST_METHOD') == 'GET') {
         'heuredebut' => FILTER_SANITIZE_STRING,
         'datefin' => FILTER_SANITIZE_STRING,
         'heurefin' => FILTER_SANITIZE_STRING,
+        'dateheurefinOld' => FILTER_SANITIZE_STRING,
+        'dateheuredebutOld' => FILTER_SANITIZE_STRING,
         'version' => FILTER_SANITIZE_STRING,
-        'from' => FILTER_SANITIZE_STRING]);
+        'from' => FILTER_SANITIZE_STRING,
+        'modificationInProgress' => FILTER_SANITIZE_STRING]);
     // si toutes les valeurs sont renseignées
     if ($sanitizedEntries && isset($sanitizedEntries['cinemaID'],
                     $sanitizedEntries['filmID'], $sanitizedEntries['datedebut'],
                     $sanitizedEntries['heuredebut'],
                     $sanitizedEntries['datefin'], $sanitizedEntries['heurefin'],
+                    $sanitizedEntries['dateheuredebutOld'],
+                    $sanitizedEntries['dateheurefinOld'],
                     $sanitizedEntries['version'], $sanitizedEntries['from'])) {
         // nous sommes en Français
         setlocale(LC_TIME, 'fra_fra');
         // date du jour de projection de la séance
         $datetimeDebut = new DateTime($sanitizedEntries['datedebut'] . ' ' . $sanitizedEntries['heuredebut']);
         $datetimeFin = new DateTime($sanitizedEntries['datefin'] . ' ' . $sanitizedEntries['heurefin']);
-        // j'insère dans la base
-        $resultat = $fctManager->insertNewShowtime($sanitizedEntries['cinemaID'],
-                $sanitizedEntries['filmID'],
-                $datetimeDebut->format("Y-m-d H:i"),
-                $datetimeFin->format("Y-m-d H:i"), $sanitizedEntries['version']);
-        
+        // Est-on dans le cas d'une insertion ?
+        if (!isset($sanitizedEntries['modificationInProgress'])) {
+            // j'insère dans la base
+            $resultat = $fctManager->insertNewShowtime($sanitizedEntries['cinemaID'],
+                    $sanitizedEntries['filmID'],
+                    $datetimeDebut->format("Y-m-d H:i"),
+                    $datetimeFin->format("Y-m-d H:i"),
+                    $sanitizedEntries['version']);
+        } else {
+            // c'est une mise à jour
+            $resultat = $fctManager->updateShowtime($sanitizedEntries['cinemaID'],
+                    $sanitizedEntries['filmID'],
+                    $sanitizedEntries['dateheuredebutOld'],
+                    $sanitizedEntries['dateheurefinOld'],
+                    $datetimeDebut->format("Y-m-d H:i"),
+                    $datetimeFin->format("Y-m-d H:i"),
+                    $sanitizedEntries['version']);
+        }
         // en fonction d'où je viens, je redirige
         if (strstr($sanitizedEntries['from'], 'movie')) {
             header('Location: movieShowtimes.php?filmID=' . $sanitizedEntries['filmID']);
@@ -107,24 +161,45 @@ else {
         <form method="post">
             <fieldset>
                 <label for="datedebut">Date de début : </label>
-                <input id="datedebut" type="text" name="datedebut" placeholder="jj/mm/aaaa">
+                <input id="datedebut" type="text" name="datedebut" placeholder="jj/mm/aaaa" value="<?= $seance['dateDebut'] ?>">
                 <label for="heuredebut">Heure de début : </label>
-                <input type="text" name="heuredebut" placeholder="hh:mm">
+                <input type="text" name="heuredebut" placeholder="hh:mm" value="<?= $seance['heureDebut'] ?>">
+
                 <label for="datefin">Date de fin : </label>
-                <input type="text" name="datefin" placeholder="jj/mm/aaaa">
+                <input type="text" name="datefin" placeholder="jj/mm/aaaa" value="<?= $seance['dateFin'] ?>">
                 <label for="heurefin">Heure de fin : </label>
-                <input type="text" name="heurefin" placeholder="hh:mm">
+                <input type="text" name="heurefin" placeholder="hh:mm" value="<?= $seance['heureFin'] ?>">
+                <!-- les anciennes date et heure début et fin -->
+                <input type="hidden" name="dateheurefinOld" value="<?= $seance['dateheureFinOld'] ?>">
+                <input type="hidden" name="dateheuredebutOld" value="<?= $seance['dateheureDebutOld'] ?>">
                 <label for="version">Version : </label>
                 <select name="version">
-                    <option value="VO">VO</option>
-                    <option value="VF">VF</option>
-                    <option value="VOSTFR">VOSTFR</option>
+                    <option value="VO" <?php
+                    if ($seance['version'] == 'VO'): echo "selected";
+                    endif;
+                    ?>>VO</option>
+                    <option value="VF" <?php
+                    if ($seance['version'] == 'VF'): echo "selected";
+                    endif;
+                    ?>>VF</option>
+                    <option value="VOSTFR" <?php
+                    if ($seance['version'] == 'VOSTFR'): echo "selected";
+                    endif;
+                    ?>>VOSTFR</option>
                 </select>
                 <input type="hidden" value="<?= $from ?>" name="from">
             </fieldset>
             <input type="hidden" name="cinemaID" value="<?= $cinemaID ?>">
             <input type="hidden" name="filmID" value="<?= $filmID ?>">
-            <button type="submit">Ajouter la séance</button>
+            <?php
+// si c'est une modification, c'est une information dont nous avons besoin
+            if (!$isItACreation) {
+                ?>
+                <input type="hidden" name="modificationInProgress" value="true"/>
+                <?php
+            }
+            ?>
+            <button type="submit">Sauvegarder</button>
         </form>
         <?php if ($fromCinema): ?>
             <form action="cinemaShowtimes.php">
