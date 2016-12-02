@@ -23,6 +23,8 @@ if (filter_input(INPUT_SERVER, 'REQUEST_METHOD') === "GET") {
         $filmID = $sanitizedEntries['filmID'];
         // puis on récupère les informations du film en question
         $film = $fctManager->getMovieInformationsByID($filmID);
+        // on récupère les cinémas qui ne projettent pas encore le film
+        $cinemasUnplanned = $fctManager->getNonPlannedCinemas($filmID);
     }
     // sinon, on retourne à l'accueil
     else {
@@ -45,6 +47,25 @@ if (filter_input(INPUT_SERVER, 'REQUEST_METHOD') === "GET") {
         <header>
             <h1>Séances du film <?= $film['TITRE'] ?></h1>
             <h2><?= $film['TITREORIGINAL'] ?></h2>
+            <?php if ($cinemasUnplanned) : ?>
+                <form action="editShowtime.php" method="get">
+                    <fieldset>
+                        <legend>Programmer le film dans un cinéma</legend>
+                        <input name="filmID" type="hidden" value="<?= $filmID ?>">
+                        <select name="cinemaID">
+                            <?php
+                            foreach ($cinemasUnplanned as $cinema) :
+                                ?>
+                                <option value="<?= $cinema['cinemaID'] ?>"><?= $cinema['denomination'] ?></option>
+                                <?php
+                            endforeach;
+                            ?>    
+                        </select>
+                        <input name = "from" type = "hidden" value = "<?= $_SERVER['SCRIPT_NAME'] ?>">
+                        <button type = "submit">Ajouter</button>
+                    </fieldset>
+                </form>
+            <?php endif; ?>
         </header>
         <ul>
             <?php

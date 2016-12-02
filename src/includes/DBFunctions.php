@@ -363,6 +363,48 @@ class DBFunctions {
     }
 
     /**
+     * Renvoie une liste de films pas encore programmés pour un cinema donné
+     * @param integer $cinemaID
+     * @return array
+     */
+    public function getNonPlannedMovies($cinemaID) {
+        // requête de récupération des titres et des identifiants des films
+        // qui n'ont pas encore été programmés dans ce cinéma
+        $requete = "SELECT f.filmID, f.titre "
+                . "FROM film f"
+                . " WHERE f.filmID NOT IN ("
+                . "SELECT filmID"
+                . " FROM seance"
+                . " WHERE cinemaID = :id"
+                . ")";
+        // extraction de résultat
+        $resultat = $this->extraireNxN($requete, ['id' => $cinemaID], false);
+        // retour du résultat
+        return $resultat;
+    }
+
+    /**
+     * Renvoie une liste de cinémas qui ne projettent pas le film donné
+     * @param integer $filmID
+     * @return array
+     */
+    public function getNonPlannedCinemas($filmID) {
+        // requête de récupération des titres et des identifiants des films
+        // qui n'ont pas encore été programmés dans ce cinéma
+        $requete = "SELECT c.cinemaID, c.denomination "
+                . "FROM cinema c"
+                . " WHERE c.cinemaID NOT IN ("
+                . "SELECT cinemaID"
+                . " FROM seance"
+                . " WHERE filmID = :id"
+                . ")";
+        // extraction de résultat
+        $resultat = $this->extraireNxN($requete, ['id' => $filmID], false);
+        // retour du résultat
+        return $resultat;
+    }
+
+    /**
      * Méthode qui ajoute une préférence de film à un utilisateur
      * @param int userID Identifiant de l'utilisateur
      * @param int filmID Identifiant du film

@@ -13,7 +13,7 @@ if (array_key_exists("user", $_SESSION) and $_SESSION['user'] == 'admin@adm.adm'
 // si la méthode de formulaire est la méthode GET
 if (filter_input(INPUT_SERVER, 'REQUEST_METHOD') === "GET") {
 
-    // on "sainifie" les entrées
+    // on assainie les entrées
     $sanitizedEntries = filter_input_array(INPUT_GET,
             ['cinemaID' => FILTER_SANITIZE_NUMBER_INT]);
 
@@ -24,6 +24,8 @@ if (filter_input(INPUT_SERVER, 'REQUEST_METHOD') === "GET") {
         $cinemaID = $sanitizedEntries['cinemaID'];
         // puis on récupère les informations du cinéma en question
         $cinema = $fctManager->getCinemaInformationsByID($cinemaID);
+        // on récupère les films pas encore projetés
+        $filmsUnplanned = $fctManager->getNonPlannedMovies($cinemaID);
     }
     // sinon, on retourne à l'accueil
     else {
@@ -46,6 +48,25 @@ if (filter_input(INPUT_SERVER, 'REQUEST_METHOD') === "GET") {
         <header>
             <h1>Séances du cinéma <?= $cinema['DENOMINATION'] ?></h1>
             <h2><?= $cinema['ADRESSE'] ?></h2>
+            <?php if ($filmsUnplanned) : ?>
+                <form action="editShowtime.php" method="get">
+                    <fieldset>
+                        <legend>Ajouter un film à la programmation</legend>
+                        <input name="cinemaID" type="hidden" value="<?= $cinemaID ?>">
+                        <select name="filmID">
+                            <?php
+                            foreach ($filmsUnplanned as $film) :
+                                ?>
+                                <option value="<?= $film['filmID'] ?>"><?= $film['titre'] ?></option>
+                                <?php
+                            endforeach;
+                            ?>    
+                        </select>
+                        <input name = "from" type = "hidden" value = "<?= $_SERVER['SCRIPT_NAME'] ?>">
+                        <button type = "submit">Ajouter</button>
+                    </fieldset>
+                </form>
+            <?php endif; ?>
         </header>
         <ul>
             <?php
@@ -141,9 +162,9 @@ if (filter_input(INPUT_SERVER, 'REQUEST_METHOD') === "GET") {
             } // fin du if au moins un film
             ?>
         </ul>
-        <form action="cinemasList.php">
-            <input type="submit" value="Retour à la liste des cinémas"/>
+        <br>
+        <form action = "cinemasList.php">
+            <input type = "submit" value = "Retour à la liste des cinémas"/>
         </form>
-
     </body>
 </html>
