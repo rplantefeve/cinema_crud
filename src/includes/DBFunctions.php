@@ -119,7 +119,8 @@ class DBFunctions {
                 . "WHERE adresseCourriel = :email";
 
         // on extrait le résultat de la BDD sous forme de tableau associatif
-        $resultat = $this->extraire1xN($requete, ['email' => $utilisateur], false);
+        $resultat = $this->extraire1xN($requete, ['email' => $utilisateur],
+                false);
 
         // on retourne le résultat
         return $resultat;
@@ -195,7 +196,8 @@ class DBFunctions {
                 . "VALUES (:firstName, :lastName, :email, :password)";
 
         // exécution de la requête
-        $this->executeQuery($requete, [':firstName' => $firstName,
+        $this->executeQuery($requete,
+                [':firstName' => $firstName,
             'lastName' => $lastName,
             'email' => $email,
             'password' => $password]);
@@ -226,12 +228,46 @@ class DBFunctions {
                 . ":titre"
                 . ", :titreOriginal)";
         // exécution
-        $this->executeQuery($requete, ['titre' => $titre,
+        $this->executeQuery($requete,
+                ['titre' => $titre,
             'titreOriginal' => $titreOriginal]);
         // log
         if ($this->logger) {
             $this->logger->info('Movie ' . $titre . ' successfully added.');
         }
+    }
+
+    /**
+     * Insère une nouvelle séance pour un film donné dans un cinéma donné
+     * @param integer $cinemaID
+     * @param integer $filmID
+     * @param datetime $dateheuredebut
+     * @param datetime $dateheurefin
+     * @param string $version
+     */
+    public function insertNewShowtime($cinemaID, $filmID, $dateheuredebut,
+            $dateheurefin, $version) : \PDOStatement{
+        // construction
+        $requete = "INSERT INTO seance (cinemaID, filmID, heureDebut, heureFin, version) VALUES ("
+                . ":cinemaID"
+                . ", :filmID"
+                . ", :heureDebut"
+                . ", :heureFin"
+                . ", :version)";
+        // exécution
+        $resultat = $this->executeQuery($requete,
+                [':cinemaID' => $cinemaID,
+            ':filmID' => $filmID,
+            ':heureDebut' => $dateheuredebut,
+            ':heureFin' => $dateheurefin,
+            ':version' => $version]);
+
+        // log
+        if ($this->logger) {
+            $this->logger->info('Showtime for the movie ' . $filmID . ' at the ' . $cinemaID . ' successfully added.');
+        }
+
+        return $resultat;
     }
 
     /**
@@ -302,7 +338,8 @@ class DBFunctions {
                 . ", :comment)";
 
         // exécution de la requête
-        $this->executeQuery($requete, ['filmID' => $filmID,
+        $this->executeQuery($requete,
+                ['filmID' => $filmID,
             'userID' => $userID,
             'comment' => $comment]);
 
@@ -322,7 +359,8 @@ class DBFunctions {
                 . ":denomination"
                 . ", :adresse)";
         // exécution
-        $this->executeQuery($requete, ['denomination' => $denomination,
+        $this->executeQuery($requete,
+                ['denomination' => $denomination,
             'adresse' => $adresse]);
         // log
         if ($this->logger) {
@@ -475,7 +513,8 @@ class DBFunctions {
      * @param boolean $estVisible (visualisation du résultat)
      * @return array[][] ou null
      */
-    private function extraireNxN($unSQLSelect, $parametres = null, $estVisible = false) {
+    private function extraireNxN($unSQLSelect, $parametres = null,
+            $estVisible = false) {
         // tableau des résultats
         $tableau = array();
         // résultat de la requête
@@ -508,7 +547,8 @@ class DBFunctions {
      * @param boolean $estVisible (visualisation du résultat)
      * @return array[] ou null
      */
-    private function extraire1xN($unSQLSelect, $parametres = null, $estVisible = false) {
+    private function extraire1xN($unSQLSelect, $parametres = null,
+            $estVisible = false) {
         $result = $this->extraireNxN($unSQLSelect, $parametres, false);
         if (isset($result[0])) {
             $result = $result[0];
