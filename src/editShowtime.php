@@ -20,9 +20,8 @@ $seance = ['dateDebut' => '',
     'heureDebut' => '',
     'dateFin' => '',
     'heureFin' => '',
-    'dateDebutOld' => '',
-    'heureDebutOld' => '',
-    'dateFinOld' => '',
+    'dateheureDebutOld' => '',
+    'dateheureFinOld' => '',
     'heureFinOld' => '',
     'version' => ''];
 
