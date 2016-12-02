@@ -539,6 +539,29 @@ class DBFunctions {
         }
     }
 
+    /**
+     * Supprime une séance pour un film donné et un cinéma donné
+     * @param type $cinemaID
+     * @param type $filmID
+     * @param type $heureDebut
+     * @param type $heureFin
+     */
+    public function deleteShowtime($cinemaID, $filmID, $heureDebut, $heureFin) {
+        $this->executeQuery("DELETE FROM seance "
+                . "WHERE cinemaID = :cinemaID "
+                . "AND filmID = :filmID "
+                . "AND heureDebut = :heureDebut"
+                . " AND heureFin = :heureFin",
+                [':cinemaID' => $cinemaID,
+            ':filmID' => $filmID,
+            ':heureDebut' => $heureDebut,
+            ':heureFin' => $heureFin]);
+
+        if ($this->logger) {
+            $this->logger->info('Showtime for the movie ' . $filmID . ' and the cinema ' . $cinemaID . ' successfully deleted.');
+        }
+    }
+
     /*
      * Fonctions utilitaires
      */

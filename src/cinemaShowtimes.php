@@ -123,13 +123,15 @@ if (filter_input(INPUT_SERVER, 'REQUEST_METHOD') === "GET") {
                         ?>
                     </table>
                     <br>
-                    <form action="editShowtime.php" method="get">
-                        <input name="cinemaID" type="hidden" value="<?= $cinemaID ?>">
-                        <input name="filmID" type="hidden" value="<?= $film['FILMID'] ?>">
-                        <input name="from" type="hidden" value="<?= $_SERVER['SCRIPT_NAME'] ?>">
-                        <button type="submit">Ajouter une séance</button>
-                    </form>
-                    <?php
+                    <?php if ($adminConnected): ?>
+                        <form action="editShowtime.php" method="get">
+                            <input name="cinemaID" type="hidden" value="<?= $cinemaID ?>">
+                            <input name="filmID" type="hidden" value="<?= $film['FILMID'] ?>">
+                            <input name="from" type="hidden" value="<?= $_SERVER['SCRIPT_NAME'] ?>">
+                            <button type="submit">Ajouter une séance</button>
+                        </form>
+                        <?php
+                    endif;
                 } // fin de la boucle de parcours des films
             } // fin du if au moins un film
             ?>
