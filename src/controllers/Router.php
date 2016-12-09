@@ -43,6 +43,15 @@ class Router {
                 if ($sanitizedEntries['action'] == "cinemasList") {
                     // Activation de la route cinemasList
                     $this->cinemaCtrl->cinemasList();
+                }
+                // si l'action demandée est la modification / Ajout d'un cinéma
+                elseif ($sanitizedEntries['action'] == "editCinema") {
+                    // Activation de la route editCinema
+                    $this->cinemaCtrl->editCinema();
+                } // si l'action demandée est la Suppression d'un cinéma
+                elseif ($sanitizedEntries['action'] == "deleteCinema") {
+                    // Activation de la route deleteCinema
+                    $this->cinemaCtrl->deleteCinema();
                 } elseif ($sanitizedEntries['action'] == "moviesList") {
                     // Activation de la route moviesList
                     $this->movieCtrl->moviesList();
