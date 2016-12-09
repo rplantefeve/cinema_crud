@@ -49,6 +49,9 @@ class Router {
                 } elseif ($sanitizedEntries['action'] == "editMovie") {
                     // Activation de la route editMovie
                     $this->movieCtrl->editMovie();
+                } elseif ($sanitizedEntries['action'] == "deleteMovie") {
+                    // Activation de la route deleteMovie
+                    $this->movieCtrl->deleteMovie();
                 } elseif ($sanitizedEntries['action'] == "movieShowtimes") {
                     // Activation de la route movieShowtimes
                     $this->showtimesCtrl->movieShowtimes();

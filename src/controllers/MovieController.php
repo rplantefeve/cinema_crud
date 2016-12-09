@@ -42,6 +42,33 @@ class MovieController {
     }
 
     /**
+     * Route Supprimer un film
+     */
+    public function deleteMovie() {
+        session_start();
+        // si l'utilisateur n'est pas connecté ou sinon s'il n'est pas amdinistrateur
+        if (!array_key_exists("user", $_SESSION) or $_SESSION['user'] !== 'admin@adm.adm') {
+            // renvoi à la page d'accueil
+            header('Location: index.php');
+            exit;
+        }
+
+        // si la méthode de formulaire est la méthode POST
+        if (filter_input(INPUT_SERVER, 'REQUEST_METHOD') === "POST") {
+
+            // on "sainifie" les entrées
+            $sanitizedEntries = filter_input_array(INPUT_POST,
+                    ['filmID' => FILTER_SANITIZE_NUMBER_INT]);
+
+            // suppression de la préférence de film
+            $this->filmDAO->deleteMovie($sanitizedEntries['filmID']);
+        }
+        // redirection vers la liste des films
+        header("Location: index.php?action=moviesList");
+        exit;
+    }
+
+    /**
      * Route Ajouter / Modifier un film
      */
     function editMovie() {
@@ -102,7 +129,7 @@ class MovieController {
             if ($sanEntries && $sanEntries['filmID'] !== null && $sanEntries['filmID'] !==
                     '') {
                 // on récupère les informations manquantes 
-                $film = $this->filmDAO->getMovieInformationsByID($sanEntries['filmID']);
+                $film = $this->filmDAO->getMovieByID($sanEntries['filmID']);
             }
             // sinon, c'est une création
             else {
@@ -115,7 +142,7 @@ class MovieController {
         $vue = new View("EditMovie");
         // En passant les variables nécessaires à son bon affichage
         $vue->generer([
-            'film'         => $film,
+            'film'          => $film,
             'isItACreation' => $isItACreation]);
     }
 
