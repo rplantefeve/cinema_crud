@@ -72,7 +72,7 @@ class FavoriteController {
         if (filter_input(INPUT_SERVER,
                         'REQUEST_METHOD') === "POST") {
 
-            // on "sainifie" les entrées
+            // on assainit les entrées
             $sanitizedEntries = filter_input_array(INPUT_POST,
                     ['backToList' => FILTER_DEFAULT,
                 'filmID' => FILTER_SANITIZE_NUMBER_INT,
@@ -129,7 +129,7 @@ class FavoriteController {
         } elseif (filter_input(INPUT_SERVER,
                         'REQUEST_METHOD') === "GET") {
 
-            // on "sainifie" les entrées
+            // on assainit les entrées
             $sanitizedEntries = filter_input_array(INPUT_GET,
                     ['filmID' => FILTER_SANITIZE_NUMBER_INT,
                 'userID' => FILTER_SANITIZE_NUMBER_INT]);
@@ -172,7 +172,7 @@ class FavoriteController {
     }
 
     public function deleteFavoriteMovie() {
-        // on "sainifie" les entrées
+        // on assainit les entrées
         $sanitizedEntries = filter_input_array(INPUT_POST,
                 ['userID' => FILTER_SANITIZE_NUMBER_INT,
             'filmID' => FILTER_SANITIZE_NUMBER_INT]);

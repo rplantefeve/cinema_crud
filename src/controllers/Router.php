@@ -23,11 +23,11 @@ class Router {
     private $showtimesCtrl;
 
     public function __construct(LoggerInterface $logger) {
-        $this->homeCtrl = new HomeController($logger);
-        $this->favoriteCtrl = new FavoriteController($logger);
-        $this->movieCtrl = new MovieController($logger);
+        $this->homeCtrl      = new HomeController($logger);
+        $this->favoriteCtrl  = new FavoriteController($logger);
+        $this->movieCtrl     = new MovieController($logger);
         $this->showtimesCtrl = new ShowtimesController($logger);
-        $this->cinemaCtrl = new CinemaController($logger);
+        $this->cinemaCtrl    = new CinemaController($logger);
     }
 
     public function routeRequest() {
@@ -49,6 +49,12 @@ class Router {
                 } elseif ($sanitizedEntries['action'] == "cinemaShowtimes") {
                     // Activation de la route cinemaShowtimes
                     $this->showtimesCtrl->cinemaShowtimes();
+                } elseif ($sanitizedEntries['action'] == "editShowtime") {
+                    // Activation de la route editShowtime
+                    $this->showtimesCtrl->editShowtime();
+                } elseif ($sanitizedEntries['action'] == "deleteShowtime") {
+                    // Activation de la route deleteShowtime
+                    $this->showtimesCtrl->deleteShowtime();
                 } elseif ($sanitizedEntries['action'] == "editFavoriteMoviesList") {
                     // Activation de la route editFavoriteMoviesList
                     $this->favoriteCtrl->editFavoriteMoviesList();

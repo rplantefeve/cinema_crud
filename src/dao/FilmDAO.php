@@ -13,85 +13,98 @@ use Semeformation\Mvc\Cinema_crud\models\Film;
 class FilmDAO extends DAO {
 
     /**
-     * CrÃ©e un film Ã  partir d'une ligne de la BDD.
+     * Crée un film Ã  partir d'une ligne de la BDD.
      *
-     * @param array $row La ligne de rÃ©sultat de la BDD.
+     * @param array $row La ligne de résultat de la BDD.
      * @return Film
      */
     protected function buildBusinessObject($row) {
         $film = new Film();
         $film->setFilmId($row['FILMID']);
         $film->setTitre($row['TITRE']);
-        if (array_key_exists('TITREORIGINAL',
-                        $row)) {
+        if (array_key_exists('TITREORIGINAL', $row)) {
             $film->setTitreOriginal($row['TITREORIGINAL']);
         }
         return $film;
     }
 
-    /*
-     * MÃ©thode qui renvoie la liste des films
+    /**
+     * Méthode qui renvoie la liste des films
      * @return array[][]
      */
-
     public function getMoviesList() {
-        $requete = "SELECT * FROM film";
-        // on extrait les rÃ©sultats
+        $requete   = "SELECT * FROM film";
+        // on extrait les résultats
         $resultats = $this->extraireNxN($requete);
-        // on extrait les objets mÃ©tiers des rÃ©sultats
+        // on extrait les objets métiers des résultats
         return $this->extractObjects($resultats);
     }
 
-    /*
-     * MÃ©thode qui renvoie toutes les informations d'un film
+    /**
+     * Méthode qui renvoie toutes les informations d'un film
      * @return array[]
      */
-
     public function getMovieByID($filmID) {
-        $requete = "SELECT * FROM film WHERE filmID = :filmID";
-        $resultat = $this->extraire1xN($requete,
-                ['filmID' => $filmID]);
-        // on rÃ©cupÃ¨re l'objet Film
-        $film = $this->buildBusinessObject($resultat);
-        // on retourne le rÃ©sultat extrait
+        $requete  = "SELECT * FROM film WHERE filmID = :filmID";
+        $resultat = $this->extraire1xN($requete, ['filmID' => $filmID]);
+        // on récupÃ¨re l'objet Film
+        $film     = $this->buildBusinessObject($resultat);
+        // on retourne le résultat extrait
         return $film;
     }
 
     public function getCinemaMoviesByCinemaID($cinemaID) {
-        // requÃªte qui nous permet de rÃ©cupÃ©rer la liste des films pour un cinÃ©ma donnÃ©
-        $requete = "SELECT DISTINCT f.* FROM film f"
+        // requête qui nous permet de récupérer la liste des films pour un cinéma donné
+        $requete   = "SELECT DISTINCT f.* FROM film f"
                 . " INNER JOIN seance s ON f.filmID = s.filmID"
                 . " AND s.cinemaID = :cinemaID";
-        // on extrait les rÃ©sultats
-        $resultats = $this->extraireNxN($requete,
-                ['cinemaID' => $cinemaID]);
-        // on extrait les objets mÃ©tiers des rÃ©sultats
+        // on extrait les résultats
+        $resultats = $this->extraireNxN($requete, ['cinemaID' => $cinemaID]);
+        // on extrait les objets métiers des résultats
         return $this->extractObjects($resultats);
     }
 
-    /*
-     * MÃ©thode qui ne renvoie que les films non encore marquÃ©s
-     * comme favoris par l'utilisateur passÃ© en paramÃ¨tre
+    /**
+     * Méthode qui ne renvoie que les films non encore marqués
+     * comme favoris par l'utilisateur passé en paramÃ¨tre
      * @param int $userID Identifiant de l'utilisateur
-     * @return Film[] Films prÃ©sents dans la base respectant les critÃ¨res
+     * @return Film[] Films présents dans la base respectant les critÃ¨res
      */
-
     public function getMoviesNonAlreadyMarkedAsFavorite($userID) {
-        // requÃªte de rÃ©cupÃ©ration des titres et des identifiants des films
-        // qui n'ont pas encore Ã©tÃ© marquÃ©s comme favoris par l'utilisateur
-        $requete = "SELECT f.filmID, f.titre "
+        // requête de récupération des titres et des identifiants des films
+        // qui n'ont pas encore été marqués comme favoris par l'utilisateur
+        $requete   = "SELECT f.filmID, f.titre "
                 . "FROM film f"
                 . " WHERE f.filmID NOT IN ("
                 . "SELECT filmID"
                 . " FROM prefere"
                 . " WHERE userID = :id"
                 . ")";
-        // extraction de rÃ©sultat
-        $resultats = $this->extraireNxN($requete,
-                ['id' => $userID],
-                false);
-        // on extrait les objets mÃ©tiers des rÃ©sultats
+        // extraction de résultat
+        $resultats = $this->extraireNxN($requete, ['id' => $userID], false);
+        // on extrait les objets métiers des résultats
         return $this->extractObjects($resultats);
+    }
+
+    /**
+     * Renvoie une liste de films pas encore programmés pour un cinema donné
+     * @param integer $cinemaID
+     * @return array
+     */
+    public function getNonPlannedMovies($cinemaID) {
+        // requête de récupération des titres et des identifiants des films
+        // qui n'ont pas encore été programmés dans ce cinéma
+        $requete  = "SELECT f.filmID, f.titre "
+                . "FROM film f"
+                . " WHERE f.filmID NOT IN ("
+                . "SELECT filmID"
+                . " FROM seance"
+                . " WHERE cinemaID = :id"
+                . ")";
+        // extraction de résultat
+        $resultat = $this->extraireNxN($requete, ['id' => $cinemaID], false);
+        // on extrait les objets métiers des résultats
+        return $this->extractObjects($resultat);
     }
 
 }
