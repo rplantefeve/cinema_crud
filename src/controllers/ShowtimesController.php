@@ -28,6 +28,13 @@ class ShowtimesController {
      * Route liste des séances d'un film
      */
     public function movieShowtimes() {
+        $adminConnected = false;
+
+        session_start();
+        // si l'utilisateur admin est connexté
+        if (array_key_exists("user", $_SESSION) and $_SESSION['user'] == 'admin@adm.adm') {
+            $adminConnected = true;
+        }
 
         // on assainit les entrées
         $sanitizedEntries = filter_input_array(INPUT_GET,
@@ -39,6 +46,9 @@ class ShowtimesController {
             $filmID = $sanitizedEntries['filmID'];
             // puis on récupère les informations du film en question
             $film   = $this->seanceDAO->getFilmDAO()->getMovieByID($filmID);
+
+            // on récupère les cinémas qui ne projettent pas encore le film
+            $cinemasUnplanned = $this->seanceDAO->getCinemaDAO()->getNonPlannedCinemas($filmID);
         }
         // sinon, on retourne à l'accueil
         else {
@@ -55,9 +65,11 @@ class ShowtimesController {
         $vue = new View("MovieShowtimes");
         // En passant les variables nécessaires à son bon affichage
         $vue->generer([
-            'cinemas' => $cinemas,
-            'film'    => $film,
-            'seances' => $seances]);
+            'cinemas'          => $cinemas,
+            'film'             => $film,
+            'seances'          => $seances,
+            'cinemasUnplanned' => $cinemasUnplanned,
+            'adminConnected'   => $adminConnected]);
     }
 
     /**

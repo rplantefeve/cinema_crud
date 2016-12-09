@@ -26,19 +26,29 @@ class CinemaDAO extends DAO {
         return $cinema;
     }
 
+    /**
+     * Renvoie un objet Cinema
+     * @param integer $cinemaID
+     * @return Cinema
+     */
     public function getCinemaByID($cinemaID) {
-        $requete = "SELECT * FROM cinema WHERE cinemaID = "
+        $requete  = "SELECT * FROM cinema WHERE cinemaID = "
                 . $cinemaID;
         $resultat = $this->extraire1xN($requete);
         // on crée l'objet métier Cinema
-        $cinema = $this->buildBusinessObject($resultat);
+        $cinema   = $this->buildBusinessObject($resultat);
         // on retourne le résultat extrait
         return $cinema;
     }
 
+    /**
+     * Renvoie la liste des cinéma d'un film
+     * @param integer $filmID
+     * @return array
+     */
     public function getMovieCinemasByMovieID($filmID) {
         // requête qui nous permet de récupérer la liste des cinémas pour un film donné
-        $requete = "SELECT DISTINCT c.* FROM cinema c"
+        $requete   = "SELECT DISTINCT c.* FROM cinema c"
                 . " INNER JOIN seance s ON c.cinemaID = s.cinemaID"
                 . " AND s.filmID = " . $filmID;
         // on extrait les résultats
@@ -47,11 +57,36 @@ class CinemaDAO extends DAO {
         return $this->extractObjects($resultats);
     }
 
+    /**
+     * Renvoie la liste des cinémas
+     * @return array
+     */
     public function getCinemasList() {
-        $requete = "SELECT * FROM cinema";
+        $requete   = "SELECT * FROM cinema";
         // on extrait les résultats
         $resultats = $this->extraireNxN($requete);
         // on extrait les objets métiers des résultats
+        return $this->extractObjects($resultats);
+    }
+
+    /**
+     * Renvoie une liste de cinémas qui ne projettent pas le film donné
+     * @param integer $filmID
+     * @return array
+     */
+    public function getNonPlannedCinemas($filmID) {
+        // requête de récupération des titres et des identifiants des films
+        // qui n'ont pas encore été programmés dans ce cinéma
+        $requete   = "SELECT c.cinemaID, c.denomination, c.adresse "
+                . "FROM cinema c"
+                . " WHERE c.cinemaID NOT IN ("
+                . "SELECT cinemaID"
+                . " FROM seance"
+                . " WHERE filmID = :id"
+                . ")";
+        // extraction des résultats
+        $resultats = $this->extraireNxN($requete, ['id' => $filmID], false);
+        // retour du résultat
         return $this->extractObjects($resultats);
     }
 

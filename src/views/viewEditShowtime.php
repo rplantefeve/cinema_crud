@@ -68,8 +68,8 @@ $this->titre = "Gestion des cinémas - Ajouter une séance";
     </form>
 <?php else: ?>
     <form method="get" action="index.php">
-        <input name="action" type="hidden" value="movieShowtimes"
-               <input name="filmID" type="hidden" value="<?= $film->getFilmId() ?>">
-        <button type="submit">Retour aux séances</button>
+        <input name="action" type="hidden" value="movieShowtimes">
+        <input name="filmID" type="hidden" value="<?= $film->getFilmId() ?>">
+        <button type="submit">Retour aux séances du film</button>
     </form>
 <?php endif; ?>
