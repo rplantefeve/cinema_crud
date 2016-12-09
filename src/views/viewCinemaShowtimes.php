@@ -2,7 +2,7 @@
 <header>
     <h1>Séances du cinéma <?= $cinema->getDenomination(); ?></h1>
     <h2><?= $cinema->getAdresse(); ?></h2>
-    <?php if ($filmsUnplanned) : ?>
+    <?php if ($adminConnected && $filmsUnplanned) : ?>
         <form action="index.php" method="get">
             <fieldset>
                 <legend>Ajouter un film à la programmation</legend>
