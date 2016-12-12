@@ -1,0 +1,95 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : 3 mars 2014, 16:55:53
+    Author     : ShaFaX
+*/
+body {
+    font-family: arial, helvetica;
+    font-size: 12px;
+    background-color: #fafaaa;
+}
+
+td {
+    font-family: arial, helvetica;
+    font-size: 12px;
+}
+
+th {
+    font-family: arial, helvetica;
+    font-size: 14px;
+}
+
+label {
+    font-size: 14px;
+    font-weight: bold;
+    display: block;
+    margin-top:10px;
+    margin-bottom: 2px;
+}
+
+table.std {
+    margin-bottom: 15px;
+    border-collapse: separate;
+    border-spacing: 0px;
+    border: 1px solid #ccc;
+}
+
+table.std th {
+    background-color: #cbe3f3;
+    padding: 6px 12px;
+    color: #4c2c00;
+    font-weight: bold;
+    border-bottom: 1px solid #acc7dd;
+    border-right: 1px solid #acc7dd;
+    border-top: 1px solid #dceffd;
+    border-left: 1px solid #dceffd;
+}
+table.std td {
+    padding: 6px 12px;
+    border-bottom: 1px solid #c7d8e5;
+    border-right: 1px solid #c7d8e5;
+    border-top: 1px solid #fff;
+    border-left: 1px solid #fff;
+    color:#333;
+    background-color: #eaf1f7;
+}
+
+table.std tr.new {
+    border-bottom: 1px dotted #acc7dd;
+    border-right: 1px dotted #acc7dd;
+    border-top: 1px dotted #dceffd;
+    border-left: 1px dotted #dceffd;
+
+}
+
+tr.new td {
+    font-style: italic;
+    background-color: transparent;
+    border-bottom: 3px dotted dimgray;
+    border-right: 3px dotted dimgray;
+    border-top: 3px dotted dimgray;
+    border-left: 3px dotted dimgray;
+    padding: 0 0 0 0;
+}
+
+button.add {
+    width: 100%;
+    background: transparent;
+    border: 0;
+    font-style: italic;
+    cursor: pointer;
+}
+
+button.add:hover{
+    background: #cbe3f3;
+}
+
+.error {
+    color: #c00;
+    margin-bottom: 10px;
+}
+
