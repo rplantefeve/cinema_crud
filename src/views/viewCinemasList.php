@@ -1,4 +1,7 @@
-<?php $this->titre = "Cinémas"; ?>
+<?php
+$this->titre = "Cinémas";
+$path        = $request->getBasePath();
+?>
 <header><h1>Liste des cinémas</h1></header>
 <table class="std">
     <tr>
@@ -14,9 +17,7 @@
             <td><?= $cinema->getDenomination(); ?></td>
             <td><?= $cinema->getAdresse(); ?></td>
             <td>
-                <form name="cinemaShowtimes" action="index.php" method="GET">
-                    <input name="action" type="hidden" value="cinemaShowtimes"/>
-                    <input name="cinemaID" type="hidden" value="<?= $cinema->getCinemaId(); ?>"/>
+                <form name="cinemaShowtimes" action="<?= $path . '/showtime/cinema/' . $cinema->getCinemaId() ?>" method="GET">
                     <input type="submit" value="Consulter les séances"/>
                 </form>
             </td>
@@ -24,16 +25,13 @@
             if ($isUserAdmin):
                 ?>
                 <td>
-                    <form name="modifyCinema" action="index.php" method="GET">
-                        <input name="action" type="hidden" value="editCinema">
-                        <input type="hidden" name="cinemaID" value="<?= $cinema->getCinemaId() ?>"/>
-                        <input type="image" src="images/modifyIcon.png" alt="Modify"/>
+                    <form name="modifyCinema" action="<?= $path . '/cinema/edit/' . $cinema->getCinemaId() ?>" method="GET">
+                        <input type="submit" id="modify" value="" />
                     </form>
                 </td>
                 <td>
-                    <form name="deleteCinema" action="index.php?action=deleteCinema" method="POST">
-                        <input type="hidden" name="cinemaID" value="<?= $cinema->getCinemaId() ?>"/>
-                        <input type="image" src="images/deleteIcon.png" alt="Delete"/>
+                    <form name="deleteCinema" action="<?= $path . '/cinema/delete/' . $cinema->getCinemaId() ?>" method="POST">
+                        <input type="image" src="<?= $path . '/images/deleteIcon.png' ?>" alt="Delete"/>
                     </form>
                 </td>
             <?php endif; ?>
@@ -44,15 +42,13 @@
         ?>
         <tr class="new">
             <td colspan="5">
-                <form name="addCinema" method="get">
-                    <input name="action" type="hidden" value="editCinema">
+                <form name="addCinema" method="get" action="<?= $path . '/cinema/add' ?>">
                     <button class="add" type="submit">Cliquer ici pour ajouter un cinéma</button>
                 </form>
             </td>
         </tr>
-
     <?php endif; ?>
 </table>
-<form name="backToMainPage" action="index.php">
+<form name="backToMainPage" action="<?= $path . '/home' ?>">
     <input type="submit" value="Retour à l'accueil"/>
 </form>

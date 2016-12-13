@@ -16,18 +16,13 @@
                 <td><?= $prefere->getFilm()->getTitre(); ?></td>
                 <td><?= $prefere->getCommentaire(); ?></td>
                 <td>
-                    <form name="modifyFavoriteMovie" action="index.php" method="GET">
-                        <input type="hidden" name="action" value="editFavoriteMovie"/>
-                        <input type="hidden" name="userID" value="<?= $utilisateur->getUserId(); ?>"/>
-                        <input type="hidden" name="filmID" value="<?= $prefere->getFilm()->getFilmId(); ?>"/>
-                        <input type="image" src="images/modifyIcon.png" alt="Modify"/>
+                    <form name="modifyFavoriteMovie" action="<?= $request->getBasePath() . '/favorite/edit/' . $utilisateur->getUserId() . '/' . $prefere->getFilm()->getFilmId() ?>" method="get">
+                        <input type="submit" id="modify" value=""/>
                     </form>
                 </td>
                 <td>
-                    <form name="deleteFavoriteMovie" action="index.php?action=deleteFavoriteMovie" method="POST">
-                        <input type="hidden" name="userID" value="<?= $utilisateur->getUserId(); ?>"/>
-                        <input type="hidden" name="filmID" value="<?= $prefere->getFilm()->getFilmId() ?>"/>
-                        <input type="image" src="images/deleteIcon.png" alt="Delete"/>
+                    <form name="deleteFavoriteMovie" action="<?= $request->getBasePath() . '/favorite/delete/' . $utilisateur->getUserId() . '/' . $prefere->getFilm()->getFilmId() ?>" method="POST">
+                        <input type="image" src="<?= $request->getBasePath() . '/images/deleteIcon.png' ?>" alt="Delete"/>
                     </form>
                 </td>
             </tr>
@@ -37,14 +32,13 @@
     ?>
     <tr class="new">
         <td colspan="4">
-            <form name="addFavoriteMovie" method="get">
-                <input name="action" type="hidden" value="editFavoriteMovie">
+            <form name="addFavoriteMovie" method="get" action="<?= $request->getBasePath() . '/favorite/add' ?>">
                 <button class="add" type="submit">Cliquer pour ajouter un film préféré...</button>
             </form>
         </td>
     </tr>        
 </table>
 
-<form name="backToMainPage" action="index.php">
+<form name="backToMainPage" action="<?= $request->getBasePath() . '/home' ?>">
     <input type="submit" value="Retour à l'accueil"/>
 </form>

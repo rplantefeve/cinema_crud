@@ -1,12 +1,3 @@
-/*
-To change this license header, choose License Headers in Project Properties.
-To change this template file, choose Tools | Templates
-and open the template in the editor.
-*/
-/* 
-    Created on : 3 mars 2014, 16:55:53
-    Author     : ShaFaX
-*/
 body {
     font-family: arial, helvetica;
     font-size: 12px;
@@ -93,3 +84,20 @@ button.add:hover{
     margin-bottom: 10px;
 }
 
+button.add:hover{ 
+    background: #cbe3f3; 
+} 
+ 
+.error { 
+    color: #c00; 
+    margin-bottom: 10px; 
+}
+
+input#modify { 
+    background-image: url('../images/modifyIcon.png'); 
+    background-color: transparent; 
+    border: solid 0px transparent;
+    width: 16px;
+    height: 17px;
+    cursor: pointer;
+}
