@@ -74,3 +74,27 @@ $app->match('/movie/add',
 
 $app->match('/movie/edit/{filmId}',
         'Semeformation\\Mvc\\Cinema_crud\\controllers\\MovieController::editMovie')->bind('movie_edit');
+
+/*
+ * Routes ShowtimesControlle
+ */
+$app->get('/showtime/cinema/{cinemaId}',
+        'Semeformation\\Mvc\\Cinema_crud\\controllers\\ShowtimesController::cinemaShowtimes')->bind('showtime_cinema_list');
+
+$app->get('/showtime/movie/{filmId}',
+        'Semeformation\\Mvc\\Cinema_crud\\controllers\\ShowtimesController::movieShowtimes')->bind('showtime_movie_list');
+
+$app->post('/showtime/delete/{filmId}/{cinemaId}',
+        'Semeformation\\Mvc\\Cinema_crud\\controllers\\ShowtimesController::deleteShowtime')->bind('showtime_delete');
+
+$app->match('/showtime/edit/{filmId}/{cinemaId}',
+        'Semeformation\\Mvc\\Cinema_crud\\controllers\\ShowtimesController::editShowtime')->bind('showtime_edit');
+
+$app->get('/showtime/cinema/add/{cinemaId}',
+        'Semeformation\\Mvc\\Cinema_crud\\controllers\\ShowtimesController::editShowtime')->bind('showtime_cinema_add');
+
+$app->get('/showtime/movie/add/{filmId}',
+        'Semeformation\\Mvc\\Cinema_crud\\controllers\\ShowtimesController::editShowtime')->bind('showtime_movie_add');
+
+$app->match('/showtime/add/{filmId}/{cinemaId}',
+        'Semeformation\\Mvc\\Cinema_crud\\controllers\\ShowtimesController::editShowtime')->bind('showtime_add');
