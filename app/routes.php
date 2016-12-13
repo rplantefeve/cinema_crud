@@ -59,3 +59,18 @@ $app->match('/cinema/add',
 
 $app->match('/cinema/edit/{cinemaId}',
         'Semeformation\\Mvc\\Cinema_crud\\controllers\\CinemaController::editCinema')->bind('cinema_edit');
+
+/*
+ * Routes MovieController 
+ */
+$app->get('/movie/list',
+        'Semeformation\\Mvc\\Cinema_crud\\controllers\\MovieController::moviesList')->bind('movie_list');
+
+$app->post('/movie/delete/{filmId}',
+        'Semeformation\\Mvc\\Cinema_crud\\controllers\\MovieController::deleteMovie')->bind('movie_delete');
+
+$app->match('/movie/add',
+        'Semeformation\\Mvc\\Cinema_crud\\controllers\\MovieController::editMovie')->bind('movie_add');
+
+$app->match('/movie/edit/{filmId}',
+        'Semeformation\\Mvc\\Cinema_crud\\controllers\\MovieController::editMovie')->bind('movie_edit');

@@ -4,6 +4,9 @@ namespace Semeformation\Mvc\Cinema_crud\controllers;
 
 use Semeformation\Mvc\Cinema_crud\dao\FilmDAO;
 use Semeformation\Mvc\Cinema_crud\views\View;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RedirectResponse;
+use Silex\Application;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -11,7 +14,7 @@ use Psr\Log\LoggerInterface;
  *
  * @author User
  */
-class MovieController {
+class MovieController extends Controller {
 
     private $filmDAO;
 
@@ -22,12 +25,12 @@ class MovieController {
     /**
      * Route Liste des films
      */
-    function moviesList() {
+    function moviesList(Request $request = null, Application $app = null) {
         $isUserAdmin = false;
 
-        session_start();
         // si l'utilisateur est pas connecté et qu'il est amdinistrateur
-        if (array_key_exists("user", $_SESSION) and $_SESSION['user'] == 'admin@adm.adm') {
+        if ($app['session']->get('user') and $app['session']->get('user')['username'] ==
+                'admin@adm.adm') {
             $isUserAdmin = true;
         }
         // on récupère la liste des films ainsi que leurs informations
@@ -36,48 +39,23 @@ class MovieController {
         // On génère la vue films
         $vue = new View("MoviesList");
         // En passant les variables nécessaires à son bon affichage
-        $vue->generer([
+        return $vue->generer($request,
+                [
             'films'       => $films,
             'isUserAdmin' => $isUserAdmin]);
     }
 
     /**
-     * Route Supprimer un film
-     */
-    public function deleteMovie() {
-        session_start();
-        // si l'utilisateur n'est pas connecté ou sinon s'il n'est pas amdinistrateur
-        if (!array_key_exists("user", $_SESSION) or $_SESSION['user'] !== 'admin@adm.adm') {
-            // renvoi à la page d'accueil
-            header('Location: index.php');
-            exit;
-        }
-
-        // si la méthode de formulaire est la méthode POST
-        if (filter_input(INPUT_SERVER, 'REQUEST_METHOD') === "POST") {
-
-            // on "sainifie" les entrées
-            $sanitizedEntries = filter_input_array(INPUT_POST,
-                    ['filmID' => FILTER_SANITIZE_NUMBER_INT]);
-
-            // suppression de la préférence de film
-            $this->filmDAO->deleteMovie($sanitizedEntries['filmID']);
-        }
-        // redirection vers la liste des films
-        header("Location: index.php?action=moviesList");
-        exit;
-    }
-
-    /**
      * Route Ajouter / Modifier un film
      */
-    function editMovie() {
-        session_start();
+    function editMovie(Request $request = null, Application $app = null,
+            string $filmId = null) {
+        
         // si l'utilisateur n'est pas connecté ou sinon s'il n'est pas amdinistrateur
-        if (!array_key_exists("user", $_SESSION) or $_SESSION['user'] !== 'admin@adm.adm') {
+        if (!$app['session']->get('user') or $app['session']->get('user')['username'] !==
+                'admin@adm.adm') {
             // renvoi à la page d'accueil
-            header('Location: index.php');
-            exit;
+            return $app->redirect($request->getBasePath() . '/home');
         }
 
         // variable qui sert à conditionner l'affichage du formulaire
@@ -87,49 +65,45 @@ class MovieController {
         if (filter_input(INPUT_SERVER, 'REQUEST_METHOD') === "POST") {
 
             // on assainit les entrées
-            $sanEntries = filter_input_array(INPUT_POST,
+            $entries = $this->extractArrayFromRequest($request,
                     [
-                'backToList'             => FILTER_DEFAULT,
-                'filmID'                 => FILTER_SANITIZE_NUMBER_INT,
-                'titre'                  => FILTER_SANITIZE_STRING,
-                'titreOriginal'          => FILTER_SANITIZE_STRING,
-                'modificationInProgress' => FILTER_SANITIZE_STRING
+                'backToList',
+                'titre',
+                'titreOriginal',
+                'modificationInProgress'
             ]);
 
             // si l'action demandée est retour en arrière
-            if ($sanEntries['backToList'] !== null) {
+            if ($entries['backToList'] !== null) {
                 // on redirige vers la page des films
-                header('Location: index.php?action=moviesList');
-                exit;
+                return $app->redirect($request->getBasePath() . '/movie/list');
             }
             // sinon (l'action demandée est la sauvegarde d'un film)
             else {
 
                 // et que nous ne sommes pas en train de modifier un film
-                if ($sanEntries['modificationInProgress'] == null) {
+                if ($entries['modificationInProgress'] == null) {
                     // on ajoute le film
-                    $this->filmDAO->insertNewMovie($sanEntries['titre'],
-                            $sanEntries['titreOriginal']);
+                    $this->filmDAO->insertNewMovie($entries['titre'],
+                            $entries['titreOriginal']);
                 }
                 // sinon, nous sommes dans le cas d'une modification
                 else {
                     // mise à jour du film
-                    $this->filmDAO->updateMovie($sanEntries['filmID'],
-                            $sanEntries['titre'], $sanEntries['titreOriginal']);
+                    $this->filmDAO->updateMovie($filmId,
+                            $entries['titre'], $entries['titreOriginal']);
                 }
                 // on revient à la liste des films
-                header('Location: index.php?action=moviesList');
-                exit;
+                return $app->redirect($request->getBasePath() . '/movie/list');
             }
         }// si la page est chargée avec $_GET
         elseif (filter_input(INPUT_SERVER, 'REQUEST_METHOD') === "GET") {
             // on assainit les entrées
-            $sanEntries = filter_input_array(INPUT_GET,
-                    ['filmID' => FILTER_SANITIZE_NUMBER_INT]);
-            if ($sanEntries && $sanEntries['filmID'] !== null && $sanEntries['filmID'] !==
+            $entries['filmID'] = $filmId;
+            if ($entries && $entries['filmID'] !== null && $entries['filmID'] !==
                     '') {
                 // on récupère les informations manquantes 
-                $film = $this->filmDAO->getMovieByID($sanEntries['filmID']);
+                $film = $this->filmDAO->getMovieByID($entries['filmID']);
             }
             // sinon, c'est une création
             else {
@@ -141,9 +115,39 @@ class MovieController {
         // On génère la vue films
         $vue = new View("EditMovie");
         // En passant les variables nécessaires à son bon affichage
-        $vue->generer([
+        return $vue->generer($request, [
             'film'          => $film,
             'isItACreation' => $isItACreation]);
+    }
+
+    /**
+     * Route Supprimer un film
+     * @param string $filmId
+     * @param Request $request
+     * @param Application $app
+     * @return type
+     */
+    public function deleteMovie(string $filmId, Request $request = null,
+            Application $app = null) {
+        
+        // si l'utilisateur n'est pas connecté ou sinon s'il n'est pas administrateur
+        if (!$app['session']->get('user') or $app['session']->get('user')['username'] !==
+                'admin@adm.adm') {
+            // renvoi à la page d'accueil
+            return $app->redirect($request->getBasePath() . '/home');
+        }
+
+        // si la méthode de formulaire est la méthode POST
+        if (filter_input(INPUT_SERVER, 'REQUEST_METHOD') === "POST") {
+
+            // on assainit les entrées
+            $entries['filmID'] = $filmId;
+
+            // suppression de la préférence de film
+            $this->filmDAO->deleteMovie($entries['filmID']);
+        }
+        // redirection vers la liste des films
+        return $app->redirect($request->getBasePath() . '/movie/list');
     }
 
 }
