@@ -1,6 +1,12 @@
-<?php $this->titre = "Ajouter / Modifier un cinéma"; ?>
+<?php
+$this->titre = "Ajouter / Modifier un cinéma";
+// si c'est une modification
+if (!$isItACreation) {
+    $action = $request->getBasePath() . '/cinema/edit/' . $cinema->getCinemaId();
+}
+?>
 <h1>Ajouter/Modifier un cinéma</h1>
-<form method="POST" name="editCinema" action="index.php?action=editCinema">
+<form method="POST" name="editCinema" action="<?= $action ?>">
     <label>Dénomination :</label>
     <input name="denomination" type="text" value="<?php
     if ($cinema) {
@@ -27,9 +33,13 @@
         <?php
     }
     ?>
-    <input type="submit" name="saveEntry" value="Sauvegarder"/>
+    <input type="submit" name="saveEntry" value="Sauvegarder" 
+    <?php
+    if ($isItACreation) {
+        echo ' formaction = "' . $request->getBasePath() . '/cinema/add"';
+    }
+    ?>/>
 </form>
-<form method="get" action="index.php">
-    <input type="hidden" name="action" value="cinemasList"/>
-    <input type="submit" name="backToList" value="Retour à la liste"/>
+<form method="get" action="<?= $request->getBasePath() . '/cinema/list' ?>">
+    <input type="submit" value="Retour à la liste"/>
 </form>

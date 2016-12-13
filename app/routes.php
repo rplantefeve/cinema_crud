@@ -31,13 +31,31 @@ $app->match('/favorite/list',
                 'Semeformation\\Mvc\\Cinema_crud\\controllers\\FavoriteController::editFavoriteMoviesList')
         ->bind('favorite_list');
 
-$app->match('/favorite/add', 'Semeformation\\Mvc\\Cinema_crud\\controllers\\FavoriteController::editFavoriteMovie')
+$app->match('/favorite/add',
+                'Semeformation\\Mvc\\Cinema_crud\\controllers\\FavoriteController::editFavoriteMovie')
         ->bind('favorite_add');
 
 // Modifier une préférence de film
-$app->match('/favorite/edit/{userId}/{filmId}', 'Semeformation\\Mvc\\Cinema_crud\\controllers\\FavoriteController::editFavoriteMovie'
+$app->match('/favorite/edit/{userId}/{filmId}',
+        'Semeformation\\Mvc\\Cinema_crud\\controllers\\FavoriteController::editFavoriteMovie'
 )->bind('favorite_edit');
 
 // Supprimer une préférence de film
-$app->post('/favorite/delete/{userId}/{filmId}', 'Semeformation\\Mvc\\Cinema_crud\\controllers\\FavoriteController::deleteFavoriteMovie'
+$app->post('/favorite/delete/{userId}/{filmId}',
+        'Semeformation\\Mvc\\Cinema_crud\\controllers\\FavoriteController::deleteFavoriteMovie'
 )->bind('favorite_delete');
+
+/*
+ * Routes CinemaController 
+ */
+$app->get('/cinema/list',
+        'Semeformation\\Mvc\\Cinema_crud\\controllers\\CinemaController::cinemasList')->bind('cinema_list');
+
+$app->post('/cinema/delete/{cinemaId}',
+        'Semeformation\\Mvc\\Cinema_crud\\controllers\\CinemaController::deleteCinema')->bind('cinema_delete');
+
+$app->match('/cinema/add',
+        'Semeformation\\Mvc\\Cinema_crud\\controllers\\CinemaController::editCinema')->bind('cinema_add');
+
+$app->match('/cinema/edit/{cinemaId}',
+        'Semeformation\\Mvc\\Cinema_crud\\controllers\\CinemaController::editCinema')->bind('cinema_edit');
