@@ -1,5 +1,13 @@
-<?php $this->titre = "Editer un film préféré"; ?>
-<form method="POST" name="editFavoriteMovie" action="index.php?action=editFavoriteMovie">
+<?php
+$this->titre = "Editer un film préféré";
+$action      = $request->getBasePath() . '/favorite/edit/' . $preference['userID'];
+// si c'est une modification
+if (!$isItACreation) {
+    $action .= '/' . $preference['filmID'];
+}
+?>
+<header><h1>Ajout / Modification d'un film préféré</h1></header>
+<form method="POST" name="editFavoriteMovie" action="<?= $action ?>">
     <label>Titre :</label>
     <select name="filmID" <?php
     if (!$isItACreation): echo "disabled";
@@ -45,6 +53,11 @@
         <?php
     }
     ?>
-    <input type="submit" name="saveEntry" value="Sauvegarder"/>
-    <input type="submit" name="backToList" value="Retour à la liste"/>
+    <input type="submit" name="saveEntry" value="Sauvegarder" <?php
+    if ($isItACreation) {
+        echo ' formaction = "' . $request->getBasePath() . '/favorite/add"';
+    }
+    ?>
+           />
+    <input type="submit" name="backToList" value="Retour à la liste" formaction="<?= $request->getBasePath() . '/favorite/list' ?>"/>
 </form>

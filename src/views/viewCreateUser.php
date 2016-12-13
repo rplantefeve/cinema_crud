@@ -1,6 +1,6 @@
 <?php $this->titre = "Création d'un nouvel utilisateur"; ?>
 <header><h1>Création d'un nouvel utilisateur</h1></header>
-<form name="createUser" method="POST" action="index.php?action=createNewUser">
+<form name="createUser" method="post" action="<?= $request->getBasePath() . '/user/add' ?>">
     <!-- la longueur maximum des input est en corrélation avec la longueur maximum des champs dans la BDD -->
     <label>Prénom :</label>
     <input name='firstName' type="text" maxlength="30" value="<?= $sanitizedEntries['firstName']
@@ -54,7 +54,7 @@
     </div>
     <input type="submit" value="Créer un nouvel utilisateur"/>
 </form>
-<form name="backToMainPage" action="index.php">
+<form name="backToMainPage" action="<?= $request->getBasePath() . '/home' ?>">
     <input type="submit" value="Retour à l'accueil"/>
 </form>
 
