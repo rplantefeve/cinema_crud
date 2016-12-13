@@ -96,5 +96,8 @@ button.add:hover{
 input#modify { 
     background-image: url('../images/modifyIcon.png'); 
     background-color: transparent; 
-    border: solid 0px transparent; 
+    border: solid 0px transparent;
+    width: 16px;
+    height: 17px;
+    cursor: pointer;
 }
