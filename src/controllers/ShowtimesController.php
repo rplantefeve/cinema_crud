@@ -18,7 +18,7 @@ class ShowtimesController {
 
     private $seanceDAO;
 
-    public function __construct(LoggerInterface $logger) {
+    public function __construct(LoggerInterface $logger = null) {
         $this->seanceDAO = new SeanceDAO($logger);
         $this->seanceDAO->setCinemaDAO(new CinemaDAO($logger));
         $this->seanceDAO->setFilmDAO(new FilmDAO($logger));

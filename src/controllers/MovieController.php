@@ -15,7 +15,7 @@ class MovieController {
 
     private $filmDAO;
 
-    public function __construct(LoggerInterface $logger) {
+    public function __construct(LoggerInterface $logger = null) {
         $this->filmDAO = new FilmDAO($logger);
     }
 
