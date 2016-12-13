@@ -1,12 +1,14 @@
-<?php $this->titre = 'Séances par film'; ?>
+<?php
+ $this->titre = 'Séances par film'; 
+$path        = $request->getBasePath();
+?>
 <header>
     <h1>Séances du film <?= $film->getTitre() ?></h1>
     <h2><?= $film->getTitreOriginal() ?></h2>
-    <?php if ($cinemasUnplanned) : ?>
-        <form action="index.php" method="get">
+    <?php if ($adminConnected && $cinemasUnplanned) : ?>
+        <form action="<?= $path . '/showtime/movie/add/' . $film->getFilmId() ?>" method="get">
             <fieldset>
                 <legend>Programmer le film dans un cinéma</legend>
-                <input name="filmID" type="hidden" value="<?= $film->getFilmId() ?>">
                 <select name="cinemaID">
                     <?php
                     foreach ($cinemasUnplanned as $cinema) :
@@ -16,7 +18,6 @@
                     endforeach;
                     ?>    
                 </select>
-                <input name="action" type="hidden" value="editShowtime">
                 <input name = "from" type = "hidden" value = "movie">
                 <button type = "submit">Ajouter</button>
             </fieldset>
@@ -64,25 +65,20 @@
                         <td><?= $seance->getVersion() ?></td>
                         <?php if ($adminConnected): ?>
                             <td>
-                                <form name="modifyMovieShowtime" action="index.php" method="GET">
-                                    <input name="action" type="hidden" value="editShowtime">
-                                    <input type="hidden" name="cinemaID" value="<?= $cinema->getCinemaId() ?>"/>
-                                    <input type="hidden" name="filmID" value="<?= $film->getFilmId() ?>"/>
+                                <form name="modifyMovieShowtime" action="<?= $path . '/showtime/edit/' . $film->getFilmId() . '/' . $cinema->getCinemaId() ?>" method="GET">
                                     <input type="hidden" name="heureDebut" value="<?= $seance->getHeureDebut()->format('Y-m-d H:i') ?>"/>
                                     <input type="hidden" name="heureFin" value="<?= $seance->getHeureFin()->format('Y-m-d H:i') ?>"/>
                                     <input type="hidden" name="version" value="<?= $seance->getVersion() ?>"/>
-                                    <input type="image" src="images/modifyIcon.png" alt="Modify"/>
+                                    <input type="submit" id="modify" value=""/>
                                     <input name="from" type="hidden" value="movie">
                                 </form>
                             </td>
                             <td>
-                                <form name="deleteMovieShowtime" action="index.php?action=deleteShowtime" method="POST">
-                                    <input type="hidden" name="cinemaID" value="<?= $cinema->getCinemaId() ?>"/>
-                                    <input type="hidden" name="filmID" value="<?= $film->getFilmId() ?>"/>
+                                <form name="deleteMovieShowtime" action="<?= $path . '/showtime/delete/' . $film->getFilmId() . '/' . $cinema->getcinemaId() ?>" method="POST">
                                     <input type="hidden" name="heureDebut" value="<?= $seance->getHeureDebut()->format('Y-m-d H:i') ?>"/>
                                     <input type="hidden" name="heureFin" value="<?= $seance->getHeureFin()->format('Y-m-d H:i') ?>"/>
                                     <input type="hidden" name="version" value="<?= $seance->getVersion() ?>"/>
-                                    <input type="image" src="images/deleteIcon.png" alt="Delete"/>
+                                    <input type="image" src="<?= $path ?>/images/deleteIcon.png" alt="Delete"/>
                                     <input name="from" type="hidden" value="movie">
                                 </form>
                             </td>
@@ -94,10 +90,7 @@
                     ?>
                     <tr class="new">
                         <td colspan="6">
-                            <form action="index.php" method="get">
-                                <input name="action" type="hidden" value="editShowtime">
-                                <input name="cinemaID" type="hidden" value="<?= $cinema->getCinemaId() ?>">
-                                <input name="filmID" type="hidden" value="<?= $film->getFilmId() ?>">
+                            <form action="<?= $path . '/showtime/add/' . $film->getFilmId() . '/' . $cinema->getCinemaId() ?>" method="get">
                                 <input name="from" type="hidden" value="movie">
                                 <button class="add" type="submit">Cliquer ici pour ajouter une séance...</button>
                             </form>
@@ -113,7 +106,6 @@
     endif;
     ?>
 </ul>
-<form method="GET" action="index.php">
-    <input name="action" type="hidden" value="moviesList"/>
+<form name="moviesList" method="GET" action="<?= $path . '/movie/list' ?>">
     <input type="submit" value="Retour à la liste des films"/>
 </form>

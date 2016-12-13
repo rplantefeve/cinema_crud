@@ -18,23 +18,29 @@ class View {
 
     public function __construct($action) {
         // La vue à générer dépend de l'action demandée
-        $this->fichier = "views/view" . $action . ".php";
+        $this->fichier = __DIR__ . "/view" . $action . ".php";
     }
 
-    /*
-     * Génère et affiche la vue
+    /**
+     * 
+     * @param \Symfony\Component\HttpFoundation\Request $request
+     * @param array $donnees
+     * @return type
      */
-
-    public function generer($donnees = null) {
+    public function generer(\Symfony\Component\HttpFoundation\Request $request,
+            $donnees = null) {
+        // on passe 
+        $donnees['request'] = $request;
         // Génération de la partie spécifique de la vue
-        $content = $this->genererFichier($this->fichier,
-                $donnees);
+        $content            = $this->genererFichier($this->fichier, $donnees);
         // utilisation du template avec chargement des données spécifiques
-        $vue = $this->genererFichier(__DIR__ . './viewTemplate.php',
-                ['title' => $this->titre,
-            'content' => $content]);
+        $vue                = $this->genererFichier(__DIR__ . '/viewTemplate.php',
+                [
+            'title'   => $this->titre,
+            'content' => $content,
+            'request' => $request]);
         // Renvoi de la vue générée au navigateur
-        echo $vue;
+        return $vue;
     }
 
     /*
@@ -54,7 +60,7 @@ class View {
             // Renvoi du contenu du tampon et nettoyage
             return ob_get_clean();
         } else {
-            throw new Exception('Impossible de find a view named ' . $fichier);
+            throw new Exception('Impossible to find a view named ' . $fichier);
         }
     }
 

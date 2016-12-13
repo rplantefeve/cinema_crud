@@ -7,7 +7,7 @@
     // si pas encore authentifié
     if (!$loginSuccess):
         ?>
-        <form method="POST" name="editFavoriteMoviesList" action="index.php">
+        <form method="post" name="editFavoriteMoviesList" action="<?= $request->getBasePath() . '/login' ?>">
 
             <label>Adresse email : </label>
             <input type="email" name="email" required/>
@@ -22,28 +22,25 @@
             </div>
             <input type="submit" value="Editer ma liste de films préférés"/>
         </form>
-        <p>Pas encore d'espace personnel ? <a href="index.php?action=createNewUser">Créer sa liste de films préférés.</a></p>
+        <p>Pas encore d'espace personnel ? <a href="<?= $request->getBasePath() . '/user/add' ?>">Créer sa liste de films préférés.</a></p>
         <?php
     // sinon (utilisateur authentifié)
     else:
         ?>
-        <form method="GET" action="index.php">
-            <input type="hidden" name="action" value="editFavoriteMoviesList"/>
+        <form action="<?= $request->getBasePath() . '/favorite/list' ?>">
             <input type="submit" value="Editer ma liste de films préférés"/>
         </form>
-        <a href="index.php?action=logout">Se déconnecter</a>
+        <a href="<?= $request->getBasePath() . '/logout' ?>">Se déconnecter</a>
     <?php endif; ?>
 </div>
 <!-- Gestion des cinémas -->
 <div>
     <header>
         <h1>Gestion des cinémas</h1>
-        <form name="cinemasList" method="GET" action="index.php">
-            <input name="action" type="hidden" value="cinemasList"/>
+        <form name="cinemasList" method="GET" action="<?= $request->getBasePath() . '/cinema/list' ?>">
             <input type="submit" value="Consulter la liste des cinémas"/>
         </form>
-        <form name="moviesList" method="GET" action="index.php">
-            <input name="action" type="hidden" value="moviesList"/>
+        <form name="moviesList" method="GET" action="<?= $request->getBasePath() . '/movie/list' ?>">
             <input type="submit" value="Consulter la liste des films"/>
         </form>
     </header>
