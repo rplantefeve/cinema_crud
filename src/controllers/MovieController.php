@@ -65,7 +65,7 @@ class MovieController extends Controller {
         if (filter_input(INPUT_SERVER, 'REQUEST_METHOD') === "POST") {
 
             // on assainit les entrées
-            $entries = $this->extractArrayFromRequest($request,
+            $entries = $this->extractArrayFromPostRequest($request,
                     [
                 'backToList',
                 'titre',

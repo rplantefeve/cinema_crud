@@ -49,7 +49,7 @@ class HomeController extends Controller {
             // si la méthode POST a été employée
             if (filter_input(INPUT_SERVER, 'REQUEST_METHOD') === "POST") {
 
-                $entries = $this->extractArrayFromRequest($request,
+                $entries = $this->extractArrayFromPostRequest($request,
                         ['email', 'password']);
 
                 return $this->login($entries, $areCredentialsOK, $app, $request);
@@ -113,7 +113,7 @@ class HomeController extends Controller {
         // si la méthode POST est utilisée, cela signifie que le formulaire a été envoyé
         if (filter_input(INPUT_SERVER, 'REQUEST_METHOD') === "POST") {
             // on assainit les entrées
-            $entries = $this->extractArrayFromRequest($request,
+            $entries = $this->extractArrayFromPostRequest($request,
                     ['firstName', 'lastName', 'email', 'password', 'passwordConfirmation']);
 
             // si le prénom n'a pas été renseigné

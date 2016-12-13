@@ -72,7 +72,7 @@ class FavoriteController extends Controller {
         if (filter_input(INPUT_SERVER, 'REQUEST_METHOD') === "POST") {
 
             // on extrait les données post de la requête
-            $entries = $this->extractArrayFromRequest($request,
+            $entries = $this->extractArrayFromPostRequest($request,
                     [
                 'backToList',
                 'filmID',
