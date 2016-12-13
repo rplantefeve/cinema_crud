@@ -32,10 +32,10 @@ class ShowtimesController extends Controller {
      * @param string $filmId
      * @param Request $request
      * @param Application $app
-     * @return RedirectResponse
+     * @return string
      */
     public function movieShowtimes(string $filmId, Request $request = null,
-            Application $app = null): RedirectResponse {
+            Application $app = null) {
         $adminConnected = false;
 
         // si l'utilisateur est pas connecté et qu'il est amdinistrateur

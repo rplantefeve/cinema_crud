@@ -1,4 +1,7 @@
-<?php $this->titre = 'Films'; ?>
+<?php 
+$this->titre = 'Films';
+$path        = $request->getBasePath();
+?>
 <header><h1>Liste des films</h1></header>
 <table class="std">
     <tr>
@@ -14,7 +17,7 @@
             <td><?= $film->getTitre(); ?></td>
             <td><?= $film->getTitreOriginal(); ?></td>
             <td>
-                <form name="movieShowtimes" action="<?= $request->getBasePath() . '/showtime/' . $film->getFilmId() ?>" method="GET">
+                <form name="movieShowtimes" action="<?= $path . '/showtime/movie/' . $film->getFilmId() ?>" method="GET">
                     <input type="submit" value="Consulter les séances"/>
                 </form>
             </td>
@@ -22,13 +25,13 @@
             if ($isUserAdmin):
                 ?>
                 <td>
-                    <form name="modifyMovie" action="<?= $request->getBasePath() . '/movie/edit/' . $film->getFilmId() ?>" method="GET">
+                    <form name="modifyMovie" action="<?= $path . '/movie/edit/' . $film->getFilmId() ?>" method="GET">
                         <input type="submit" id="modify" value="" />
                     </form>
                 </td>
                 <td>
-                    <form name="deleteMovie" action="<?= $request->getBasePath() . '/movie/delete/' . $film->getFilmId() ?>" method="POST">
-                        <input type="image" src="<?= $request->getBasePath() . '/images/deleteIcon.png' ?>" alt="Delete"/>
+                    <form name="deleteMovie" action="<?= $path . '/movie/delete/' . $film->getFilmId() ?>" method="POST">
+                        <input type="image" src="<?= $path . '/images/deleteIcon.png' ?>" alt="Delete"/>
                     </form>
                 </td>
             <?php endif; ?>
@@ -39,13 +42,13 @@
     ?>
         <tr class="new">
             <td colspan="5">
-                <form name="addMovie" action="<?= $request->getBasePath() . '/movie/add' ?>">
+                <form name="addMovie" action="<?= $path . '/movie/add' ?>">
                     <button class="add" type="submit">Cliquer ici pour ajouter un film...</button>
                 </form>
             </td>
         </tr>
     <?php endif; ?>
 </table>
-<form name="backToMainPage" action="<?= $request->getBasePath() . '/home' ?>">
+<form name="backToMainPage" action="<?= $path . '/home' ?>">
     <input type="submit" value="Retour à l'accueil"/>
 </form>
