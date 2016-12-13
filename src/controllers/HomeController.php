@@ -160,7 +160,7 @@ class HomeController extends Controller {
                 $this->utilisateurDAO->createUser($entries['firstName'],
                         $entries['lastName'], $entries['email'], $password);
 
-                $username = $sanitizedEntries['email'];
+                $username = $entries['email'];
                 $userId   = $this->utilisateurDAO->getUserIDByEmailAddress($username);
                 $app['session']->set('user',
                         array('username' => $username, 'userId' => $userId));
