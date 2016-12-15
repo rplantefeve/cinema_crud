@@ -1,7 +1,5 @@
 <?php
 
-namespace Semeformation\Mvc\Cinema_crud;
-
 use Silex\Application;
 use Silex\Provider\SessionServiceProvider;
 use Monolog\Logger;
@@ -23,3 +21,4 @@ $app->register(new SessionServiceProvider());
 require dirname(__DIR__) . '/app/routes.php';
 // Démarrage de l'application
 $app->run();
+
