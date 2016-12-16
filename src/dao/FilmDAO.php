@@ -62,14 +62,6 @@ class FilmDAO extends DAO {
         return $this->extractObjects($resultats);
     }
 
-    /**
-     * Méthode qui renvoie toutes les informations d'un film
-     * @return array[]
-     */
-    public function getMovieByID($filmID) {
-        
-    }
-
     public function getCinemaMoviesByCinemaID($cinemaID) {
         // requête qui nous permet de récupérer la liste des films pour un cinéma donné
         $requete   = "SELECT DISTINCT f.* FROM film f"
