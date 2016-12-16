@@ -27,12 +27,26 @@ class FilmDAO extends DAO {
         }
         return $film;
     }
-    
-    public function find($userId) {
-        
+
+    /**
+     * Retourne le BO Film en fonction de son identifiant
+     * @param type $filmId
+     * @return type
+     * @throws Exception
+     */
+    public function find($filmId) {
+        $requete  = "SELECT * FROM film WHERE filmID = ?";
+        $resultat = $this->getDb()->fetchAssoc($requete, [$filmId]);
+        // si trouvé
+        if ($resultat) {
+            // on récupère et on retourne l'objet Film
+            return $this->buildBusinessObject($resultat);
+        } else {
+            throw new Exception('Aucun film trouvé pour l\'id=' . $filmId);
+        }
     }
-    
-    public function findAll(){
+
+    public function findAll() {
         
     }
 
@@ -53,12 +67,7 @@ class FilmDAO extends DAO {
      * @return array[]
      */
     public function getMovieByID($filmID) {
-        $requete  = "SELECT * FROM film WHERE filmID = :filmID";
-        $resultat = $this->extraire1xN($requete, ['filmID' => $filmID]);
-        // on récupÃ¨re l'objet Film
-        $film     = $this->buildBusinessObject($resultat);
-        // on retourne le résultat extrait
-        return $film;
+        
     }
 
     public function getCinemaMoviesByCinemaID($cinemaID) {

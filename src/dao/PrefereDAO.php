@@ -14,24 +14,17 @@ use Semeformation\Mvc\Cinema_crud\dao\UtilisateurDAO;
  */
 class PrefereDAO extends DAO {
 
+    /**
+     * DAO Film
+     * @var \Semeformation\Mvc\Cinema_crud\dao\FilmDAO 
+     */
     private $filmDAO;
+
+    /**
+     * DAO Utilisateur
+     * @var \Semeformation\Mvc\Cinema_crud\dao\UtilisateurDAO; 
+     */
     private $utilisateurDAO;
-
-    public function getFilmDAO() {
-        return $this->filmDAO;
-    }
-
-    public function getUtilisateurDAO() {
-        return $this->utilisateurDAO;
-    }
-
-    public function setFilmDAO(FilmDAO $filmDAO) {
-        $this->filmDAO = $filmDAO;
-    }
-
-    public function setUtilisateurDAO(UtilisateurDAO $utilisateurDAO) {
-        $this->utilisateurDAO = $utilisateurDAO;
-    }
 
     /**
      * Crée une préférence à partir d'une ligne de la BDD.
@@ -45,23 +38,24 @@ class PrefereDAO extends DAO {
         // trouver l'utilisateur concerné grâce à son identifiant
         if (array_key_exists('USERID', $row)) {
             $userId      = $row['USERID'];
-            $utilisateur = $this->utilisateurDAO->getUserByID($userId);
+            $utilisateur = $this->utilisateurDAO->find($userId);
             $prefere->setUtilisateur($utilisateur);
         }
         // trouver le film concerné grâce à son identifiant
         if (array_key_exists('FILMID', $row)) {
             $filmId = $row['FILMID'];
-            $film   = $this->filmDAO->getMovieByID($filmId);
+            $film   = $this->filmDAO->find($filmId);
             $prefere->setFilm($film);
         }
+        // on retourne l'objet métier ainsi "hydraté"
         return $prefere;
     }
-    
+
     public function find($userId) {
         
     }
-    
-    public function findAll(){
+
+    public function findAll() {
         
     }
 
@@ -146,7 +140,7 @@ class PrefereDAO extends DAO {
     }
 
     /**
-     * 
+     * Supprime une préférence de film
      * @param type $userID
      * @param type $filmID
      */
@@ -159,6 +153,22 @@ class PrefereDAO extends DAO {
         if ($this->logger) {
             $this->logger->info('Movie ' . $filmID . ' successfully deleted from ' . $userID . '\'s preferences.');
         }
+    }
+
+    public function getFilmDAO() {
+        return $this->filmDAO;
+    }
+
+    public function getUtilisateurDAO() {
+        return $this->utilisateurDAO;
+    }
+
+    public function setFilmDAO(FilmDAO $filmDAO) {
+        $this->filmDAO = $filmDAO;
+    }
+
+    public function setUtilisateurDAO(UtilisateurDAO $utilisateurDAO) {
+        $this->utilisateurDAO = $utilisateurDAO;
     }
 
 }

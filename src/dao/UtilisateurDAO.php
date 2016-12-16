@@ -29,21 +29,33 @@ class UtilisateurDAO extends DAO {
         return $utilisateur;
     }
 
+    /**
+     * Retourne le BO Utilisateur en fonction de son identifiant
+     * @param type $userId
+     * @throws Exception
+     */
     public function find($userId) {
-        
+        $requete  = "SELECT * FROM utilisateur WHERE userID = ?";
+        $resultat = $this->getDb()->fetchAssoc($requete, [$userId]);
+        // si trouvé
+        if ($resultat) {
+            // on récupère l'objet Film
+            return $this->buildBusinessObject($resultat);
+        } else {
+            throw new Exception('Aucun utilisateur trouvé pour l\'id=' . $userId);
+        }
     }
-    
-    public function findAll(){
+
+    public function findAll() {
         
     }
 
-    /*
+    /**
      * Méthode qui teste si l'utilisateur est bien présent dans la BDD
      * @param string $email Email de l'utilisateur
      * @param string $password Mot de passe de l'utilisateur
      * @throw Exception si on ne trouve pas l'utilisateur en BDD
      */
-
     public function verifyUserCredentials($email, $passwordSaisi) {
         // extraction du mdp de l'utilisateur
         $requete   = "SELECT password FROM utilisateur WHERE adresseCourriel = :email";
@@ -60,10 +72,13 @@ class UtilisateurDAO extends DAO {
         }
     }
 
-    /*
-     * 
+    /**
+     * Teste si le password saisi correspond bien à celui de l'utilisateur
+     * @param type $passwordSaisi
+     * @param type $passwordBDD
+     * @param type $email
+     * @throws Exception
      */
-
     private function testPasswords($passwordSaisi, $passwordBDD, $email) {
         // on teste si les mots de passe correspondent
         if (password_verify($passwordSaisi, $passwordBDD)) {
@@ -75,12 +90,11 @@ class UtilisateurDAO extends DAO {
         }
     }
 
-    /*
+    /**
      * Méthode qui retourne l'id d'un utilisateur passé en paramètre
      * @param string $utilisateur Adresse email de l'utilisateur
      * @return string $id Identifiant de l'utilisateur
      */
-
     public function getUserIDByEmailAddress($utilisateur) {
         // requête qui récupère l'ID grâce à l'adresse email
         $requete = "SELECT userID FROM utilisateur WHERE adresseCourriel = :email";
@@ -99,12 +113,11 @@ class UtilisateurDAO extends DAO {
         }
     }
 
-    /*
+    /**
      * Méthode qui retourne l'utilisateur initialisé
      * @param string $utilisateur Adresse email de l'utilisateur
      * @return Utilisateur L'Utilisateur initialisé
      */
-
     public function getUserByEmailAddress($email) {
         // on construit la requête qui va récupérer les informations de l'utilisateur
         $requete = "SELECT * FROM utilisateur "
@@ -120,28 +133,13 @@ class UtilisateurDAO extends DAO {
         return $utilisateur;
     }
 
-    /*
-     * Méthode qui renvoie toutes les informations d'un utilisateur
-     * @return Utilisateur
-     */
-
-    public function getUserByID($userID) {
-        $requete  = "SELECT * FROM utilisateur WHERE userID = :userID";
-        $resultat = $this->extraire1xN($requete, ['userID' => $userID]);
-        // on récupère l'objet Film
-        $user     = $this->buildBusinessObject($resultat);
-        // on retourne le résultat extrait
-        return $user;
-    }
-
-    /*
+    /**
      * Méthode qui ajoute un utilisateur dans la BDD
      * @param string $firstName Prénom de l'utilisateur
      * @param string $lastName Nom de l'utilisateur
      * @param string $email Adresse email de l'utilisateur
      * @param string $password Mot de passe de l'utilisateur
      */
-
     public function createUser($firstName, $lastName, $email, $password) {
         // construction de la requête
         $requete = "INSERT INTO utilisateur (prenom, nom, adresseCourriel, password) "

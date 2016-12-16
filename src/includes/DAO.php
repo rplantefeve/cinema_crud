@@ -39,7 +39,7 @@ abstract class DAO {
      * Donne accès à la connexion à la BDD
      * @return Connection
      */
-    protected function getDb(): \Doctrine\DBAL\Connection {
+    protected function getDb() {
         return $this->db;
     }
 

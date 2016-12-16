@@ -40,7 +40,7 @@ class CinemaDAO extends DAO {
             // on crée et on retourne l'objet métier Cinema
             return $this->buildBusinessObject($resultat);
         } else {
-            throw new Exception('Aucun film trouvé pour l\'id=' . $cinemaID);
+            throw new Exception('Aucun cinéma trouvé pour l\'id=' . $cinemaID);
         }
     }
 
