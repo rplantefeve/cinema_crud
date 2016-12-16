@@ -43,6 +43,16 @@ $app['dao.prefere'] = function () use ($app) {
     return $prefereDAO;
 };
 
+// enregistrement du SeanceDAO
+$app['dao.seance'] = function () use ($app) {
+    $seanceDAO = new \Semeformation\Mvc\Cinema_crud\dao\SeanceDAO($app['db']);
+    // init. du FilmDAO
+    $seanceDAO->setFilmDAO($app['dao.film']);
+    // init. du CinemaDAO
+    $seanceDAO->setCinemaDAO($app['dao.cinema']);
+    return $seanceDAO;
+};
+
 
 // appels aux routes configurées
 require dirname(__DIR__) . '/app/routes.php';
