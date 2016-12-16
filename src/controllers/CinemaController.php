@@ -2,7 +2,6 @@
 
 namespace Semeformation\Mvc\Cinema_crud\controllers;
 
-use Semeformation\Mvc\Cinema_crud\dao\CinemaDAO;
 use Semeformation\Mvc\Cinema_crud\views\View;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -16,10 +15,8 @@ use Psr\Log\LoggerInterface;
  */
 class CinemaController extends Controller {
 
-    private $cinemaDAO;
-
     public function __construct(LoggerInterface $logger = null) {
-        $this->cinemaDAO = new CinemaDAO($logger);
+        
     }
 
     /**
@@ -87,13 +84,13 @@ class CinemaController extends Controller {
                 // et que nous ne sommes pas en train de modifier un cinéma
                 if ($entries['modificationInProgress'] == null) {
                     // on ajoute le cinéma
-                    $this->cinemaDAO->insertNewCinema($entries['denomination'],
+                    $app['dao.cinema']->insertNewCinema($entries['denomination'],
                             $entries['adresse']);
                 }
                 // sinon, nous sommes dans le cas d'une modification
                 else {
                     // mise à jour du cinéma
-                    $this->cinemaDAO->updateCinema($cinemaId,
+                    $app['dao.cinema']->updateCinema($cinemaId,
                             $entries['denomination'], $entries['adresse']);
                 }
                 // on revient à la liste des cinémas
@@ -107,7 +104,7 @@ class CinemaController extends Controller {
             if ($entries && $entries['cinemaID'] !== null && $entries['cinemaID'] !==
                     '') {
                 // on récupère les informations manquantes 
-                //$cinema = $this->cinemaDAO->getCinemaByID($entries['cinemaID']);
+                //$cinema = $app['dao.cinema']->getCinemaByID($entries['cinemaID']);
                 $cinema = $app['dao.cinema']->find($entries['cinemaID']);
             }
             // sinon, c'est une création
@@ -149,7 +146,7 @@ class CinemaController extends Controller {
             $entries['cinemaID'] = $cinemaId;
 
             // suppression de la préférence de film
-            $this->cinemaDAO->deleteCinema($entries['cinemaID']);
+            $app['dao.cinema']->deleteCinema($entries['cinemaID']);
         }
         // redirection vers la liste des cinémas
         return $app->redirect($request->getBasePath() . '/cinema/list');

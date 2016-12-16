@@ -2,9 +2,6 @@
 
 namespace Semeformation\Mvc\Cinema_crud\controllers;
 
-use Semeformation\Mvc\Cinema_crud\dao\FilmDAO;
-use Semeformation\Mvc\Cinema_crud\dao\CinemaDAO;
-use Semeformation\Mvc\Cinema_crud\dao\SeanceDAO;
 use Semeformation\Mvc\Cinema_crud\views\View;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RedirectResponse;
