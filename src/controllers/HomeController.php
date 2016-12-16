@@ -17,16 +17,11 @@ use Exception;
  */
 class HomeController extends Controller {
 
-    /**
-     * L'utilisateur de l'application
-     */
-    private $utilisateurDAO;
 
     /**
      * Constructeur de la classe
      */
     public function __construct(LoggerInterface $logger = null) {
-        $this->utilisateurDAO = new UtilisateurDAO($logger);
     }
 
     /**
@@ -77,19 +72,19 @@ class HomeController extends Controller {
             Application $app, Request $request) : RedirectResponse{
         try {
             // On vérifie l'existence de l'utilisateur
-            $this->utilisateurDAO->verifyUserCredentials($sanitizedEntries['email'],
+            $app['dao.utilisateur']->verifyUserCredentials($sanitizedEntries['email'],
                     $sanitizedEntries['password']);
 
             // on enregistre l'utilisateur en session
             $username = $sanitizedEntries['email'];
-            $userId   = $this->utilisateurDAO->getUserIDByEmailAddress($username);
+            $userId   = $app['dao.utilisateur']->getUserIDByEmailAddress($username);
             $app['session']->set('user',
                     array('username' => $username, 'userId' => $userId));
             // redirection vers la liste des préférences de films
             return $app->redirect($request->getBasePath() . '/favorite/list');
         } catch (Exception $ex) {
             $areCredentialsOK = false;
-            $this->utilisateurDAO->getLogger()->error($ex->getMessage());
+            $app['dao.utilisateur']->getLogger()->error($ex->getMessage());
         }
     }
 
@@ -131,7 +126,7 @@ class HomeController extends Controller {
                 $isEmailAddressEmpty = true;
             } else {
                 // On vérifie l'existence de l'utilisateur
-                $userID = $this->utilisateurDAO->getUserIDByEmailAddress($entries['email']);
+                $userID = $app['dao.utilisateur']->getUserIDByEmailAddress($entries['email']);
                 // si on a un résultat, cela signifie que cette adresse email existe déjà
                 if ($userID) {
                     $isUserUnique = false;
@@ -157,11 +152,11 @@ class HomeController extends Controller {
                 // hash du mot de passe
                 $password = password_hash($entries['password'], PASSWORD_DEFAULT);
                 // créer l'utilisateur
-                $this->utilisateurDAO->createUser($entries['firstName'],
+                $app['dao.utilisateur']->createUser($entries['firstName'],
                         $entries['lastName'], $entries['email'], $password);
 
                 $username = $entries['email'];
-                $userId   = $this->utilisateurDAO->getUserIDByEmailAddress($username);
+                $userId   = $app['dao.utilisateur']->getUserIDByEmailAddress($username);
                 $app['session']->set('user',
                         array('username' => $username, 'userId' => $userId));
                 // redirection vers la liste des préférences de films
@@ -207,7 +202,7 @@ class HomeController extends Controller {
 
     public function error($e) {
 
-        $this->utilisateurDAO->getLogger()->error('Exception : ' . $e->getMessage() . ', File : ' . $e->getFile() . ', Line : ' . $e->getLine() . ', Stack trace : ' . $e->getTraceAsString());
+        $app['dao.utilisateur']->getLogger()->error('Exception : ' . $e->getMessage() . ', File : ' . $e->getFile() . ', Line : ' . $e->getLine() . ', Stack trace : ' . $e->getTraceAsString());
         $vue = new View("Error");
         return $vue->generer(['messageErreur' => $e->getMessage()]);
     }

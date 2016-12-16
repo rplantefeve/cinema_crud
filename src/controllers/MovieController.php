@@ -16,10 +16,7 @@ use Psr\Log\LoggerInterface;
  */
 class MovieController extends Controller {
 
-    private $filmDAO;
-
     public function __construct(LoggerInterface $logger = null) {
-        $this->filmDAO = new FilmDAO($logger);
     }
 
     /**
@@ -34,7 +31,7 @@ class MovieController extends Controller {
             $isUserAdmin = true;
         }
         // on récupère la liste des films ainsi que leurs informations
-        $films = $this->filmDAO->getMoviesList();
+        $films = $app['dao.film']->getMoviesList();
 
         // On génère la vue films
         $vue = new View("MoviesList");
@@ -84,13 +81,13 @@ class MovieController extends Controller {
                 // et que nous ne sommes pas en train de modifier un film
                 if ($entries['modificationInProgress'] == null) {
                     // on ajoute le film
-                    $this->filmDAO->insertNewMovie($entries['titre'],
+                    $app['dao.film']->insertNewMovie($entries['titre'],
                             $entries['titreOriginal']);
                 }
                 // sinon, nous sommes dans le cas d'une modification
                 else {
                     // mise à jour du film
-                    $this->filmDAO->updateMovie($filmId,
+                    $app['dao.film']->updateMovie($filmId,
                             $entries['titre'], $entries['titreOriginal']);
                 }
                 // on revient à la liste des films
@@ -103,7 +100,7 @@ class MovieController extends Controller {
             if ($entries && $entries['filmID'] !== null && $entries['filmID'] !==
                     '') {
                 // on récupère les informations manquantes 
-                $film = $this->filmDAO->getMovieByID($entries['filmID']);
+                $film = $app['dao.film']->getMovieByID($entries['filmID']);
             }
             // sinon, c'est une création
             else {
@@ -144,7 +141,7 @@ class MovieController extends Controller {
             $entries['filmID'] = $filmId;
 
             // suppression de la préférence de film
-            $this->filmDAO->deleteMovie($entries['filmID']);
+            $app['dao.film']->deleteMovie($entries['filmID']);
         }
         // redirection vers la liste des films
         return $app->redirect($request->getBasePath() . '/movie/list');
