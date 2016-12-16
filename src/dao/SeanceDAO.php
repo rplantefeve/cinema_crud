@@ -65,13 +65,13 @@ class SeanceDAO extends DAO {
         // trouver le film concerné grâce à son identifiant
         if (array_key_exists('FILMID', $row)) {
             $filmID = $row['FILMID'];
-            $film   = $this->filmDAO->getMovieByID($filmID);
+            $film   = $this->filmDAO->find($filmID);
             $seance->setFilm($film);
         }
         // trouver le cinéma concerné grâce à son identifiant
         if (array_key_exists('CINEMAID', $row)) {
-            $cinemaID = $row['FILMID'];
-            $cinema   = $this->cinemaDAO->getCinemaByID($cinemaID);
+            $cinemaID = $row['CINEMAID'];
+            $cinema   = $this->cinemaDAO->find($cinemaID);
             $seance->setCinema($cinema);
         }
         return $seance;
@@ -124,6 +124,7 @@ class SeanceDAO extends DAO {
      * @return Les séances du film projeté dans ces cinémas
      */
     public function getAllCinemasShowtimesByMovieID($cinemas, $filmID) {
+        $seances = null;
         // Boucle de récupération de toutes les séances indexés sur l'identifiant du film
         foreach ($cinemas as $cinema) {
             $seances[$cinema->getCinemaId()] = $this->getMovieShowtimes($cinema->getCinemaId(),
