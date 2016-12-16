@@ -2,6 +2,7 @@
 
 namespace Semeformation\Mvc\Cinema_crud\includes;
 
+use Doctrine\DBAL\Connection;
 use Semeformation\Mvc\Cinema_crud\includes\DBFactory;
 use Semeformation\Mvc\Cinema_crud\includes\Utils;
 use Psr\Log\LoggerInterface;
@@ -9,13 +10,43 @@ use PDO;
 
 abstract class DAO {
 
-    // logger
+    /**
+     * Connexion à la BDD
+     * @var Doctrine\DBAL\Connection 
+     */
+    private $db;
+
+    /**
+     * Logger du DAO
+     * @var Psr\Log\LoggerInterface 
+     */
     protected $logger;
 
-    public function __construct(LoggerInterface $logger = null) {
+    /**
+     * Constructeur de la classe DAO
+     * @param Connection $connexion
+     * @param LoggerInterface $logger
+     */
+    public function __construct(Connection $connexion = null,
+            LoggerInterface $logger = null) {
+        // init. de la connexion à la BDD
+        $this->db     = $connexion;
+        // init. du logger
         $this->logger = $logger;
     }
 
+    /**
+     * Donne accès à la connexion à la BDD
+     * @return Connection
+     */
+    protected function getDb(): \Doctrine\DBAL\Connection {
+        return $this->db;
+    }
+
+    /**
+     * Donne accès au logger du DAO
+     * @return Psr\Log\LoggerInterface
+     */
     public function getLogger() {
         return $this->logger;
     }
@@ -26,6 +57,21 @@ abstract class DAO {
      */
     protected abstract function buildBusinessObject($row);
 
+    /**
+     * Méthode abstraite de recherche d'un BO à partir de son id
+     */
+    public abstract function find($id);
+
+    /**
+     * Recherche tous les BO présents dans la BDD
+     */
+    public abstract function findAll();
+
+    /**
+     * Construit un tableau d'objets métiers à partir d'un résultat de BDD
+     * @param type $rows
+     * @return array
+     */
     protected function buildBusinessObjects($rows) {
         foreach ($rows as $row) {
             $objets[] = $this->buildBusinessObject($row);
@@ -45,7 +91,7 @@ abstract class DAO {
             // on retourne le résultat
             return $objects;
         } else {
-            return null;
+            return array();
         }
     }
 
@@ -84,12 +130,12 @@ abstract class DAO {
      * @param boolean $estVisible (visualisation du résultat)
      * @return array[][] ou null
      */
-    protected function extraireNxN($unSQLSelect, $parametres = null, $estVisible = false) {
+    protected function extraireNxN($unSQLSelect, $parametres = null,
+            $estVisible = false) {
         // tableau des résultats
-        $tableau = array();
+        $tableau  = array();
         // résultat de la requête
-        $resultat = $this->executeQuery($unSQLSelect,
-                $parametres);
+        $resultat = $this->executeQuery($unSQLSelect, $parametres);
 
         // boucle de construction du tableau de résultats
         while ($ligne = $resultat->fetch(PDO::FETCH_ASSOC)) {
@@ -104,8 +150,7 @@ abstract class DAO {
 
         // si l'on souhaite afficher le contenu du tableau (DEBUG MODE)
         if ($estVisible) {
-            Utils::afficherResultat($tableau,
-                    $unSQLSelect);
+            Utils::afficherResultat($tableau, $unSQLSelect);
         }
 
         // on retourne le tableau de résultats
@@ -119,16 +164,14 @@ abstract class DAO {
      * @param boolean $estVisible (visualisation du résultat)
      * @return array[] ou null
      */
-    protected function extraire1xN($unSQLSelect, $parametres = null, $estVisible = false) {
-        $result = $this->extraireNxN($unSQLSelect,
-                $parametres,
-                false);
+    protected function extraire1xN($unSQLSelect, $parametres = null,
+            $estVisible = false) {
+        $result = $this->extraireNxN($unSQLSelect, $parametres, false);
         if (isset($result[0])) {
             $result = $result[0];
         }
         if ($estVisible) {
-            Utils::afficherResultat($result,
-                    $unSQLSelect);
+            Utils::afficherResultat($result, $unSQLSelect);
         }
         return $result;
     }
