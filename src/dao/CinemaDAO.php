@@ -27,18 +27,34 @@ class CinemaDAO extends DAO {
     }
 
     /**
-     * Renvoie un objet Cinema
-     * @param integer $cinemaID
+     * Recherche un cinéma à partir de son identifiant
+     * @param string $cinemaID
      * @return Cinema
+     * @throws Exception
      */
-    public function getCinemaByID($cinemaID) {
-        $requete  = "SELECT * FROM cinema WHERE cinemaID = "
-                . $cinemaID;
-        $resultat = $this->extraire1xN($requete);
-        // on crée l'objet métier Cinema
-        $cinema   = $this->buildBusinessObject($resultat);
-        // on retourne le résultat extrait
-        return $cinema;
+    public function find($cinemaID) {
+        $requete  = "SELECT * FROM cinema WHERE cinemaID = ?";
+        $resultat = $this->getDb()->fetchAssoc($requete, [$cinemaID]);
+        // si trouvé
+        if ($resultat) {
+            // on crée et on retourne l'objet métier Cinema
+            return $this->buildBusinessObject($resultat);
+        } else {
+            throw new Exception('Aucun film trouvé pour l\'id=' . $cinemaID);
+        }
+    }
+
+    /**
+     * Recherche tous les cinémas en BDD et retourne le résultat sous forme de tableau
+     * @return array Le tableau de cinémas
+     */
+    public function findAll() {
+        // requête d'extraction de tous les cinémas
+        $sql       = "SELECT * FROM cinema ORDER BY denomination ASC";
+        $resultats = $this->getDb()->fetchAll($sql);
+
+        // on extrait les objets métiers des résultats
+        return $this->extractObjects($resultats);
     }
 
     /**
@@ -51,18 +67,6 @@ class CinemaDAO extends DAO {
         $requete   = "SELECT DISTINCT c.* FROM cinema c"
                 . " INNER JOIN seance s ON c.cinemaID = s.cinemaID"
                 . " AND s.filmID = " . $filmID;
-        // on extrait les résultats
-        $resultats = $this->extraireNxN($requete);
-        // on extrait les objets métiers des résultats
-        return $this->extractObjects($resultats);
-    }
-
-    /**
-     * Renvoie la liste des cinémas
-     * @return array
-     */
-    public function getCinemasList() {
-        $requete   = "SELECT * FROM cinema";
         // on extrait les résultats
         $resultats = $this->extraireNxN($requete);
         // on extrait les objets métiers des résultats

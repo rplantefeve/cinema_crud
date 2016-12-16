@@ -56,6 +56,14 @@ class PrefereDAO extends DAO {
         }
         return $prefere;
     }
+    
+    public function find($userId) {
+        
+    }
+    
+    public function findAll(){
+        
+    }
 
     /**
      * Méthode qui retourne les films préférés d'un utilisateur donné

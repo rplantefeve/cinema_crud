@@ -27,6 +27,14 @@ class FilmDAO extends DAO {
         }
         return $film;
     }
+    
+    public function find($userId) {
+        
+    }
+    
+    public function findAll(){
+        
+    }
 
     /**
      * Méthode qui renvoie la liste des films

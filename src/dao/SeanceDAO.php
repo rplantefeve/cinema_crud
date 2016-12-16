@@ -42,6 +42,14 @@ class SeanceDAO extends DAO {
     public function setCinemaDAO(CinemaDAO $cinemaDAO) {
         $this->cinemaDAO = $cinemaDAO;
     }
+    
+    public function find($userId) {
+        
+    }
+    
+    public function findAll(){
+        
+    }
 
     /**
      * Crée une séance à partir d'une ligne de la BDD.

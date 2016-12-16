@@ -29,6 +29,14 @@ class UtilisateurDAO extends DAO {
         return $utilisateur;
     }
 
+    public function find($userId) {
+        
+    }
+    
+    public function findAll(){
+        
+    }
+
     /*
      * Méthode qui teste si l'utilisateur est bien présent dans la BDD
      * @param string $email Email de l'utilisateur
@@ -38,18 +46,15 @@ class UtilisateurDAO extends DAO {
 
     public function verifyUserCredentials($email, $passwordSaisi) {
         // extraction du mdp de l'utilisateur
-        $requete = "SELECT password FROM utilisateur WHERE adresseCourriel = :email";
+        $requete   = "SELECT password FROM utilisateur WHERE adresseCourriel = :email";
         // on prépare la requête
-        $statement = $this->executeQuery($requete,
-                ['email' => $email]);
+        $statement = $this->executeQuery($requete, ['email' => $email]);
 
         // on teste le nombre de lignes renvoyées
         if ($statement->rowCount() > 0) {
             // on récupère le mot de passe
             $passwordBDD = $statement->fetch()[0];
-            $this->testPasswords($passwordSaisi,
-                    $passwordBDD,
-                    $email);
+            $this->testPasswords($passwordSaisi, $passwordBDD, $email);
         } else {
             throw new Exception('The user ' . $email . ' doesn\'t exist.');
         }
@@ -61,8 +66,7 @@ class UtilisateurDAO extends DAO {
 
     private function testPasswords($passwordSaisi, $passwordBDD, $email) {
         // on teste si les mots de passe correspondent
-        if (password_verify($passwordSaisi,
-                        $passwordBDD)) {
+        if (password_verify($passwordSaisi, $passwordBDD)) {
             if ($this->logger) {
                 $this->logger->info('User ' . $email . ' now connected.');
             }
@@ -82,8 +86,7 @@ class UtilisateurDAO extends DAO {
         $requete = "SELECT userID FROM utilisateur WHERE adresseCourriel = :email";
 
         // on récupère le résultat de la requête
-        $resultat = $this->executeQuery($requete,
-                ['email' => $utilisateur]);
+        $resultat = $this->executeQuery($requete, ['email' => $utilisateur]);
 
         // on teste le nombre de lignes renvoyées
         if ($resultat->rowCount() > 0) {
@@ -108,9 +111,7 @@ class UtilisateurDAO extends DAO {
                 . "WHERE adresseCourriel = :email";
 
         // on extrait le résultat de la BDD sous forme de tableau associatif
-        $resultat = $this->extraire1xN($requete,
-                ['email' => $email],
-                false);
+        $resultat = $this->extraire1xN($requete, ['email' => $email], false);
 
         // on construit l'objet Utilisateur
         $utilisateur = $this->buildBusinessObject($resultat);
@@ -125,11 +126,10 @@ class UtilisateurDAO extends DAO {
      */
 
     public function getUserByID($userID) {
-        $requete = "SELECT * FROM utilisateur WHERE userID = :userID";
-        $resultat = $this->extraire1xN($requete,
-                ['userID' => $userID]);
+        $requete  = "SELECT * FROM utilisateur WHERE userID = :userID";
+        $resultat = $this->extraire1xN($requete, ['userID' => $userID]);
         // on récupère l'objet Film
-        $user = $this->buildBusinessObject($resultat);
+        $user     = $this->buildBusinessObject($resultat);
         // on retourne le résultat extrait
         return $user;
     }
@@ -150,9 +150,9 @@ class UtilisateurDAO extends DAO {
         // exécution de la requête
         $this->executeQuery($requete,
                 [':firstName' => $firstName,
-            'lastName' => $lastName,
-            'email' => $email,
-            'password' => $password]);
+            'lastName'   => $lastName,
+            'email'      => $email,
+            'password'   => $password]);
 
         if ($this->logger) {
             $this->logger->info('User ' . $email . ' successfully created.');
