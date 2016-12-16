@@ -18,16 +18,10 @@ use Silex\Application;
  */
 class FavoriteController extends Controller {
 
-    private $prefereDAO;
-
     /**
      * Constructeur de la classe
      */
     public function __construct(LoggerInterface $logger = null) {
-        $this->prefereDAO = new PrefereDAO($logger);
-        // Ajout du DAO Utilisateur et Film pour le DAO Prefere
-        $this->prefereDAO->setUtilisateurDAO(new UtilisateurDAO($logger));
-        $this->prefereDAO->setFilmDAO(new FilmDAO($logger));
     }
 
     public function editFavoriteMoviesList(Request $request = null,
@@ -39,11 +33,11 @@ class FavoriteController extends Controller {
         }
         // l'utilisateur est loggué
         else {
-            $utilisateur = $this->prefereDAO->getUtilisateurDAO()->getUserByEmailAddress($app['session']->get('user')['username']);
+            $utilisateur = $app['dao.prefere']->getUtilisateurDAO()->getUserByEmailAddress($app['session']->get('user')['username']);
         }
 
         // on récupère la liste des films préférés grâce à l'utilisateur identifié
-        $preferes = $this->prefereDAO->getFavoriteMoviesFromUser($utilisateur->getUserId());
+        $preferes = $app['dao.prefere']->getFavoriteMoviesFromUser($utilisateur->getUserId());
 
         // On génère la vue Films préférés
         $vue = new View("FavoriteMoviesList");
@@ -94,13 +88,13 @@ class FavoriteController extends Controller {
                     // et que nous ne sommes pas en train de modifier une préférence
                     if (is_null($entries['modificationInProgress'])) {
                         // on ajoute la préférence de l'utilisateur
-                        $this->prefereDAO->insertNewFavoriteMovie($entries['userID'],
+                        $app['dao.prefere']->insertNewFavoriteMovie($entries['userID'],
                                 $entries['filmID'], $entries['comment']);
                     }
                     // sinon, nous sommes dans le cas d'une modification
                     else {
                         // mise à jour de la préférence
-                        $this->prefereDAO->updateFavoriteMovie($entries['userID'],
+                        $app['dao.prefere']->updateFavoriteMovie($entries['userID'],
                                 $entries['filmID'], $entries['comment']);
                     }
                     // on revient à la liste des préférences
@@ -112,7 +106,7 @@ class FavoriteController extends Controller {
                     // 
                     $aFilmIsSelected = false;
                     $isItACreation   = true;
-                    $films           = $this->prefereDAO->getFilmDAO()->getMoviesNonAlreadyMarkedAsFavorite($_SESSION['userID']);
+                    $films           = $app['dao.prefere']->getFilmDAO()->getMoviesNonAlreadyMarkedAsFavorite($_SESSION['userID']);
                     // initialisation des champs du formulaire
                     $preference      = [
                         "userID"      => $entries["userID"],
@@ -133,7 +127,7 @@ class FavoriteController extends Controller {
                     '' && !is_null($entries['userID']) && $entries['userID'] !==
                     '') {
                 // on récupère les informations manquantes (le commentaire afférent)
-                $prefere    = $this->prefereDAO->getFavoriteMovieInformations($entries['userID'],
+                $prefere    = $app['dao.prefere']->getFavoriteMovieInformations($entries['userID'],
                         $entries['filmID']);
                 // TODO : faire autrement qu'avec un vecteur
                 $preference = [
@@ -146,7 +140,7 @@ class FavoriteController extends Controller {
                 // C'est une création
                 $isItACreation = true;
 
-                $films      = $this->prefereDAO->getFilmDAO()->getMoviesNonAlreadyMarkedAsFavorite($app['session']->get('user')['userId']);
+                $films      = $app['dao.prefere']->getFilmDAO()->getMoviesNonAlreadyMarkedAsFavorite($app['session']->get('user')['userId']);
                 // on initialise les autres variables de formulaire à vide
                 $preference = [
                     "userID"      => $app['session']->get('user')['userId'],
@@ -185,7 +179,7 @@ class FavoriteController extends Controller {
         }
 
         // suppression de la préférence de film
-        $this->prefereDAO->deleteFavoriteMovie($userId, $filmId);
+        $app['dao.prefere']->deleteFavoriteMovie($userId, $filmId);
         // redirection vers la liste des préférences de films
         return $app->redirect($request->getBasePath() . '/favorite/list');
     }
