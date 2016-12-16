@@ -34,34 +34,36 @@ class FilmDAO extends DAO {
      * @return type
      * @throws Exception
      */
-    public function find($filmId) {
+    public function find(...$filmId) {
         $requete  = "SELECT * FROM film WHERE filmID = ?";
-        $resultat = $this->getDb()->fetchAssoc($requete, [$filmId]);
+        $resultat = $this->getDb()->fetchAssoc($requete, [$filmId[0]]);
         // si trouvé
         if ($resultat) {
             // on récupère et on retourne l'objet Film
             return $this->buildBusinessObject($resultat);
         } else {
-            throw new Exception('Aucun film trouvé pour l\'id=' . $filmId);
+            throw new \Exception('Aucun film trouvé pour l\'id=' . $filmId[0]);
         }
     }
 
-    public function findAll() {
-        
-    }
-
     /**
-     * Méthode qui renvoie la liste des films
-     * @return array[][]
+     * Retourne tous les films de la base de données
+     * @return array
      */
-    public function getMoviesList() {
-        $requete   = "SELECT * FROM film";
-        // on extrait les résultats
-        $resultats = $this->extraireNxN($requete);
+    public function findAll() {
+        // requête d'extraction de tous les films
+        $sql       = "SELECT * FROM film ORDER BY titre ASC";
+        $resultats = $this->getDb()->fetchAll($sql);
+
         // on extrait les objets métiers des résultats
         return $this->extractObjects($resultats);
     }
 
+    /**
+     * Retourne les films d'un cinéma
+     * @param type $cinemaID
+     * @return type
+     */
     public function getCinemaMoviesByCinemaID($cinemaID) {
         // requête qui nous permet de récupérer la liste des films pour un cinéma donné
         $requete   = "SELECT DISTINCT f.* FROM film f"

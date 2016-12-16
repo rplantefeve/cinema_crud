@@ -60,7 +60,7 @@ abstract class DAO {
     /**
      * Méthode abstraite de recherche d'un BO à partir de son id
      */
-    public abstract function find($id);
+    public abstract function find(...$id);
 
     /**
      * Recherche tous les BO présents dans la BDD

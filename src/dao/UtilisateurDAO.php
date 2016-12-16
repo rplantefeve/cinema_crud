@@ -34,20 +34,29 @@ class UtilisateurDAO extends DAO {
      * @param type $userId
      * @throws Exception
      */
-    public function find($userId) {
+    public function find(...$userId) {
         $requete  = "SELECT * FROM utilisateur WHERE userID = ?";
-        $resultat = $this->getDb()->fetchAssoc($requete, [$userId]);
+        $resultat = $this->getDb()->fetchAssoc($requete, [$userId[0]]);
         // si trouvé
         if ($resultat) {
             // on récupère l'objet Film
             return $this->buildBusinessObject($resultat);
         } else {
-            throw new Exception('Aucun utilisateur trouvé pour l\'id=' . $userId);
+            throw new \Exception('Aucun utilisateur trouvé pour l\'id=' . $userId[0]);
         }
     }
 
+    /**
+     * Retourne tous les utilisateurs de la BDD
+     * @return array
+     */
     public function findAll() {
-        
+        // requête d'extraction de tous les utilisateurs
+        $sql       = "SELECT * FROM utilisateur ORDER BY adresseCourriel ASC";
+        $resultats = $this->getDb()->fetchAll($sql);
+
+        // on extrait les objets métiers des résultats
+        return $this->extractObjects($resultats);
     }
 
     /**
@@ -68,7 +77,7 @@ class UtilisateurDAO extends DAO {
             $passwordBDD = $statement->fetch()[0];
             $this->testPasswords($passwordSaisi, $passwordBDD, $email);
         } else {
-            throw new Exception('The user ' . $email . ' doesn\'t exist.');
+            throw new \Exception('The user ' . $email . ' doesn\'t exist.');
         }
     }
 
@@ -86,7 +95,7 @@ class UtilisateurDAO extends DAO {
                 $this->logger->info('User ' . $email . ' now connected.');
             }
         } else {
-            throw new Exception('Bad password for the user ' . $email);
+            throw new \Exception('Bad password for the user ' . $email);
         }
     }
 

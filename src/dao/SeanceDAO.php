@@ -42,13 +42,40 @@ class SeanceDAO extends DAO {
     public function setCinemaDAO(CinemaDAO $cinemaDAO) {
         $this->cinemaDAO = $cinemaDAO;
     }
-    
-    public function find($userId) {
-        
+
+    /**
+     * Retourne un BO Séance en fonction de l'id du cinéma, du film, de l'heure de début et de fin
+     * @param type $primaryKey
+     * @return Seance
+     * @throws \Exception
+     */
+    public function find(...$primaryKey) {
+        $requete  = "SELECT * FROM seance "
+                . "WHERE cinemaID = ? "
+                . "AND filmID = ? "
+                . "AND heureDebut = ? "
+                . "AND heureFin = ?";
+        $resultat = $this->getDb()->fetchAssoc($requete, $primaryKey[0],
+                $primaryKey[1], $primaryKey[2], $primaryKey[3]);
+        // si trouvé
+        if ($resultat) {
+            return $this->buildBusinessObject($resultat);
+        } else {
+            throw new \Exception('Pas de séance trouvé pour le film id=' . $primaryKey[0] . ', cinema id=' . $primaryKey[1] . ', heure de début=' . $primaryKey[2] . ', heure de fin=' . $primaryKey[3]);
+        }
     }
-    
-    public function findAll(){
-        
+
+    /**
+     * Retourne toutes les séances de la BDD
+     * @return array
+     */
+    public function findAll() {
+        // requête d'extraction de toutes les séances
+        $sql       = "SELECT * FROM seance";
+        $resultats = $this->getDb()->fetchAll($sql);
+
+        // on extrait les objets métiers des résultats
+        return $this->extractObjects($resultats);
     }
 
     /**

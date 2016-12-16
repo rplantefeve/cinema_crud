@@ -51,12 +51,35 @@ class PrefereDAO extends DAO {
         return $prefere;
     }
 
-    public function find($userId) {
-        
+    /**
+     * Méthode qui renvoie les informations sur un film favori donné pour un utilisateur donné
+     * @param type $userIdAndFilmId
+     * @return type
+     * @throws Exception
+     */
+    public function find(...$userIdAndFilmId) {
+        // requête qui récupère les informations d'une préférence de film pour un utilisateur donné
+        $requete  = "SELECT f.TITRE, p.*"
+                . " FROM prefere p INNER JOIN film f ON p.filmID = f.filmID"
+                . " WHERE p.userID = ? AND p.filmID = ?";
+        $resultat = $this->getDb()->fetchAssoc($requete,
+                [$userIdAndFilmId[0], $userIdAndFilmId[1]]);
+        // si trouvé
+        if ($resultat) {
+            // on récupère et on retourne l'objet préférence
+            return $this->buildBusinessObject($resultat);
+        } else {
+            throw new \Exception('Aucune préférence trouvée pour l\'utilisateur d\'id=' . $userIdAndFilmId[0] . ' pour le film d\'id=' . $userIdAndFilmId[1]);
+        }
     }
 
     public function findAll() {
-        
+        // requête d'extraction de toutes les préférences
+        $sql       = "SELECT * FROM prefere";
+        $resultats = $this->getDb()->fetchAll($sql);
+
+        // on extrait les objets métiers des résultats
+        return $this->extractObjects($resultats);
     }
 
     /**
@@ -74,28 +97,6 @@ class PrefereDAO extends DAO {
         $resultats = $this->extraireNxN($requete, ['userID' => $id]);
         // on extrait les objets métiers des résultats
         return $this->extractObjects($resultats);
-    }
-
-    /**
-     * Méthode qui renvoie les informations sur un film favori donné pour un utilisateur donné
-     * @param int $userID Identifiant de l'utilisateur
-     * @param int $filmID Identifiant du film
-     * @return array[]
-     */
-    public function getFavoriteMovieInformations($userID, $filmID) {
-        // requête qui récupère les informations d'une préférence de film pour un utilisateur donné
-        $requete = "SELECT f.titre, p.userID, p.filmID, p.commentaire"
-                . " FROM prefere p INNER JOIN film f ON p.filmID = f.filmID"
-                . " WHERE p.userID = :userID AND p.filmID = :filmID";
-
-        // on extrait les résultats de la BDD
-        $resultat = $this->extraire1xN($requete,
-                ['userID' => $userID,
-            'filmID' => $filmID]);
-        // on crée l'objet métier
-        $prefere  = $this->buildBusinessObject($resultat);
-        // on retourne le résultat
-        return $prefere;
     }
 
     /**

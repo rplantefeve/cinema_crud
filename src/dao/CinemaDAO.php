@@ -32,15 +32,15 @@ class CinemaDAO extends DAO {
      * @return Cinema
      * @throws Exception
      */
-    public function find($cinemaID) {
+    public function find(...$cinemaID) {
         $requete  = "SELECT * FROM cinema WHERE cinemaID = ?";
-        $resultat = $this->getDb()->fetchAssoc($requete, [$cinemaID]);
+        $resultat = $this->getDb()->fetchAssoc($requete, [$cinemaID[0]]);
         // si trouvé
         if ($resultat) {
             // on crée et on retourne l'objet métier Cinema
             return $this->buildBusinessObject($resultat);
         } else {
-            throw new \Exception('Aucun cinéma trouvé pour l\'id=' . $cinemaID);
+            throw new \Exception('Aucun cinéma trouvé pour l\'id=' . $cinemaID[0]);
         }
     }
 
