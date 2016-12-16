@@ -19,12 +19,8 @@ use DateTime;
  */
 class ShowtimesController extends Controller {
 
-    private $seanceDAO;
-
     public function __construct(LoggerInterface $logger = null) {
-        $this->seanceDAO = new SeanceDAO($logger);
-        $this->seanceDAO->setCinemaDAO(new CinemaDAO($logger));
-        $this->seanceDAO->setFilmDAO(new FilmDAO($logger));
+        
     }
 
     /**
@@ -51,10 +47,10 @@ class ShowtimesController extends Controller {
             // on récupère l'identifiant du cinéma
             $filmID = $entries['filmID'];
             // puis on récupère les informations du film en question
-            $film   = $this->seanceDAO->getFilmDAO()->getMovieByID($filmID);
+            $film   = $app['dao.seance']->getFilmDAO()->find($filmID);
 
             // on récupère les cinémas qui ne projettent pas encore le film
-            $cinemasUnplanned = $this->seanceDAO->getCinemaDAO()->getNonPlannedCinemas($filmID);
+            $cinemasUnplanned = $app['dao.seance']->getCinemaDAO()->getNonPlannedCinemas($filmID);
         }
         // sinon, on retourne à l'accueil
         else {
@@ -63,8 +59,8 @@ class ShowtimesController extends Controller {
         }
 
         // on récupère la liste des cinémas de ce film
-        $cinemas = $this->seanceDAO->getCinemaDAO()->getMovieCinemasByMovieID($filmID);
-        $seances = $this->seanceDAO->getAllCinemasShowtimesByMovieID($cinemas,
+        $cinemas = $app['dao.seance']->getCinemaDAO()->getMovieCinemasByMovieID($filmID);
+        $seances = $app['dao.seance']->getAllCinemasShowtimesByMovieID($cinemas,
                 $filmID);
 
         // On génère la vue séances du film
@@ -104,10 +100,10 @@ class ShowtimesController extends Controller {
             // on récupère l'identifiant du cinéma
             $cinemaID = $entries['cinemaID'];
             // puis on récupère les informations du cinéma en question
-            $cinema   = $this->seanceDAO->getCinemaDAO()->getCinemaByID($cinemaID);
+            $cinema   = $app['dao.seance']->getCinemaDAO()->find($cinemaID);
 
             // on récupère les films pas encore projetés
-            $filmsUnplanned = $this->seanceDAO->getFilmDAO()->getNonPlannedMovies($cinemaID);
+            $filmsUnplanned = $app['dao.seance']->getFilmDAO()->getNonPlannedMovies($cinemaID);
         }
         // sinon, on retourne à l'accueil
         else {
@@ -116,9 +112,9 @@ class ShowtimesController extends Controller {
         }
 
         // on récupère la liste des films de ce cinéma
-        $films   = $this->seanceDAO->getFilmDAO()->getCinemaMoviesByCinemaID($cinemaID);
+        $films   = $app['dao.seance']->getFilmDAO()->getCinemaMoviesByCinemaID($cinemaID);
         // on récupère toutes les séances de films pour un cinéma donné
-        $seances = $this->seanceDAO->getAllMoviesShowtimesByCinemaID($films,
+        $seances = $app['dao.seance']->getAllMoviesShowtimesByCinemaID($films,
                 $cinemaID);
 
         // On génère la vue séances du cinéma
@@ -164,7 +160,7 @@ class ShowtimesController extends Controller {
             $entries['filmID']   = $filmId;
 
             // suppression de la séance
-            $this->seanceDAO->deleteShowtime($entries['cinemaID'],
+            $app['dao.seance']->deleteShowtime($entries['cinemaID'],
                     $entries['filmID'], $entries['heureDebut'],
                     $entries['heureFin']
             );
@@ -242,10 +238,10 @@ class ShowtimesController extends Controller {
                 $from     = $entries['from'];
 
                 // puis on récupère les informations du cinéma en question
-                $cinema = $this->seanceDAO->getCinemaDAO()->getCinemaByID($cinemaID);
+                $cinema = $app['dao.seance']->getCinemaDAO()->find($cinemaID);
 
                 // puis on récupère les informations du film en question
-                $film = $this->seanceDAO->getFilmDAO()->getMovieByID($filmID);
+                $film = $app['dao.seance']->getFilmDAO()->find($filmID);
 
                 // s'il on vient des séances du film
                 if (strstr($entries['from'], 'movie')) {
@@ -310,14 +306,14 @@ class ShowtimesController extends Controller {
                 // Est-on dans le cas d'une insertion ?
                 if (!isset($entries['modificationInProgress'])) {
                     // j'insère dans la base
-                    $resultat = $this->seanceDAO->insertNewShowtime($entries['cinemaID'],
+                    $resultat = $app['dao.seance']->insertNewShowtime($entries['cinemaID'],
                             $entries['filmID'],
                             $datetimeDebut->format("Y-m-d H:i"),
                             $datetimeFin->format("Y-m-d H:i"),
                             $entries['version']);
                 } else {
                     // c'est une mise à jour
-                    $resultat = $this->seanceDAO->updateShowtime($entries['cinemaID'],
+                    $resultat = $app['dao.seance']->updateShowtime($entries['cinemaID'],
                             $entries['filmID'], $entries['dateheuredebutOld'],
                             $entries['dateheurefinOld'],
                             $datetimeDebut->format("Y-m-d H:i"),

@@ -100,7 +100,7 @@ class MovieController extends Controller {
             if ($entries && $entries['filmID'] !== null && $entries['filmID'] !==
                     '') {
                 // on récupère les informations manquantes 
-                $film = $app['dao.film']->getMovieByID($entries['filmID']);
+                $film = $app['dao.film']->find($entries['filmID']);
             }
             // sinon, c'est une création
             else {
