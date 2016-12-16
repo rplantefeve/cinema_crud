@@ -36,7 +36,7 @@ class CinemaController extends Controller {
             $isUserAdmin = true;
         }
         // on récupère la liste des cinémas ainsi que leurs informations
-        $cinemas = $this->cinemaDAO->getCinemasList();
+        $cinemas = $app['dao.cinema']->findAll();
 
         // On génère la vue films
         $vue = new View("CinemasList");
@@ -107,7 +107,8 @@ class CinemaController extends Controller {
             if ($entries && $entries['cinemaID'] !== null && $entries['cinemaID'] !==
                     '') {
                 // on récupère les informations manquantes 
-                $cinema = $this->cinemaDAO->getCinemaByID($entries['cinemaID']);
+                //$cinema = $this->cinemaDAO->getCinemaByID($entries['cinemaID']);
+                $cinema = $app['dao.cinema']->find($entries['cinemaID']);
             }
             // sinon, c'est une création
             else {
