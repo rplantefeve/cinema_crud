@@ -2,10 +2,8 @@
 
 namespace Semeformation\Mvc\Cinema_crud\controllers;
 
-use Semeformation\Mvc\Cinema_crud\dao\FilmDAO;
 use Semeformation\Mvc\Cinema_crud\views\View;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 use Silex\Application;
 use Psr\Log\LoggerInterface;
 
@@ -31,7 +29,7 @@ class MovieController extends Controller {
             $isUserAdmin = true;
         }
         // on récupère la liste des films ainsi que leurs informations
-        $films = $app['dao.film']->getMoviesList();
+        $films = $app['dao.film']->findAll();
 
         // On génère la vue films
         $vue = new View("MoviesList");

@@ -2,9 +2,6 @@
 
 namespace Semeformation\Mvc\Cinema_crud\controllers;
 
-use Semeformation\Mvc\Cinema_crud\dao\UtilisateurDAO;
-use Semeformation\Mvc\Cinema_crud\dao\FilmDAO;
-use Semeformation\Mvc\Cinema_crud\dao\PrefereDAO;
 use Semeformation\Mvc\Cinema_crud\views\View;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -127,7 +124,7 @@ class FavoriteController extends Controller {
                     '' && !is_null($entries['userID']) && $entries['userID'] !==
                     '') {
                 // on récupère les informations manquantes (le commentaire afférent)
-                $prefere    = $app['dao.prefere']->getFavoriteMovieInformations($entries['userID'],
+                $prefere    = $app['dao.prefere']->find($entries['userID'],
                         $entries['filmID']);
                 // TODO : faire autrement qu'avec un vecteur
                 $preference = [
