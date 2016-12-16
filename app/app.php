@@ -20,8 +20,27 @@ $app->register(new SessionServiceProvider());
 // Enregistrement du DBAL => crée automatiquement le service accessible par $app['db']
 $app->register(new DoctrineServiceProvider());
 
+// enregistrement du CinemaDAO
 $app['dao.cinema'] = function () use ($app) {
     return new \Semeformation\Mvc\Cinema_crud\dao\CinemaDAO($app['db']);
+};
+// enregistrement du UtilisateurDAO
+$app['dao.utilisateur'] = function () use ($app) {
+    return new \Semeformation\Mvc\Cinema_crud\dao\UtilisateurDAO($app['db']);
+};
+// enregistrement du FilmDAO
+$app['dao.film'] = function () use ($app) {
+    return new \Semeformation\Mvc\Cinema_crud\dao\FilmDAO($app['db']);
+};
+
+// enregistrement du PrefereDAO
+$app['dao.prefere'] = function () use ($app) {
+    $prefereDAO = new \Semeformation\Mvc\Cinema_crud\dao\PrefereDAO($app['db']);
+    // init. du FilmDAO
+    $prefereDAO->setFilmDAO($app['dao.film']);
+    // init. du UtilisateurDAO
+    $prefereDAO->setUtilisateurDAO($app['dao.utilisateur']);
+    return $prefereDAO;
 };
 
 
