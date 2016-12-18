@@ -58,17 +58,17 @@ class CinemaDAO extends DAO {
     }
 
     /**
-     * Renvoie la liste des cinéma d'un film
+     * Renvoie la liste des cinémas d'un film
      * @param integer $filmID
-     * @return array
+     * @return array Le tableau d'objets Cinema
      */
-    public function getMovieCinemasByMovieID($filmID) {
+    public function findAllByMovieId($filmID) {
         // requête qui nous permet de récupérer la liste des cinémas pour un film donné
         $requete   = "SELECT DISTINCT c.* FROM cinema c"
                 . " INNER JOIN seance s ON c.cinemaID = s.cinemaID"
                 . " AND s.filmID = " . $filmID;
         // on extrait les résultats
-        $resultats = $this->extraireNxN($requete);
+        $resultats = $this->getDb()->fetchAll($requete);
         // on extrait les objets métiers des résultats
         return $this->extractObjects($resultats);
     }
@@ -76,9 +76,9 @@ class CinemaDAO extends DAO {
     /**
      * Renvoie une liste de cinémas qui ne projettent pas le film donné
      * @param integer $filmID
-     * @return array
+     * @return array Le tableau d'objets Cinema
      */
-    public function getNonPlannedCinemas($filmID) {
+    public function findAllNotInByMovieId($filmID) {
         // requête de récupération des titres et des identifiants des films
         // qui n'ont pas encore été programmés dans ce cinéma
         $requete   = "SELECT c.cinemaID, c.denomination, c.adresse "
@@ -89,62 +89,44 @@ class CinemaDAO extends DAO {
                 . " WHERE filmID = :id"
                 . ")";
         // extraction des résultats
-        $resultats = $this->extraireNxN($requete, ['id' => $filmID], false);
+        $resultats = $this->getDb()->fetchAll($requete, ['id' => $filmID], false);
         // retour du résultat
         return $this->extractObjects($resultats);
     }
 
     /**
-     * Insère un nouveau cinéma
-     * @param string $denomination
-     * @param string $adresse
+     * Sauvegarde un objet Cinema en BDD
+     * @param Cinema $cinema
      */
-    public function insertNewCinema($denomination, $adresse) {
-        // construction
-        $requete = "INSERT INTO cinema (denomination, adresse) VALUES ("
-                . ":denomination"
-                . ", :adresse)";
-        // exécution
-        $this->executeQuery($requete,
-                [
-            'denomination' => $denomination,
-            'adresse'      => $adresse]);
-        // log
-        if ($this->logger) {
-            $this->logger->info('Cinema ' . $denomination . ' successfully added.');
-        }
-    }
+    public function save(Cinema $cinema) {
+        // je récupère les données du cinéma sous forme de tableau
+        $donneesCinema = array(
+            'denomination' => $cinema->getDenomination(),
+            'adresse'      => $cinema->getAdresse(),
+        );
 
-    /**
-     * Met à jour un cinéma
-     * @param integer $cinemaID
-     * @param string $denomination
-     * @param string $adresse
-     */
-    public function updateCinema($cinemaID, $denomination, $adresse) {
-        // on construit la requête d'insertion
-        $requete = "UPDATE cinema SET "
-                . "denomination = "
-                . "'" . $denomination . "'"
-                . ", adresse = "
-                . "'" . $adresse . "'"
-                . " WHERE cinemaID = "
-                . $cinemaID;
-        // exécution de la requête
-        $this->executeQuery($requete);
+        // Si le cinéma existe déja
+        if ($cinema->getCinemaId()) {
+            // il faut faire une mise à jour
+            $this->getDb()->update('cinema', $donneesCinema,
+                    array('cinemaId' => $cinema->getCinemaId()));
+        } else {
+            // Sinon, nous faisons une insertion
+            $this->getDb()->insert('cinema', $donneesCinema);
+            // On récupère l'id autoincrement
+            $id = $this->getDb()->lastInsertId();
+            // affectation
+            $cinema->setCinemaId($id);
+        }
     }
 
     /**
      * Supprime un cinéma
      * @param integer $cinemaID
      */
-    public function deleteCinema($cinemaID) {
-        $this->executeQuery("DELETE FROM cinema WHERE cinemaID = "
-                . $cinemaID);
-
-        if ($this->logger) {
-            $this->logger->info('Cinema ' . $cinemaID . ' successfully deleted.');
-        }
+    public function delete($cinemaID) {
+        // Supprime le cinéma
+        $this->getDb()->delete('cinema', array('cinemaId' => $cinemaID));
     }
 
 }

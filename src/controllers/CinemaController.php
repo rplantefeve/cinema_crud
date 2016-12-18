@@ -2,6 +2,7 @@
 
 namespace Semeformation\Mvc\Cinema_crud\controllers;
 
+use Semeformation\Mvc\Cinema_crud\models\Cinema;
 use Semeformation\Mvc\Cinema_crud\views\View;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -14,10 +15,6 @@ use Psr\Log\LoggerInterface;
  * @author User
  */
 class CinemaController extends Controller {
-
-    public function __construct(LoggerInterface $logger = null) {
-        
-    }
 
     /**
      * Route Liste des cinémas
@@ -49,7 +46,7 @@ class CinemaController extends Controller {
      * @param Request $request
      * @param Application $app
      * @param string $cinemaId
-     * @return type
+     * @return string La vue générée
      */
     public function editCinema(Request $request = null, Application $app = null,
             string $cinemaId = null) {
@@ -60,18 +57,17 @@ class CinemaController extends Controller {
             return $app->redirect($request->getBasePath() . '/home');
         }
 
-        // variable qui sert à conditionner l'affichage du formulaire
-        $isItACreation = false;
+        // init. de l'objet à null
+        $cinema = null;
 
         // si la méthode de formulaire est la méthode POST
-        if (filter_input(INPUT_SERVER, 'REQUEST_METHOD') === "POST") {
+        if ($request->isMethod('POST')) {
 
             // on assainit les entrées
             $entries = $this->extractArrayFromPostRequest($request,
                     ['backToList',
                 'adresse',
-                'denomination',
-                'modificationInProgress']);
+                'denomination']);
 
             // si l'action demandée est retour en arrière
             if ($entries['backToList'] !== null) {
@@ -81,36 +77,27 @@ class CinemaController extends Controller {
             // sinon (l'action demandée est la sauvegarde d'un cinéma)
             else {
 
-                // et que nous ne sommes pas en train de modifier un cinéma
-                if ($entries['modificationInProgress'] == null) {
-                    // on ajoute le cinéma
-                    $app['dao.cinema']->insertNewCinema($entries['denomination'],
-                            $entries['adresse']);
-                }
-                // sinon, nous sommes dans le cas d'une modification
-                else {
-                    // mise à jour du cinéma
-                    $app['dao.cinema']->updateCinema($cinemaId,
-                            $entries['denomination'], $entries['adresse']);
-                }
+                // Je crée l'objet $cinema
+                $cinema = new Cinema();
+                // je mets à jour les infos
+                $cinema->setDenomination($entries['denomination']);
+                $cinema->setAdresse($entries['adresse']);
+                $cinema->setCinemaId($cinemaId);
+                // on sauvegarde le cinéma
+                $app['dao.cinema']->save($cinema);
                 // on revient à la liste des cinémas
                 return $app->redirect($request->getBasePath() . '/cinema/list');
             }
+            
         }// si la page est chargée avec $_GET
-        elseif (filter_input(INPUT_SERVER, 'REQUEST_METHOD') === "GET") {
+        elseif ($request->isMethod('GET')) {
             // on assainit les entrées
             $entries['cinemaID'] = $cinemaId;
             // si l'id est bien renseigné
             if ($entries && $entries['cinemaID'] !== null && $entries['cinemaID'] !==
                     '') {
                 // on récupère les informations manquantes 
-                //$cinema = $app['dao.cinema']->getCinemaByID($entries['cinemaID']);
                 $cinema = $app['dao.cinema']->find($entries['cinemaID']);
-            }
-            // sinon, c'est une création
-            else {
-                $isItACreation = true;
-                $cinema        = null;
             }
         }
         // On génère la vue films
@@ -118,8 +105,7 @@ class CinemaController extends Controller {
         // En passant les variables nécessaires à son bon affichage
         return $vue->generer($request,
                         [
-                    'cinema'        => $cinema,
-                    'isItACreation' => $isItACreation,
+                    'cinema' => $cinema
         ]);
     }
 
@@ -146,7 +132,7 @@ class CinemaController extends Controller {
             $entries['cinemaID'] = $cinemaId;
 
             // suppression de la préférence de film
-            $app['dao.cinema']->deleteCinema($entries['cinemaID']);
+            $app['dao.cinema']->delete($entries['cinemaID']);
         }
         // redirection vers la liste des cinémas
         return $app->redirect($request->getBasePath() . '/cinema/list');

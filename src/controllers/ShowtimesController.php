@@ -47,7 +47,7 @@ class ShowtimesController extends Controller {
             $film   = $app['dao.seance']->getFilmDAO()->find($filmID);
 
             // on récupère les cinémas qui ne projettent pas encore le film
-            $cinemasUnplanned = $app['dao.seance']->getCinemaDAO()->getNonPlannedCinemas($filmID);
+            $cinemasUnplanned = $app['dao.seance']->getCinemaDAO()->findAllNotInByMovieId($filmID);
         }
         // sinon, on retourne à l'accueil
         else {
@@ -56,7 +56,7 @@ class ShowtimesController extends Controller {
         }
 
         // on récupère la liste des cinémas de ce film
-        $cinemas = $app['dao.seance']->getCinemaDAO()->getMovieCinemasByMovieID($filmID);
+        $cinemas = $app['dao.seance']->getCinemaDAO()->findAllByMovieId($filmID);
         $seances = $app['dao.seance']->getAllCinemasShowtimesByMovieID($cinemas,
                 $filmID);
 
