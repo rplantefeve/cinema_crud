@@ -139,7 +139,7 @@ class MovieController extends Controller {
             $entries['filmID'] = $filmId;
 
             // suppression de la préférence de film
-            $app['dao.film']->deleteMovie($entries['filmID']);
+            $app['dao.film']->delete($entries['filmID']);
         }
         // redirection vers la liste des films
         return $app->redirect($request->getBasePath() . '/movie/list');

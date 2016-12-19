@@ -30,11 +30,11 @@ class FavoriteController extends Controller {
         }
         // l'utilisateur est loggué
         else {
-            $utilisateur = $app['dao.prefere']->getUtilisateurDAO()->getUserByEmailAddress($app['session']->get('user')['username']);
+            $utilisateur = $app['dao.prefere']->getUtilisateurDAO()->findOneByCourriel($app['session']->get('user')['username']);
         }
 
         // on récupère la liste des films préférés grâce à l'utilisateur identifié
-        $preferes = $app['dao.prefere']->getFavoriteMoviesFromUser($utilisateur->getUserId());
+        $preferes = $app['dao.prefere']->findAllByUserId($utilisateur->getUserId());
 
         // On génère la vue Films préférés
         $vue = new View("FavoriteMoviesList");
@@ -103,7 +103,7 @@ class FavoriteController extends Controller {
                     // 
                     $aFilmIsSelected = false;
                     $isItACreation   = true;
-                    $films           = $app['dao.prefere']->getFilmDAO()->getMoviesNonAlreadyMarkedAsFavorite($_SESSION['userID']);
+                    $films           = $app['dao.prefere']->getFilmDAO()->findAllByUserIdNotIn($_SESSION['userID']);
                     // initialisation des champs du formulaire
                     $preference      = [
                         "userID"      => $entries["userID"],
@@ -137,7 +137,7 @@ class FavoriteController extends Controller {
                 // C'est une création
                 $isItACreation = true;
 
-                $films      = $app['dao.prefere']->getFilmDAO()->getMoviesNonAlreadyMarkedAsFavorite($app['session']->get('user')['userId']);
+                $films      = $app['dao.prefere']->getFilmDAO()->findAllByUserIdNotIn($app['session']->get('user')['userId']);
                 // on initialise les autres variables de formulaire à vide
                 $preference = [
                     "userID"      => $app['session']->get('user')['userId'],
@@ -176,7 +176,7 @@ class FavoriteController extends Controller {
         }
 
         // suppression de la préférence de film
-        $app['dao.prefere']->deleteFavoriteMovie($userId, $filmId);
+        $app['dao.prefere']->delete($userId, $filmId);
         // redirection vers la liste des préférences de films
         return $app->redirect($request->getBasePath() . '/favorite/list');
     }

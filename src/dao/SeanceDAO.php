@@ -105,18 +105,18 @@ class SeanceDAO extends DAO {
     }
 
     /**
-     * 
+     * Retourne les séances d'un film donné dans un cinéma donné
      * @param type $cinemaID
      * @param type $filmID
-     * @return type
+     * @return array
      */
-    public function getMovieShowtimes($cinemaID, $filmID) {
+    public function findAllByCinemaIdAndFilmId($cinemaID, $filmID) {
         // requête qui permet de récupérer la liste des séances d'un film donné dans un cinéma donné
         $requete   = "SELECT s.* FROM seance s"
                 . " WHERE s.filmID = :filmID"
                 . " AND s.cinemaID = :cinemaID";
         // on extrait les résultats
-        $resultats = $this->extraireNxN($requete,
+        $resultats = $this->getDb()->fetchAll($requete,
                 array(
             'filmID'   => $filmID,
             'cinemaID' => $cinemaID));
@@ -130,11 +130,11 @@ class SeanceDAO extends DAO {
      * @param int $cinemaID Identifiant du cinéma concerné
      * @return Les séances des films projetés dans ce cinéma
      */
-    public function getAllMoviesShowtimesByCinemaID($films, $cinemaID) {
+    public function findAllByCinemaId($films, $cinemaID) {
         if ($films):
             // Boucle de récupération de toutes les séances indexés sur l'identifiant du film
             foreach ($films as $film) {
-                $seances[$film->getFilmId()] = $this->getMovieShowtimes($cinemaID,
+                $seances[$film->getFilmId()] = $this->findAllByCinemaIdAndFilmId($cinemaID,
                         $film->getFilmId());
             }
             // on retourne le résultat
@@ -150,11 +150,11 @@ class SeanceDAO extends DAO {
      * @param int $filmID Identifiant du film concerné
      * @return Les séances du film projeté dans ces cinémas
      */
-    public function getAllCinemasShowtimesByMovieID($cinemas, $filmID) {
+    public function findAllByFilmId($cinemas, $filmID) {
         $seances = null;
         // Boucle de récupération de toutes les séances indexés sur l'identifiant du film
         foreach ($cinemas as $cinema) {
-            $seances[$cinema->getCinemaId()] = $this->getMovieShowtimes($cinema->getCinemaId(),
+            $seances[$cinema->getCinemaId()] = $this->findAllByCinemaIdAndFilmId($cinema->getCinemaId(),
                     $filmID);
         }
         // on retourne le résultat
@@ -179,8 +179,9 @@ class SeanceDAO extends DAO {
                 . ", :heureFin"
                 . ", :version)";
         // exécution
-        $resultat = $this->executeQuery($requete,
-                [':cinemaID'   => $cinemaID,
+        $resultat = $this->getDb()->executeQuery($requete,
+                [
+            ':cinemaID'   => $cinemaID,
             ':filmID'     => $filmID,
             ':heureDebut' => $dateheuredebut,
             ':heureFin'   => $dateheurefin,
@@ -215,8 +216,9 @@ class SeanceDAO extends DAO {
                 . " AND heureDebut = :heureDebutOld"
                 . " AND heureFin = :heureFinOld";
         // exécution
-        $resultat = $this->executeQuery($requete,
-                [':cinemaID'      => $cinemaID,
+        $resultat = $this->getDb()->executeQuery($requete,
+                [
+            ':cinemaID'      => $cinemaID,
             ':filmID'        => $filmID,
             ':heureDebutOld' => $dateheuredebutOld,
             ':heureFinOld'   => $dateheurefinOld,
@@ -239,20 +241,13 @@ class SeanceDAO extends DAO {
      * @param type $heureDebut
      * @param type $heureFin
      */
-    public function deleteShowtime($cinemaID, $filmID, $heureDebut, $heureFin) {
-        $this->executeQuery("DELETE FROM seance "
-                . "WHERE cinemaID = :cinemaID "
-                . "AND filmID = :filmID "
-                . "AND heureDebut = :heureDebut"
-                . " AND heureFin = :heureFin",
-                [':cinemaID'   => $cinemaID,
-            ':filmID'     => $filmID,
-            ':heureDebut' => $heureDebut,
-            ':heureFin'   => $heureFin]);
-
-        if ($this->logger) {
-            $this->logger->info('Showtime for the movie ' . $filmID . ' and the cinema ' . $cinemaID . ' successfully deleted.');
-        }
+    public function delete($cinemaID, $filmID, $heureDebut, $heureFin) {
+        $this->getDb()->delete('seance',
+                array(
+            'cinemaId'   => $cinemaID,
+            'filmID'     => $filmID,
+            'heureDebut' => $heureDebut,
+            'heureFin'   => $heureFin));
     }
 
 }

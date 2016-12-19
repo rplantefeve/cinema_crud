@@ -47,7 +47,7 @@ class ShowtimesController extends Controller {
             $film   = $app['dao.seance']->getFilmDAO()->find($filmID);
 
             // on récupère les cinémas qui ne projettent pas encore le film
-            $cinemasUnplanned = $app['dao.seance']->getCinemaDAO()->findAllNotInByMovieId($filmID);
+            $cinemasUnplanned = $app['dao.seance']->getCinemaDAO()->findAllByFilmIdNotIn($filmID);
         }
         // sinon, on retourne à l'accueil
         else {
@@ -56,8 +56,8 @@ class ShowtimesController extends Controller {
         }
 
         // on récupère la liste des cinémas de ce film
-        $cinemas = $app['dao.seance']->getCinemaDAO()->findAllByMovieId($filmID);
-        $seances = $app['dao.seance']->getAllCinemasShowtimesByMovieID($cinemas,
+        $cinemas = $app['dao.seance']->getCinemaDAO()->findAllByFilmId($filmID);
+        $seances = $app['dao.seance']->findAllByFilmId($cinemas,
                 $filmID);
 
         // On génère la vue séances du film
@@ -100,7 +100,7 @@ class ShowtimesController extends Controller {
             $cinema   = $app['dao.seance']->getCinemaDAO()->find($cinemaID);
 
             // on récupère les films pas encore projetés
-            $filmsUnplanned = $app['dao.seance']->getFilmDAO()->getNonPlannedMovies($cinemaID);
+            $filmsUnplanned = $app['dao.seance']->getFilmDAO()->findAllByCinemaIdNotIn($cinemaID);
         }
         // sinon, on retourne à l'accueil
         else {
@@ -109,9 +109,9 @@ class ShowtimesController extends Controller {
         }
 
         // on récupère la liste des films de ce cinéma
-        $films   = $app['dao.seance']->getFilmDAO()->getCinemaMoviesByCinemaID($cinemaID);
+        $films   = $app['dao.seance']->getFilmDAO()->findAllByCinemaId($cinemaID);
         // on récupère toutes les séances de films pour un cinéma donné
-        $seances = $app['dao.seance']->getAllMoviesShowtimesByCinemaID($films,
+        $seances = $app['dao.seance']->findAllByCinemaId($films,
                 $cinemaID);
 
         // On génère la vue séances du cinéma
@@ -157,7 +157,7 @@ class ShowtimesController extends Controller {
             $entries['filmID']   = $filmId;
 
             // suppression de la séance
-            $app['dao.seance']->deleteShowtime($entries['cinemaID'],
+            $app['dao.seance']->delete($entries['cinemaID'],
                     $entries['filmID'], $entries['heureDebut'],
                     $entries['heureFin']
             );

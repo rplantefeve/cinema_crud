@@ -62,15 +62,16 @@ class FilmDAO extends DAO {
     /**
      * Retourne les films d'un cinéma
      * @param type $cinemaID
-     * @return type
+     * @return array Tableau d'objes Film
      */
-    public function getCinemaMoviesByCinemaID($cinemaID) {
+    public function findAllByCinemaId($cinemaID) {
         // requête qui nous permet de récupérer la liste des films pour un cinéma donné
         $requete   = "SELECT DISTINCT f.* FROM film f"
                 . " INNER JOIN seance s ON f.filmID = s.filmID"
                 . " AND s.cinemaID = :cinemaID";
         // on extrait les résultats
-        $resultats = $this->extraireNxN($requete, ['cinemaID' => $cinemaID]);
+        $resultats = $this->getDb()->fetchAll($requete,
+                ['cinemaID' => $cinemaID]);
         // on extrait les objets métiers des résultats
         return $this->extractObjects($resultats);
     }
@@ -81,10 +82,10 @@ class FilmDAO extends DAO {
      * @param int $userID Identifiant de l'utilisateur
      * @return Film[] Films présents dans la base respectant les critÃ¨res
      */
-    public function getMoviesNonAlreadyMarkedAsFavorite($userID) {
+    public function findAllByUserIdNotIn($userID) {
         // requête de récupération des titres et des identifiants des films
         // qui n'ont pas encore été marqués comme favoris par l'utilisateur
-        $requete   = "SELECT f.filmID, f.titre "
+        $requete   = "SELECT f.FILMID, f.TITRE "
                 . "FROM film f"
                 . " WHERE f.filmID NOT IN ("
                 . "SELECT filmID"
@@ -92,7 +93,7 @@ class FilmDAO extends DAO {
                 . " WHERE userID = :id"
                 . ")";
         // extraction de résultat
-        $resultats = $this->extraireNxN($requete, ['id' => $userID], false);
+        $resultats = $this->getDb()->fetchAll($requete, ['id' => $userID]);
         // on extrait les objets métiers des résultats
         return $this->extractObjects($resultats);
     }
@@ -102,10 +103,10 @@ class FilmDAO extends DAO {
      * @param integer $cinemaID
      * @return array
      */
-    public function getNonPlannedMovies($cinemaID) {
+    public function findAllByCinemaIdNotIn($cinemaID) {
         // requête de récupération des titres et des identifiants des films
         // qui n'ont pas encore été programmés dans ce cinéma
-        $requete  = "SELECT f.filmID, f.titre "
+        $requete  = "SELECT f.FILMID, f.TITRE "
                 . "FROM film f"
                 . " WHERE f.filmID NOT IN ("
                 . "SELECT filmID"
@@ -113,7 +114,7 @@ class FilmDAO extends DAO {
                 . " WHERE cinemaID = :id"
                 . ")";
         // extraction de résultat
-        $resultat = $this->extraireNxN($requete, ['id' => $cinemaID], false);
+        $resultat = $this->getDb()->fetchAll($requete, ['id' => $cinemaID]);
         // on extrait les objets métiers des résultats
         return $this->extractObjects($resultat);
     }
@@ -129,7 +130,7 @@ class FilmDAO extends DAO {
                 . ":titre"
                 . ", :titreOriginal)";
         // exécution
-        $this->executeQuery($requete,
+        $this->getDb()->executeQuery($requete,
                 [
             'titre'         => $titre,
             'titreOriginal' => $titreOriginal]);
@@ -155,20 +156,15 @@ class FilmDAO extends DAO {
                 . " WHERE filmID = "
                 . $filmID;
         // exécution de la requête
-        $this->executeQuery($requete);
+        $this->getDb()->executeQuery($requete);
     }
 
     /**
      * Supprime un film
      * @param integer $movieID
      */
-    public function deleteMovie($movieID) {
-        $this->executeQuery("DELETE FROM film WHERE filmID = "
-                . $movieID);
-
-        if ($this->logger) {
-            $this->logger->info('Movie ' . $movieID . ' successfully deleted.');
-        }
+    public function delete($movieID) {
+        $this->getDb()->delete('film', array('filmId' => $movieID));
     }
 
 }

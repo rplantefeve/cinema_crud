@@ -87,14 +87,14 @@ class PrefereDAO extends DAO {
      * @param string $utilisateur Adresse email de l'utilisateur
      * @return array[][] Les films préférés (sous forme de tableau associatif) de l'utilisateur
      */
-    public function getFavoriteMoviesFromUser($id) {
+    public function findAllByUserId($id) {
         // on construit la requête qui va récupérer les films de l'utilisateur
-        $requete = "SELECT f.filmID, f.titre, p.commentaire, p.userID from film f" .
+        $requete = "SELECT f.FILMID, f.TITRE, p.COMMENTAIRE, p.USERID from film f" .
                 " INNER JOIN prefere p ON f.filmID = p.filmID" .
                 " AND p.userID = :userID";
 
         // on extrait le résultat de la BDD sous forme de tableau associatif
-        $resultats = $this->extraireNxN($requete, ['userID' => $id]);
+        $resultats = $this->getDb()->fetchAll($requete, ['userID' => $id]);
         // on extrait les objets métiers des résultats
         return $this->extractObjects($resultats);
     }
@@ -110,7 +110,7 @@ class PrefereDAO extends DAO {
         $requete = "UPDATE prefere SET commentaire = :comment"
                 . " WHERE filmID = :filmID AND userID = :userID";
         // exécution de la requête
-        $this->executeQuery($requete,
+        $this->getDb()->executeQuery($requete,
                 ['userID'  => $userID,
             'filmID'  => $filmID,
             'comment' => $comment]);
@@ -130,7 +130,7 @@ class PrefereDAO extends DAO {
                 . ", :comment)";
 
         // exécution de la requête
-        $this->executeQuery($requete,
+        $this->getDb()->executeQuery($requete,
                 ['filmID'  => $filmID,
             'userID'  => $userID,
             'comment' => $comment]);
@@ -145,15 +145,9 @@ class PrefereDAO extends DAO {
      * @param type $userID
      * @param type $filmID
      */
-    public function deleteFavoriteMovie($userID, $filmID) {
-        $this->executeQuery("DELETE FROM prefere"
-                . " WHERE userID = :userID AND filmID = :filmID",
-                ['userID' => $userID,
-            'filmID' => $filmID]);
-
-        if ($this->logger) {
-            $this->logger->info('Movie ' . $filmID . ' successfully deleted from ' . $userID . '\'s preferences.');
-        }
+    public function delete($userID, $filmID) {
+        $this->getDb()->delete('prefere',
+                array('userId' => $userID, 'filmId' => $filmID));
     }
 
     public function getFilmDAO() {

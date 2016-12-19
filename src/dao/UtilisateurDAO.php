@@ -36,7 +36,8 @@ class UtilisateurDAO extends DAO {
      */
     public function find(...$userId) {
         $requete  = "SELECT * FROM utilisateur WHERE userID = ?";
-        $resultat = $this->getDb()->fetchAssoc($requete, [$userId[0]]);
+        $resultat = $this->getDb()->fetchAssoc($requete, [
+            $userId[0]]);
         // si trouvé
         if ($resultat) {
             // on récupère l'objet Film
@@ -65,16 +66,18 @@ class UtilisateurDAO extends DAO {
      * @param string $password Mot de passe de l'utilisateur
      * @throw Exception si on ne trouve pas l'utilisateur en BDD
      */
-    public function verifyUserCredentials($email, $passwordSaisi) {
+    public function findOneByCourrielAndPassword($email, $passwordSaisi) {
         // extraction du mdp de l'utilisateur
         $requete   = "SELECT password FROM utilisateur WHERE adresseCourriel = :email";
         // on prépare la requête
-        $statement = $this->executeQuery($requete, ['email' => $email]);
+        
+        $result = $this->getDb()->fetchAssoc($requete, [
+            'email' => $email]);
 
         // on teste le nombre de lignes renvoyées
-        if ($statement->rowCount() > 0) {
+        if ($result && $result['password'] !== '' ) {
             // on récupère le mot de passe
-            $passwordBDD = $statement->fetch()[0];
+            $passwordBDD = $result['password'];
             $this->testPasswords($passwordSaisi, $passwordBDD, $email);
         } else {
             throw new \Exception('The user ' . $email . ' doesn\'t exist.');
@@ -100,40 +103,18 @@ class UtilisateurDAO extends DAO {
     }
 
     /**
-     * Méthode qui retourne l'id d'un utilisateur passé en paramètre
-     * @param string $utilisateur Adresse email de l'utilisateur
-     * @return string $id Identifiant de l'utilisateur
-     */
-    public function getUserIDByEmailAddress($utilisateur) {
-        // requête qui récupère l'ID grâce à l'adresse email
-        $requete = "SELECT userID FROM utilisateur WHERE adresseCourriel = :email";
-
-        // on récupère le résultat de la requête
-        $resultat = $this->executeQuery($requete, ['email' => $utilisateur]);
-
-        // on teste le nombre de lignes renvoyées
-        if ($resultat->rowCount() > 0) {
-            // on récupère la première (et seule) ligne retournée
-            $row = $resultat->fetch();
-            // l'id est le premier élément du tableau de résultats
-            return $row[0];
-        } else {
-            return null;
-        }
-    }
-
-    /**
      * Méthode qui retourne l'utilisateur initialisé
      * @param string $utilisateur Adresse email de l'utilisateur
      * @return Utilisateur L'Utilisateur initialisé
      */
-    public function getUserByEmailAddress($email) {
+    public function findOneByCourriel($email) {
         // on construit la requête qui va récupérer les informations de l'utilisateur
         $requete = "SELECT * FROM utilisateur "
                 . "WHERE adresseCourriel = :email";
 
         // on extrait le résultat de la BDD sous forme de tableau associatif
-        $resultat = $this->extraire1xN($requete, ['email' => $email], false);
+        $resultat = $this->getDb()->fetchAssoc($requete, [
+            'email' => $email]);
 
         // on construit l'objet Utilisateur
         $utilisateur = $this->buildBusinessObject($resultat);
@@ -155,8 +136,9 @@ class UtilisateurDAO extends DAO {
                 . "VALUES (:firstName, :lastName, :email, :password)";
 
         // exécution de la requête
-        $this->executeQuery($requete,
-                [':firstName' => $firstName,
+        $this->getDb()->executeQuery($requete,
+                [
+            ':firstName' => $firstName,
             'lastName'   => $lastName,
             'email'      => $email,
             'password'   => $password]);
