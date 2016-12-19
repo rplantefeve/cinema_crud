@@ -4,6 +4,7 @@ namespace Semeformation\Mvc\Cinema_crud\dao;
 
 use Semeformation\Mvc\Cinema_crud\includes\DAO;
 use Semeformation\Mvc\Cinema_crud\models\Utilisateur;
+use Semeformation\Mvc\Cinema_crud\exceptions\BusinessObjectDoNotExist;
 use Exception;
 
 /**
@@ -36,14 +37,15 @@ class UtilisateurDAO extends DAO {
      */
     public function find(...$userId) {
         $requete  = "SELECT * FROM utilisateur WHERE userID = ?";
-        $resultat = $this->getDb()->fetchAssoc($requete, [
+        $resultat = $this->getDb()->fetchAssoc($requete,
+                [
             $userId[0]]);
         // si trouvé
         if ($resultat) {
             // on récupère l'objet Film
             return $this->buildBusinessObject($resultat);
         } else {
-            throw new \Exception('Aucun utilisateur trouvé pour l\'id=' . $userId[0]);
+            throw new BusinessObjectDoNotExist('Aucun utilisateur trouvé pour l\'id=' . $userId[0]);
         }
     }
 
@@ -68,19 +70,20 @@ class UtilisateurDAO extends DAO {
      */
     public function findOneByCourrielAndPassword($email, $passwordSaisi) {
         // extraction du mdp de l'utilisateur
-        $requete   = "SELECT password FROM utilisateur WHERE adresseCourriel = :email";
+        $requete = "SELECT password FROM utilisateur WHERE adresseCourriel = :email";
         // on prépare la requête
-        
-        $result = $this->getDb()->fetchAssoc($requete, [
+
+        $result = $this->getDb()->fetchAssoc($requete,
+                [
             'email' => $email]);
 
         // on teste le nombre de lignes renvoyées
-        if ($result && $result['password'] !== '' ) {
+        if ($result && $result['password'] !== '') {
             // on récupère le mot de passe
             $passwordBDD = $result['password'];
             $this->testPasswords($passwordSaisi, $passwordBDD, $email);
         } else {
-            throw new \Exception('The user ' . $email . ' doesn\'t exist.');
+            throw new BusinessObjectDoNotExist('The user ' . $email . ' doesn\'t exist.');
         }
     }
 
@@ -113,7 +116,8 @@ class UtilisateurDAO extends DAO {
                 . "WHERE adresseCourriel = :email";
 
         // on extrait le résultat de la BDD sous forme de tableau associatif
-        $resultat = $this->getDb()->fetchAssoc($requete, [
+        $resultat = $this->getDb()->fetchAssoc($requete,
+                [
             'email' => $email]);
 
         // on construit l'objet Utilisateur
@@ -124,28 +128,24 @@ class UtilisateurDAO extends DAO {
     }
 
     /**
-     * Méthode qui ajoute un utilisateur dans la BDD
-     * @param string $firstName Prénom de l'utilisateur
-     * @param string $lastName Nom de l'utilisateur
-     * @param string $email Adresse email de l'utilisateur
-     * @param string $password Mot de passe de l'utilisateur
+     * Sauvegarde un BO Utilisateur en BDD
+     * @param Utilisateur $utilisateur
      */
-    public function createUser($firstName, $lastName, $email, $password) {
-        // construction de la requête
-        $requete = "INSERT INTO utilisateur (prenom, nom, adresseCourriel, password) "
-                . "VALUES (:firstName, :lastName, :email, :password)";
+    public function save(Utilisateur $utilisateur) {
+        // je récupère les données de l'utilisateur sous forme de tableau
+        $donneesUtilisateur = array(
+            'prenom'          => $utilisateur->getPrenom(),
+            'nom'             => $utilisateur->getNom(),
+            'adresseCourriel' => $utilisateur->getAdresseCourriel(),
+            'password'        => $utilisateur->getPassword(),
+        );
 
-        // exécution de la requête
-        $this->getDb()->executeQuery($requete,
-                [
-            ':firstName' => $firstName,
-            'lastName'   => $lastName,
-            'email'      => $email,
-            'password'   => $password]);
-
-        if ($this->logger) {
-            $this->logger->info('User ' . $email . ' successfully created.');
-        }
+        // Sinon, nous faisons une insertion
+        $this->getDb()->insert('utilisateur', $donneesUtilisateur);
+        // On récupère l'id autoincrement
+        $id = $this->getDb()->lastInsertId();
+        // affectation
+        $utilisateur->setUserId($id);
     }
 
 }

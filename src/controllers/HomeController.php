@@ -3,6 +3,7 @@
 namespace Semeformation\Mvc\Cinema_crud\controllers;
 
 use Semeformation\Mvc\Cinema_crud\views\View;
+use \Semeformation\Mvc\Cinema_crud\models\Utilisateur;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Silex\Application;
@@ -15,13 +16,6 @@ use Exception;
  * @author User
  */
 class HomeController extends Controller {
-
-    /**
-     * Constructeur de la classe
-     */
-    public function __construct(LoggerInterface $logger = null) {
-        
-    }
 
     /**
      * Route Accueil
@@ -166,12 +160,16 @@ class HomeController extends Controller {
                     $isUserUnique && !$isPasswordEmpty && $isPasswordValid) {
                 // hash du mot de passe
                 $password = password_hash($entries['password'], PASSWORD_DEFAULT);
+                $utilisateur = new Utilisateur();
+                $utilisateur->setAdresseCourriel($entries['email']);
+                $utilisateur->setNom($entries['lastName']);
+                $utilisateur->setPrenom($entries['firstName']);
+                $utilisateur->setPassword($password);
                 // créer l'utilisateur
-                $app['dao.utilisateur']->createUser($entries['firstName'],
-                        $entries['lastName'], $entries['email'], $password);
+                $app['dao.utilisateur']->save($utilisateur);
 
                 $username = $entries['email'];
-                $userId   = $app['dao.utilisateur']->findOneByCourriel($username)->getUserId();
+                $userId   = $utilisateur->getUserId();
                 $app['session']->set('user',
                         array(
                     'username' => $username,

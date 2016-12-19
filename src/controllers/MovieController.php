@@ -4,6 +4,7 @@ namespace Semeformation\Mvc\Cinema_crud\controllers;
 
 use Semeformation\Mvc\Cinema_crud\views\View;
 use Symfony\Component\HttpFoundation\Request;
+use Semeformation\Mvc\Cinema_crud\models\Film;
 use Silex\Application;
 use Psr\Log\LoggerInterface;
 
@@ -13,9 +14,6 @@ use Psr\Log\LoggerInterface;
  * @author User
  */
 class MovieController extends Controller {
-
-    public function __construct(LoggerInterface $logger = null) {
-    }
 
     /**
      * Route Liste des films
@@ -35,17 +33,21 @@ class MovieController extends Controller {
         $vue = new View("MoviesList");
         // En passant les variables nécessaires à son bon affichage
         return $vue->generer($request,
-                [
-            'films'       => $films,
-            'isUserAdmin' => $isUserAdmin]);
+                        [
+                    'films'       => $films,
+                    'isUserAdmin' => $isUserAdmin]);
     }
 
     /**
      * Route Ajouter / Modifier un film
+     * @param Request $request
+     * @param Application $app
+     * @param string $filmId
+     * @return string La vue générée
      */
     function editMovie(Request $request = null, Application $app = null,
             string $filmId = null) {
-        
+
         // si l'utilisateur n'est pas connecté ou sinon s'il n'est pas amdinistrateur
         if (!$app['session']->get('user') or $app['session']->get('user')['username'] !==
                 'admin@adm.adm') {
@@ -53,11 +55,8 @@ class MovieController extends Controller {
             return $app->redirect($request->getBasePath() . '/home');
         }
 
-        // variable qui sert à conditionner l'affichage du formulaire
-        $isItACreation = false;
-
         // si la méthode de formulaire est la méthode POST
-        if (filter_input(INPUT_SERVER, 'REQUEST_METHOD') === "POST") {
+        if ($request->isMethod('POST')) {
 
             // on assainit les entrées
             $entries = $this->extractArrayFromPostRequest($request,
@@ -65,7 +64,6 @@ class MovieController extends Controller {
                 'backToList',
                 'titre',
                 'titreOriginal',
-                'modificationInProgress'
             ]);
 
             // si l'action demandée est retour en arrière
@@ -76,23 +74,17 @@ class MovieController extends Controller {
             // sinon (l'action demandée est la sauvegarde d'un film)
             else {
 
-                // et que nous ne sommes pas en train de modifier un film
-                if ($entries['modificationInProgress'] == null) {
-                    // on ajoute le film
-                    $app['dao.film']->insertNewMovie($entries['titre'],
-                            $entries['titreOriginal']);
-                }
-                // sinon, nous sommes dans le cas d'une modification
-                else {
-                    // mise à jour du film
-                    $app['dao.film']->updateMovie($filmId,
-                            $entries['titre'], $entries['titreOriginal']);
-                }
+                $film = new Film();
+                $film->setTitre($entries['titre']);
+                $film->setTitreOriginal($entries['titreOriginal']);
+                $film->setFilmId($filmId);
+                // on sauvegarde le film
+                $app['dao.film']->save($film);
                 // on revient à la liste des films
                 return $app->redirect($request->getBasePath() . '/movie/list');
             }
         }// si la page est chargée avec $_GET
-        elseif (filter_input(INPUT_SERVER, 'REQUEST_METHOD') === "GET") {
+        elseif ($request->isMethod('GET')) {
             // on assainit les entrées
             $entries['filmID'] = $filmId;
             if ($entries && $entries['filmID'] !== null && $entries['filmID'] !==
@@ -102,8 +94,7 @@ class MovieController extends Controller {
             }
             // sinon, c'est une création
             else {
-                $isItACreation = true;
-                $film          = null;
+                $film = null;
             }
         }
 
@@ -111,8 +102,7 @@ class MovieController extends Controller {
         $vue = new View("EditMovie");
         // En passant les variables nécessaires à son bon affichage
         return $vue->generer($request, [
-            'film'          => $film,
-            'isItACreation' => $isItACreation]);
+                    'film' => $film]);
     }
 
     /**
@@ -120,11 +110,11 @@ class MovieController extends Controller {
      * @param string $filmId
      * @param Request $request
      * @param Application $app
-     * @return type
+     * @return string La vue générée
      */
     public function deleteMovie(string $filmId, Request $request = null,
             Application $app = null) {
-        
+
         // si l'utilisateur n'est pas connecté ou sinon s'il n'est pas administrateur
         if (!$app['session']->get('user') or $app['session']->get('user')['username'] !==
                 'admin@adm.adm') {

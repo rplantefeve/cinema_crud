@@ -6,6 +6,8 @@ use Semeformation\Mvc\Cinema_crud\models\Seance;
 use Semeformation\Mvc\Cinema_crud\includes\DAO;
 use Semeformation\Mvc\Cinema_crud\dao\FilmDAO;
 use Semeformation\Mvc\Cinema_crud\dao\CinemaDAO;
+use Semeformation\Mvc\Cinema_crud\exceptions\BusinessObjectDoNotExist;
+use Semeformation\Mvc\Cinema_crud\exceptions\BusinessObjectAlreadyExists;
 use DateTime;
 
 /**
@@ -27,22 +29,6 @@ class SeanceDAO extends DAO {
      */
     private $cinemaDAO;
 
-    public function getFilmDAO() {
-        return $this->filmDAO;
-    }
-
-    public function getCinemaDAO() {
-        return $this->cinemaDAO;
-    }
-
-    public function setFilmDAO(FilmDAO $filmDAO) {
-        $this->filmDAO = $filmDAO;
-    }
-
-    public function setCinemaDAO(CinemaDAO $cinemaDAO) {
-        $this->cinemaDAO = $cinemaDAO;
-    }
-
     /**
      * Retourne un BO Séance en fonction de l'id du cinéma, du film, de l'heure de début et de fin
      * @param type $primaryKey
@@ -55,13 +41,17 @@ class SeanceDAO extends DAO {
                 . "AND filmID = ? "
                 . "AND heureDebut = ? "
                 . "AND heureFin = ?";
-        $resultat = $this->getDb()->fetchAssoc($requete, $primaryKey[0],
-                $primaryKey[1], $primaryKey[2], $primaryKey[3]);
+        $resultat = $this->getDb()->fetchAssoc($requete,
+                [
+            $primaryKey[0],
+            $primaryKey[1],
+            $primaryKey[2],
+            $primaryKey[3]]);
         // si trouvé
         if ($resultat) {
             return $this->buildBusinessObject($resultat);
         } else {
-            throw new \Exception('Pas de séance trouvé pour le film id=' . $primaryKey[0] . ', cinema id=' . $primaryKey[1] . ', heure de début=' . $primaryKey[2] . ', heure de fin=' . $primaryKey[3]);
+            throw new BusinessObjectDoNotExist('Pas de séance trouvé pour le film id=' . $primaryKey[0] . ', cinema id=' . $primaryKey[1] . ', heure de début=' . $primaryKey[2] . ', heure de fin=' . $primaryKey[3]);
         }
     }
 
@@ -162,76 +152,41 @@ class SeanceDAO extends DAO {
     }
 
     /**
-     * Insère une nouvelle séance pour un film donné dans un cinéma donné
-     * @param integer $cinemaID
-     * @param integer $filmID
-     * @param datetime $dateheuredebut
-     * @param datetime $dateheurefin
-     * @param string $version
+     * Sauvegarde un objet Seance en BDD
+     * @param Seance $seance
      */
-    public function insertNewShowtime($cinemaID, $filmID, $dateheuredebut,
-            $dateheurefin, $version): \PDOStatement {
-        // construction
-        $requete  = "INSERT INTO seance (cinemaID, filmID, heureDebut, heureFin, version) VALUES ("
-                . ":cinemaID"
-                . ", :filmID"
-                . ", :heureDebut"
-                . ", :heureFin"
-                . ", :version)";
-        // exécution
-        $resultat = $this->getDb()->executeQuery($requete,
-                [
-            ':cinemaID'   => $cinemaID,
-            ':filmID'     => $filmID,
-            ':heureDebut' => $dateheuredebut,
-            ':heureFin'   => $dateheurefin,
-            ':version'    => $version]);
+    public function save(Seance $seance, $dateheuredebutOld = null,
+            $dateheurefinOld = null) {
+        // je récupère les données de l'objet métier sous forme de tableau
+        $donneesSeance = array(
+            'cinemaId'   => $seance->getCinema()->getCinemaId(),
+            'filmId'     => $seance->getFilm()->getFilmId(),
+            'heureDebut' => $seance->getHeureDebut()->format('Y-m-d H:i'),
+            'heureFin'   => $seance->getHeureFin()->format('Y-m-d H:i'),
+            'version'    => $seance->getVersion()
+        );
 
-        // log
-        if ($this->logger) {
-            $this->logger->info('Showtime for the movie ' . $filmID . ' at the ' . $cinemaID . ' successfully added.');
+        if ($dateheuredebutOld !== '' && $dateheurefinOld !== '') {
+            // il faut faire une mise à jour
+            $this->getDb()->update('seance', $donneesSeance,
+                    array(
+                'cinemaId'   => $seance->getCinema()->getCinemaId(),
+                'filmId'     => $seance->getFilm()->getFilmId(),
+                'heureDebut' => $dateheuredebutOld,
+                'heureFin'   => $dateheurefinOld));
+        } else {
+            // Sinon, nous faisons une insertion
+            try {
+                // la séance existe-t-elle déjà ?
+                $this->find($donneesSeance['cinemaId'],
+                        $donneesSeance['filmId'], $donneesSeance['heureDebut'],
+                        $donneesSeance['heureFin']);
+                throw new BusinessObjectAlreadyExists('La séance existe déjà !');
+            } catch (BusinessObjectDoNotExist $ex) {
+                // insertion en BDD
+                $this->getDb()->insert('seance', $donneesSeance);
+            }
         }
-
-        return $resultat;
-    }
-
-    /**
-     * Met à jour une séance pour un film donné dans un cinéma donné
-     * @param integer $cinemaID
-     * @param integer $filmID
-     * @param datetime $dateheuredebutOld
-     * @param datetime $dateheurefinOld
-     * @param datetime $dateheuredebut
-     * @param datetime $dateheurefin
-     * @param string $version
-     */
-    public function updateShowtime($cinemaID, $filmID, $dateheuredebutOld,
-            $dateheurefinOld, $dateheuredebut, $dateheurefin, $version): \PDOStatement {
-        // construction
-        $requete  = "UPDATE seance SET heureDebut = :heureDebut,"
-                . " heureFin = :heureFin,"
-                . " version = :version"
-                . " WHERE cinemaID = :cinemaID"
-                . " AND filmID = :filmID"
-                . " AND heureDebut = :heureDebutOld"
-                . " AND heureFin = :heureFinOld";
-        // exécution
-        $resultat = $this->getDb()->executeQuery($requete,
-                [
-            ':cinemaID'      => $cinemaID,
-            ':filmID'        => $filmID,
-            ':heureDebutOld' => $dateheuredebutOld,
-            ':heureFinOld'   => $dateheurefinOld,
-            ':heureDebut'    => $dateheuredebut,
-            ':heureFin'      => $dateheurefin,
-            ':version'       => $version]);
-
-        // log
-        if ($this->logger) {
-            $this->logger->info('Showtime for the movie ' . $filmID . ' at the ' . $cinemaID . ' successfully updated.');
-        }
-
-        return $resultat;
     }
 
     /**
@@ -248,6 +203,22 @@ class SeanceDAO extends DAO {
             'filmID'     => $filmID,
             'heureDebut' => $heureDebut,
             'heureFin'   => $heureFin));
+    }
+
+    public function getFilmDAO() {
+        return $this->filmDAO;
+    }
+
+    public function getCinemaDAO() {
+        return $this->cinemaDAO;
+    }
+
+    public function setFilmDAO(FilmDAO $filmDAO) {
+        $this->filmDAO = $filmDAO;
+    }
+
+    public function setCinemaDAO(CinemaDAO $cinemaDAO) {
+        $this->cinemaDAO = $cinemaDAO;
     }
 
 }

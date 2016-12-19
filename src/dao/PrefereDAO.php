@@ -6,6 +6,7 @@ use Semeformation\Mvc\Cinema_crud\includes\DAO;
 use Semeformation\Mvc\Cinema_crud\models\Prefere;
 use Semeformation\Mvc\Cinema_crud\dao\FilmDAO;
 use Semeformation\Mvc\Cinema_crud\dao\UtilisateurDAO;
+use Semeformation\Mvc\Cinema_crud\exceptions\BusinessObjectDoNotExist;
 
 /**
  * Description of PrefereDAO
@@ -63,13 +64,15 @@ class PrefereDAO extends DAO {
                 . " FROM prefere p INNER JOIN film f ON p.filmID = f.filmID"
                 . " WHERE p.userID = ? AND p.filmID = ?";
         $resultat = $this->getDb()->fetchAssoc($requete,
-                [$userIdAndFilmId[0], $userIdAndFilmId[1]]);
+                [
+            $userIdAndFilmId[0],
+            $userIdAndFilmId[1]]);
         // si trouvé
         if ($resultat) {
             // on récupère et on retourne l'objet préférence
             return $this->buildBusinessObject($resultat);
         } else {
-            throw new \Exception('Aucune préférence trouvée pour l\'utilisateur d\'id=' . $userIdAndFilmId[0] . ' pour le film d\'id=' . $userIdAndFilmId[1]);
+            throw new BusinessObjectDoNotExist('Aucune préférence trouvée pour l\'utilisateur d\'id=' . $userIdAndFilmId[0] . ' pour le film d\'id=' . $userIdAndFilmId[1]);
         }
     }
 
@@ -94,49 +97,37 @@ class PrefereDAO extends DAO {
                 " AND p.userID = :userID";
 
         // on extrait le résultat de la BDD sous forme de tableau associatif
-        $resultats = $this->getDb()->fetchAll($requete, ['userID' => $id]);
+        $resultats = $this->getDb()->fetchAll($requete,
+                [
+            'userID' => $id]);
         // on extrait les objets métiers des résultats
         return $this->extractObjects($resultats);
     }
 
     /**
-     * Méthode qui met à jour une préférence de film pour un utilisateur
-     * @param int userID Identifiant de l'utilisateur
-     * @param int filmID Identifiant du film
-     * @param string comment Commentaire de l'utilisateur à propos de ce film
+     * Sauvegarde un objet Prefere en BDD
+     * @param Prefere $prefere
      */
-    public function updateFavoriteMovie($userID, $filmID, $comment) {
-        // on construit la requête d'insertion
-        $requete = "UPDATE prefere SET commentaire = :comment"
-                . " WHERE filmID = :filmID AND userID = :userID";
-        // exécution de la requête
-        $this->getDb()->executeQuery($requete,
-                ['userID'  => $userID,
-            'filmID'  => $filmID,
-            'comment' => $comment]);
-    }
+    public function save(Prefere $prefere) {
+        // je récupère les données de l'objet métier sous forme de tableau
+        $donneesPrefere = array(
+            'filmId'      => $prefere->getFilm()->getFilmId(),
+            'userId'      => $prefere->getUtilisateur()->getUserId(),
+            'commentaire' => $prefere->getCommentaire()
+        );
 
-    /**
-     * Méthode qui ajoute une préférence de film à un utilisateur
-     * @param int userID Identifiant de l'utilisateur
-     * @param int filmID Identifiant du film
-     * @param string comment Commentaire de l'utilisateur à propos de ce film
-     */
-    public function insertNewFavoriteMovie($userID, $filmID, $comment = "") {
-        // on construit la requête d'insertion
-        $requete = "INSERT INTO prefere (filmID, userID, commentaire) VALUES ("
-                . ":filmID"
-                . ", :userID"
-                . ", :comment)";
-
-        // exécution de la requête
-        $this->getDb()->executeQuery($requete,
-                ['filmID'  => $filmID,
-            'userID'  => $userID,
-            'comment' => $comment]);
-
-        if ($this->logger) {
-            $this->logger->info('Movie ' . $filmID . ' successfully added to ' . $userID . '\'s preferences.');
+        try {
+            // la préférence existe-t-elle ?
+            $existe = $this->find($donneesPrefere['userId'],
+                    $donneesPrefere['filmId']);
+            // il faut faire une mise à jour
+            $this->getDb()->update('prefere', $donneesPrefere,
+                    array(
+                'filmId' => $prefere->getFilm()->getFilmId(),
+                'userId' => $prefere->getUtilisateur()->getUserId()));
+        } catch (BusinessObjectDoNotExist $e) {
+            // Sinon, nous faisons une insertion
+            $this->getDb()->insert('prefere', $donneesPrefere);
         }
     }
 
@@ -147,7 +138,9 @@ class PrefereDAO extends DAO {
      */
     public function delete($userID, $filmID) {
         $this->getDb()->delete('prefere',
-                array('userId' => $userID, 'filmId' => $filmID));
+                array(
+            'userId' => $userID,
+            'filmId' => $filmID));
     }
 
     public function getFilmDAO() {

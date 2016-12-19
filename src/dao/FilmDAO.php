@@ -4,6 +4,7 @@ namespace Semeformation\Mvc\Cinema_crud\dao;
 
 use Semeformation\Mvc\Cinema_crud\includes\DAO;
 use Semeformation\Mvc\Cinema_crud\models\Film;
+use Semeformation\Mvc\Cinema_crud\exceptions\BusinessObjectDoNotExist;
 
 /**
  * Description of FilmDAO
@@ -36,13 +37,14 @@ class FilmDAO extends DAO {
      */
     public function find(...$filmId) {
         $requete  = "SELECT * FROM film WHERE filmID = ?";
-        $resultat = $this->getDb()->fetchAssoc($requete, [$filmId[0]]);
+        $resultat = $this->getDb()->fetchAssoc($requete, [
+            $filmId[0]]);
         // si trouvé
         if ($resultat) {
             // on récupère et on retourne l'objet Film
             return $this->buildBusinessObject($resultat);
         } else {
-            throw new \Exception('Aucun film trouvé pour l\'id=' . $filmId[0]);
+            throw new BusinessObjectDoNotExist('Aucun film trouvé pour l\'id=' . $filmId[0]);
         }
     }
 
@@ -71,14 +73,15 @@ class FilmDAO extends DAO {
                 . " AND s.cinemaID = :cinemaID";
         // on extrait les résultats
         $resultats = $this->getDb()->fetchAll($requete,
-                ['cinemaID' => $cinemaID]);
+                [
+            'cinemaID' => $cinemaID]);
         // on extrait les objets métiers des résultats
         return $this->extractObjects($resultats);
     }
 
     /**
      * Méthode qui ne renvoie que les films non encore marqués
-     * comme favoris par l'utilisateur passé en paramÃ¨tre
+     * comme favoris par l'utilisateur passé en paramètre
      * @param int $userID Identifiant de l'utilisateur
      * @return Film[] Films présents dans la base respectant les critÃ¨res
      */
@@ -93,7 +96,8 @@ class FilmDAO extends DAO {
                 . " WHERE userID = :id"
                 . ")";
         // extraction de résultat
-        $resultats = $this->getDb()->fetchAll($requete, ['id' => $userID]);
+        $resultats = $this->getDb()->fetchAll($requete, [
+            'id' => $userID]);
         // on extrait les objets métiers des résultats
         return $this->extractObjects($resultats);
     }
@@ -114,49 +118,37 @@ class FilmDAO extends DAO {
                 . " WHERE cinemaID = :id"
                 . ")";
         // extraction de résultat
-        $resultat = $this->getDb()->fetchAll($requete, ['id' => $cinemaID]);
+        $resultat = $this->getDb()->fetchAll($requete, [
+            'id' => $cinemaID]);
         // on extrait les objets métiers des résultats
         return $this->extractObjects($resultat);
     }
 
     /**
-     * Crée un nouveau film
-     * @param string $titre
-     * @param string $titreOriginal
+     * Sauvegarde un objet Film en BDD
+     * @param Film $film
      */
-    public function insertNewMovie($titre, $titreOriginal = null) {
-        // construction
-        $requete = "INSERT INTO film (titre, titreOriginal) VALUES ("
-                . ":titre"
-                . ", :titreOriginal)";
-        // exécution
-        $this->getDb()->executeQuery($requete,
-                [
-            'titre'         => $titre,
-            'titreOriginal' => $titreOriginal]);
-        // log
-        if ($this->logger) {
-            $this->logger->info('Movie ' . $titre . ' successfully added.');
-        }
-    }
+    public function save(Film $film) {
+        // je récupère les données du film sous forme de tableau
+        $donneesFilm = array(
+            'titre'         => $film->getTitre(),
+            'titreOriginal' => $film->getTitreOriginal(),
+        );
 
-    /**
-     * Met un jour un film
-     * @param integer $filmID
-     * @param string $titre
-     * @param string $titreOriginal
-     */
-    public function updateMovie($filmID, $titre, $titreOriginal) {
-        // on construit la requête d'insertion
-        $requete = "UPDATE film SET "
-                . "titre = "
-                . "'" . $titre . "'"
-                . ", titreOriginal = "
-                . "'" . $titreOriginal . "'"
-                . " WHERE filmID = "
-                . $filmID;
-        // exécution de la requête
-        $this->getDb()->executeQuery($requete);
+        // Si le film existe déja
+        if ($film->getFilmId()) {
+            // il faut faire une mise à jour
+            $this->getDb()->update('film', $donneesFilm,
+                    array(
+                'filmId' => $film->getFilmId()));
+        } else {
+            // Sinon, nous faisons une insertion
+            $this->getDb()->insert('film', $donneesFilm);
+            // On récupère l'id autoincrement
+            $id = $this->getDb()->lastInsertId();
+            // affectation
+            $film->setFilmId($id);
+        }
     }
 
     /**
@@ -164,7 +156,8 @@ class FilmDAO extends DAO {
      * @param integer $movieID
      */
     public function delete($movieID) {
-        $this->getDb()->delete('film', array('filmId' => $movieID));
+        $this->getDb()->delete('film', array(
+            'filmId' => $movieID));
     }
 
 }
