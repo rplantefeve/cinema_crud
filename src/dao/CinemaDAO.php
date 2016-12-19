@@ -4,6 +4,7 @@ namespace Semeformation\Mvc\Cinema_crud\dao;
 
 use Semeformation\Mvc\Cinema_crud\includes\DAO;
 use Semeformation\Mvc\Cinema_crud\models\Cinema;
+use Semeformation\Mvc\Cinema_crud\exceptions\BusinessObjectDoNotExist;
 
 /**
  * Description of CinemaDAO
@@ -40,7 +41,7 @@ class CinemaDAO extends DAO {
             // on crée et on retourne l'objet métier Cinema
             return $this->buildBusinessObject($resultat);
         } else {
-            throw new \Exception('Aucun cinéma trouvé pour l\'id=' . $cinemaID[0]);
+            throw new BusinessObjectDoNotExist('Aucun cinéma trouvé pour l\'id=' . $cinemaID[0]);
         }
     }
 
