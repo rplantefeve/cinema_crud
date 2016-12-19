@@ -2,7 +2,7 @@
 $this->titre = "Ajouter / Modifier un film"; 
 $path = $request->getBasePath();
 // si c'est une modification
-if (!$isItACreation) {
+if ($film && $film->getFilmId()) {
     $action = $path . '/movie/edit/' . $film->getFilmId();
 }
 else {
@@ -26,20 +26,7 @@ else {
     if ($film) : echo $film->getFilmId();
     endif;
     ?>" name="filmID"/>
-           <?php
-           // si c'est une modification, c'est une information dont nous avons besoin
-           if (!$isItACreation) {
-               ?>
-        <input type="hidden" name="modificationInProgress" value="true"/>
-        <?php
-    }
-    ?>
-    <input type="submit" name="saveEntry" value="Sauvegarder" 
-<?php
-    if ($isItACreation) {
-        echo ' formaction = "' . $path . '/movie/add"';
-    }
-    ?>/>
+    <input type="submit" name="saveEntry" value="Sauvegarder"/>
 </form>
 <form method="get" action="<?= $path . '/movie/list' ?>">
     <input type="submit" value="Retour à la liste"/>

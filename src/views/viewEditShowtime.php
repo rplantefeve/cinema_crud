@@ -10,9 +10,9 @@ $path        = $request->getBasePath();
     <fieldset>
         <label for="datedebut">Date de début : </label>
         <input id="datedebut" type="text" name="datedebut" placeholder="jj/mm/aaaa" value="<?php
-               if ($seance): echo $seance->getHeureDebut()->format('d/m/Y');
-               endif;
-               ?>">
+        if ($seance): echo $seance->getHeureDebut()->format('d/m/Y');
+        endif;
+        ?>">
         <label for="heuredebut">Heure de début : </label>
         <input type="text" name="heuredebut" placeholder="hh:mm" value="<?php
         if ($seance): echo $seance->getHeureDebut()->format('H:i');
@@ -59,6 +59,10 @@ $path        = $request->getBasePath();
     ?>
     <button type="submit">Sauvegarder</button>
 </form>
+<div class="error"><?php
+    if ($alreadyExists): echo 'La séance existe déjà';
+    endif;
+    ?></div>
 <?php if ($fromCinema): ?>
     <form method="get" action="<?= $path . '/showtime/cinema/' . $cinema->getCinemaId() ?>">
         <button type="submit">Retour aux séances du cinéma</button>

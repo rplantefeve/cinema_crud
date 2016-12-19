@@ -1,21 +1,21 @@
 <?php
 $this->titre = "Editer un film préféré";
-$action      = $request->getBasePath() . '/favorite/edit/' . $preference['userID'];
+$action      = $request->getBasePath() . '/favorite/edit/' . $prefere->getUtilisateur()->getUserId();
 // si c'est une modification
-if (!$isItACreation) {
-    $action .= '/' . $preference['filmID'];
+if ($prefere->getFilm()) {
+    $action .= '/' . $prefere->getFilm()->getFilmId();
 }
 ?>
 <header><h1>Ajout / Modification d'un film préféré</h1></header>
 <form method="POST" name="editFavoriteMovie" action="<?= $action ?>">
     <label>Titre :</label>
     <select name="filmID" <?php
-    if (!$isItACreation): echo "disabled";
+    if ($prefere->getFilm()): echo "disabled";
     endif;
     ?>>
                 <?php
                 // si c'est une création, on crée la liste des films dynamiquement
-                if ($isItACreation) {
+                if (is_null($prefere->getFilm())) {
                     // s'il y a des résultats
                     if ($films) {
                         foreach ($films as $film) {
@@ -28,7 +28,7 @@ if (!$isItACreation) {
         // sinon, c'est une modification, nous n'avons qu'une seule option dans la liste
         else {
             ?>
-            <option selected="selected" value="<?= $preference['filmID'] ?>"><?= $preference['titre'] ?></option>
+            <option selected="selected" value="<?= $prefere->getFilm()->getFilmId() ?>"><?= $prefere->getFilm()->getTitre() ?></option>
             <?php
         }
         ?>
@@ -41,20 +41,19 @@ if (!$isItACreation) {
         ?>
     </div>
     <label>Commentaire :</label>
-    <textarea name="comment"><?= $preference['commentaire'] ?></textarea>
+    <textarea name="comment"><?= $prefere->getCommentaire() ?></textarea>
     <br/>
-    <input type="hidden" value="<?= $preference['userID'] ?>" name="userID"/>
     <?php
     // si c'est une modification, c'est une information dont nous avons besoin
-    if (!$isItACreation) {
+    if ($prefere->getFilm()) {
         ?>
-        <input type="hidden" name="modificationInProgress" value="true"/>
-        <input type="hidden" name="filmID" value="<?= $preference['filmID'] ?>"/>
+        <input type="hidden" name="filmID" value="<?= $prefere->getFilm()->getFilmId() ?>">
         <?php
     }
     ?>
+    <input type="hidden" value="<?= $prefere->getUtilisateur()->getUserId() ?>" name="userID"/>
     <input type="submit" name="saveEntry" value="Sauvegarder" <?php
-    if ($isItACreation) {
+    if (is_null($prefere->getFilm())) {
         echo ' formaction = "' . $request->getBasePath() . '/favorite/add"';
     }
     ?>
