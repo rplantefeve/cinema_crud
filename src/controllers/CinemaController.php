@@ -7,7 +7,6 @@ use Semeformation\Mvc\Cinema_crud\views\View;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Silex\Application;
-use Psr\Log\LoggerInterface;
 
 /**
  * Description of CinemaController
