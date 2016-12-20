@@ -108,9 +108,9 @@ class CinemaController extends Controller {
 
     /**
      * Route supprimer un cinéma
-     * @param string $cinemaId
      * @param Request $request
      * @param Application $app
+     * @param string $cinemaId
      * @return RedirectResponse
      */
     public function deleteCinema(Request $request = null,
