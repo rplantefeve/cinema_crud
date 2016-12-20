@@ -60,7 +60,7 @@ class View {
             // Renvoi du contenu du tampon et nettoyage
             return ob_get_clean();
         } else {
-            throw new Exception('Impossible to find a view named ' . $fichier);
+            throw new \Exception('Impossible de trouver la vue nommée ' . $fichier);
         }
     }
 

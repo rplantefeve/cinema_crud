@@ -2,10 +2,8 @@
 
 namespace Semeformation\Mvc\Cinema_crud\controllers;
 
-use Semeformation\Mvc\Cinema_crud\dao\FilmDAO;
-use Semeformation\Mvc\Cinema_crud\dao\CinemaDAO;
-use Semeformation\Mvc\Cinema_crud\dao\SeanceDAO;
 use Semeformation\Mvc\Cinema_crud\views\View;
+use Semeformation\Mvc\Cinema_crud\exceptions\BusinessObjectAlreadyExists;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Silex\Application;
@@ -19,12 +17,8 @@ use DateTime;
  */
 class ShowtimesController extends Controller {
 
-    private $seanceDAO;
-
     public function __construct(LoggerInterface $logger = null) {
-        $this->seanceDAO = new SeanceDAO($logger);
-        $this->seanceDAO->setCinemaDAO(new CinemaDAO($logger));
-        $this->seanceDAO->setFilmDAO(new FilmDAO($logger));
+        
     }
 
     /**
@@ -51,10 +45,10 @@ class ShowtimesController extends Controller {
             // on récupère l'identifiant du cinéma
             $filmID = $entries['filmID'];
             // puis on récupère les informations du film en question
-            $film   = $this->seanceDAO->getFilmDAO()->getMovieByID($filmID);
+            $film   = $app['dao.seance']->getFilmDAO()->find($filmID);
 
             // on récupère les cinémas qui ne projettent pas encore le film
-            $cinemasUnplanned = $this->seanceDAO->getCinemaDAO()->getNonPlannedCinemas($filmID);
+            $cinemasUnplanned = $app['dao.seance']->getCinemaDAO()->findAllByFilmIdNotIn($filmID);
         }
         // sinon, on retourne à l'accueil
         else {
@@ -63,9 +57,8 @@ class ShowtimesController extends Controller {
         }
 
         // on récupère la liste des cinémas de ce film
-        $cinemas = $this->seanceDAO->getCinemaDAO()->getMovieCinemasByMovieID($filmID);
-        $seances = $this->seanceDAO->getAllCinemasShowtimesByMovieID($cinemas,
-                $filmID);
+        $cinemas = $app['dao.seance']->getCinemaDAO()->findAllByFilmId($filmID);
+        $seances = $app['dao.seance']->findAllByFilmId($cinemas, $filmID);
 
         // On génère la vue séances du film
         $vue = new View("MovieShowtimes");
@@ -104,10 +97,10 @@ class ShowtimesController extends Controller {
             // on récupère l'identifiant du cinéma
             $cinemaID = $entries['cinemaID'];
             // puis on récupère les informations du cinéma en question
-            $cinema   = $this->seanceDAO->getCinemaDAO()->getCinemaByID($cinemaID);
+            $cinema   = $app['dao.seance']->getCinemaDAO()->find($cinemaID);
 
             // on récupère les films pas encore projetés
-            $filmsUnplanned = $this->seanceDAO->getFilmDAO()->getNonPlannedMovies($cinemaID);
+            $filmsUnplanned = $app['dao.seance']->getFilmDAO()->findAllByCinemaIdNotIn($cinemaID);
         }
         // sinon, on retourne à l'accueil
         else {
@@ -116,10 +109,9 @@ class ShowtimesController extends Controller {
         }
 
         // on récupère la liste des films de ce cinéma
-        $films   = $this->seanceDAO->getFilmDAO()->getCinemaMoviesByCinemaID($cinemaID);
+        $films   = $app['dao.seance']->getFilmDAO()->findAllByCinemaId($cinemaID);
         // on récupère toutes les séances de films pour un cinéma donné
-        $seances = $this->seanceDAO->getAllMoviesShowtimesByCinemaID($films,
-                $cinemaID);
+        $seances = $app['dao.seance']->findAllByCinemaId($films, $cinemaID);
 
         // On génère la vue séances du cinéma
         $vue = new View("CinemaShowtimes");
@@ -156,7 +148,8 @@ class ShowtimesController extends Controller {
 
             // on assainie les variables
             $entries             = $this->extractArrayFromPostRequest($request,
-                    ['heureDebut',
+                    [
+                'heureDebut',
                 'heureFin',
                 'version',
                 'from']);
@@ -164,9 +157,8 @@ class ShowtimesController extends Controller {
             $entries['filmID']   = $filmId;
 
             // suppression de la séance
-            $this->seanceDAO->deleteShowtime($entries['cinemaID'],
-                    $entries['filmID'], $entries['heureDebut'],
-                    $entries['heureFin']
+            $app['dao.seance']->delete($entries['cinemaID'], $entries['filmID'],
+                    $entries['heureDebut'], $entries['heureFin']
             );
             // en fonction d'où je viens, je redirige
             if (strstr($entries['from'], 'movie')) {
@@ -202,6 +194,7 @@ class ShowtimesController extends Controller {
         $fromCinema    = true;
         $fromFilm      = false;
         $isItACreation = true;
+        $alreadyExists = false;
 
         // init. des variables du formulaire
         $seanceOld = [
@@ -215,7 +208,8 @@ class ShowtimesController extends Controller {
         if (filter_input(INPUT_SERVER, 'REQUEST_METHOD') == 'GET') {
             // on assainie les variables
             $entries = $this->extractArrayFromGetRequest($request,
-                    ['from',
+                    [
+                'from',
                 'heureDebut',
                 'heureFin',
                 'version',
@@ -242,10 +236,10 @@ class ShowtimesController extends Controller {
                 $from     = $entries['from'];
 
                 // puis on récupère les informations du cinéma en question
-                $cinema = $this->seanceDAO->getCinemaDAO()->getCinemaByID($cinemaID);
+                $cinema = $app['dao.seance']->getCinemaDAO()->find($cinemaID);
 
                 // puis on récupère les informations du film en question
-                $film = $this->seanceDAO->getFilmDAO()->getMovieByID($filmID);
+                $film = $app['dao.seance']->getFilmDAO()->find($filmID);
 
                 // s'il on vient des séances du film
                 if (strstr($entries['from'], 'movie')) {
@@ -282,7 +276,8 @@ class ShowtimesController extends Controller {
         } else if (filter_input(INPUT_SERVER, 'REQUEST_METHOD') == 'POST') {
             // on assainie les variables
             $entries             = $this->extractArrayFromPostRequest($request,
-                    ['datedebut',
+                    [
+                'datedebut',
                 'heuredebut',
                 'datefin',
                 'heurefin',
@@ -293,6 +288,8 @@ class ShowtimesController extends Controller {
                 'modificationInProgress']);
             $entries['cinemaID'] = $cinemaId;
             $entries['filmID']   = $filmId;
+            // d'où vient on ?
+            $from                = $entries['from'];
             // si toutes les valeurs sont renseignées
             if ($entries && isset($entries['cinemaID'], $entries['filmID'],
                             $entries['datedebut'], $entries['heuredebut'],
@@ -307,30 +304,32 @@ class ShowtimesController extends Controller {
                                 $entries['datedebut'] . ' ' . $entries['heuredebut']);
                 $datetimeFin   = DateTime::createFromFormat('d/m/Y H:i',
                                 $entries['datefin'] . ' ' . $entries['heurefin']);
-                // Est-on dans le cas d'une insertion ?
-                if (!isset($entries['modificationInProgress'])) {
-                    // j'insère dans la base
-                    $resultat = $this->seanceDAO->insertNewShowtime($entries['cinemaID'],
-                            $entries['filmID'],
-                            $datetimeDebut->format("Y-m-d H:i"),
-                            $datetimeFin->format("Y-m-d H:i"),
-                            $entries['version']);
-                } else {
-                    // c'est une mise à jour
-                    $resultat = $this->seanceDAO->updateShowtime($entries['cinemaID'],
-                            $entries['filmID'], $entries['dateheuredebutOld'],
-                            $entries['dateheurefinOld'],
-                            $datetimeDebut->format("Y-m-d H:i"),
-                            $datetimeFin->format("Y-m-d H:i"),
-                            $entries['version']);
-                }
-                // en fonction d'où je viens, je redirige
-                if (strstr($entries['from'], 'movie')) {
-                    // on redirige vers les séances du film
-                    return $app->redirect($request->getBasePath() . '/showtime/movie/' . $entries['filmID']);
-                } else {
-                    // on redirige vers les séances du cinéma
-                    return $app->redirect($request->getBasePath() . '/showtime/cinema/' . $entries['cinemaID']);
+                // je récupère l'objet Cinema
+                $cinema        = $app['dao.seance']->getCinemaDAO()->find($entries['cinemaID']);
+                // je récupère l'objet Film
+                $film          = $app['dao.seance']->getFilmDAO()->find($entries['filmID']);
+                // on crée l'objet Seance
+                $seance        = new \Semeformation\Mvc\Cinema_crud\models\Seance();
+                $seance->setHeureDebut($datetimeDebut);
+                $seance->setHeureFin($datetimeFin);
+                $seance->setVersion($entries['version']);
+                $seance->setCinema($cinema);
+                $seance->setFilm($film);
+                try {
+                    // je sauvegarde l'objet en BDD
+                    $app['dao.seance']->save($seance,
+                            $entries['dateheuredebutOld'],
+                            $entries['dateheurefinOld']);
+                    // en fonction d'où je viens, je redirige
+                    if (strstr($entries['from'], 'movie')) {
+                        // on redirige vers les séances du film
+                        return $app->redirect($request->getBasePath() . '/showtime/movie/' . $entries['filmID']);
+                    } else {
+                        // on redirige vers les séances du cinéma
+                        return $app->redirect($request->getBasePath() . '/showtime/cinema/' . $entries['cinemaID']);
+                    }
+                } catch (BusinessObjectAlreadyExists $ex) {
+                    $alreadyExists = true;
                 }
             }
         }
@@ -352,7 +351,8 @@ class ShowtimesController extends Controller {
                     'from'          => $from,
                     'isItACreation' => $isItACreation,
                     'fromCinema'    => $fromCinema,
-                    'fromFilm'      => $fromFilm
+                    'fromFilm'      => $fromFilm,
+                    'alreadyExists' => $alreadyExists
         ]);
     }
 

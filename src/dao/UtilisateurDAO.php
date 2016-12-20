@@ -4,6 +4,7 @@ namespace Semeformation\Mvc\Cinema_crud\dao;
 
 use Semeformation\Mvc\Cinema_crud\includes\DAO;
 use Semeformation\Mvc\Cinema_crud\models\Utilisateur;
+use Semeformation\Mvc\Cinema_crud\exceptions\BusinessObjectDoNotExist;
 use Exception;
 
 /**
@@ -29,88 +30,95 @@ class UtilisateurDAO extends DAO {
         return $utilisateur;
     }
 
-    /*
+    /**
+     * Retourne le BO Utilisateur en fonction de son identifiant
+     * @param type $userId
+     * @throws Exception
+     */
+    public function find(...$userId) {
+        $requete  = "SELECT * FROM utilisateur WHERE userID = ?";
+        $resultat = $this->getDb()->fetchAssoc($requete,
+                [
+            $userId[0]]);
+        // si trouvé
+        if ($resultat) {
+            // on récupère l'objet Film
+            return $this->buildBusinessObject($resultat);
+        } else {
+            throw new BusinessObjectDoNotExist('Aucun utilisateur trouvé pour l\'id=' . $userId[0]);
+        }
+    }
+
+    /**
+     * Retourne tous les utilisateurs de la BDD
+     * @return array
+     */
+    public function findAll() {
+        // requête d'extraction de tous les utilisateurs
+        $sql       = "SELECT * FROM utilisateur ORDER BY adresseCourriel ASC";
+        $resultats = $this->getDb()->fetchAll($sql);
+
+        // on extrait les objets métiers des résultats
+        return $this->extractObjects($resultats);
+    }
+
+    /**
      * Méthode qui teste si l'utilisateur est bien présent dans la BDD
      * @param string $email Email de l'utilisateur
      * @param string $password Mot de passe de l'utilisateur
      * @throw Exception si on ne trouve pas l'utilisateur en BDD
      */
-
-    public function verifyUserCredentials($email, $passwordSaisi) {
+    public function findOneByCourrielAndPassword($email, $passwordSaisi) {
         // extraction du mdp de l'utilisateur
         $requete = "SELECT password FROM utilisateur WHERE adresseCourriel = :email";
         // on prépare la requête
-        $statement = $this->executeQuery($requete,
-                ['email' => $email]);
+
+        $result = $this->getDb()->fetchAssoc($requete,
+                [
+            'email' => $email]);
 
         // on teste le nombre de lignes renvoyées
-        if ($statement->rowCount() > 0) {
+        if ($result && $result['password'] !== '') {
             // on récupère le mot de passe
-            $passwordBDD = $statement->fetch()[0];
-            $this->testPasswords($passwordSaisi,
-                    $passwordBDD,
-                    $email);
+            $passwordBDD = $result['password'];
+            $this->testPasswords($passwordSaisi, $passwordBDD, $email);
         } else {
-            throw new Exception('The user ' . $email . ' doesn\'t exist.');
+            throw new BusinessObjectDoNotExist('The user ' . $email . ' doesn\'t exist.');
         }
     }
 
-    /*
-     * 
+    /**
+     * Teste si le password saisi correspond bien à celui de l'utilisateur
+     * @param type $passwordSaisi
+     * @param type $passwordBDD
+     * @param type $email
+     * @throws Exception
      */
-
     private function testPasswords($passwordSaisi, $passwordBDD, $email) {
         // on teste si les mots de passe correspondent
-        if (password_verify($passwordSaisi,
-                        $passwordBDD)) {
+        if (password_verify($passwordSaisi, $passwordBDD)) {
             if ($this->logger) {
                 $this->logger->info('User ' . $email . ' now connected.');
             }
         } else {
-            throw new Exception('Bad password for the user ' . $email);
+            throw new \Exception('Bad password for the user ' . $email);
         }
     }
 
-    /*
-     * Méthode qui retourne l'id d'un utilisateur passé en paramètre
-     * @param string $utilisateur Adresse email de l'utilisateur
-     * @return string $id Identifiant de l'utilisateur
-     */
-
-    public function getUserIDByEmailAddress($utilisateur) {
-        // requête qui récupère l'ID grâce à l'adresse email
-        $requete = "SELECT userID FROM utilisateur WHERE adresseCourriel = :email";
-
-        // on récupère le résultat de la requête
-        $resultat = $this->executeQuery($requete,
-                ['email' => $utilisateur]);
-
-        // on teste le nombre de lignes renvoyées
-        if ($resultat->rowCount() > 0) {
-            // on récupère la première (et seule) ligne retournée
-            $row = $resultat->fetch();
-            // l'id est le premier élément du tableau de résultats
-            return $row[0];
-        } else {
-            return null;
-        }
-    }
-
-    /*
+    /**
      * Méthode qui retourne l'utilisateur initialisé
      * @param string $utilisateur Adresse email de l'utilisateur
      * @return Utilisateur L'Utilisateur initialisé
      */
-
-    public function getUserByEmailAddress($email) {
+    public function findOneByCourriel($email) {
         // on construit la requête qui va récupérer les informations de l'utilisateur
         $requete = "SELECT * FROM utilisateur "
                 . "WHERE adresseCourriel = :email";
 
         // on extrait le résultat de la BDD sous forme de tableau associatif
-        $resultat = $this->extraire1xN($requete,
-                ['email' => $email],
-                false);
+        $resultat = $this->getDb()->fetchAssoc($requete,
+                [
+            'email' => $email]);
 
         // on construit l'objet Utilisateur
         $utilisateur = $this->buildBusinessObject($resultat);
@@ -119,44 +127,25 @@ class UtilisateurDAO extends DAO {
         return $utilisateur;
     }
 
-    /*
-     * Méthode qui renvoie toutes les informations d'un utilisateur
-     * @return Utilisateur
+    /**
+     * Sauvegarde un BO Utilisateur en BDD
+     * @param Utilisateur $utilisateur
      */
+    public function save(Utilisateur $utilisateur) {
+        // je récupère les données de l'utilisateur sous forme de tableau
+        $donneesUtilisateur = array(
+            'prenom'          => $utilisateur->getPrenom(),
+            'nom'             => $utilisateur->getNom(),
+            'adresseCourriel' => $utilisateur->getAdresseCourriel(),
+            'password'        => $utilisateur->getPassword(),
+        );
 
-    public function getUserByID($userID) {
-        $requete = "SELECT * FROM utilisateur WHERE userID = :userID";
-        $resultat = $this->extraire1xN($requete,
-                ['userID' => $userID]);
-        // on récupère l'objet Film
-        $user = $this->buildBusinessObject($resultat);
-        // on retourne le résultat extrait
-        return $user;
-    }
-
-    /*
-     * Méthode qui ajoute un utilisateur dans la BDD
-     * @param string $firstName Prénom de l'utilisateur
-     * @param string $lastName Nom de l'utilisateur
-     * @param string $email Adresse email de l'utilisateur
-     * @param string $password Mot de passe de l'utilisateur
-     */
-
-    public function createUser($firstName, $lastName, $email, $password) {
-        // construction de la requête
-        $requete = "INSERT INTO utilisateur (prenom, nom, adresseCourriel, password) "
-                . "VALUES (:firstName, :lastName, :email, :password)";
-
-        // exécution de la requête
-        $this->executeQuery($requete,
-                [':firstName' => $firstName,
-            'lastName' => $lastName,
-            'email' => $email,
-            'password' => $password]);
-
-        if ($this->logger) {
-            $this->logger->info('User ' . $email . ' successfully created.');
-        }
+        // Sinon, nous faisons une insertion
+        $this->getDb()->insert('utilisateur', $donneesUtilisateur);
+        // On récupère l'id autoincrement
+        $id = $this->getDb()->lastInsertId();
+        // affectation
+        $utilisateur->setUserId($id);
     }
 
 }

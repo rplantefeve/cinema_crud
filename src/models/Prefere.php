@@ -6,14 +6,29 @@ use Semeformation\Mvc\Cinema_crud\models\Film;
 use Semeformation\Mvc\Cinema_crud\models\Utilisateur;
 
 /**
- * Description of Prefere
+ * Objet métier Prefere
+ * Préférence de film d'un utilisateur
  *
  * @author User
  */
 class Prefere {
 
+    /**
+     * Utilisateur
+     * @var \Semeformation\Mvc\Cinema_crud\models\Utilisateur 
+     */
     private $utilisateur;
+
+    /**
+     * Film
+     * @var \Semeformation\Mvc\Cinema_crud\models\Film 
+     */
     private $film;
+
+    /**
+     * Commentaire
+     * @var string 
+     */
     private $commentaire;
 
     public function getUtilisateur() {
