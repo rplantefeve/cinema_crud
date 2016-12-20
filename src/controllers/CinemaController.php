@@ -9,7 +9,7 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Silex\Application;
 
 /**
- * Description of CinemaController
+ * Contrôleur qui gère la liste des cinémas, l'ajout, la modification et la suppression d'un Cinema
  *
  * @author User
  */
@@ -30,12 +30,10 @@ class CinemaController extends Controller {
         }
         // on récupère la liste des cinémas ainsi que leurs informations
         $cinemas = $app['dao.cinema']->findAll();
-
-        // On génère la vue films
-        $vue = new View("CinemasList");
-        // En passant les variables nécessaires à son bon affichage
-        return $vue->generer($request,
+        // on génère la vue cinémas
+        return $app['twig']->render('cinemas.html.twig',
                         [
+                    'titre'       => 'Cinémas',
                     'cinemas'     => $cinemas,
                     'isUserAdmin' => $isUserAdmin]);
     }
@@ -64,7 +62,8 @@ class CinemaController extends Controller {
 
             // on assainit les entrées
             $entries = $this->extractArrayFromPostRequest($request,
-                    ['backToList',
+                    [
+                'backToList',
                 'adresse',
                 'denomination']);
 
@@ -87,7 +86,6 @@ class CinemaController extends Controller {
                 // on revient à la liste des cinémas
                 return $app->redirect($request->getBasePath() . '/cinema/list');
             }
-            
         }// si la page est chargée avec $_GET
         elseif ($request->isMethod('GET')) {
             // on assainit les entrées
