@@ -76,7 +76,7 @@ $app->match('/movie/edit/{filmId}',
         'Semeformation\\Mvc\\Cinema_crud\\controllers\\MovieController::editMovie')->bind('movie_edit');
 
 /*
- * Routes ShowtimesControlle
+ * Routes ShowtimesController
  */
 $app->get('/showtime/cinema/{cinemaId}',
         'Semeformation\\Mvc\\Cinema_crud\\controllers\\ShowtimesController::cinemaShowtimes')->bind('showtime_cinema_list');
