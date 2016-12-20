@@ -6,6 +6,7 @@ use Semeformation\Mvc\Cinema_crud\includes\DAO;
 use Semeformation\Mvc\Cinema_crud\models\Utilisateur;
 use Semeformation\Mvc\Cinema_crud\exceptions\BusinessObjectDoNotExist;
 use Exception;
+use Semeformation\Mvc\Cinema_crud\exceptions\BadUserPassword;
 
 /**
  * Description of UtilisateurDAO
@@ -64,13 +65,14 @@ class UtilisateurDAO extends DAO {
 
     /**
      * Méthode qui teste si l'utilisateur est bien présent dans la BDD
-     * @param string $email Email de l'utilisateur
-     * @param string $password Mot de passe de l'utilisateur
-     * @throw Exception si on ne trouve pas l'utilisateur en BDD
+     * @param string $email
+     * @param string $passwordSaisi
+     * @return Utilisateur L'objet métier Utilisateur
+     * @throws BusinessObjectDoNotExist Si on ne trouve pas l'utilisateur en BDD
      */
     public function findOneByCourrielAndPassword($email, $passwordSaisi) {
         // extraction du mdp de l'utilisateur
-        $requete = "SELECT password FROM utilisateur WHERE adresseCourriel = :email";
+        $requete = "SELECT * FROM utilisateur WHERE adresseCourriel = :email";
         // on prépare la requête
 
         $result = $this->getDb()->fetchAssoc($requete,
@@ -78,10 +80,12 @@ class UtilisateurDAO extends DAO {
             'email' => $email]);
 
         // on teste le nombre de lignes renvoyées
-        if ($result && $result['password'] !== '') {
+        if ($result && $result['PASSWORD'] !== '') {
             // on récupère le mot de passe
-            $passwordBDD = $result['password'];
-            $this->testPasswords($passwordSaisi, $passwordBDD, $email);
+            $passwordBDD = $result['PASSWORD'];
+            if ($this->testPasswords($passwordSaisi, $passwordBDD, $email)) {
+                return $this->buildBusinessObject($result);
+            }
         } else {
             throw new BusinessObjectDoNotExist('The user ' . $email . ' doesn\'t exist.');
         }
@@ -92,16 +96,15 @@ class UtilisateurDAO extends DAO {
      * @param type $passwordSaisi
      * @param type $passwordBDD
      * @param type $email
-     * @throws Exception
+     * @return boolean
+     * @throws BadUserPassword
      */
     private function testPasswords($passwordSaisi, $passwordBDD, $email) {
         // on teste si les mots de passe correspondent
         if (password_verify($passwordSaisi, $passwordBDD)) {
-            if ($this->logger) {
-                $this->logger->info('User ' . $email . ' now connected.');
-            }
+            return true;
         } else {
-            throw new \Exception('Bad password for the user ' . $email);
+            throw new BadUserPassword('Bad password for the user ' . $email);
         }
     }
 
