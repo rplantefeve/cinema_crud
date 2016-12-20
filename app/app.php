@@ -19,7 +19,7 @@ require __DIR__ . '/config/dev.php';
 $app->register(new SessionServiceProvider());
 // Enregistrement du DBAL => crée automatiquement le service accessible par $app['db']
 $app->register(new DoctrineServiceProvider());
-// Service de templates de vuew (Twig)
+// Service de templates de vues (Twig)
 $app->register(new Silex\Provider\TwigServiceProvider(), array(
     'twig.path' => __DIR__.'/../src/views',
 ));

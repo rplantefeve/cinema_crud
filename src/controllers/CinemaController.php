@@ -125,7 +125,7 @@ class CinemaController extends Controller {
         }
 
         // si la méthode de formulaire est la méthode POST
-        if (filter_input(INPUT_SERVER, 'REQUEST_METHOD') === "POST") {
+        if ($request->isMethod('POST')) {
 
             // on assainit les entrées
             $entries['cinemaID'] = $cinemaId;

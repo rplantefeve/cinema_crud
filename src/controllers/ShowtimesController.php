@@ -144,7 +144,7 @@ class ShowtimesController extends Controller {
         }
 
         // si la méthode de formulaire est la méthode POST
-        if (filter_input(INPUT_SERVER, 'REQUEST_METHOD') === "POST") {
+        if ($request->isMethod('POST')) {
 
             // on assainie les variables
             $entries             = $this->extractArrayFromPostRequest($request,
