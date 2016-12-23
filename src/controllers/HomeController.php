@@ -180,9 +180,14 @@ class HomeController extends Controller {
             $entries['lastName']  = '';
             $entries['email']     = '';
         }
+        $utilisateur = new Utilisateur();
+        $utilisateur->setNom($entries['lastName']);
+        $utilisateur->setPrenom($entries['firstName']);
+        $utilisateur->setAdresseCourriel($entries['email']);
 
         $donnees = [
-            'sanitizedEntries'            => $entries,
+            'titre'                       => 'Création d\'un nouvel utilisateur',
+            'utilisateur'                 => $utilisateur,
             'isFirstNameEmpty'            => $isFirstNameEmpty,
             'isLastNameEmpty'             => $isLastNameEmpty,
             'isEmailAddressEmpty'         => $isEmailAddressEmpty,
@@ -191,9 +196,7 @@ class HomeController extends Controller {
             'isPasswordConfirmationEmpty' => $isPasswordConfirmationEmpty,
             'isPasswordValid'             => $isPasswordValid];
         // On génère la vue Création d'un utilisateur
-        $vue     = new View("CreateUser");
-        // En passant les variables nécessaires à son bon affichage
-        return $vue->generer($request, $donnees);
+        return $app['twig']->render('user.create.html.twig', $donnees);
     }
 
     /**

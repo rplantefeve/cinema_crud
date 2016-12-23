@@ -29,13 +29,13 @@ class MovieController extends Controller {
         // on récupère la liste des films ainsi que leurs informations
         $films = $app['dao.film']->findAll();
 
+        // Données de la vue
+        $donnees = [
+            'titre'       => 'Films',
+            'films'       => $films,
+            'isUserAdmin' => $isUserAdmin];
         // On génère la vue films
-        $vue = new View("MoviesList");
-        // En passant les variables nécessaires à son bon affichage
-        return $vue->generer($request,
-                        [
-                    'films'       => $films,
-                    'isUserAdmin' => $isUserAdmin]);
+        return $app['twig']->render('movies.html.twig', $donnees);
     }
 
     /**
