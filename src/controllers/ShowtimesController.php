@@ -17,10 +17,6 @@ use DateTime;
  */
 class ShowtimesController extends Controller {
 
-    public function __construct(LoggerInterface $logger = null) {
-        
-    }
-
     /**
      * Route liste des séances d'un film
      * @param string $filmId
@@ -60,16 +56,16 @@ class ShowtimesController extends Controller {
         $cinemas = $app['dao.seance']->getCinemaDAO()->findAllByFilmId($filmID);
         $seances = $app['dao.seance']->findAllByFilmId($cinemas, $filmID);
 
+        // données de la vue
+        $donnees = [
+            'titre'            => 'Séances du film ',
+            'cinemas'          => $cinemas,
+            'film'             => $film,
+            'seances'          => $seances,
+            'cinemasUnplanned' => $cinemasUnplanned,
+            'adminConnected'   => $adminConnected];
         // On génère la vue séances du film
-        $vue = new View("MovieShowtimes");
-        // En passant les variables nécessaires à son bon affichage
-        return $vue->generer($request,
-                        [
-                    'cinemas'          => $cinemas,
-                    'film'             => $film,
-                    'seances'          => $seances,
-                    'cinemasUnplanned' => $cinemasUnplanned,
-                    'adminConnected'   => $adminConnected]);
+        return $app['twig']->render('showtimes.movie.html.twig', $donnees);
     }
 
     /**
