@@ -31,13 +31,13 @@ class FavoriteController extends Controller {
         // on récupère la liste des films préférés grâce à l'utilisateur identifié
         $preferes = $app['dao.prefere']->findAllByUserId($utilisateur->getUserId());
 
+        $donnees = [
+            'titre'       => 'Préférences de film',
+            'utilisateur' => $utilisateur,
+            'preferes'    => $preferes];
+
         // On génère la vue Films préférés
-        $vue = new View("FavoriteMoviesList");
-        // En passant les variables nécessaires à son bon affichage
-        return $vue->generer($request,
-                        array(
-                    'utilisateur' => $utilisateur,
-                    'preferes'    => $preferes));
+        return $app['twig']->render('favorites.html.twig', $donnees);
     }
 
     public function editFavoriteMovie(Request $request = null,
@@ -51,7 +51,7 @@ class FavoriteController extends Controller {
         $films           = null;
         // variable de contrôle de formulaire
         $aFilmIsSelected = true;
-        $prefere = null;
+        $prefere         = null;
 
         // si la méthode de formulaire est la méthode POST
         if ($request->isMethod('POST')) {
@@ -117,9 +117,9 @@ class FavoriteController extends Controller {
                     "commentaire" => $prefere->getCommentaire()];
                 // sinon, c'est une création
             } else {
-                $films      = $app['dao.prefere']->getFilmDAO()->findAllByUserIdNotIn($app['session']->get('user')['userId']);
+                $films       = $app['dao.prefere']->getFilmDAO()->findAllByUserIdNotIn($app['session']->get('user')['userId']);
                 // on initialise les autres variables de formulaire à vide
-                $prefere = new Prefere();
+                $prefere     = new Prefere();
                 $utilisateur = $app['dao.prefere']->getUtilisateurDAO()->find($app['session']->get('user')['userId']);
                 $prefere->setUtilisateur($utilisateur);
             }
