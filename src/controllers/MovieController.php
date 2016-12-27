@@ -98,11 +98,12 @@ class MovieController extends Controller {
             }
         }
 
+        $donnees = [
+            'titre' => 'Ajouter/Modifier un film',
+            'film'  => $film];
+
         // On génère la vue films
-        $vue = new View("EditMovie");
-        // En passant les variables nécessaires à son bon affichage
-        return $vue->generer($request, [
-                    'film' => $film]);
+        return $app['twig']->render('movie.edit.html.twig', $donnees);
     }
 
     /**
