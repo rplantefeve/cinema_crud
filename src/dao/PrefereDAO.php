@@ -94,7 +94,8 @@ class PrefereDAO extends DAO {
         // on construit la requête qui va récupérer les films de l'utilisateur
         $requete = "SELECT f.FILMID, f.TITRE, p.COMMENTAIRE, p.USERID from film f" .
                 " INNER JOIN prefere p ON f.filmID = p.filmID" .
-                " AND p.userID = :userID";
+                " AND p.userID = :userID"
+                . " ORDER BY f.TITRE ASC";
 
         // on extrait le résultat de la BDD sous forme de tableau associatif
         $resultats = $this->getDb()->fetchAll($requete,
