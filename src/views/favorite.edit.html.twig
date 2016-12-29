@@ -36,10 +36,10 @@
         <br/>
         {# si c'est une modification, c'est une information dont nous avons besoin #}
         {% if prefere.getFilm %}
-            <input type="hidden" name="filmID" value="{{ prefere.getFilm.getFilmId }}"/>
+            <input type="hidden" name="filmID" value="{{ prefere.getFilm.getFilmId }}">
         {% endif %}
-        <input type="hidden" value="{{ prefere.getUtilisateur.getUserId }}" name="userID"/>
-        <input type="submit" name="saveEntry" value="Sauvegarder" />
-        <input type="submit" name="backToList" value="Retour à la liste" formaction="{{ path('favorite_list') }}"/>
+        <input type="hidden" value="{{ prefere.getUtilisateur.getUserId }}" name="userID">
+        <input type="submit" name="saveEntry" value="Sauvegarder">
+        <input type="submit" name="backToList" value="Retour à la liste" formaction="{{ path('favorite_list') }}">
     </form>
 {% endblock %}
