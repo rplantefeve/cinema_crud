@@ -1,0 +1,25 @@
+{% extends "base.html.twig" %}
+
+{% block title %}{{ titre }}{% endblock %}
+
+{% block content %}
+    {# si c'est une modification #}
+    {% if cinema and cinema.getCinemaId %}
+        {% set action = path('cinema_edit' , { 'cinemaId' : cinema.getCinemaId }) %}
+    {% else %}
+        {% set action = path('cinema_add') %}
+    {% endif %}
+    <h1>Ajouter/Modifier un cinéma</h1>
+    <form method="POST" name="editCinema" action="{{ action }}">
+        <label>Dénomination :</label>
+        <input name="denomination" type="text" value="{% if cinema %}{{ cinema.getDenomination }}{% endif %}" required/>
+        <label>Adresse :</label>
+        <textarea name="adresse" required>{% if cinema %}{{ cinema.getAdresse }}{% endif %}</textarea>
+        <br/>
+        <input type="hidden" value="{% if cinema %}{{ cinema.getCinemaId }}{% endif %}" name="cinemaID"/>
+        <input type="submit" name="saveEntry" value="Sauvegarder" />
+    </form>
+    <form method="get" action="{{ path('cinema_list') }}">
+        <input type="submit" value="Retour à la liste"/>
+    </form>
+{% endblock %}

@@ -97,13 +97,12 @@ class CinemaController extends Controller {
                 $cinema = $app['dao.cinema']->find($entries['cinemaID']);
             }
         }
+
+        $donnees = [
+            'titre'  => 'Ajouter/Modifier un cinéma',
+            'cinema' => $cinema];
         // On génère la vue films
-        $vue = new View("EditCinema");
-        // En passant les variables nécessaires à son bon affichage
-        return $vue->generer($request,
-                        [
-                    'cinema' => $cinema
-        ]);
+        return $app['twig']->render('cinema.edit.html.twig', $donnees);
     }
 
     /**

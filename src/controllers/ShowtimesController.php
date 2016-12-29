@@ -7,7 +7,6 @@ use Semeformation\Mvc\Cinema_crud\exceptions\BusinessObjectAlreadyExists;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Silex\Application;
-use Psr\Log\LoggerInterface;
 use DateTime;
 
 /**
@@ -109,16 +108,16 @@ class ShowtimesController extends Controller {
         // on récupère toutes les séances de films pour un cinéma donné
         $seances = $app['dao.seance']->findAllByCinemaId($films, $cinemaID);
 
+        // données de la vue
+        $donnees = [
+            'titre'          => 'Séances du cinéma ',
+            'cinema'         => $cinema,
+            'films'          => $films,
+            'seances'        => $seances,
+            'filmsUnplanned' => $filmsUnplanned,
+            'adminConnected' => $adminConnected];
         // On génère la vue séances du cinéma
-        $vue = new View("CinemaShowtimes");
-        // En passant les variables nécessaires à son bon affichage
-        return $vue->generer($request,
-                        [
-                    'cinema'         => $cinema,
-                    'films'          => $films,
-                    'seances'        => $seances,
-                    'filmsUnplanned' => $filmsUnplanned,
-                    'adminConnected' => $adminConnected]);
+        return $app['twig']->render('showtimes.cinema.html.twig', $donnees);
     }
 
     /**
@@ -335,21 +334,20 @@ class ShowtimesController extends Controller {
             return $app->redirect($request->getBasePath() . '/home');
         }
 
+        $donnees = [
+            'titre'         => 'Séance du cinéma ',
+            'cinema'        => $cinema,
+            'film'          => $film,
+            'seance'        => $seance,
+            'seanceOld'     => $seanceOld,
+            'from'          => $from,
+            'isItACreation' => $isItACreation,
+            'fromCinema'    => $fromCinema,
+            'fromFilm'      => $fromFilm,
+            'alreadyExists' => $alreadyExists];
+
         // On génère la vue édition d'une séance
-        $vue = new View("EditShowtime");
-        // En passant les variables nécessaires à son bon affichage
-        return $vue->generer($request,
-                        [
-                    'cinema'        => $cinema,
-                    'film'          => $film,
-                    'seance'        => $seance,
-                    'seanceOld'     => $seanceOld,
-                    'from'          => $from,
-                    'isItACreation' => $isItACreation,
-                    'fromCinema'    => $fromCinema,
-                    'fromFilm'      => $fromFilm,
-                    'alreadyExists' => $alreadyExists
-        ]);
+        return $app['twig']->render('showtime.edit.html.twig', $donnees);
     }
 
 }

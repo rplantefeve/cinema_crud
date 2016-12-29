@@ -1,0 +1,42 @@
+{% extends "base.html.twig" %}
+
+{% block title %}{{ titre }}{% endblock %}
+
+{% block content %}
+    <header><h1>{{ utilisateur.getPrenom }} {{ utilisateur.getNom }}, ci-dessous vos films préférés</h1></header>
+    <table class="std">
+        <tr>
+            <th>Titre</th>
+            <th>Commentaire</th>
+            <th colspan="2">Action</th>
+        </tr>
+        {# boucle de création du tableau #}
+        {% for prefere in preferes %}
+            <tr>
+                <td>{{ prefere.getFilm.getTitre }}</td>
+                <td>{{ prefere.getCommentaire }}</td>
+                <td>
+                    <form name="modifyFavoriteMovie" action="{{ path('favorite_edit' , { 'userId' : utilisateur.getUserId, 'filmId' : prefere.getFilm.getFilmId }) }}" method="get">
+                        <input type="submit" id="modify" value=""/>
+                    </form>
+                </td>
+                <td>
+                    <form name="deleteFavoriteMovie" action="{{ path('favorite_delete' , { 'userId' : utilisateur.getUserId, 'filmId' : prefere.getFilm.getFilmId }) }}" method="POST">
+                        <input type="image" src="{{ asset('/images/deleteIcon.png') }}" alt="Delete"/>
+                    </form>
+                </td>
+            </tr>
+        {% endfor %}
+        <tr class="new">
+            <td colspan="4">
+                <form name="addFavoriteMovie" method="get" action="{{ path('favorite_add') }}">
+                    <button class="add" type="submit">Cliquer pour ajouter un film préféré...</button>
+                </form>
+            </td>
+        </tr>        
+    </table>
+
+    <form name="backToMainPage" action="{{ path('home') }}">
+        <input type="submit" value="Retour à l'accueil"/>
+    </form>
+{% endblock %}
