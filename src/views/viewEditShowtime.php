@@ -1,3 +1,8 @@
+{% extends "base.html.twig" %}
+
+{% block title %}{{ titre }}{% endblock %}
+
+{% block content %}
 <?php
 $this->titre = "Gestion des cinémas - Ajouter une séance";
 $path        = $request->getBasePath();

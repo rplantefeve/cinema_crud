@@ -334,21 +334,20 @@ class ShowtimesController extends Controller {
             return $app->redirect($request->getBasePath() . '/home');
         }
 
+        $donnees = [
+            'titre'         => 'Séance du cinéma ',
+            'cinema'        => $cinema,
+            'film'          => $film,
+            'seance'        => $seance,
+            'seanceOld'     => $seanceOld,
+            'from'          => $from,
+            'isItACreation' => $isItACreation,
+            'fromCinema'    => $fromCinema,
+            'fromFilm'      => $fromFilm,
+            'alreadyExists' => $alreadyExists];
+
         // On génère la vue édition d'une séance
-        $vue = new View("EditShowtime");
-        // En passant les variables nécessaires à son bon affichage
-        return $vue->generer($request,
-                        [
-                    'cinema'        => $cinema,
-                    'film'          => $film,
-                    'seance'        => $seance,
-                    'seanceOld'     => $seanceOld,
-                    'from'          => $from,
-                    'isItACreation' => $isItACreation,
-                    'fromCinema'    => $fromCinema,
-                    'fromFilm'      => $fromFilm,
-                    'alreadyExists' => $alreadyExists
-        ]);
+        return $app['twig']->render('showtime.edit.html.twig', $donnees);
     }
 
 }
