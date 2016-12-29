@@ -7,11 +7,9 @@ use \Semeformation\Mvc\Cinema_crud\models\Utilisateur;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Silex\Application;
-use Psr\Log\LoggerInterface;
-use Exception;
 
 /**
- * Description of HomeController
+ * Le contrôleur qui gère l'accueil du visiteur, son authentification et son logout
  *
  * @author User
  */
@@ -19,15 +17,13 @@ class HomeController extends Controller {
 
     /**
      * Route Accueil
+     * @param Request $request
+     * @param Application $app
+     * @return string Le vue générée
      */
     public function home(Request $request = null, Application $app = null) {
-        //session_start();
         // personne d'authentifié à ce niveau
         $loginSuccess = false;
-
-        // variables de contrôle du formulaire
-        $areCredentialsOK = true;
-
 
         // si l'utilisateur est déjà authentifié
         if ($app['session']->get('user')) {
@@ -35,60 +31,58 @@ class HomeController extends Controller {
             // Sinon (pas d'utilisateur authentifié pour l'instant)
         } else {
             // si la méthode POST a été employée
-            if (filter_input(INPUT_SERVER, 'REQUEST_METHOD') === "POST") {
-
+            if ($request->isMethod('POST')) {
+                // on extrait les paramètres de la requête POST
                 $entries = $this->extractArrayFromPostRequest($request,
                         [
                     'email',
                     'password']);
-
-                return $this->login($entries, $areCredentialsOK, $app, $request);
+                // on vérifie que l'utilisateur existe et que son mot de passe est correct
+                return $this->login($entries, $app, $request);
             }
         }
 
-        // On génère la vue Accueil
-        $vue = new View("Home");
-        // En passant les variables nécessaires à son bon affichage
-        return $vue->generer($request,
+        // on retourne la vue générée
+        return $app['twig']->render('index.html.twig',
                         [
-                    'areCredentialsOK' => $areCredentialsOK,
-                    'loginSuccess'     => $loginSuccess]);
+                    'titre'        => 'Accueil',
+                    'errorMessage' => false,
+                    'email'        => '',
+                    'loginSuccess' => $loginSuccess]);
     }
 
     /**
      * Vérifie si l'utilisateur existe et que son mot de passe est bon
-     * @param type $sanitizedEntries
-     * @param boolean $areCredentialsOK
+     * @param type $entries
      * @param Application $app
      * @param Request $request
-     * @return RedirectResponse
+     * @return string La vue générée
      */
-    private function login($sanitizedEntries, &$areCredentialsOK,
-            Application $app, Request $request) {
+    private function login($entries, Application $app, Request $request) {
         try {
+            $errorMessage = false;
             // On vérifie l'existence de l'utilisateur
-            $app['dao.utilisateur']->findOneByCourrielAndPassword($sanitizedEntries['email'],
-                    $sanitizedEntries['password']);
+            $utilisateur  = $app['dao.utilisateur']->findOneByCourrielAndPassword($entries['email'],
+                    $entries['password']);
 
             // on enregistre l'utilisateur en session
-            $username = $sanitizedEntries['email'];
-            $userId   = $app['dao.utilisateur']->findOneByCourriel($username)->getUserId();
+            $username = $entries['email'];
+            $userId   = $utilisateur->getUserId();
             $app['session']->set('user',
                     array(
                 'username' => $username,
                 'userId'   => $userId));
             // redirection vers la liste des préférences de films
             return $app->redirect($request->getBasePath() . '/favorite/list');
-        } catch (Exception $ex) {
-            $areCredentialsOK = false;
-            $loginSuccess     = false;
-            // On génère la vue Accueil
-            $vue              = new View("Home");
-            // En passant les variables nécessaires à son bon affichage
-            return $vue->generer($request,
+        } catch (\Exception $ex) {
+            $loginSuccess = false;
+            $errorMessage = $ex->getMessage();
+            return $app['twig']->render('index.html.twig',
                             [
-                        'areCredentialsOK' => $areCredentialsOK,
-                        'loginSuccess'     => $loginSuccess]);
+                        'titre'        => 'Accueil',
+                        'email'        => $entries['email'],
+                        'loginSuccess' => $loginSuccess,
+                        'errorMessage' => $errorMessage]);
         }
     }
 
@@ -96,7 +90,7 @@ class HomeController extends Controller {
      * Route Création d'un nouvel utilisateur
      * @param Request $request
      * @param Application $app
-     * @return type
+     * @return string La vue générée
      */
     public function createNewUser(Request $request = null,
             Application $app = null) {
@@ -110,7 +104,7 @@ class HomeController extends Controller {
         $isPasswordValid             = true;
 
         // si la méthode POST est utilisée, cela signifie que le formulaire a été envoyé
-        if (filter_input(INPUT_SERVER, 'REQUEST_METHOD') === "POST") {
+        if ($request->isMethod('POST')) {
             // on assainit les entrées
             $entries = $this->extractArrayFromPostRequest($request,
                     [
@@ -159,7 +153,8 @@ class HomeController extends Controller {
             if (!$isFirstNameEmpty && !$isLastNameEmpty && !$isEmailAddressEmpty &&
                     $isUserUnique && !$isPasswordEmpty && $isPasswordValid) {
                 // hash du mot de passe
-                $password = password_hash($entries['password'], PASSWORD_DEFAULT);
+                $password    = password_hash($entries['password'],
+                        PASSWORD_DEFAULT);
                 $utilisateur = new Utilisateur();
                 $utilisateur->setAdresseCourriel($entries['email']);
                 $utilisateur->setNom($entries['lastName']);
@@ -185,9 +180,14 @@ class HomeController extends Controller {
             $entries['lastName']  = '';
             $entries['email']     = '';
         }
+        $utilisateur = new Utilisateur();
+        $utilisateur->setNom($entries['lastName']);
+        $utilisateur->setPrenom($entries['firstName']);
+        $utilisateur->setAdresseCourriel($entries['email']);
 
         $donnees = [
-            'sanitizedEntries'            => $entries,
+            'titre'                       => 'Création d\'un nouvel utilisateur',
+            'utilisateur'                 => $utilisateur,
             'isFirstNameEmpty'            => $isFirstNameEmpty,
             'isLastNameEmpty'             => $isLastNameEmpty,
             'isEmailAddressEmpty'         => $isEmailAddressEmpty,
@@ -196,9 +196,7 @@ class HomeController extends Controller {
             'isPasswordConfirmationEmpty' => $isPasswordConfirmationEmpty,
             'isPasswordValid'             => $isPasswordValid];
         // On génère la vue Création d'un utilisateur
-        $vue     = new View("CreateUser");
-        // En passant les variables nécessaires à son bon affichage
-        return $vue->generer($request, $donnees);
+        return $app['twig']->render('user.create.html.twig', $donnees);
     }
 
     /**
@@ -213,14 +211,6 @@ class HomeController extends Controller {
         // destruction de la sessions
         $app['session']->invalidate();
         return $app->redirect($request->getBasePath() . '/home');
-    }
-
-    public function error($e) {
-
-        $app['dao.utilisateur']->getLogger()->error('Exception : ' . $e->getMessage() . ', File : ' . $e->getFile() . ', Line : ' . $e->getLine() . ', Stack trace : ' . $e->getTraceAsString());
-        $vue = new View("Error");
-        return $vue->generer([
-                    'messageErreur' => $e->getMessage()]);
     }
 
 }

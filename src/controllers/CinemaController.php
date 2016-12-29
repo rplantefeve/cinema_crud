@@ -9,7 +9,7 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Silex\Application;
 
 /**
- * Description of CinemaController
+ * Contrôleur qui gère la liste des cinémas, l'ajout, la modification et la suppression d'un Cinema
  *
  * @author User
  */
@@ -30,12 +30,10 @@ class CinemaController extends Controller {
         }
         // on récupère la liste des cinémas ainsi que leurs informations
         $cinemas = $app['dao.cinema']->findAll();
-
-        // On génère la vue films
-        $vue = new View("CinemasList");
-        // En passant les variables nécessaires à son bon affichage
-        return $vue->generer($request,
+        // on génère la vue cinémas
+        return $app['twig']->render('cinemas.html.twig',
                         [
+                    'titre'       => 'Cinémas',
                     'cinemas'     => $cinemas,
                     'isUserAdmin' => $isUserAdmin]);
     }
@@ -64,7 +62,8 @@ class CinemaController extends Controller {
 
             // on assainit les entrées
             $entries = $this->extractArrayFromPostRequest($request,
-                    ['backToList',
+                    [
+                'backToList',
                 'adresse',
                 'denomination']);
 
@@ -87,7 +86,6 @@ class CinemaController extends Controller {
                 // on revient à la liste des cinémas
                 return $app->redirect($request->getBasePath() . '/cinema/list');
             }
-            
         }// si la page est chargée avec $_GET
         elseif ($request->isMethod('GET')) {
             // on assainit les entrées
@@ -99,20 +97,19 @@ class CinemaController extends Controller {
                 $cinema = $app['dao.cinema']->find($entries['cinemaID']);
             }
         }
+
+        $donnees = [
+            'titre'  => 'Ajouter/Modifier un cinéma',
+            'cinema' => $cinema];
         // On génère la vue films
-        $vue = new View("EditCinema");
-        // En passant les variables nécessaires à son bon affichage
-        return $vue->generer($request,
-                        [
-                    'cinema' => $cinema
-        ]);
+        return $app['twig']->render('cinema.edit.html.twig', $donnees);
     }
 
     /**
      * Route supprimer un cinéma
-     * @param string $cinemaId
      * @param Request $request
      * @param Application $app
+     * @param string $cinemaId
      * @return RedirectResponse
      */
     public function deleteCinema(Request $request = null,
@@ -125,7 +122,7 @@ class CinemaController extends Controller {
         }
 
         // si la méthode de formulaire est la méthode POST
-        if (filter_input(INPUT_SERVER, 'REQUEST_METHOD') === "POST") {
+        if ($request->isMethod('POST')) {
 
             // on assainit les entrées
             $entries['cinemaID'] = $cinemaId;

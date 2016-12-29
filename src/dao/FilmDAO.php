@@ -94,7 +94,8 @@ class FilmDAO extends DAO {
                 . "SELECT filmID"
                 . " FROM prefere"
                 . " WHERE userID = :id"
-                . ")";
+                . ")"
+                . " ORDER BY f.TITRE ASC";
         // extraction de résultat
         $resultats = $this->getDb()->fetchAll($requete, [
             'id' => $userID]);

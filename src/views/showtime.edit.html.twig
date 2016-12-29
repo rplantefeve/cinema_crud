@@ -1,0 +1,52 @@
+{% extends "base.html.twig" %}
+
+{% block title %}{{ titre }}{% endblock %}
+
+{% block content %}
+    <header>
+        <h1>{{ titre ~ cinema.getDenomination }}</h1>
+        <h2>Pour le film {{ film.getTitre }}</h2>
+    </header>
+    <form method="post" action="{{ path('showtime_add' , { 'filmId' : film.getFilmId , 'cinemaId' : cinema.getCinemaId }) }}">
+        <fieldset>
+            <label for="datedebut">Date de début : </label>
+            <input id="datedebut" type="text" name="datedebut" placeholder="jj/mm/aaaa" value="{% if seance %}{{ seance.getHeureDebut|date('d/m/Y') }}{% endif %}">
+            <label for="heuredebut">Heure de début : </label>
+            <input type="text" name="heuredebut" placeholder="hh:mm" value="{% if seance %}{{ seance.getHeureDebut|date('H:i') }}{% endif %}">
+
+            <label for="datefin">Date de fin : </label>
+            <input type="text" name="datefin" placeholder="jj/mm/aaaa" value="{% if seance %}{{ seance.getHeureFin|date('d/m/Y') }}{% endif %}">
+            <label for="heurefin">Heure de fin : </label>
+            <input type="text" name="heurefin" placeholder="hh:mm" value="{% if seance %}{{ seance.getHeureFin|date('H:i') }}{% endif %}">
+            <!-- les anciennes date et heure début et fin -->
+            <input type="hidden" name="dateheurefinOld" value="{{ seanceOld['dateheureFinOld'] }}">
+            <input type="hidden" name="dateheuredebutOld" value="{{ seanceOld['dateheureDebutOld'] }}">
+            <label for="version">Version : </label>
+            <select name="version">
+                <option value="VO" {% if seance and seance.getVersion == 'VO' %}{{ "selected" }}{% endif %}>VO</option>
+                <option value="VF" {% if seance and seance.getVersion == 'VF' %}{{ "selected" }}{% endif %}>VF</option>
+                <option value="VOSTFR" {% if seance and seance.getVersion == 'VOSTFR' %}{{ "selected" }}{% endif %}>VOSTFR</option>
+            </select>
+            <input type="hidden" value="{{ from }}" name="from">
+        </fieldset>
+        {# si c'est une modification, c'est une information dont nous avons besoin #}
+        {% if not isItACreation %}
+            <input type="hidden" name="modificationInProgress" value="true"/>
+        {% endif %}
+        <button type="submit">Sauvegarder</button>
+    </form>
+    <div class="error">
+        {% if alreadyExists %}
+            {{ 'La séance existe déjà' }}
+        {% endif %}
+    </div>
+    {% if fromCinema %}
+        <form method="get" action="{{ path('showtime_cinema_list' , { 'cinemaId' : cinema.getCinemaId })}}">
+            <button type="submit">Retour aux séances du cinéma</button>
+        </form>
+    {% else %}
+        <form method="get" action="{{ path('showtime_movie_list' , { 'filmId' : film.getFilmId })}}">
+            <button type="submit">Retour aux séances du film</button>
+        </form>
+    {% endif %}
+{% endblock %}

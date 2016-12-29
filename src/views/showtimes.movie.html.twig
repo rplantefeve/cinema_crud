@@ -1,0 +1,84 @@
+{% extends "base.html.twig" %}
+
+{% block title %}{{ titre ~ film.titre}}{% endblock %}
+
+{% block content %}
+    <header>
+        <h1>{{ titre ~ film.titre }}</h1>
+        <h2>{{ film.titreOriginal }}</h2>
+        {% if adminConnected and cinemasUnplanned %}
+            <form action="{{ path('showtime_movie_add' , { 'filmId' : film.filmId }) }}" method="get">
+                <fieldset>
+                    <legend>Programmer le film dans un cinéma</legend>
+                    <select name="cinemaID">
+                        {% for cinema in cinemasUnplanned %}
+                            <option value="{{ cinema.cinemaId }}">{{ cinema.getDenomination }}</option>
+                        {% endfor %}
+                    </select>
+                    <input name="from" type="hidden" value="movie">
+                    <button type = "submit">Ajouter</button>
+                </fieldset>
+            </form>
+        {% endif %}
+    </header>
+    <ul>
+        {# on boucle sur les résultats #}
+        {% for cinema in cinemas %}
+            <li><h3>{{ cinema.getDenomination }}</h3></li>
+            <table class="std">
+                <tr>
+                    <th>Date</th>
+                    <th>Début</th>
+                    <th>Fin</th>
+                    <th>Version</th>
+                        {% if adminConnected %}
+                        <th colspan="2">Action</th>
+                        {% endif %}
+                </tr>
+                {# boucle sur les séances #}
+                {% for seance in seances[cinema.cinemaId]  %}
+                    <tr>
+                        <td>{{ seance.heureDebut|date("F j, Y") }}</td>
+                        <td>{{ seance.heureDebut|date("H\\hi") }}</td>
+                        <td>{{ seance.heureFin|date("H\\hi") }}</td>
+                        <td>{{ seance.getVersion }}</td>
+                        {% if adminConnected %}
+                            <td>
+                                <form name="modifyMovieShowtime" action="{{ path('showtime_edit' , { 'filmId' : film.filmId , 'cinemaId' : cinema.cinemaId}) }}" method="GET">
+                                    <input type="hidden" name="heureDebut" value="{{ seance.heureDebut|date('Y-m-d H:i') }}"/>
+                                    <input type="hidden" name="heureFin" value="{{ seance.heureFin|date('Y-m-d H:i') }}"/>
+                                    <input type="hidden" name="version" value="{{ seance.version }}"/>
+                                    <input type="submit" id="modify" value=""/>
+                                    <input name="from" type="hidden" value="movie">
+                                </form>
+                            </td>
+                            <td>
+                                <form name="deleteMovieShowtime" action="{{ path('showtime_delete' , { 'filmId' : film.filmId , 'cinemaId' : cinema.cinemaId }) }}" method="POST">
+                                    <input type="hidden" name="heureDebut" value="{{ seance.heureDebut|date('Y-m-d H:i') }}"/>
+                                    <input type="hidden" name="heureFin" value="{{ seance.heureFin|date('Y-m-d H:i') }}"/>
+                                    <input type="hidden" name="version" value="{{ seance.version }}"/>
+                                    <input type="image" src="{{ asset('/images/deleteIcon.png') }}" alt="Delete"/>
+                                    <input name="from" type="hidden" value="movie">
+                                </form>
+                            </td>
+                        {% endif %}
+                    </tr>
+                {% endfor %}
+                {% if adminConnected %}
+                    <tr class="new">
+                        <td colspan="6">
+                            <form action="{{ path('showtime_add' , { 'filmId' : film.filmId , 'cinemaId' : cinema.cinemaId }) }}" method="get">
+                                <input name="from" type="hidden" value="movie">
+                                <button class="add" type="submit">Cliquer ici pour ajouter une séance...</button>
+                            </form>
+                        </td>
+                    </tr>
+                {% endif %}  
+            </table>
+            <br>
+        {% endfor %}
+    </ul>
+    <form name="moviesList" method="GET" action="{{ path('movie_list') }}">
+        <input type="submit" value="Retour à la liste des films"/>
+    </form>
+{% endblock %}

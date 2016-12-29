@@ -9,10 +9,13 @@
         }
     ],
     "require": {
-        "silex/silex": "2.0.*",
-        "doctrine/dbal": "~2.2",
+        "silex/silex": "~2.0",
+        "doctrine/dbal": "~2.5",
+        "twig/twig": "~1.28",
+        "symfony/twig-bridge": "~2.8|3.0.*",
+        "symfony/asset": "~2.8|3.0.*",
         "psr/log": "1.0.0",
-        "monolog/monolog": "1.17.1"
+        "monolog/monolog": "1.17.1"        
     },
     "autoload": {
         "psr-4": {

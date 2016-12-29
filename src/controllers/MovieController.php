@@ -29,13 +29,13 @@ class MovieController extends Controller {
         // on récupère la liste des films ainsi que leurs informations
         $films = $app['dao.film']->findAll();
 
+        // Données de la vue
+        $donnees = [
+            'titre'       => 'Films',
+            'films'       => $films,
+            'isUserAdmin' => $isUserAdmin];
         // On génère la vue films
-        $vue = new View("MoviesList");
-        // En passant les variables nécessaires à son bon affichage
-        return $vue->generer($request,
-                        [
-                    'films'       => $films,
-                    'isUserAdmin' => $isUserAdmin]);
+        return $app['twig']->render('movies.html.twig', $donnees);
     }
 
     /**
@@ -98,11 +98,12 @@ class MovieController extends Controller {
             }
         }
 
+        $donnees = [
+            'titre' => 'Ajouter/Modifier un film',
+            'film'  => $film];
+
         // On génère la vue films
-        $vue = new View("EditMovie");
-        // En passant les variables nécessaires à son bon affichage
-        return $vue->generer($request, [
-                    'film' => $film]);
+        return $app['twig']->render('movie.edit.html.twig', $donnees);
     }
 
     /**
@@ -123,7 +124,7 @@ class MovieController extends Controller {
         }
 
         // si la méthode de formulaire est la méthode POST
-        if (filter_input(INPUT_SERVER, 'REQUEST_METHOD') === "POST") {
+        if ($request->isMethod('POST')) {
 
             // on assainit les entrées
             $entries['filmID'] = $filmId;

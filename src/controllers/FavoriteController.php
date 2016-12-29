@@ -2,12 +2,10 @@
 
 namespace Semeformation\Mvc\Cinema_crud\controllers;
 
-use Semeformation\Mvc\Cinema_crud\views\View;
 use Semeformation\Mvc\Cinema_crud\models\Prefere;
-use Psr\Log\LoggerInterface;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 use Silex\Application;
+use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * Description of FavoriteController
@@ -31,13 +29,13 @@ class FavoriteController extends Controller {
         // on récupère la liste des films préférés grâce à l'utilisateur identifié
         $preferes = $app['dao.prefere']->findAllByUserId($utilisateur->getUserId());
 
+        $donnees = [
+            'titre'       => 'Préférences de film',
+            'utilisateur' => $utilisateur,
+            'preferes'    => $preferes];
+
         // On génère la vue Films préférés
-        $vue = new View("FavoriteMoviesList");
-        // En passant les variables nécessaires à son bon affichage
-        return $vue->generer($request,
-                        array(
-                    'utilisateur' => $utilisateur,
-                    'preferes'    => $preferes));
+        return $app['twig']->render('favorites.html.twig', $donnees);
     }
 
     public function editFavoriteMovie(Request $request = null,
@@ -51,7 +49,7 @@ class FavoriteController extends Controller {
         $films           = null;
         // variable de contrôle de formulaire
         $aFilmIsSelected = true;
-        $prefere = null;
+        $prefere         = null;
 
         // si la méthode de formulaire est la méthode POST
         if ($request->isMethod('POST')) {
@@ -103,6 +101,10 @@ class FavoriteController extends Controller {
             $entries['filmID'] = $filmId;
             $entries['userID'] = $userId;
 
+            if (is_null($entries['userID'])) {
+                $entries['userID'] = $app['session']->get('user')['userId'];
+            }
+
             if ($entries && !is_null($entries['filmID']) && $entries['filmID'] !==
                     '' && !is_null($entries['userID']) && $entries['userID'] !==
                     '') {
@@ -117,24 +119,23 @@ class FavoriteController extends Controller {
                     "commentaire" => $prefere->getCommentaire()];
                 // sinon, c'est une création
             } else {
-                $films      = $app['dao.prefere']->getFilmDAO()->findAllByUserIdNotIn($app['session']->get('user')['userId']);
+                $films       = $app['dao.prefere']->getFilmDAO()->findAllByUserIdNotIn($entries['userID']);
                 // on initialise les autres variables de formulaire à vide
-                $prefere = new Prefere();
-                $utilisateur = $app['dao.prefere']->getUtilisateurDAO()->find($app['session']->get('user')['userId']);
+                $prefere     = new Prefere();
+                $utilisateur = $app['dao.prefere']->getUtilisateurDAO()->find($entries['userID']);
                 $prefere->setUtilisateur($utilisateur);
             }
         }
 
         $donnees = [
+            'titre'           => 'Ajouter/Modifier une préférence',
             'aFilmIsSelected' => $aFilmIsSelected,
             'prefere'         => $prefere,
-            'userID'          => $userId,
+            'userID'          => $entries['userID'],
             'films'           => $films
         ];
         // On génère la vue Films préférés
-        $vue     = new View("FavoriteMovie");
-        // En passant les variables nécessaires à son bon affichage
-        return $vue->generer($request, $donnees);
+        return $app['twig']->render('favorite.edit.html.twig', $donnees);
     }
 
     /**
