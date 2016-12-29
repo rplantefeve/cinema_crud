@@ -16,7 +16,7 @@ class MovieController extends Controller {
     /**
      * Route Liste des films
      */
-    function moviesList(Request $request = null, Application $app = null) {
+    public function moviesList(Request $request = null, Application $app = null) {
         $isUserAdmin = false;
 
         // si l'utilisateur est pas connecté et qu'il est amdinistrateur
@@ -43,7 +43,7 @@ class MovieController extends Controller {
      * @param string $filmId
      * @return string La vue générée
      */
-    function editMovie(Request $request = null, Application $app = null,
+    public function editMovie(Request $request = null, Application $app = null,
             string $filmId = null) {
 
         // si l'utilisateur n'est pas connecté ou sinon s'il n'est pas amdinistrateur
