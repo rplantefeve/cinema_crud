@@ -2,11 +2,9 @@
 
 namespace Semeformation\Mvc\Cinema_crud\controllers;
 
-use Semeformation\Mvc\Cinema_crud\views\View;
 use Symfony\Component\HttpFoundation\Request;
 use Semeformation\Mvc\Cinema_crud\models\Film;
 use Silex\Application;
-use Psr\Log\LoggerInterface;
 
 /**
  * Description of MovieController
@@ -22,7 +20,7 @@ class MovieController extends Controller {
         $isUserAdmin = false;
 
         // si l'utilisateur est pas connecté et qu'il est amdinistrateur
-        if ($app['session']->get('user') and $app['session']->get('user')['username'] ==
+        if ($app['session']->get('user') && $app['session']->get('user')['username'] ==
                 'admin@adm.adm') {
             $isUserAdmin = true;
         }
@@ -49,7 +47,7 @@ class MovieController extends Controller {
             string $filmId = null) {
 
         // si l'utilisateur n'est pas connecté ou sinon s'il n'est pas amdinistrateur
-        if (!$app['session']->get('user') or $app['session']->get('user')['username'] !==
+        if (!$app['session']->get('user') || $app['session']->get('user')['username'] !==
                 'admin@adm.adm') {
             // renvoi à la page d'accueil
             return $app->redirect($request->getBasePath() . '/home');
@@ -117,7 +115,7 @@ class MovieController extends Controller {
             Application $app = null) {
 
         // si l'utilisateur n'est pas connecté ou sinon s'il n'est pas administrateur
-        if (!$app['session']->get('user') or $app['session']->get('user')['username'] !==
+        if (!$app['session']->get('user') || $app['session']->get('user')['username'] !==
                 'admin@adm.adm') {
             // renvoi à la page d'accueil
             return $app->redirect($request->getBasePath() . '/home');

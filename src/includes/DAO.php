@@ -3,7 +3,6 @@
 namespace Semeformation\Mvc\Cinema_crud\includes;
 
 use Doctrine\DBAL\Connection;
-use Semeformation\Mvc\Cinema_crud\includes\DBFactory;
 use Psr\Log\LoggerInterface;
 
 abstract class DAO {

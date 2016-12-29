@@ -2,7 +2,6 @@
 
 namespace Semeformation\Mvc\Cinema_crud\controllers;
 
-use Semeformation\Mvc\Cinema_crud\views\View;
 use Semeformation\Mvc\Cinema_crud\exceptions\BusinessObjectAlreadyExists;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -28,7 +27,7 @@ class ShowtimesController extends Controller {
         $adminConnected = false;
 
         // si l'utilisateur est pas connecté et qu'il est amdinistrateur
-        if ($app['session']->get('user') and $app['session']->get('user')['username'] ==
+        if ($app['session']->get('user') && $app['session']->get('user')['username'] ==
                 'admin@adm.adm') {
             $adminConnected = true;
         }
@@ -79,7 +78,7 @@ class ShowtimesController extends Controller {
         $adminConnected = false;
 
         // si l'utilisateur est pas connecté et qu'il est amdinistrateur
-        if ($app['session']->get('user') and $app['session']->get('user')['username'] ==
+        if ($app['session']->get('user') && $app['session']->get('user')['username'] ==
                 'admin@adm.adm') {
             $adminConnected = true;
         }
@@ -132,7 +131,7 @@ class ShowtimesController extends Controller {
             Application $app = null, string $filmId = null,
             string $cinemaId = null): RedirectResponse {
         // si l'utilisateur n'est pas connecté ou sinon s'il n'est pas amdinistrateur
-        if (!$app['session']->get('user') or $app['session']->get('user')['username'] !==
+        if (!$app['session']->get('user') || $app['session']->get('user')['username'] !==
                 'admin@adm.adm') {
             // renvoi à la page d'accueil
             return $app->redirect($request->getBasePath() . '/home');
@@ -179,7 +178,7 @@ class ShowtimesController extends Controller {
             Application $app = null, string $filmId = null,
             string $cinemaId = null) {
         // si l'utilisateur n'est pas connecté ou sinon s'il n'est pas amdinistrateur
-        if (!$app['session']->get('user') or $app['session']->get('user')['username'] !==
+        if (!$app['session']->get('user') || $app['session']->get('user')['username'] !==
                 'admin@adm.adm') {
             // renvoi à la page d'accueil
             return $app->redirect($request->getBasePath() . '/home');

@@ -109,14 +109,8 @@ class FavoriteController extends Controller {
                     '' && !is_null($entries['userID']) && $entries['userID'] !==
                     '') {
                 // on récupère les informations manquantes (le commentaire afférent)
-                $prefere    = $app['dao.prefere']->find($entries['userID'],
+                $prefere = $app['dao.prefere']->find($entries['userID'],
                         $entries['filmID']);
-                // TODO : faire autrement qu'avec un vecteur
-                $preference = [
-                    "userID"      => $app['session']->get('user')['userId'],
-                    "filmID"      => $prefere->getFilm()->getFilmId(),
-                    "titre"       => $prefere->getFilm()->getTitre(),
-                    "commentaire" => $prefere->getCommentaire()];
                 // sinon, c'est une création
             } else {
                 $films       = $app['dao.prefere']->getFilmDAO()->findAllByUserIdNotIn($entries['userID']);
