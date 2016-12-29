@@ -1,0 +1,45 @@
+{% extends "base.html.twig" %}
+
+{% block title %}{{ titre }}{% endblock %}
+
+{% block content %}
+    {# set action = path('favorite_edit', { 'userId' : prefere.utilisateur.userId }) #}
+    {% set action = path('favorite_add') %}
+    {# si c'est une modification #}
+    {% if prefere.film %}
+        {% set action = path('favorite_edit', { 'userId' : prefere.utilisateur.userId, 'filmId' : prefere.film.filmId }) %}
+    {% endif %}
+    <header><h1>{{ titre }}</h1></header>
+    <form method="POST" name="editFavoriteMovie" action="{{ action }}">
+        <label>Titre :</label>
+        <select name="filmID" {% if prefere.getFilm %}{{ "disabled" }}{% endif %}>
+            {# si c'est une création, on crée la liste des films dynamiquement #}
+            {% if not prefere.getFilm %}
+                {# s'il y a des résultats #}
+                {% if films %}
+                    {% for film in films %}
+                        <option value="{{ film.getFilmId }}">{{ film.getTitre }}</option>
+                    {% endfor %}
+                {% endif %}
+                {# sinon, c'est une modification, nous n'avons qu'une seule option dans la liste #}
+            {% else %}
+                <option selected value="{{ prefere.getFilm.getFilmId }}">{{ prefere.getFilm.getTitre }}</option>
+            {% endif %}
+        </select>
+        <div class="error">
+            {% if aFilmIsSelected == false %}
+                {{ "Veuillez renseigner un titre de film." }}
+            {% endif %}
+        </div>
+        <label>Commentaire :</label>
+        <textarea name="comment">{{ prefere.getCommentaire }}</textarea>
+        <br/>
+        {# si c'est une modification, c'est une information dont nous avons besoin #}
+        {% if prefere.getFilm %}
+            <input type="hidden" name="filmID" value="{{ prefere.getFilm.getFilmId }}"/>
+        {% endif %}
+        <input type="hidden" value="{{ prefere.getUtilisateur.getUserId }}" name="userID"/>
+        <input type="submit" name="saveEntry" value="Sauvegarder" />
+        <input type="submit" name="backToList" value="Retour à la liste" formaction="{{ path('favorite_list') }}"/>
+    </form>
+{% endblock %}
