@@ -5,6 +5,12 @@ use Silex\Provider\SessionServiceProvider;
 use Silex\Provider\DoctrineServiceProvider;
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
+use Symfony\Component\Debug\ErrorHandler;
+use Symfony\Component\Debug\ExceptionHandler;
+
+// Enregistre les gérants des erreurs et exceptions
+ErrorHandler::register();
+ExceptionHandler::register();
 
 // Création du logger
 // Note : on pourrait différencier les loggers en fonction des objets manipulés
