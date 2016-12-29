@@ -1,4 +1,4 @@
 cinema_crud
 ===========
 
-Apprentissage MVC
+Application CRUD de gestion d'un site d'informations sur les cinémas et les films
