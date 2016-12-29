@@ -213,12 +213,4 @@ class HomeController extends Controller {
         return $app->redirect($request->getBasePath() . '/home');
     }
 
-    public function error($e) {
-
-        $app['dao.utilisateur']->getLogger()->error('Exception : ' . $e->getMessage() . ', File : ' . $e->getFile() . ', Line : ' . $e->getLine() . ', Stack trace : ' . $e->getTraceAsString());
-        $vue = new View("Error");
-        return $vue->generer([
-                    'messageErreur' => $e->getMessage()]);
-    }
-
 }
