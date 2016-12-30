@@ -11,7 +11,7 @@ ErrorHandler::register();
 ExceptionHandler::register();
 
 // Initialisation de l'application Silex
-$app    = new Application();
+$app = new Application();
 
 require __DIR__ . '/config/dev.php';
 
@@ -22,7 +22,10 @@ $app->register(new DoctrineServiceProvider());
 // Service de templates de vues (Twig)
 $app->register(new Silex\Provider\TwigServiceProvider(),
         array(
-    'twig.path' => __DIR__ . '/../src/views',
+    'twig.path'    => __DIR__ . '/../src/views',
+    'twig.options' => [
+        'cache' => __DIR__ . '/../src/cache'
+    ],
 ));
 // Gestion des CSS, JS, images, ...
 $app->register(new Silex\Provider\AssetServiceProvider(),
