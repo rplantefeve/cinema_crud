@@ -19,6 +19,11 @@ require __DIR__ . '/config/dev.php';
 $app->register(new SessionServiceProvider());
 // Enregistrement du DBAL => crée automatiquement le service accessible par $app['db']
 $app->register(new DoctrineServiceProvider());
+// Activation du cache de Doctrine
+$cache = new \Doctrine\Common\Cache\ArrayCache();
+$config = $app['db']->getConfiguration();
+$config->setResultCacheImpl($cache);
+
 // Service de templates de vues (Twig)
 $app->register(new Silex\Provider\TwigServiceProvider(),
         array(
