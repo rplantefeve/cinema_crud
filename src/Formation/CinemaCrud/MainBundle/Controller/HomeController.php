@@ -21,38 +21,33 @@ class HomeController extends MyController {
      * Route Accueil
      * @param Request $request
      * @return string La vue générée
-     * @Method({"GET"})
+     * @Method({"GET","POST"})
      * @Route("/home", host="%mon_domaine%", name="home")
      */
     public function homeAction(Request $request) {
         // personne d'authentifié à ce niveau
-        // $loginSuccess = false;
-        $loginSuccess = true;
-//
-//        // si l'utilisateur est déjà authentifié
-//        if ($app['session']->get('user')) {
-//            $loginSuccess = true;
-//            // Sinon (pas d'utilisateur authentifié pour l'instant)
-//        } else {
-//            // si la méthode POST a été employée
-//            if ($request->isMethod('POST')) {
-//                // on extrait les paramètres de la requête POST
-//                $entries = $this->extractArrayFromPostRequest($request,
-//                        [
-//                    'email',
-//                    'password']);
-//                // on vérifie que l'utilisateur existe et que son mot de passe est correct
-//                return $this->login($entries, $app, $request);
-//            }
-//        }
-//
-//        // on retourne la vue générée
-//        return $app['twig']->render('index.html.twig',
-//                        [
-//                    'titre'        => 'Accueil',
-//                    'errorMessage' => false,
-//                    'email'        => '',
-//                    'loginSuccess' => $loginSuccess]);
+        $loginSuccess = false;
+
+        // on récupère la session
+        $session = $request->getSession();
+        // si l'utilisateur est déjà authentifié
+        if ($session->get('user')) {
+            $loginSuccess = true;
+            // Sinon (pas d'utilisateur authentifié pour l'instant)
+        } else {
+            // si la méthode POST a été employée
+            if ($request->isMethod('POST')) {
+                // on extrait les paramètres de la requête POST
+                $entries = $this->extractArrayFromPostRequest($request,
+                        [
+                    'email',
+                    'password']);
+                // on vérifie que l'utilisateur existe et que son mot de passe est correct
+                return $this->login($entries, $request);
+            }
+        }
+
+        // on retourne la vue générée
         return $this->render('FormationCinemaCrudMainBundle:Cinema:index.html.twig',
                         [
                     'titre'        => 'Accueil',
@@ -64,37 +59,48 @@ class HomeController extends MyController {
     /**
      * Vérifie si l'utilisateur existe et que son mot de passe est bon
      * @param type $entries
-     * @param Application $app
      * @param Request $request
      * @return string La vue générée
      */
-//    private function login($entries, Application $app, Request $request) {
-//        try {
-//            $errorMessage = false;
-//            // On vérifie l'existence de l'utilisateur
+    private function login($entries, Request $request) {
+        try {
+            $errorMessage = false;
+            // On vérifie l'existence de l'utilisateur
 //            $utilisateur  = $app['dao.utilisateur']->findOneByCourrielAndPassword($entries['email'],
 //                    $entries['password']);
 //
 //            // on enregistre l'utilisateur en session
 //            $username = $entries['email'];
 //            $userId   = $utilisateur->getUserId();
-//            $app['session']->set('user',
-//                    array(
-//                'username' => $username,
-//                'userId'   => $userId));
-//            // redirection vers la liste des préférences de films
-//            return $app->redirect($request->getBasePath() . '/favorite/list');
-//        } catch (\Exception $ex) {
-//            $loginSuccess = false;
-//            $errorMessage = $ex->getMessage();
-//            return $app['twig']->render('index.html.twig',
-//                            [
-//                        'titre'        => 'Accueil',
-//                        'email'        => $entries['email'],
-//                        'loginSuccess' => $loginSuccess,
-//                        'errorMessage' => $errorMessage]);
-//        }
-//    }
+
+            $username = 'admin@adm.adm';
+            $userId   = 20;
+
+            // on récupère la session
+            $session = $request->getSession();
+            $session->set('user',
+                    array(
+                'username' => $username,
+                'userId'   => $userId));
+
+            // store a message for the very next request
+            $this->addFlash('notice', 'Félicitations, authentification réussie.');
+
+            // redirection vers la liste des préférences de films
+            //return $this->redirect($this->generateUrl('favorite_list'));
+            return $this->redirect($this->generateUrl('home'));
+        } catch (\Exception $ex) {
+            $loginSuccess = false;
+            $errorMessage = $ex->getMessage();
+            // on retourne la vue générée
+            return $this->render('FormationCinemaCrudMainBundle:Cinema:index.html.twig',
+                            [
+                        'titre'        => 'Accueil',
+                        'email'        => $entries['email'],
+                        'loginSuccess' => $loginSuccess,
+                        'errorMessage' => $errorMessage]);
+        }
+    }
 
     /**
      * Route Création d'un nouvel utilisateur
@@ -214,13 +220,15 @@ class HomeController extends MyController {
      * @param Request $request
      * @param Application $app
      * @return RedirectResponse
+     * @Method({"GET"})
+     * @Route("/logout", host="%mon_domaine%", name="logout")
      */
-//    public function logout(Request $request, Application $app): RedirectResponse {
-//        // démarrage de la session
-//        $app['session']->start();
-//        // destruction de la sessions
-//        $app['session']->invalidate();
-//        return $app->redirect($request->getBasePath() . '/home');
-//    }
+    public function logout(Request $request): RedirectResponse {
+        // démarrage de la session
+        $request->getSession()->start();
+        // destruction de la sessions
+        $request->getSession()->invalidate();
+        return $this->redirect($this->generateUrl('home'));
+    }
 
 }

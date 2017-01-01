@@ -93,6 +93,11 @@ button.add:hover{
     margin-bottom: 10px; 
 }
 
+.flash-notice { 
+    color: cadetblue; 
+    margin-bottom: 10px; 
+}
+
 input#modify { 
     background-image: url('../images/modifyIcon.png'); 
     background-color: transparent; 
