@@ -1,0 +1,46 @@
+{% extends "::base.html.twig" %}
+
+{% block title %}{{ titre }}{% endblock %}
+
+{% block stylesheets %}<link href="{{ asset('bundles/formationcinemacrudmain/css/cinema.css') }}" rel="stylesheet">{% endblock %}
+
+{% block body %}
+    <div>
+        <header>
+            <h1>{{ titre }}</h1>
+        </header>
+        {% if loginSuccess == false %}
+            <form method="post" name="editFavoriteMoviesList" action="{# path('login') #}">
+
+                <label>Adresse email : </label>
+                <input type="email" name="email" value="{{ email }}" required/>
+                <label>Mot de passe  : </label>
+                <input type="password" name="password" required/>
+                <div class="error">
+                    {% if errorMessage != false %}
+                        {{ errorMessage }}
+                    {% endif %}
+                </div>
+                <input type="submit" value="Editer ma liste de films préférés"/>
+            </form>
+            <p>Pas encore d'espace personnel ? <a href="{# path('user_add) #}">Créer sa liste de films préférés.</a></p>
+        {% else %}
+            <form action="{# path('favorite_list') #}">
+                <input type="submit" value="Editer ma liste de films préférés"/>
+            </form>
+            <a href="{# path('logout') #}">Se déconnecter</a>
+        {% endif %}
+    </div>
+    <!-- Gestion des cinémas -->
+    <div>
+        <header>
+            <h1>Gestion des cinémas</h1>
+            <form name="cinemasList" method="GET" action="{# path('cinema_list') #}">
+                <input type="submit" value="Consulter la liste des cinémas"/>
+            </form>
+            <form name="moviesList" method="GET" action="{# path('movie_list') #}">
+                <input type="submit" value="Consulter la liste des films"/>
+            </form>
+        </header>
+    </div>    
+{% endblock %}
