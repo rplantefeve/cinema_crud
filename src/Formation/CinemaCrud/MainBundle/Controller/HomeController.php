@@ -4,10 +4,10 @@ namespace Formation\CinemaCrud\MainBundle\Controller;
 
 use Formation\CinemaCrud\MainBundle\Entity\Utilisateur;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Silex\Application;
 
 /**
@@ -23,6 +23,7 @@ class HomeController extends MyController {
      * @return string La vue générée
      * @Method({"GET","POST"})
      * @Route("/home", host="%mon_domaine%", name="home")
+     * @Template("FormationCinemaCrudMainBundle:Cinema:home.html.twig")
      */
     public function homeAction(Request $request) {
         // personne d'authentifié à ce niveau
@@ -48,12 +49,11 @@ class HomeController extends MyController {
         }
 
         // on retourne la vue générée
-        return $this->render('FormationCinemaCrudMainBundle:Cinema:index.html.twig',
-                        [
-                    'titre'        => 'Accueil',
-                    'errorMessage' => false,
-                    'email'        => '',
-                    'loginSuccess' => $loginSuccess]);
+        return [
+            'titre'        => 'Accueil',
+            'errorMessage' => false,
+            'email'        => '',
+            'loginSuccess' => $loginSuccess];
     }
 
     /**
@@ -90,12 +90,11 @@ class HomeController extends MyController {
             $loginSuccess = false;
             $errorMessage = $ex->getMessage();
             // on retourne la vue générée
-            return $this->render('FormationCinemaCrudMainBundle:Cinema:index.html.twig',
-                            [
-                        'titre'        => 'Accueil',
-                        'email'        => $entries['email'],
-                        'loginSuccess' => $loginSuccess,
-                        'errorMessage' => $errorMessage]);
+            return [
+                'titre'        => 'Accueil',
+                'email'        => $entries['email'],
+                'loginSuccess' => $loginSuccess,
+                'errorMessage' => $errorMessage];
         }
     }
 
