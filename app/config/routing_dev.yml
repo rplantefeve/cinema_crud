@@ -13,8 +13,3 @@ _errors:
 _main:
     resource: routing.yml
     
-_additional:
-    resource: routing.xml
-    
-_moar:
-    resource: routing.php

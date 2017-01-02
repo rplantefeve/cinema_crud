@@ -3,10 +3,6 @@ formation_cinema_crud_main:
     type:     annotation
     prefix:   /
     
-bonjour_monde:
-    path: /bonjour/monde
-    defaults: {_controller: FormationCinemaCrudMainBundle:Bonjour:bonjour}
-
 app:
     resource: "@AppBundle/Controller/"
     type:     annotation
