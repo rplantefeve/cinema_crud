@@ -66,15 +66,12 @@ class HomeController extends MyController {
         try {
             $errorMessage = false;
             // On vérifie l'existence de l'utilisateur
-//            $utilisateur  = $app['dao.utilisateur']->findOneByCourrielAndPassword($entries['email'],
-//                    $entries['password']);
-//
-//            // on enregistre l'utilisateur en session
-//            $username = $entries['email'];
-//            $userId   = $utilisateur->getUserId();
+            $utilisateur  = $this->get('dao.utilisateur')->findOneByCourrielAndPassword($entries['email'],
+                    $entries['password']);
 
-            $username = 'admin@adm.adm';
-            $userId   = 20;
+            // on enregistre l'utilisateur en session
+            $username = $entries['email'];
+            $userId   = $utilisateur->getUserId();
 
             // on récupère la session
             $session = $request->getSession();
