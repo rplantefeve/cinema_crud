@@ -23,7 +23,7 @@
                 </div>
                 <input type="submit" value="Editer ma liste de films préférés"/>
             </form>
-            <p>Pas encore d'espace personnel ? <a href="{# path('user_add) #}">Créer sa liste de films préférés.</a></p>
+            <p>Pas encore d'espace personnel ? <a href="{{ path('user_add') }}">Créer sa liste de films préférés.</a></p>
         {% else %}
             {% for flashMessage in app.session.flashBag.get('notice') %}
                 <div class="flash-notice">

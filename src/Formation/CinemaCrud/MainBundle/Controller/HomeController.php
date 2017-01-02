@@ -2,7 +2,7 @@
 
 namespace Formation\CinemaCrud\MainBundle\Controller;
 
-use \Semeformation\Mvc\Cinema_crud\models\Utilisateur;
+use Formation\CinemaCrud\MainBundle\Entity\Utilisateur;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -102,115 +102,117 @@ class HomeController extends MyController {
     /**
      * Route Création d'un nouvel utilisateur
      * @param Request $request
-     * @param Application $app
      * @return string La vue générée
+     * @Method({"GET","POST"})
+     * @Route("/user/add", host="%mon_domaine%", name="user_add")
      */
-//    public function createNewUser(Request $request = null,
-//            Application $app = null) {
-//        // variables de contrôles du formulaire de création
-//        $isFirstNameEmpty            = false;
-//        $isLastNameEmpty             = false;
-//        $isEmailAddressEmpty         = false;
-//        $isUserUnique                = true;
-//        $isPasswordEmpty             = false;
-//        $isPasswordConfirmationEmpty = false;
-//        $isPasswordValid             = true;
-//
-//        // si la méthode POST est utilisée, cela signifie que le formulaire a été envoyé
-//        if ($request->isMethod('POST')) {
-//            // on assainit les entrées
-//            $entries = $this->extractArrayFromPostRequest($request,
-//                    [
-//                'firstName',
-//                'lastName',
-//                'email',
-//                'password',
-//                'passwordConfirmation']);
-//
-//            // si le prénom n'a pas été renseigné
-//            if ($entries['firstName'] === "") {
-//                $isFirstNameEmpty = true;
-//            }
-//
-//            // si le nom n'a pas été renseigné
-//            if ($entries['lastName'] === "") {
-//                $isLastNameEmpty = true;
-//            }
-//
-//            // si l'adresse email n'a pas été renseignée
-//            if ($entries['email'] === "") {
-//                $isEmailAddressEmpty = true;
-//            } else {
-//                // On vérifie l'existence de l'utilisateur
-//                $user = $app['dao.utilisateur']->findOneByCourriel($entries['email']);
-//                // si on a un résultat, cela signifie que cette adresse email existe déjà
-//                if ($user->getUserId()) {
-//                    $isUserUnique = false;
-//                }
-//            }
-//            // si le password n'a pas été renseigné
-//            if ($entries['password'] === "") {
-//                $isPasswordEmpty = true;
-//            }
-//            // si la confirmation du password n'a pas été renseigné
-//            if ($entries['passwordConfirmation'] === "") {
-//                $isPasswordConfirmationEmpty = true;
-//            }
-//
-//            // si le mot de passe et sa confirmation sont différents
-//            if ($entries['password'] !== $entries['passwordConfirmation']) {
-//                $isPasswordValid = false;
-//            }
-//
-//            // si les champs nécessaires ne sont pas vides, que l'utilisateur est unique et que le mot de passe est valide
-//            if (!$isFirstNameEmpty && !$isLastNameEmpty && !$isEmailAddressEmpty &&
-//                    $isUserUnique && !$isPasswordEmpty && $isPasswordValid) {
-//                // hash du mot de passe
-//                $password    = password_hash($entries['password'],
-//                        PASSWORD_DEFAULT);
-//                $utilisateur = new Utilisateur();
-//                $utilisateur->setAdresseCourriel($entries['email']);
-//                $utilisateur->setNom($entries['lastName']);
-//                $utilisateur->setPrenom($entries['firstName']);
-//                $utilisateur->setPassword($password);
-//                // créer l'utilisateur
-//                $app['dao.utilisateur']->save($utilisateur);
-//
-//                $username = $entries['email'];
-//                $userId   = $utilisateur->getUserId();
-//                $app['session']->set('user',
-//                        array(
-//                    'username' => $username,
-//                    'userId'   => $userId));
-//                // redirection vers la liste des préférences de films
-//                return $app->redirect($request->getBasePath() . '/favorite/list');
-//            }
-//        }
-//        // sinon (le formulaire n'a pas été envoyé)
-//        else {
-//            // initialisation des variables du formulaire
-//            $entries['firstName'] = '';
-//            $entries['lastName']  = '';
-//            $entries['email']     = '';
-//        }
-//        $utilisateur = new Utilisateur();
-//        $utilisateur->setNom($entries['lastName']);
-//        $utilisateur->setPrenom($entries['firstName']);
-//        $utilisateur->setAdresseCourriel($entries['email']);
-//
-//        $donnees = [
-//            'titre'                       => 'Création d\'un nouvel utilisateur',
-//            'utilisateur'                 => $utilisateur,
-//            'isFirstNameEmpty'            => $isFirstNameEmpty,
-//            'isLastNameEmpty'             => $isLastNameEmpty,
-//            'isEmailAddressEmpty'         => $isEmailAddressEmpty,
-//            'isUserUnique'                => $isUserUnique,
-//            'isPasswordEmpty'             => $isPasswordEmpty,
-//            'isPasswordConfirmationEmpty' => $isPasswordConfirmationEmpty,
-//            'isPasswordValid'             => $isPasswordValid];
-//        // On génère la vue Création d'un utilisateur
-//        return $app['twig']->render('user.create.html.twig', $donnees);
-//    }
+    public function createNewUserAction(Request $request) {
+        // variables de contrôles du formulaire de création
+        $isFirstNameEmpty            = false;
+        $isLastNameEmpty             = false;
+        $isEmailAddressEmpty         = false;
+        $isUserUnique                = true;
+        $isPasswordEmpty             = false;
+        $isPasswordConfirmationEmpty = false;
+        $isPasswordValid             = true;
+
+        // si la méthode POST est utilisée, cela signifie que le formulaire a été envoyé
+        if ($request->isMethod('POST')) {
+            // on assainit les entrées
+            $entries = $this->extractArrayFromPostRequest($request,
+                    [
+                'firstName',
+                'lastName',
+                'email',
+                'password',
+                'passwordConfirmation']);
+
+            // si le prénom n'a pas été renseigné
+            if ($entries['firstName'] === "") {
+                $isFirstNameEmpty = true;
+            }
+
+            // si le nom n'a pas été renseigné
+            if ($entries['lastName'] === "") {
+                $isLastNameEmpty = true;
+            }
+
+            // si l'adresse email n'a pas été renseignée
+            if ($entries['email'] === "") {
+                $isEmailAddressEmpty = true;
+            } else {
+                // On vérifie l'existence de l'utilisateur
+                $user = $this->get('dao.utilisateur')->findOneByCourriel($entries['email']);
+                // si on a un résultat, cela signifie que cette adresse email existe déjà
+                if ($user->getUserId()) {
+                    $isUserUnique = false;
+                }
+            }
+            // si le password n'a pas été renseigné
+            if ($entries['password'] === "") {
+                $isPasswordEmpty = true;
+            }
+            // si la confirmation du password n'a pas été renseigné
+            if ($entries['passwordConfirmation'] === "") {
+                $isPasswordConfirmationEmpty = true;
+            }
+
+            // si le mot de passe et sa confirmation sont différents
+            if ($entries['password'] !== $entries['passwordConfirmation']) {
+                $isPasswordValid = false;
+            }
+
+            // si les champs nécessaires ne sont pas vides, que l'utilisateur est unique et que le mot de passe est valide
+            if (!$isFirstNameEmpty && !$isLastNameEmpty && !$isEmailAddressEmpty &&
+                    $isUserUnique && !$isPasswordEmpty && $isPasswordValid) {
+                // hash du mot de passe
+                $password    = password_hash($entries['password'],
+                        PASSWORD_DEFAULT);
+                $utilisateur = new Utilisateur();
+                $utilisateur->setAdresseCourriel($entries['email']);
+                $utilisateur->setNom($entries['lastName']);
+                $utilisateur->setPrenom($entries['firstName']);
+                $utilisateur->setPassword($password);
+                // créer l'utilisateur
+                $this->get('dao.utilisateur')->save($utilisateur);
+
+                $username = $entries['email'];
+                $userId   = $utilisateur->getUserId();
+                $request->getSession()->set('user',
+                        array(
+                    'username' => $username,
+                    'userId'   => $userId));
+                // redirection vers la liste des préférences de films
+                // return $this->redirect($this->generateUrl('favorite_list'));
+                return $this->redirect($this->generateUrl('home'));
+            }
+        }
+        // sinon (le formulaire n'a pas été envoyé)
+        else {
+            // initialisation des variables du formulaire
+            $entries['firstName'] = '';
+            $entries['lastName']  = '';
+            $entries['email']     = '';
+        }
+        $utilisateur = new Utilisateur();
+        $utilisateur->setNom($entries['lastName']);
+        $utilisateur->setPrenom($entries['firstName']);
+        $utilisateur->setAdresseCourriel($entries['email']);
+
+        $donnees = [
+            'titre'                       => 'Création d\'un nouvel utilisateur',
+            'utilisateur'                 => $utilisateur,
+            'isFirstNameEmpty'            => $isFirstNameEmpty,
+            'isLastNameEmpty'             => $isLastNameEmpty,
+            'isEmailAddressEmpty'         => $isEmailAddressEmpty,
+            'isUserUnique'                => $isUserUnique,
+            'isPasswordEmpty'             => $isPasswordEmpty,
+            'isPasswordConfirmationEmpty' => $isPasswordConfirmationEmpty,
+            'isPasswordValid'             => $isPasswordValid];
+        // On génère la vue Création d'un utilisateur
+        return $this->render('FormationCinemaCrudMainBundle:Cinema:user.create.html.twig',
+                        $donnees);
+    }
 
     /**
      * Détruit la session d'authentification
@@ -220,7 +222,7 @@ class HomeController extends MyController {
      * @Method({"GET"})
      * @Route("/logout", host="%mon_domaine%", name="logout")
      */
-    public function logout(Request $request): RedirectResponse {
+    public function logoutAction(Request $request): RedirectResponse {
         // démarrage de la session
         $request->getSession()->start();
         // destruction de la sessions
