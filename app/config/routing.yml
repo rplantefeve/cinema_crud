@@ -1,0 +1,8 @@
+formation_cinema_crud_main:
+    resource: "@FormationCinemaCrudMainBundle/Controller/"
+    type:     annotation
+    prefix:   /
+    
+app:
+    resource: "@AppBundle/Controller/"
+    type:     annotation
