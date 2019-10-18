@@ -1,12 +1,14 @@
 <?php
 require_once __DIR__ . '/vendor/autoload.php';
 
-require_once __DIR__ . './includes/fctManager.php';
+require __DIR__ . '/includes/fctManager.php';
 
 session_start();
 // si l'utilisateur n'est pas connecté
-if (!array_key_exists("user",
-                $_SESSION)) {
+if (!array_key_exists(
+    "user",
+                $_SESSION
+)) {
     // renvoi à la page d'accueil
     header('Location: index.php');
     exit;
@@ -18,11 +20,14 @@ $aFilmIsSelected = true;
 $isItACreation = false;
 
 // si la méthode de formulaire est la méthode POST
-if (filter_input(INPUT_SERVER,
-                'REQUEST_METHOD') === "POST") {
+if (filter_input(
+    INPUT_SERVER,
+                'REQUEST_METHOD'
+) === "POST") {
 
     // on "sainifie" les entrées
-    $sanitizedEntries = filter_input_array(INPUT_POST,
+    $sanitizedEntries = filter_input_array(
+        INPUT_POST,
             ['backToList' => FILTER_DEFAULT,
         'filmID' => FILTER_SANITIZE_NUMBER_INT,
         'userID' => FILTER_SANITIZE_NUMBER_INT,
@@ -60,7 +65,7 @@ if (filter_input(INPUT_SERVER,
         }
         // sinon (un film n'a pas été sélectionné)
         else {
-            // 
+            //
             $aFilmIsSelected = false;
             $isItACreation = true;
             // initialisation des champs du formulaire

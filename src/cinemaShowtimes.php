@@ -1,18 +1,22 @@
 <?php
 require_once __DIR__ . '/vendor/autoload.php';
 
-require_once __DIR__ . './includes/fctManager.php';
+require_once __DIR__ . '/includes/fctManager.php';
 
 // si la méthode de formulaire est la méthode GET
-if (filter_input(INPUT_SERVER,
-                'REQUEST_METHOD') === "GET") {
+if (filter_input(
+    INPUT_SERVER,
+                'REQUEST_METHOD'
+) === "GET") {
 
     // on "sainifie" les entrées
-    $sanitizedEntries = filter_input_array(INPUT_GET,
-            ['cinemaID' => FILTER_SANITIZE_NUMBER_INT]);
+    $sanitizedEntries = filter_input_array(
+        INPUT_GET,
+            ['cinemaID' => FILTER_SANITIZE_NUMBER_INT]
+    );
 
     // si l'identifiant du cinéma a bien été passé en GET
-    if ($sanitizedEntries && $sanitizedEntries['cinemaID'] !== NULL && $sanitizedEntries['cinemaID'] != '') {
+    if ($sanitizedEntries && $sanitizedEntries['cinemaID'] !== null && $sanitizedEntries['cinemaID'] != '') {
         // on récupère l'identifiant du cinéma
         $cinemaID = $sanitizedEntries['cinemaID'];
         // puis on récupère les informations du cinéma en question
@@ -51,29 +55,33 @@ if (filter_input(INPUT_SERVER,
                 <ul>
                     <?php
                     // on récupère pour chaque film de ce cinéma, la liste des séances
-                    $seances = $fctManager->getMovieShowtimes($cinemaID,
-                            $film['FILMID']);
-                    // boucle sur les séances
-                    foreach ($seances as $seance) {
-                        /*
-                         * Formatage des dates
-                         */
-                        // nous sommes en Français
-                        setlocale(LC_TIME,
-                                'fra_fra');
-                        // date du jour de projection de la séance
-                        $jour = new DateTime($seance['HEUREDEBUT']);
-                        // On convertit pour un affichage en français
-                        $jourConverti = utf8_encode(strftime('%d %B %Y',
-                                        $jour->getTimestamp()));
+                    $seances = $fctManager->getMovieShowtimes(
+                        $cinemaID,
+                            $film['FILMID']
+                    );
+                // boucle sur les séances
+                foreach ($seances as $seance) {
+                    /*
+                     * Formatage des dates
+                     */
+                    // nous sommes en Français
+                    setlocale(
+                            LC_TIME,
+                                'fra_fra'
+                        );
+                    // date du jour de projection de la séance
+                    $jour = new DateTime($seance['HEUREDEBUT']);
+                    // On convertit pour un affichage en français
+                    $jourConverti = utf8_encode(strftime(
+                            '%d %B %Y',
+                                        $jour->getTimestamp()
+                        ));
 
-                        $heureDebut = (new DateTime($seance['HEUREDEBUT']))->format('H\hi');
-                        $heureFin = (new DateTime($seance['HEUREFIN']))->format('H\hi');
-                        ?>
+                    $heureDebut = (new DateTime($seance['HEUREDEBUT']))->format('H\hi');
+                    $heureFin = (new DateTime($seance['HEUREFIN']))->format('H\hi'); ?>
                         <li>Séance du <?= $jourConverti ?>. Heure de début : <?= $heureDebut ?>. Heure de fin : <?= $heureFin ?>. Version : <?= $seance['VERSION'] ?></li>
                         <?php
-                    }
-                    ?>
+                } ?>
                 </ul>
                 <?php
             }
