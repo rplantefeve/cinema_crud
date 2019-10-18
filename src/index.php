@@ -1,10 +1,10 @@
 <?php
 require_once __DIR__ . '/vendor/autoload.php';
 
-require __DIR__ . './includes/fctManager.php';
+require __DIR__ . '/includes/fctManager.php';
 
 // initialisation de l'application
-require_once __DIR__ . './init.php';
+require_once __DIR__ . '/init.php';
 
 session_start();
 // personne d'authentifié à ce niveau
@@ -14,22 +14,30 @@ $loginSuccess = false;
 $areCredentialsOK = true;
 
 // si l'utilisateur est déjà authentifié
-if (array_key_exists("user",
-                $_SESSION)) {
+if (array_key_exists(
+    "user",
+                $_SESSION
+)) {
     $loginSuccess = true;
-// Sinon (pas d'utilisateur authentifié pour l'instant)
+    // Sinon (pas d'utilisateur authentifié pour l'instant)
 } else {
     // si la méthode POST a été employée
-    if (filter_input(INPUT_SERVER,
-                    'REQUEST_METHOD') === "POST") {
+    if (filter_input(
+        INPUT_SERVER,
+                    'REQUEST_METHOD'
+    ) === "POST") {
         // on "sainifie" les entrées
-        $sanitizedEntries = filter_input_array(INPUT_POST,
+        $sanitizedEntries = filter_input_array(
+            INPUT_POST,
                 ['email' => FILTER_SANITIZE_EMAIL,
-            'password' => FILTER_DEFAULT]);
+            'password' => FILTER_DEFAULT]
+        );
         try {
             // On vérifie l'existence de l'utilisateur
-            $fctManager->verifyUserCredentials($sanitizedEntries['email'],
-                    $sanitizedEntries['password']);
+            $fctManager->verifyUserCredentials(
+                $sanitizedEntries['email'],
+                    $sanitizedEntries['password']
+            );
 
             // on enregistre l'utilisateur
             $_SESSION['user'] = $sanitizedEntries['email'];
