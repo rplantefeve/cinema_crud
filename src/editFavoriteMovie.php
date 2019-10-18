@@ -1,7 +1,7 @@
 <?php
 require_once __DIR__ . '/vendor/autoload.php';
 
-require __DIR__ . './includes/Manager.php';
+require __DIR__ . '/includes/Manager.php';
 
 // TODO
 ?>
@@ -26,9 +26,9 @@ require __DIR__ . './includes/Manager.php';
                 ?>
             </div>
             <label>Commentaire :</label>
-            <textarea name="comment"><?php //TODO ?></textarea>
+            <textarea name="comment"><?php //TODO?></textarea>
             <br/>
-            <input type="hidden" value="<?php //TODO ?>" name="userID"/>
+            <input type="hidden" value="<?php //TODO?>" name="userID"/>
             <input type="submit" name="saveEntry" value="Sauvegarder"/>
             <input type="submit" name="backToList" value="Retour à la liste"/>
         </form>
