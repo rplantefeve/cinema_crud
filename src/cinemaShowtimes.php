@@ -5,7 +5,7 @@ require_once __DIR__ . '/includes/Manager.php';
 $adminConnected = false;
 
 session_start();
-// si l'utilisateur admin est connexté
+// si l'utilisateur admin est connecté
 if (array_key_exists("user", $_SESSION) and $_SESSION['user'] == 'admin@adm.adm') {
     $adminConnected = true;
 }
@@ -50,7 +50,7 @@ if (filter_input(INPUT_SERVER, 'REQUEST_METHOD') === "GET") {
         <header>
             <h1>Séances du cinéma <?= $cinema['DENOMINATION'] ?></h1>
             <h2><?= $cinema['ADRESSE'] ?></h2>
-            <?php if ($filmsUnplanned) : ?>
+            <?php if ($filmsUnplanned and $adminConnected) : ?>
                 <form action="editShowtime.php" method="get">
                     <fieldset>
                         <legend>Ajouter un film à la programmation</legend>
