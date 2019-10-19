@@ -75,7 +75,7 @@ if (filter_input(INPUT_SERVER, 'REQUEST_METHOD') === "GET") {
             // on récupère la liste des films de ce cinéma
             $films = $fctManager->getCinemaMoviesByCinemaID($cinemaID);
             // si au moins un résultat
-            if (count($films) > 0) {
+            if ($films !== null && count($films) > 0) {
                 // on boucle sur les résultats
                 foreach ($films as $film) {
                     ?>
