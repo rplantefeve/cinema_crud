@@ -1,7 +1,7 @@
 <?php
 require_once __DIR__ . '/vendor/autoload.php';
 
-require_once __DIR__ . './includes/Manager.php';
+require_once __DIR__ . '/includes/Manager.php';
 
 session_start();
 // si l'utilisateur n'est pas connecté ou sinon s'il n'est pas amdinistrateur

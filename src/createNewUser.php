@@ -1,7 +1,7 @@
 <?php
 require_once __DIR__ . '/vendor/autoload.php';
 
-require_once __DIR__ . './includes/Manager.php';
+require_once __DIR__ . '/includes/Manager.php';
 
 // variables de contrôles du formulaire de création
 $isFirstNameEmpty = false;
@@ -13,15 +13,19 @@ $isPasswordConfirmationEmpty = false;
 $isPasswordValid = true;
 
 // si la méthode POST est utilisée, cela signifie que le formulaire a été envoyé
-if (filter_input(INPUT_SERVER,
-                'REQUEST_METHOD') === "POST") {
+if (filter_input(
+    INPUT_SERVER,
+                'REQUEST_METHOD'
+) === "POST") {
     // on "sainifie" les entrées
-    $sanitizedEntries = filter_input_array(INPUT_POST,
+    $sanitizedEntries = filter_input_array(
+        INPUT_POST,
             ['firstName' => FILTER_SANITIZE_STRING,
         'lastName' => FILTER_SANITIZE_STRING,
         'email' => FILTER_SANITIZE_EMAIL,
         'password' => FILTER_DEFAULT,
-        'passwordConfirmation' => FILTER_DEFAULT]);
+        'passwordConfirmation' => FILTER_DEFAULT]
+    );
 
     // si le prénom n'a pas été renseigné
     if ($sanitizedEntries['firstName'] === "") {
@@ -61,13 +65,17 @@ if (filter_input(INPUT_SERVER,
     // si les champs nécessaires ne sont pas vides, que l'utilisateur est unique et que le mot de passe est valide
     if (!$isFirstNameEmpty && !$isLastNameEmpty && !$isEmailAddressEmpty && $isUserUnique && !$isPasswordEmpty && $isPasswordValid) {
         // hash du mot de passe
-        $password = password_hash($sanitizedEntries['password'],
-                PASSWORD_DEFAULT);
+        $password = password_hash(
+            $sanitizedEntries['password'],
+                PASSWORD_DEFAULT
+        );
         // créer l'utilisateur
-        $fctManager->createUser($sanitizedEntries['firstName'],
+        $fctManager->createUser(
+            $sanitizedEntries['firstName'],
                 $sanitizedEntries['lastName'],
                 $sanitizedEntries['email'],
-                $password);
+                $password
+        );
 
         session_start();
         // authentifier l'utilisateur
@@ -123,7 +131,7 @@ else {
                 <?php
                 if ($isEmailAddressEmpty) {
                     echo "Veuillez renseigner une adresse email.";
-                } else if (!$isUserUnique) {
+                } elseif (!$isUserUnique) {
                     echo "Cet utilisateur existe déjà !";
                 }
                 ?>
@@ -143,7 +151,7 @@ else {
                 <?php
                 if ($isPasswordConfirmationEmpty) {
                     echo "Veuillez confirmer le mot de passe.";
-                } else if (!$isPasswordValid) {
+                } elseif (!$isPasswordValid) {
                     echo "Les mots de passe ne correspondent pas !";
                 }
                 ?>

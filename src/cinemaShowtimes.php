@@ -1,6 +1,6 @@
 <?php
 require_once __DIR__ . '/vendor/autoload.php';
-require_once __DIR__ . './includes/Manager.php';
+require_once __DIR__ . '/includes/Manager.php';
 
 $adminConnected = false;
 
@@ -14,11 +14,13 @@ if (array_key_exists("user", $_SESSION) and $_SESSION['user'] == 'admin@adm.adm'
 if (filter_input(INPUT_SERVER, 'REQUEST_METHOD') === "GET") {
 
     // on assainie les entrées
-    $sanitizedEntries = filter_input_array(INPUT_GET,
-            ['cinemaID' => FILTER_SANITIZE_NUMBER_INT]);
+    $sanitizedEntries = filter_input_array(
+        INPUT_GET,
+            ['cinemaID' => FILTER_SANITIZE_NUMBER_INT]
+    );
 
     // si l'identifiant du cinéma a bien été passé en GET
-    if ($sanitizedEntries && $sanitizedEntries['cinemaID'] !== NULL && $sanitizedEntries['cinemaID'] !=
+    if ($sanitizedEntries && $sanitizedEntries['cinemaID'] !== null && $sanitizedEntries['cinemaID'] !=
             '') {
         // on récupère l'identifiant du cinéma
         $cinemaID = $sanitizedEntries['cinemaID'];
@@ -90,24 +92,27 @@ if (filter_input(INPUT_SERVER, 'REQUEST_METHOD') === "GET") {
                         </tr>
                         <?php
                         // on récupère pour chaque film de ce cinéma, la liste des séances
-                        $seances = $fctManager->getMovieShowtimes($cinemaID,
-                                $film['FILMID']);
-                        // boucle sur les séances
-                        foreach ($seances as $seance) {
-                            /*
-                             * Formatage des dates
-                             */
-                            // nous sommes en Français
-                            setlocale(LC_TIME, 'fra_fra');
-                            // date du jour de projection de la séance
-                            $jour = new DateTime($seance['HEUREDEBUT']);
-                            // On convertit pour un affichage en français
-                            $jourConverti = utf8_encode(strftime('%d %B %Y',
-                                            $jour->getTimestamp()));
+                        $seances = $fctManager->getMovieShowtimes(
+                            $cinemaID,
+                                $film['FILMID']
+                        );
+                    // boucle sur les séances
+                    foreach ($seances as $seance) {
+                        /*
+                         * Formatage des dates
+                         */
+                        // nous sommes en Français
+                        setlocale(LC_TIME, 'fra_fra');
+                        // date du jour de projection de la séance
+                        $jour = new DateTime($seance['HEUREDEBUT']);
+                        // On convertit pour un affichage en français
+                        $jourConverti = utf8_encode(strftime(
+                                '%d %B %Y',
+                                            $jour->getTimestamp()
+                            ));
 
-                            $heureDebut = (new DateTime($seance['HEUREDEBUT']))->format('H\hi');
-                            $heureFin = (new DateTime($seance['HEUREFIN']))->format('H\hi');
-                            ?>
+                        $heureDebut = (new DateTime($seance['HEUREDEBUT']))->format('H\hi');
+                        $heureFin = (new DateTime($seance['HEUREFIN']))->format('H\hi'); ?>
                             <tr>
                                 <td><?= $jourConverti ?></td>
                                 <td><?= $heureDebut ?></td>
@@ -140,8 +145,8 @@ if (filter_input(INPUT_SERVER, 'REQUEST_METHOD') === "GET") {
                             </tr>
 
                             <?php
-                        }
-                        if ($adminConnected):
+                    }
+                    if ($adminConnected):
                             ?>
                             <tr class="new">
                                 <td colspan="6">
@@ -153,8 +158,7 @@ if (filter_input(INPUT_SERVER, 'REQUEST_METHOD') === "GET") {
                                     </form>
                                 </td>
                             </tr>
-                        <?php endif;
-                        ?>
+                        <?php endif; ?>
                     </table>
                     <br>
                     <?php

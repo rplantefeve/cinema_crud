@@ -1,10 +1,10 @@
 <?php
 require_once __DIR__ . '/vendor/autoload.php';
 
-require_once __DIR__ . './includes/Manager.php';
+require_once __DIR__ . '/includes/Manager.php';
 
 // initialisation de l'application
-require_once __DIR__ . './init.php';
+require_once __DIR__ . '/init.php';
 
 session_start();
 // personne d'authentifié à ce niveau
