@@ -2,7 +2,7 @@
 
 require_once __DIR__ . '/vendor/autoload.php';
 
-require_once __DIR__ . './includes/managers.php';
+require_once __DIR__ . '/includes/managers.php';
 
 session_start();
 // si l'utilisateur n'est pas connecté
@@ -21,4 +21,4 @@ else {
 $films = $preferesMgr->getFavoriteMoviesFromUser($utilisateur['userID']);
 
 // on inclut la vue correspondante
-include __DIR__ . './views/viewFavoriteMoviesList.php';
+include __DIR__ . '/views/viewFavoriteMoviesList.php';

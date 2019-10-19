@@ -1,7 +1,7 @@
 <?php
 require_once __DIR__ . '/vendor/autoload.php';
 
-require_once __DIR__ . './includes/managers.php';
+require_once __DIR__ . '/includes/managers.php';
 
 // variables de contrôles du formulaire de création
 $isFirstNameEmpty = false;
@@ -87,4 +87,4 @@ else {
 }
 
 // on inclut la vue correspondante
-include __DIR__ . './views/viewCreateUser.php';
+include __DIR__ . '/views/viewCreateUser.php';

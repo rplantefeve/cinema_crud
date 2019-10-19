@@ -2,7 +2,7 @@
 
 require_once __DIR__ . '/vendor/autoload.php';
 
-require_once __DIR__ . './includes/managers.php';
+require_once __DIR__ . '/includes/managers.php';
 
 session_start();
 // si l'utilisateur n'est pas connecté
@@ -103,4 +103,4 @@ if (filter_input(INPUT_SERVER,
 }
 
 // on inclut la vue correspondante
-include __DIR__ . './views/viewFavoriteMovie.php';
+include __DIR__ . '/views/viewFavoriteMovie.php';

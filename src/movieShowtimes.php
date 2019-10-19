@@ -2,7 +2,7 @@
 
 require_once __DIR__ . '/vendor/autoload.php';
 
-require_once __DIR__ . './includes/managers.php';
+require_once __DIR__ . '/includes/managers.php';
 
 // si la méthode de formulaire est la méthode GET
 if (filter_input(INPUT_SERVER,
@@ -32,4 +32,4 @@ if (filter_input(INPUT_SERVER,
 $cinemas = $cinemasMgr->getMovieCinemasByMovieID($filmID);
 
 // on inclut la vue correspondante
-include __DIR__ . './views/viewMovieShowtimes.php';
+include __DIR__ . '/views/viewMovieShowtimes.php';

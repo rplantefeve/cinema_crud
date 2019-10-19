@@ -13,7 +13,7 @@ use Monolog\Handler\StreamHandler;
 // Création du logger
 // Note : on pourrait différencier les loggers en fonction des objets manipulés
 $logger = new Logger("Functions");
-$logger->pushHandler(new StreamHandler(dirname(__DIR__) . './logs/functions.log'));
+$logger->pushHandler(new StreamHandler(dirname(__DIR__) . '/logs/functions.log'));
 
 // instanciation des managers
 $fctManager = new DBFunctions($logger);

@@ -2,10 +2,10 @@
 require_once __DIR__ . '/vendor/autoload.php';
 
 // init. des managers
-require_once __DIR__ . './includes/managers.php';
+require_once __DIR__ . '/includes/managers.php';
 
 // initialisation de l'application
-require_once __DIR__ . './init.php';
+require_once __DIR__ . '/init.php';
 
 session_start();
 // personne d'authentifié à ce niveau
@@ -46,4 +46,4 @@ if (array_key_exists("user",
 }
 
 // On inclut la vue principale
-include __DIR__ . './views/viewHome.php';
+include __DIR__ . '/views/viewHome.php';
