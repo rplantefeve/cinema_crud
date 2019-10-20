@@ -109,4 +109,26 @@ class Film extends DBFunctions
             $this->logger->info('Movie ' . $movieID . ' successfully deleted.');
         }
     }
+
+    /**
+     * Renvoie une liste de cinémas qui ne projettent pas le film donné
+     * @param integer $filmID
+     * @return array
+     */
+    public function getNonPlannedCinemas($filmID)
+    {
+        // requête de récupération des titres et des identifiants des films
+        // qui n'ont pas encore été programmés dans ce cinéma
+        $requete = "SELECT c.cinemaID, c.denomination "
+                . "FROM cinema c"
+                . " WHERE c.cinemaID NOT IN ("
+                . "SELECT cinemaID"
+                . " FROM seance"
+                . " WHERE filmID = :id"
+                . ")";
+        // extraction de résultat
+        $resultat = $this->extraireNxN($requete, ['id' => $filmID], false);
+        // retour du résultat
+        return $resultat;
+    }
 }
