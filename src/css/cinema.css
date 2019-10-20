@@ -1,8 +1,3 @@
-/*
-To change this license header, choose License Headers in Project Properties.
-To change this template file, choose Tools | Templates
-and open the template in the editor.
-*/
 /* 
     Created on : 3 mars 2014, 16:55:53
     Author     : ShaFaX
@@ -58,8 +53,37 @@ table.std td {
     background-color: #eaf1f7;
 }
 
+table.std tr.new {
+    border-bottom: 1px dotted #acc7dd;
+    border-right: 1px dotted #acc7dd;
+    border-top: 1px dotted #dceffd;
+    border-left: 1px dotted #dceffd;
+
+}
+
+tr.new td {
+    font-style: italic;
+    background-color: transparent;
+    border-bottom: 3px dotted dimgray;
+    border-right: 3px dotted dimgray;
+    border-top: 3px dotted dimgray;
+    border-left: 3px dotted dimgray;
+    padding: 0 0 0 0;
+}
+
+button.add {
+    width: 100%;
+    background: transparent;
+    border: 0;
+    font-style: italic;
+    cursor: pointer;
+}
+
+button.add:hover{
+    background: #cbe3f3;
+}
+
 .error {
     color: #c00;
     margin-bottom: 10px;
 }
-
