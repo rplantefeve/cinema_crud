@@ -11,6 +11,7 @@
             <tr>
                 <th>Nom</th>
                 <th>Adresse</th>
+                <th colspan="3">Action</th>
             </tr>
             <?php
             // boucle de construction de la liste des cinémas
