@@ -27,8 +27,6 @@ class Cinema extends DBFunctions
         return $resultat;
     }
 
-
-
     public function getMovieCinemasByMovieID($filmID)
     {
         // requête qui nous permet de récupérer la liste des cinémas pour un film donné
@@ -61,5 +59,62 @@ class Cinema extends DBFunctions
         $resultat = $this->extraireNxN($requete, ['id' => $cinemaID], false);
         // retour du résultat
         return $resultat;
+    }
+
+    /**
+     *
+     * @param type $denomination
+     * @param type $adresse
+     */
+    public function insertNewCinema($denomination, $adresse)
+    {
+        // construction
+        $requete = "INSERT INTO cinema (denomination, adresse) VALUES ("
+                . ":denomination"
+                . ", :adresse)";
+        // exécution
+        $this->executeQuery(
+            $requete,
+                ['denomination' => $denomination,
+            'adresse' => $adresse]
+        );
+        // log
+        if ($this->logger) {
+            $this->logger->info('Cinema ' . $denomination . ' successfully added.');
+        }
+    }
+
+    /**
+     *
+     * @param type $cinemaID
+     * @param type $denomination
+     * @param type $adresse
+     */
+    public function updateCinema($cinemaID, $denomination, $adresse)
+    {
+        // on construit la requête d'insertion
+        $requete = "UPDATE cinema SET "
+                . "denomination = "
+                . "'" . $denomination . "'"
+                . ", adresse = "
+                . "'" . $adresse . "'"
+                . " WHERE cinemaID = "
+                . $cinemaID;
+        // exécution de la requête
+        $this->executeQuery($requete);
+    }
+
+    /**
+     *
+     * @param type $cinemaID
+     */
+    public function deleteCinema($cinemaID)
+    {
+        $this->executeQuery("DELETE FROM cinema WHERE cinemaID = "
+                . $cinemaID);
+
+        if ($this->logger) {
+            $this->logger->info('Cinema ' . $cinemaID . ' successfully deleted.');
+        }
     }
 }
