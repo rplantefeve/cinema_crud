@@ -9,23 +9,27 @@ use Semeformation\Mvc\Cinema_crud\includes\DBFunctions;
  *
  * @author User
  */
-class Prefere extends DBFunctions {
+class Prefere extends DBFunctions
+{
     /*
      * Méthode qui retourne les films préférés d'un utilisateur donné
      * @param string $utilisateur Adresse email de l'utilisateur
      * @return array[][] Les films préférés (sous forme de tableau associatif) de l'utilisateur
      */
 
-    public function getFavoriteMoviesFromUser($id) {
+    public function getFavoriteMoviesFromUser($id)
+    {
         // on construit la requête qui va récupérer les films de l'utilisateur
         $requete = "SELECT f.filmID, f.titre, p.commentaire from film f" .
                 " INNER JOIN prefere p ON f.filmID = p.filmID" .
                 " AND p.userID = " . $id;
 
         // on extrait le résultat de la BDD sous forme de tableau associatif
-        $resultat = $this->extraireNxN($requete,
+        $resultat = $this->extraireNxN(
+            $requete,
                 null,
-                false);
+                false
+        );
 
         // on retourne le résultat
         return $resultat;
@@ -38,7 +42,8 @@ class Prefere extends DBFunctions {
      * @return array[]
      */
 
-    public function getFavoriteMovieInformations($userID, $filmID) {
+    public function getFavoriteMovieInformations($userID, $filmID)
+    {
         // requête qui récupère les informations d'une préférence de film pour un utilisateur donné
         $requete = "SELECT f.titre, p.userID, p.filmID, p.commentaire"
                 . " FROM prefere p INNER JOIN film f ON p.filmID = f.filmID"
@@ -48,9 +53,11 @@ class Prefere extends DBFunctions {
                 . $filmID;
 
         // on extrait les résultats de la BDD
-        $resultat = $this->extraire1xN($requete,
+        $resultat = $this->extraire1xN(
+            $requete,
                 null,
-                false);
+                false
+        );
         // on retourne le résultat
         return $resultat;
     }
@@ -62,7 +69,8 @@ class Prefere extends DBFunctions {
      * @param string comment Commentaire de l'utilisateur à propos de ce film
      */
 
-    public function updateFavoriteMovie($userID, $filmID, $comment) {
+    public function updateFavoriteMovie($userID, $filmID, $comment)
+    {
         // on construit la requête d'insertion
         $requete = "UPDATE prefere SET commentaire = "
                 . "'" . $comment . "'"
@@ -74,14 +82,14 @@ class Prefere extends DBFunctions {
         $this->executeQuery($requete);
     }
 
-    /*
+    /**
      * Méthode qui ne renvoie que les titres et ID de films non encore marqués
      * comme favoris par l'utilisateur passé en paramètre
      * @param int $userID Identifiant de l'utilisateur
      * @return array[][] Titres et ID des films présents dans la base
      */
-
-    public function getMoviesNonAlreadyMarkedAsFavorite($userID) {
+    public function getMoviesNonAlreadyMarkedAsFavorite($userID)
+    {
         // requête de récupération des titres et des identifiants des films
         // qui n'ont pas encore été marqués comme favoris par l'utilisateur
         $requete = "SELECT f.filmID, f.titre "
@@ -92,21 +100,23 @@ class Prefere extends DBFunctions {
                 . " WHERE userID = :id"
                 . ")";
         // extraction de résultat
-        $resultat = $this->extraireNxN($requete,
+        $resultat = $this->extraireNxN(
+            $requete,
                 ['id' => $userID],
-                false);
+                false
+        );
         // retour du résultat
         return $resultat;
     }
 
-    /*
+    /**
      * Méthode qui ajoute une préférence de film à un utilisateur
      * @param int userID Identifiant de l'utilisateur
      * @param int filmID Identifiant du film
      * @param string comment Commentaire de l'utilisateur à propos de ce film
      */
-
-    public function insertNewFavoriteMovie($userID, $filmID, $comment = "") {
+    public function insertNewFavoriteMovie($userID, $filmID, $comment = "")
+    {
         // on construit la requête d'insertion
         $requete = "INSERT INTO prefere (filmID, userID, commentaire) VALUES ("
                 . ":filmID"
@@ -114,17 +124,25 @@ class Prefere extends DBFunctions {
                 . ", :comment)";
 
         // exécution de la requête
-        $this->executeQuery($requete,
+        $this->executeQuery(
+            $requete,
                 ['filmID' => $filmID,
             'userID' => $userID,
-            'comment' => $comment]);
+            'comment' => $comment]
+        );
 
         if ($this->logger) {
             $this->logger->info('Movie ' . $filmID . ' successfully added to ' . $userID . '\'s preferences.');
         }
     }
 
-    public function deleteFavoriteMovie($userID, $filmID) {
+    /**
+     * Supprime un film préféré
+     * @param integer $userID
+     * @param integer $filmID
+     */
+    public function deleteFavoriteMovie($userID, $filmID)
+    {
         $this->executeQuery("DELETE FROM prefere WHERE userID = "
                 . $userID
                 . " AND filmID = "
@@ -134,5 +152,4 @@ class Prefere extends DBFunctions {
             $this->logger->info('Movie ' . $filmID . ' successfully deleted from ' . $userID . '\'s preferences.');
         }
     }
-
 }
