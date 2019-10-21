@@ -7,7 +7,7 @@
     </head>
     <body>
         <h1>Ajouter/Modifier un film</h1>
-        <form method="POST" name="editCinema" action="editMovie.php">
+        <form method="POST" name="editMovie" action="index.php?action=editMovie">
             <label>Titre :</label>
             <input name="titre" type="text" value="<?= $film['TITRE'] ?>" required/>
             <label>Titre original :</label>
@@ -23,7 +23,10 @@
             }
             ?>
             <input type="submit" name="saveEntry" value="Sauvegarder"/>
-            <input type="submit" name="backToList" value="Retour à la liste"/>
+        </form>
+        <form name="moviesList" method="GET" action="index.php">
+            <input name="action" type="hidden" value="moviesList"/>
+            <input type="submit" value="Retour à la liste des films"/>
         </form>
     </body>
 </html>

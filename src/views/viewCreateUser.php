@@ -34,7 +34,7 @@
                 <?php
                 if ($isEmailAddressEmpty) {
                     echo "Veuillez renseigner une adresse email.";
-                } else if (!$isUserUnique) {
+                } elseif (!$isUserUnique) {
                     echo "Cet utilisateur existe déjà !";
                 }
                 ?>
@@ -54,7 +54,7 @@
                 <?php
                 if ($isPasswordConfirmationEmpty) {
                     echo "Veuillez confirmer le mot de passe.";
-                } else if (!$isPasswordValid) {
+                } elseif (!$isPasswordValid) {
                     echo "Les mots de passe ne correspondent pas !";
                 }
                 ?>
@@ -66,4 +66,3 @@
         </form>
     </body>
 </html>
-

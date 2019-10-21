@@ -14,8 +14,7 @@
             // si pas encore authentifié
             if (!$loginSuccess):
                 ?>
-                <form method="POST" name="editFavoriteMoviesList" action="index.php">
-
+                <form method="POST" name="editFavoriteMoviesList" action="index.php?action=home">
                     <label>Adresse email : </label>
                     <input type="email" name="email" required/>
                     <label>Mot de passe  : </label>
@@ -57,5 +56,3 @@
         </div>
     </body>
 </html>
-
-

@@ -12,15 +12,15 @@
             if (!$isItACreation): echo "disabled";
             endif;
             ?>>
-                        <?php
-                        // si c'est une création, on crée la liste des films dynamiquement
-                        if ($isItACreation) {
-                            // s'il y a des résultats
-                            if ($films) {
-                                foreach ($films as $film) {
-                                    ?>
+                <?php
+                // si c'est une création, on crée la liste des films dynamiquement
+                if ($isItACreation) {
+                    // s'il y a des résultats
+                    if ($films) {
+                        foreach ($films as $film) {
+                            ?>
                             <option value="<?= $film['filmID'] ?>"><?= $film['titre'] ?></option>
-                            <?php
+                        <?php
                         }
                     }
                 }
