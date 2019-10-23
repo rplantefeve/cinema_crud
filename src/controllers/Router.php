@@ -50,6 +50,10 @@ class Router
                     $this->cinemaCtrl->editCinema();
                 } elseif ($sanitizedEntries['action'] == "moviesList") {
                     $this->movieCtrl->moviesList();
+                } elseif ($sanitizedEntries['action'] == "deleteMovie") {
+                    $this->movieCtrl->deleteMovie();
+                } elseif ($sanitizedEntries['action'] == "editMovie") {
+                    $this->movieCtrl->editMovie();
                 } elseif ($sanitizedEntries['action'] == "movieShowtimes") {
                     $this->showtimesCtrl->movieShowtimes();
                 } elseif ($sanitizedEntries['action'] == "cinemaShowtimes") {
