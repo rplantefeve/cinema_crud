@@ -14,9 +14,9 @@ class DBFactory {
     // instance de la classe PDO
     private $pdoInstance = null;
     // Champs de connexion à la BDD
-    private $user = "userCinema";
-    private $pass = "pwdCinema";
-    private $dataSourceName = "mysql:host=127.0.0.1;dbname=cinema_crud;charset=utf8";
+    private $user;
+    private $pass;
+    private $dataSourceName;
 
     /*
      * Méthode utile pour récupérer le singleton depuis le programme appelant
@@ -37,6 +37,12 @@ class DBFactory {
 
     public function getConnection() {
         if (!$this->pdoInstance) {
+            // on récupère les infos dans le fichier de config yml
+            $infoConnexion = \parse_ini_file(\dirname(__DIR__).'/conf/parameters.ini');
+            // set des attributs
+            $this->user = $infoConnexion['database_user'];
+            $this->pass = $infoConnexion['database_password'];
+            $this->dataSourceName = "mysql:host={$infoConnexion['database_host']};dbname={$infoConnexion['database_name']};charset=utf8";
             // on appelle le constructeur de la classe PDO
             $this->pdoInstance = new PDO($this->dataSourceName,
                     $this->user,
