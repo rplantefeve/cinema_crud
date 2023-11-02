@@ -1,0 +1,9 @@
+; This file is a "template" of what your parameters.ini file should look like
+; Set parameters here that may be different on each deployment target of the app, e.g. development, staging, production.
+[Database configuration]
+database_driver = pdo_mysql
+database_host = 127.0.0.1
+database_port = 3306
+database_name = ~
+database_user = ~
+database_password = ~

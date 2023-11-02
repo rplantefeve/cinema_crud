@@ -2,3 +2,4 @@ private.xml
 Thumbs.db
 *.bak
 /nbproject
+src/conf/parameters.ini
