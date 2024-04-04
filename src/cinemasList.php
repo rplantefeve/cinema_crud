@@ -23,9 +23,7 @@ if (array_key_exists("user", $_SESSION) and $_SESSION['user'] == 'admin@adm.adm'
         <header><h1>Liste des cinémas</h1></header>
         <table class="std">
             <tr>
-                <th>Nom</th>
-                <th>Adresse</th>
-                <th colspan="3">Action</th>
+                <!-- TODO -->
             </tr>
             <?php
             // on récupère la liste des cinémas ainsi que leurs informations
@@ -34,8 +32,7 @@ if (array_key_exists("user", $_SESSION) and $_SESSION['user'] == 'admin@adm.adm'
             foreach ($cinemas as $cinema) {
                 ?>
                 <tr>
-                    <td><?= $cinema['DENOMINATION'] ?></td>
-                    <td><?= $cinema['ADRESSE'] ?></td>
+                    <!-- TODO -->
                     <td>
                         <form name="cinemaShowtimes" action="cinemaShowtimes.php" method="GET">
                             <input name="cinemaID" type="hidden" value="<?= $cinema['CINEMAID'] ?>"/>
