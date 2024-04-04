@@ -20,9 +20,9 @@ if (filter_input(INPUT_SERVER, 'REQUEST_METHOD') === "POST") {
     // on "sainifie" les entrées
     $sanEntries = filter_input_array(INPUT_POST, ['backToList' => FILTER_DEFAULT,
         'filmID' => FILTER_SANITIZE_NUMBER_INT,
-        'titre' => FILTER_SANITIZE_STRING,
-        'titreOriginal' => FILTER_SANITIZE_STRING,
-        'modificationInProgress' => FILTER_SANITIZE_STRING]);
+        'titre' => FILTER_DEFAULT,
+        'titreOriginal' => FILTER_DEFAULT,
+        'modificationInProgress' => FILTER_DEFAULT]);
 
     // si l'action demandée est retour en arrière
     if ($sanEntries['backToList'] !== NULL) {

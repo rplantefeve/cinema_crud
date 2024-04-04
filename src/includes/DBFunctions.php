@@ -504,9 +504,10 @@ class DBFunctions {
     }
 
     /**
-     * 
-     * @param type $cinemaID
-     * @return type
+     * Retourne la liste des films pour un cinéma donné
+     *
+     * @param int $cinemaID
+     * @return array
      */
     public function getCinemaMoviesByCinemaID($cinemaID) {
         // requête qui nous permet de récupérer la liste des films pour un cinéma donné
@@ -520,10 +521,11 @@ class DBFunctions {
     }
 
     /**
-     * 
-     * @param type $cinemaID
-     * @param type $filmID
-     * @return type
+     * Retourne les séances d'un film dans un cinéma donné
+     *
+     * @param int $cinemaID
+     * @param int $filmID
+     * @return array[string]
      */
     public function getMovieShowtimes($cinemaID, $filmID) {
         // requête qui permet de récupérer la liste des séances d'un film donné dans un cinéma donné
