@@ -308,6 +308,13 @@ class DBFunctions {
         return $resultat;
     }
 
+    /**
+     * Retourne les séances d'un film dans un cinéma donné
+     *
+     * @param int $cinemaID
+     * @param int $filmID
+     * @return array[string]
+     */
     public function getMovieShowtimes($cinemaID, $filmID) {
         // requête qui permet de récupérer la liste des séances d'un film donné dans un cinéma donné
         $requete = "SELECT s.* FROM seance s"
