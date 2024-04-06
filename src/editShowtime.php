@@ -32,10 +32,10 @@ if (filter_input(INPUT_SERVER, 'REQUEST_METHOD') == 'GET') {
         INPUT_GET,
             ['cinemaID' => FILTER_SANITIZE_NUMBER_INT,
         'filmID' => FILTER_SANITIZE_NUMBER_INT,
-        'from' => FILTER_SANITIZE_STRING,
-        'heureDebut' => FILTER_SANITIZE_STRING,
-        'heureFin' => FILTER_SANITIZE_STRING,
-        'version' => FILTER_SANITIZE_STRING]
+        'from' => FILTER_DEFAULT,
+        'heureDebut' => FILTER_DEFAULT,
+        'heureFin' => FILTER_DEFAULT,
+        'version' => FILTER_DEFAULT]
     );
     // pour l'instant, on vérifie les données en GET
     if ($sanitizedEntries && isset($sanitizedEntries['cinemaID'],
@@ -92,15 +92,15 @@ if (filter_input(INPUT_SERVER, 'REQUEST_METHOD') == 'GET') {
         INPUT_POST,
             ['cinemaID' => FILTER_SANITIZE_NUMBER_INT,
         'filmID' => FILTER_SANITIZE_NUMBER_INT,
-        'datedebut' => FILTER_SANITIZE_STRING,
-        'heuredebut' => FILTER_SANITIZE_STRING,
-        'datefin' => FILTER_SANITIZE_STRING,
-        'heurefin' => FILTER_SANITIZE_STRING,
-        'dateheurefinOld' => FILTER_SANITIZE_STRING,
-        'dateheuredebutOld' => FILTER_SANITIZE_STRING,
-        'version' => FILTER_SANITIZE_STRING,
-        'from' => FILTER_SANITIZE_STRING,
-        'modificationInProgress' => FILTER_SANITIZE_STRING]
+        'datedebut' => FILTER_DEFAULT,
+        'heuredebut' => FILTER_DEFAULT,
+        'datefin' => FILTER_DEFAULT,
+        'heurefin' => FILTER_DEFAULT,
+        'dateheurefinOld' => FILTER_DEFAULT,
+        'dateheuredebutOld' => FILTER_DEFAULT,
+        'version' => FILTER_DEFAULT,
+        'from' => FILTER_DEFAULT,
+        'modificationInProgress' => FILTER_DEFAULT]
     );
     // si toutes les valeurs sont renseignées
     if ($sanitizedEntries && isset($sanitizedEntries['cinemaID'],
