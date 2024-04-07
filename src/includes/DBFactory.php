@@ -7,7 +7,6 @@ use Psr\Log\LoggerInterface;
 
 class DBFactory
 {
-
     // logger
     private $logger;
     // instance unique de la classe (singleton)
@@ -43,9 +42,9 @@ class DBFactory
             // on appelle le constructeur de la classe PDO
             $this->pdoInstance = new PDO(
                 $this->dataSourceName,
-                    $this->user,
-                    $this->pass,
-                    [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]
+                $this->user,
+                $this->pass,
+                [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]
             );
             if ($this->logger) {
                 $this->logger->info('Database connection succeeded.');
@@ -67,7 +66,7 @@ class DBFactory
     {
         trigger_error(
             'Clone is not allowed.',
-                E_USER_ERROR
+            E_USER_ERROR
         );
     }
 
@@ -75,7 +74,7 @@ class DBFactory
     {
         trigger_error(
             'Deserializing is not allowed.',
-                E_USER_ERROR
+            E_USER_ERROR
         );
     }
 }

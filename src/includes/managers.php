@@ -22,4 +22,3 @@ $cinemasMgr = new Cinema($logger);
 $seancesMgr = new Seance($logger);
 $preferesMgr = new Prefere($logger);
 $filmsMgr = new Film($logger);
-

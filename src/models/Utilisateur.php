@@ -20,7 +20,7 @@ class Utilisateur extends DBFunctions
         // on prépare la requête
         $statement = $this->executeQuery(
             $requete,
-                ['email' => $email]
+            ['email' => $email]
         );
 
         // on teste le nombre de lignes renvoyées
@@ -29,8 +29,8 @@ class Utilisateur extends DBFunctions
             $passwordBDD = $statement->fetch()[0];
             $this->testPasswords(
                 $passwordSaisi,
-                    $passwordBDD,
-                    $email
+                $passwordBDD,
+                $email
             );
         } else {
             throw new Exception('The user ' . $email . ' doesn\'t exist.');
@@ -45,7 +45,7 @@ class Utilisateur extends DBFunctions
         // on teste si les mots de passe correspondent
         if (password_verify(
             $passwordSaisi,
-                        $passwordBDD
+            $passwordBDD
         )) {
             if ($this->logger) {
                 $this->logger->info('User ' . $email . ' now connected.');
@@ -68,7 +68,7 @@ class Utilisateur extends DBFunctions
         // on récupère le résultat de la requête
         $resultat = $this->executeQuery(
             $requete,
-                ['email' => $utilisateur]
+            ['email' => $utilisateur]
         );
 
         // on teste le nombre de lignes renvoyées
@@ -96,8 +96,8 @@ class Utilisateur extends DBFunctions
         // on extrait le résultat de la BDD sous forme de tableau associatif
         $resultat = $this->extraire1xN(
             $requete,
-                ['email' => $utilisateur],
-                false
+            ['email' => $utilisateur],
+            false
         );
 
         // on retourne le résultat
@@ -120,7 +120,7 @@ class Utilisateur extends DBFunctions
         // exécution de la requête
         $this->executeQuery(
             $requete,
-                [':firstName' => $firstName,
+            [':firstName' => $firstName,
             'lastName' => $lastName,
             'email' => $email,
             'password' => $password]

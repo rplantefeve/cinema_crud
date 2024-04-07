@@ -40,7 +40,7 @@ class Seance extends DBFunctions
         $cinemaID,
         $filmID,
         $dateheuredebut,
-            $dateheurefin,
+        $dateheurefin,
         $version
     ): \PDOStatement {
         // construction
@@ -53,7 +53,7 @@ class Seance extends DBFunctions
         // exécution
         $resultat = $this->executeQuery(
             $requete,
-                [':cinemaID' => $cinemaID,
+            [':cinemaID' => $cinemaID,
             ':filmID' => $filmID,
             ':heureDebut' => $dateheuredebut,
             ':heureFin' => $dateheurefin,
@@ -82,7 +82,7 @@ class Seance extends DBFunctions
         $cinemaID,
         $filmID,
         $dateheuredebutOld,
-            $dateheurefinOld,
+        $dateheurefinOld,
         $dateheuredebut,
         $dateheurefin,
         $version
@@ -98,7 +98,7 @@ class Seance extends DBFunctions
         // exécution
         $resultat = $this->executeQuery(
             $requete,
-                [':cinemaID' => $cinemaID,
+            [':cinemaID' => $cinemaID,
             ':filmID' => $filmID,
             ':heureDebutOld' => $dateheuredebutOld,
             ':heureFinOld' => $dateheurefinOld,
@@ -130,7 +130,7 @@ class Seance extends DBFunctions
                 . "AND filmID = :filmID "
                 . "AND heureDebut = :heureDebut"
                 . " AND heureFin = :heureFin",
-                [':cinemaID' => $cinemaID,
+            [':cinemaID' => $cinemaID,
             ':filmID' => $filmID,
             ':heureDebut' => $heureDebut,
             ':heureFin' => $heureFin]

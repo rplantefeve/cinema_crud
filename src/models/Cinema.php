@@ -38,7 +38,7 @@ class Cinema extends DBFunctions
         // on retourne le résultat
         return $resultat;
     }
-    
+
     /**
      * Renvoie une liste de films pas encore programmés pour un cinema donné
      * @param integer $cinemaID
@@ -75,7 +75,7 @@ class Cinema extends DBFunctions
         // exécution
         $this->executeQuery(
             $requete,
-                ['denomination' => $denomination,
+            ['denomination' => $denomination,
             'adresse' => $adresse]
         );
         // log

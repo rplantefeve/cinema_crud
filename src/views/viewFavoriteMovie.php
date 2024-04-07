@@ -21,23 +21,23 @@
                                     ?>
                             <option value="<?= $film['filmID'] ?>"><?= $film['titre'] ?></option>
                             <?php
+                                }
+                            }
                         }
-                    }
-                }
                 // sinon, c'est une modification, nous n'avons qu'une seule option dans la liste
                 else {
                     ?>
                     <option selected="selected" value="<?= $preference['filmID'] ?>"><?= $preference['titre'] ?></option>
                     <?php
                 }
-                ?>
+            ?>
             </select>
             <div class="error">
                 <?php
-                if (!$aFilmIsSelected) {
-                    echo "Veuillez renseigner un titre de film.";
-                }
-                ?>
+            if (!$aFilmIsSelected) {
+                echo "Veuillez renseigner un titre de film.";
+            }
+            ?>
             </div>
             <label>Commentaire :</label>
             <textarea name="comment"><?= $preference['commentaire'] ?></textarea>

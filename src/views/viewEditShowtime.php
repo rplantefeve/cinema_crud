@@ -29,15 +29,15 @@
                     <option value="VO" <?php
                     if ($seance['version'] == 'VO'): echo "selected";
                     endif;
-                    ?>>VO</option>
+            ?>>VO</option>
                     <option value="VF" <?php
-                    if ($seance['version'] == 'VF'): echo "selected";
-                    endif;
-                    ?>>VF</option>
+            if ($seance['version'] == 'VF'): echo "selected";
+            endif;
+            ?>>VF</option>
                     <option value="VOSTFR" <?php
-                    if ($seance['version'] == 'VOSTFR'): echo "selected";
-                    endif;
-                    ?>>VOSTFR</option>
+            if ($seance['version'] == 'VOSTFR'): echo "selected";
+            endif;
+            ?>>VOSTFR</option>
                 </select>
                 <input type="hidden" value="<?= $from ?>" name="from">
             </fieldset>

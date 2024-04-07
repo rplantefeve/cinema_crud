@@ -21,7 +21,7 @@
                                 <option value="<?= $cinema['cinemaID'] ?>"><?= $cinema['denomination'] ?></option>
                                 <?php
                             endforeach;
-                            ?>    
+                ?>    
                         </select>
                         <input name = "from" type = "hidden" value = "<?= $_SERVER['SCRIPT_NAME'] ?>">
                         <button type = "submit">Ajouter</button>
@@ -50,7 +50,7 @@
                         // on récupère pour chaque cinéma de ce film, la liste des séances
                         $seances = $seancesMgr->getMovieShowtimes(
                             $cinema['CINEMAID'],
-                                $filmID
+                            $filmID
                         );
                     // boucle sur les séances
                     foreach ($seances as $seance) {
@@ -99,7 +99,7 @@
                             <?php
                     }
                     if ($adminConnected):
-                            ?>
+                        ?>
                             <tr class="new">
                                 <td colspan="6">
                                     <form action="editShowtime.php" method="get">
@@ -111,7 +111,7 @@
                                 </td>
                             </tr>
                             <?php
-                        endif; ?>  
+                    endif; ?>  
                     </table>
                     <br>
                     <?php

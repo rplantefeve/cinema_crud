@@ -27,8 +27,8 @@ class Prefere extends DBFunctions
         // on extrait le résultat de la BDD sous forme de tableau associatif
         $resultat = $this->extraireNxN(
             $requete,
-                null,
-                false
+            null,
+            false
         );
 
         // on retourne le résultat
@@ -55,8 +55,8 @@ class Prefere extends DBFunctions
         // on extrait les résultats de la BDD
         $resultat = $this->extraire1xN(
             $requete,
-                null,
-                false
+            null,
+            false
         );
         // on retourne le résultat
         return $resultat;
@@ -102,8 +102,8 @@ class Prefere extends DBFunctions
         // extraction de résultat
         $resultat = $this->extraireNxN(
             $requete,
-                ['id' => $userID],
-                false
+            ['id' => $userID],
+            false
         );
         // retour du résultat
         return $resultat;
@@ -126,7 +126,7 @@ class Prefere extends DBFunctions
         // exécution de la requête
         $this->executeQuery(
             $requete,
-                ['filmID' => $filmID,
+            ['filmID' => $filmID,
             'userID' => $userID,
             'comment' => $comment]
         );

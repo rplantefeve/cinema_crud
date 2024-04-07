@@ -40,7 +40,7 @@
                     <?php
                 }
             }
-            ?>
+        ?>
             <tr class="new">
                 <td colspan="4">
                     <form name="addFavoriteMovie" action="editFavoriteMovie.php">

@@ -18,21 +18,21 @@ if (filter_input(INPUT_SERVER, 'REQUEST_METHOD') === "POST") {
     // on assainie les variables
     $sanitizedEntries = filter_input_array(
         INPUT_POST,
-            ['cinemaID' => FILTER_SANITIZE_NUMBER_INT,
+        ['cinemaID' => FILTER_SANITIZE_NUMBER_INT,
         'filmID' => FILTER_SANITIZE_NUMBER_INT,
         'heureDebut' => FILTER_DEFAULT,
         'heureFin' => FILTER_DEFAULT,
         'version' => FILTER_DEFAULT,
-        'from' => FILTER_DEFAULT
+        'from' => FILTER_DEFAULT,
     ]
     );
 
     // suppression de la séance
     $seancesMgr->deleteShowtime(
         $sanitizedEntries['cinemaID'],
-            $sanitizedEntries['filmID'],
+        $sanitizedEntries['filmID'],
         $sanitizedEntries['heureDebut'],
-            $sanitizedEntries['heureFin']
+        $sanitizedEntries['heureFin']
     );
     // en fonction d'où je viens, je redirige
     if (strstr($sanitizedEntries['from'], 'movie')) {

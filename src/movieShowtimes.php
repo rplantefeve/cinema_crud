@@ -15,13 +15,13 @@ if (array_key_exists("user", $_SESSION) and $_SESSION['user'] == 'admin@adm.adm'
 // si la méthode de formulaire est la méthode GET
 if (filter_input(
     INPUT_SERVER,
-                'REQUEST_METHOD'
+    'REQUEST_METHOD'
 ) === "GET") {
 
     // on "sainifie" les entrées
     $sanitizedEntries = filter_input_array(
         INPUT_GET,
-            ['filmID' => FILTER_SANITIZE_NUMBER_INT]
+        ['filmID' => FILTER_SANITIZE_NUMBER_INT]
     );
     // si l'identifiant du film a bien été passé en GET'
     if ($sanitizedEntries && $sanitizedEntries['filmID'] !== null && $sanitizedEntries['filmID'] !== '') {

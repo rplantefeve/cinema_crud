@@ -22,8 +22,8 @@ class Film extends DBFunctions
         // on retourne le résultat
         return $this->extraireNxN(
             $requete,
-                        null,
-                        false
+            null,
+            false
         );
     }
 
@@ -67,7 +67,7 @@ class Film extends DBFunctions
         // exécution
         $this->executeQuery(
             $requete,
-                ['titre' => $titre,
+            ['titre' => $titre,
             'titreOriginal' => $titreOriginal]
         );
         // log
