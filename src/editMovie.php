@@ -17,7 +17,6 @@ $isItACreation = false;
 
 // si la méthode de formulaire est la méthode POST
 if (filter_input(INPUT_SERVER, 'REQUEST_METHOD') === "POST") {
-
     // on "sainifie" les entrées
     $sanEntries = filter_input_array(INPUT_POST, ['backToList' => FILTER_DEFAULT,
         'filmID' => FILTER_SANITIZE_NUMBER_INT,
@@ -30,17 +29,12 @@ if (filter_input(INPUT_SERVER, 'REQUEST_METHOD') === "POST") {
         // on redirige vers la page des films
         header('Location: moviesList.php');
         exit;
-    }
-    // sinon (l'action demandée est la sauvegarde d'un film)
-    else {
-
+    } else { // sinon (l'action demandée est la sauvegarde d'un film)
         // et que nous ne sommes pas en train de modifier un film
         if ($sanEntries['modificationInProgress'] == null) {
             // on ajoute le film
             $filmsMgr->insertNewMovie($sanEntries['titre'], $sanEntries['titreOriginal']);
-        }
-        // sinon, nous sommes dans le cas d'une modification
-        else {
+        } else { // sinon, nous sommes dans le cas d'une modification
             // mise à jour du film
             $filmsMgr->updateMovie($sanEntries['filmID'], $sanEntries['titre'], $sanEntries['titreOriginal']);
         }
@@ -48,16 +42,13 @@ if (filter_input(INPUT_SERVER, 'REQUEST_METHOD') === "POST") {
         header('Location: moviesList.php');
         exit;
     }
-}// si la page est chargée avec $_GET
-elseif (filter_input(INPUT_SERVER, 'REQUEST_METHOD') === "GET") {
+} elseif (filter_input(INPUT_SERVER, 'REQUEST_METHOD') === "GET") { // si la page est chargée avec $_GET
     // on "sainifie" les entrées
     $sanEntries = filter_input_array(INPUT_GET, ['filmID' => FILTER_SANITIZE_NUMBER_INT]);
     if ($sanEntries && $sanEntries['filmID'] !== null && $sanEntries['filmID'] !== '') {
         // on récupère les informations manquantes
         $film = $filmsMgr->getMovieInformationsByID($sanEntries['filmID']);
-    }
-    // sinon, c'est une création
-    else {
+    } else { // sinon, c'est une création
         $isItACreation = true;
         $film = [
             'FILMID' => '',

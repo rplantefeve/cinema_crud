@@ -14,10 +14,12 @@ $isPasswordConfirmationEmpty = false;
 $isPasswordValid = true;
 
 // si la méthode POST est utilisée, cela signifie que le formulaire a été envoyé
-if (filter_input(
-    INPUT_SERVER,
-    'REQUEST_METHOD'
-) === "POST") {
+if (
+    filter_input(
+        INPUT_SERVER,
+        'REQUEST_METHOD'
+    ) === "POST"
+) {
     // on "sainifie" les entrées
     $sanitizedEntries = filter_input_array(
         INPUT_POST,
@@ -86,9 +88,7 @@ if (filter_input(
         header("Location: editFavoriteMoviesList.php");
         exit;
     }
-}
-// sinon (le formulaire n'a pas été envoyé)
-else {
+} else { // sinon (le formulaire n'a pas été envoyé)
     // initialisation des variables du formulaire
     $sanitizedEntries['firstName'] = '';
     $sanitizedEntries['lastName'] = '';

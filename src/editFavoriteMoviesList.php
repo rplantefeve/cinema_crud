@@ -6,16 +6,16 @@ require_once __DIR__ . '/includes/managers.php';
 
 session_start();
 // si l'utilisateur n'est pas connecté
-if (!array_key_exists(
-    "user",
-    $_SESSION
-)) {
+if (
+    !array_key_exists(
+        "user",
+        $_SESSION
+    )
+) {
     // renvoi à la page d'accueil
     header('Location: index.php');
     exit;
-}
-// l'utilisateur est loggué
-else {
+} else { // l'utilisateur est loggué
     $utilisateur = $utilisateursMgr->getCompleteUsernameByEmailAddress($_SESSION['user']);
 }
 

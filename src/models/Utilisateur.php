@@ -43,10 +43,12 @@ class Utilisateur extends DBFunctions
     private function testPasswords($passwordSaisi, $passwordBDD, $email)
     {
         // on teste si les mots de passe correspondent
-        if (password_verify(
-            $passwordSaisi,
-            $passwordBDD
-        )) {
+        if (
+            password_verify(
+                $passwordSaisi,
+                $passwordBDD
+            )
+        ) {
             if ($this->logger) {
                 $this->logger->info('User ' . $email . ' now connected.');
             }

@@ -13,11 +13,7 @@ if (array_key_exists("user", $_SESSION) and $_SESSION['user'] == 'admin@adm.adm'
 }
 
 // si la méthode de formulaire est la méthode GET
-if (filter_input(
-    INPUT_SERVER,
-    'REQUEST_METHOD'
-) === "GET") {
-
+if (filter_input(INPUT_SERVER, 'REQUEST_METHOD') === "GET") {
     // on "sainifie" les entrées
     $sanitizedEntries = filter_input_array(
         INPUT_GET,
@@ -31,9 +27,7 @@ if (filter_input(
         $film = $filmsMgr->getMovieInformationsByID($filmID);
         // on récupère les cinémas qui ne projettent pas encore le film
         $cinemasUnplanned = $filmsMgr->getNonPlannedCinemas($filmID);
-    }
-    // sinon, on retourne à l'accueil
-    else {
+    } else { // sinon, on retourne à l'accueil
         header('Location: index.php');
         exit();
     }

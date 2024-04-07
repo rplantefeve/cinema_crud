@@ -116,5 +116,4 @@ class DBFunctions
         }
         return $result;
     }
-
 }

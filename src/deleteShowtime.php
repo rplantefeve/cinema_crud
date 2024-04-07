@@ -14,7 +14,6 @@ if (!array_key_exists("user", $_SESSION)) {
 
 // si la méthode de formulaire est la méthode POST
 if (filter_input(INPUT_SERVER, 'REQUEST_METHOD') === "POST") {
-
     // on assainie les variables
     $sanitizedEntries = filter_input_array(
         INPUT_POST,
@@ -24,7 +23,7 @@ if (filter_input(INPUT_SERVER, 'REQUEST_METHOD') === "POST") {
         'heureFin' => FILTER_DEFAULT,
         'version' => FILTER_DEFAULT,
         'from' => FILTER_DEFAULT,
-    ]
+        ]
     );
 
     // suppression de la séance

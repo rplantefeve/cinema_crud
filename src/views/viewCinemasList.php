@@ -27,7 +27,7 @@
                         </form>
                     </td>
                     <?php
-                    if ($isUserAdmin): ?>
+                    if ($isUserAdmin) : ?>
                     <td>
                         <form name="modifyCinema" action="editCinema.php" method="GET">
                             <input type="hidden" name="cinemaID" value="<?= $cinema['CINEMAID'] ?>"/>
@@ -44,7 +44,7 @@
                 </tr>
                 <?php
             }
-            if ($isUserAdmin):
+            if ($isUserAdmin) :
                 ?>
                 <tr class="new">
                     <td colspan="5">

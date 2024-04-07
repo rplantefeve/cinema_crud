@@ -44,10 +44,12 @@ class Utils
 
             HTML;
         if (is_array($unResultat)) {
-            if (count($unResultat) != count(
-                $unResultat,
-                COUNT_RECURSIVE
-            )) {
+            if (
+                count($unResultat) != count(
+                    $unResultat,
+                    COUNT_RECURSIVE
+                )
+            ) {
                 self::afficherNxN(
                     $unResultat,
                     $event
@@ -69,8 +71,11 @@ class Utils
     }
 
     /**
-     * affiche les lignes d'un tableau à 2 dimensions
-     * @param array[][] $unResultat
+     * Undocumented function
+     *
+     * @param array $unResultat
+     * @param string $unEvent
+     * @return void
      */
     private static function afficherNxN($unResultat, $unEvent)
     {
@@ -100,8 +105,11 @@ class Utils
     }
 
     /**
-     * affiche les champs d'un tableau à 1 dimension
-     * @param array[] $unResultat
+     * Affiche les champs d'un tableau à 1 dimension
+     *
+     * @param array $unResultat
+     * @param string $unEvent
+     * @return void
      */
     private static function afficher1xN($unResultat, $unEvent)
     {
@@ -115,5 +123,4 @@ class Utils
             echo "<td title=\"array['$nom']\" {$unEvent}>{$valeur}</td></tr>\n";
         }
     }
-
 }

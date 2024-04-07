@@ -9,7 +9,8 @@
         <form method="POST" name="editFavoriteMovie" action="editFavoriteMovie.php">
             <label>Titre :</label>
             <select name="filmID" <?php
-            if (!$isItACreation): echo "disabled";
+            if (!$isItACreation) :
+                echo "disabled";
             endif;
             ?>>
                         <?php
@@ -20,24 +21,22 @@
                                 foreach ($films as $film) {
                                     ?>
                             <option value="<?= $film['filmID'] ?>"><?= $film['titre'] ?></option>
-                            <?php
+                                    <?php
                                 }
                             }
-                        }
-                // sinon, c'est une modification, nous n'avons qu'une seule option dans la liste
-                else {
-                    ?>
+                        } else { // sinon, c'est une modification, nous n'avons qu'une seule option dans la liste
+                            ?>
                     <option selected="selected" value="<?= $preference['filmID'] ?>"><?= $preference['titre'] ?></option>
-                    <?php
-                }
-            ?>
+                            <?php
+                        }
+                        ?>
             </select>
             <div class="error">
                 <?php
-            if (!$aFilmIsSelected) {
-                echo "Veuillez renseigner un titre de film.";
-            }
-            ?>
+                if (!$aFilmIsSelected) {
+                    echo "Veuillez renseigner un titre de film.";
+                }
+                ?>
             </div>
             <label>Commentaire :</label>
             <textarea name="comment"><?= $preference['commentaire'] ?></textarea>

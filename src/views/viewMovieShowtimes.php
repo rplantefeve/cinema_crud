@@ -21,7 +21,7 @@
                                 <option value="<?= $cinema['cinemaID'] ?>"><?= $cinema['denomination'] ?></option>
                                 <?php
                             endforeach;
-                ?>    
+                            ?>    
                         </select>
                         <input name = "from" type = "hidden" value = "<?= $_SERVER['SCRIPT_NAME'] ?>">
                         <button type = "submit">Ajouter</button>
@@ -31,7 +31,7 @@
         </header>
         <ul>
             <?php
-            if ($cinemas !== null and count($cinemas) > 0):
+            if ($cinemas !== null and count($cinemas) > 0) :
                 // on boucle sur les résultats
                 foreach ($cinemas as $cinema) {
                     ?>
@@ -42,7 +42,7 @@
                             <th>Début</th>
                             <th>Fin</th>
                             <th>Version</th>
-                            <?php if ($adminConnected): ?>
+                            <?php if ($adminConnected) : ?>
                                 <th colspan="2">Action</th>
                             <?php endif; ?>
                         </tr>
@@ -52,26 +52,25 @@
                             $cinema['CINEMAID'],
                             $filmID
                         );
-                    // boucle sur les séances
-                    foreach ($seances as $seance) {
-                        /*
-                         * Formatage des dates
-                         */
-                        // nous sommes en Français
-                        $formatter = new IntlDateFormatter('fr_FR', IntlDateFormatter::LONG, IntlDateFormatter::NONE);
-                        // date du jour de projection de la séance
-                        $jour = new DateTime($seance['HEUREDEBUT']);
-                        // On convertit pour un affichage en français
-                        $jourConverti = $formatter->format($jour->getTimestamp());
+                        foreach ($seances as $seance) { // boucle sur les séances
+                            /*
+                             * Formatage des dates
+                             */
+                            // nous sommes en Français
+                            $formatter = new IntlDateFormatter('fr_FR', IntlDateFormatter::LONG, IntlDateFormatter::NONE);
+                            // date du jour de projection de la séance
+                            $jour = new DateTime($seance['HEUREDEBUT']);
+                            // On convertit pour un affichage en français
+                            $jourConverti = $formatter->format($jour->getTimestamp());
 
-                        $heureDebut = (new DateTime($seance['HEUREDEBUT']))->format('H\hi');
-                        $heureFin = (new DateTime($seance['HEUREFIN']))->format('H\hi'); ?>
+                            $heureDebut = (new DateTime($seance['HEUREDEBUT']))->format('H\hi');
+                            $heureFin = (new DateTime($seance['HEUREFIN']))->format('H\hi'); ?>
                             <tr>
                                 <td><?= $jourConverti ?></td>
                                 <td><?= $heureDebut ?></td>
                                 <td><?= $heureFin ?></td>
                                 <td><?= $seance['VERSION'] ?></td>
-                                <?php if ($adminConnected): ?>
+                                    <?php if ($adminConnected) : ?>
                                     <td>
                                         <form name="modifyMovieShowtime" action="editShowtime.php" method="GET">
                                             <input type="hidden" name="cinemaID" value="<?= $cinema['CINEMAID'] ?>"/>
@@ -94,12 +93,12 @@
                                             <input name="from" type="hidden" value="<?= $_SERVER['SCRIPT_NAME'] ?>">
                                         </form>
                                     </td>
-                                <?php endif; ?>
+                                    <?php endif; ?>
                             </tr>
-                            <?php
-                    }
-                    if ($adminConnected):
-                        ?>
+                                <?php
+                        }
+                        if ($adminConnected) :
+                            ?>
                             <tr class="new">
                                 <td colspan="6">
                                     <form action="editShowtime.php" method="get">
@@ -111,7 +110,7 @@
                                 </td>
                             </tr>
                             <?php
-                    endif; ?>  
+                        endif; ?>  
                     </table>
                     <br>
                     <?php

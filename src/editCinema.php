@@ -17,7 +17,6 @@ $isItACreation = false;
 
 // si la méthode de formulaire est la méthode POST
 if (filter_input(INPUT_SERVER, 'REQUEST_METHOD') === "POST") {
-
     // on "sainifie" les entrées
     $sanEntries = filter_input_array(INPUT_POST, ['backToList' => FILTER_DEFAULT,
         'cinemaID' => FILTER_SANITIZE_NUMBER_INT,
@@ -30,17 +29,12 @@ if (filter_input(INPUT_SERVER, 'REQUEST_METHOD') === "POST") {
         // on redirige vers la page des cinémas
         header('Location: cinemasList.php');
         exit;
-    }
-    // sinon (l'action demandée est la sauvegarde d'un cinéma)
-    else {
-
+    } else { // sinon (l'action demandée est la sauvegarde d'un cinéma)
         // et que nous ne sommes pas en train de modifier un cinéma
         if ($sanEntries['modificationInProgress'] == null) {
             // on ajoute le cinéma
             $cinemasMgr->insertNewCinema($sanEntries['denomination'], $sanEntries['adresse']);
-        }
-        // sinon, nous sommes dans le cas d'une modification
-        else {
+        } else { // sinon, nous sommes dans le cas d'une modification
             // mise à jour du cinéma
             $cinemasMgr->updateCinema($sanEntries['cinemaID'], $sanEntries['denomination'], $sanEntries['adresse']);
         }
@@ -48,16 +42,13 @@ if (filter_input(INPUT_SERVER, 'REQUEST_METHOD') === "POST") {
         header('Location: cinemasList.php');
         exit;
     }
-}// si la page est chargée avec $_GET
-elseif (filter_input(INPUT_SERVER, 'REQUEST_METHOD') === "GET") {
+} elseif (filter_input(INPUT_SERVER, 'REQUEST_METHOD') === "GET") { // si la page est chargée avec $_GET
     // on "sainifie" les entrées
     $sanEntries = filter_input_array(INPUT_GET, ['cinemaID' => FILTER_SANITIZE_NUMBER_INT]);
     if ($sanEntries && $sanEntries['cinemaID'] !== null && $sanEntries['cinemaID'] !== '') {
         // on récupère les informations manquantes
         $cinema = $cinemasMgr->getCinemaInformationsByID($sanEntries['cinemaID']);
-    }
-    // sinon, c'est une création
-    else {
+    } else { // sinon, c'est une création
         $isItACreation = true;
         $cinema = [
             'CINEMAID' => '',

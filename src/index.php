@@ -16,18 +16,22 @@ $loginSuccess = false;
 $areCredentialsOK = true;
 
 // si l'utilisateur est déjà authentifié
-if (array_key_exists(
-    "user",
-    $_SESSION
-)) {
+if (
+    array_key_exists(
+        "user",
+        $_SESSION
+    )
+) {
     $loginSuccess = true;
     // Sinon (pas d'utilisateur authentifié pour l'instant)
 } else {
     // si la méthode POST a été employée
-    if (filter_input(
-        INPUT_SERVER,
-        'REQUEST_METHOD'
-    ) === "POST") {
+    if (
+        filter_input(
+            INPUT_SERVER,
+            'REQUEST_METHOD'
+        ) === "POST"
+    ) {
         // on "sainifie" les entrées
         $sanitizedEntries = filter_input_array(
             INPUT_POST,

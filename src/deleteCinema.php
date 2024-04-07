@@ -14,7 +14,6 @@ if (!array_key_exists("user", $_SESSION) or $_SESSION['user'] !== 'admin@adm.adm
 
 // si la méthode de formulaire est la méthode POST
 if (filter_input(INPUT_SERVER, 'REQUEST_METHOD') === "POST") {
-
     // on "sainifie" les entrées
     $sanitizedEntries = filter_input_array(INPUT_POST, ['cinemaID' => FILTER_SANITIZE_NUMBER_INT]);
 

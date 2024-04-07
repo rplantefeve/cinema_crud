@@ -39,8 +39,13 @@ if (filter_input(INPUT_SERVER, 'REQUEST_METHOD') == 'GET') {
         'version' => FILTER_DEFAULT]
     );
     // pour l'instant, on vérifie les données en GET
-    if ($sanitizedEntries && isset($sanitizedEntries['cinemaID'],
-        $sanitizedEntries['filmID'], $sanitizedEntries['from'])) {
+    if (
+        $sanitizedEntries && isset(
+            $sanitizedEntries['cinemaID'],
+            $sanitizedEntries['filmID'],
+            $sanitizedEntries['from']
+        )
+    ) {
         // on récupère l'identifiant du cinéma
         $cinemaID = $sanitizedEntries['cinemaID'];
         // l'identifiant du film
@@ -60,9 +65,13 @@ if (filter_input(INPUT_SERVER, 'REQUEST_METHOD') == 'GET') {
         }
 
         // ici, on veut savoir si on modifie ou si on ajoute
-        if (isset($sanitizedEntries['heureDebut'],
-            $sanitizedEntries['heureFin'],
-            $sanitizedEntries['version'])) {
+        if (
+            isset(
+                $sanitizedEntries['heureDebut'],
+                $sanitizedEntries['heureFin'],
+                $sanitizedEntries['version']
+            )
+        ) {
             // nous sommes dans le cas d'une modification
             $isItACreation = false;
             // on récupère les anciennes valeurs (utile pour retrouver la séance avant de la modifier
@@ -80,9 +89,7 @@ if (filter_input(INPUT_SERVER, 'REQUEST_METHOD') == 'GET') {
             // on récupère la version
             $seance['version'] = $sanitizedEntries['version'];
         }
-    }
-    // sinon, on retourne à l'accueil
-    else {
+    } else { // sinon, on retourne à l'accueil
         header('Location: index.php');
         exit();
     }
@@ -104,13 +111,20 @@ if (filter_input(INPUT_SERVER, 'REQUEST_METHOD') == 'GET') {
         'modificationInProgress' => FILTER_DEFAULT]
     );
     // si toutes les valeurs sont renseignées
-    if ($sanitizedEntries && isset($sanitizedEntries['cinemaID'],
-        $sanitizedEntries['filmID'], $sanitizedEntries['datedebut'],
-        $sanitizedEntries['heuredebut'],
-        $sanitizedEntries['datefin'], $sanitizedEntries['heurefin'],
-        $sanitizedEntries['dateheuredebutOld'],
-        $sanitizedEntries['dateheurefinOld'],
-        $sanitizedEntries['version'], $sanitizedEntries['from'])) {
+    if (
+        $sanitizedEntries && isset(
+            $sanitizedEntries['cinemaID'],
+            $sanitizedEntries['filmID'],
+            $sanitizedEntries['datedebut'],
+            $sanitizedEntries['heuredebut'],
+            $sanitizedEntries['datefin'],
+            $sanitizedEntries['heurefin'],
+            $sanitizedEntries['dateheuredebutOld'],
+            $sanitizedEntries['dateheurefinOld'],
+            $sanitizedEntries['version'],
+            $sanitizedEntries['from']
+        )
+    ) {
         // nous sommes en Français
         $formatter = new IntlDateFormatter('fr_FR', IntlDateFormatter::LONG, IntlDateFormatter::NONE);
         // date du jour de projection de la séance
@@ -147,9 +161,7 @@ if (filter_input(INPUT_SERVER, 'REQUEST_METHOD') == 'GET') {
             exit;
         }
     }
-}
-// sinon, on retourne à l'accueil
-else {
+} else { // sinon, on retourne à l'accueil
     header('Location: index.php');
     exit();
 }

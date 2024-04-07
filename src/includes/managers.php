@@ -6,7 +6,6 @@ use Semeformation\Mvc\Cinema_crud\models\Cinema;
 use Semeformation\Mvc\Cinema_crud\models\Seance;
 use Semeformation\Mvc\Cinema_crud\models\Prefere;
 use Semeformation\Mvc\Cinema_crud\models\Film;
-
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
 

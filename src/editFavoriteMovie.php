@@ -6,10 +6,12 @@ require_once __DIR__ . '/includes/managers.php';
 
 session_start();
 // si l'utilisateur n'est pas connecté
-if (!array_key_exists(
-    "user",
-    $_SESSION
-)) {
+if (
+    !array_key_exists(
+        "user",
+        $_SESSION
+    )
+) {
     // renvoi à la page d'accueil
     header('Location: index.php');
     exit;
@@ -21,11 +23,12 @@ $aFilmIsSelected = true;
 $isItACreation = false;
 
 // si la méthode de formulaire est la méthode POST
-if (filter_input(
-    INPUT_SERVER,
-    'REQUEST_METHOD'
-) === "POST") {
-
+if (
+    filter_input(
+        INPUT_SERVER,
+        'REQUEST_METHOD'
+    ) === "POST"
+) {
     // on "sainifie" les entrées
     $sanitizedEntries = filter_input_array(
         INPUT_POST,
@@ -41,12 +44,9 @@ if (filter_input(
         // on redirige vers la page d'édition des films favoris
         header('Location: editFavoriteMoviesList.php');
         exit;
-    }
-    // sinon (l'action demandée est la sauvegarde d'un favori)
-    else {
+    } else { // sinon (l'action demandée est la sauvegarde d'un favori)
         // si un film a été selectionné
         if ($sanitizedEntries['filmID'] !== null) {
-
             // et que nous ne sommes pas en train de modifier une préférence
             if ($sanitizedEntries['modificationInProgress'] == null) {
                 // on ajoute la préférence de l'utilisateur
@@ -55,9 +55,7 @@ if (filter_input(
                     $sanitizedEntries['filmID'],
                     $sanitizedEntries['comment']
                 );
-            }
-            // sinon, nous sommes dans le cas d'une modification
-            else {
+            } else { // sinon, nous sommes dans le cas d'une modification
                 // mise à jour de la préférence
                 $preferesMgr->updateFavoriteMovie(
                     $sanitizedEntries['userID'],
@@ -68,9 +66,7 @@ if (filter_input(
             // on revient à la liste des préférences
             header('Location: editFavoriteMoviesList.php');
             exit;
-        }
-        // sinon (un film n'a pas été sélectionné)
-        else {
+        } else { // sinon (un film n'a pas été sélectionné)
             //
             $aFilmIsSelected = false;
             $isItACreation = true;
@@ -85,11 +81,12 @@ if (filter_input(
         }
     }
     // sinon (nous sommes en GET) et que l'id du film et l'id du user sont bien renseignés
-} elseif (filter_input(
-    INPUT_SERVER,
-    'REQUEST_METHOD'
-) === "GET") {
-
+} elseif (
+    filter_input(
+        INPUT_SERVER,
+        'REQUEST_METHOD'
+    ) === "GET"
+) {
     // on "sainifie" les entrées
     $sanitizedEntries = filter_input_array(
         INPUT_GET,
