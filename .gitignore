@@ -2,3 +2,5 @@ private.xml
 Thumbs.db
 *.bak
 src/conf/parameters.ini
+tools/
+.vscode/
