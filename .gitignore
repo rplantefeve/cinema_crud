@@ -2,3 +2,5 @@ private.xml
 Thumbs.db
 *.bak
 .vscode/
+tools/
+.php-cs-fixer.php
