@@ -342,8 +342,8 @@ function editShowtime($managers)
                 $seance['heureDebut'] = $dateheureDebut->format("H:i");
                 $seance['heureFin'] = $dateheureFin->format("H:i");
                 // découpage en jour/mois/année
-                $seance['dateDebut'] = $dateheureDebut->format("d/m/Y");
-                $seance['dateFin'] = $dateheureFin->format("d/m/Y");
+                $seance['dateDebut'] = $dateheureDebut->format("Y-m-d");
+                $seance['dateFin'] = $dateheureFin->format("Y-m-d");
                 // on récupère la version
                 $seance['version'] = $sanitizedEntries['version'];
             }
