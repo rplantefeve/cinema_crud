@@ -53,15 +53,17 @@ class Seance extends DBFunctions
         // exécution
         $resultat = $this->executeQuery(
             $requete,
-            [':cinemaID' => $cinemaID,
-            ':filmID' => $filmID,
-            ':heureDebut' => $dateheuredebut,
-            ':heureFin' => $dateheurefin,
-            ':version' => $version]
+            [
+                ':cinemaID'   => $cinemaID,
+                ':filmID'     => $filmID,
+                ':heureDebut' => $dateheuredebut,
+                ':heureFin'   => $dateheurefin,
+                ':version'    => $version,
+            ]
         );
 
         // log
-        if ($this->logger) {
+        if ($this->logger !== null) {
             $this->logger->info('Showtime for the movie ' . $filmID . ' at the ' . $cinemaID . ' successfully added.');
         }
 
@@ -98,17 +100,19 @@ class Seance extends DBFunctions
         // exécution
         $resultat = $this->executeQuery(
             $requete,
-            [':cinemaID' => $cinemaID,
-            ':filmID' => $filmID,
-            ':heureDebutOld' => $dateheuredebutOld,
-            ':heureFinOld' => $dateheurefinOld,
-            ':heureDebut' => $dateheuredebut,
-            ':heureFin' => $dateheurefin,
-            ':version' => $version]
+            [
+                ':cinemaID'      => $cinemaID,
+                ':filmID'        => $filmID,
+                ':heureDebutOld' => $dateheuredebutOld,
+                ':heureFinOld'   => $dateheurefinOld,
+                ':heureDebut'    => $dateheuredebut,
+                ':heureFin'      => $dateheurefin,
+                ':version'       => $version,
+            ]
         );
 
         // log
-        if ($this->logger) {
+        if ($this->logger !== null) {
             $this->logger->info('Showtime for the movie ' . $filmID . ' at the ' . $cinemaID . ' successfully updated.');
         }
 
@@ -130,13 +134,15 @@ class Seance extends DBFunctions
                 . "AND filmID = :filmID "
                 . "AND heureDebut = :heureDebut"
                 . " AND heureFin = :heureFin",
-            [':cinemaID' => $cinemaID,
-            ':filmID' => $filmID,
-            ':heureDebut' => $heureDebut,
-            ':heureFin' => $heureFin]
+            [
+                ':cinemaID'   => $cinemaID,
+                ':filmID'     => $filmID,
+                ':heureDebut' => $heureDebut,
+                ':heureFin'   => $heureFin,
+            ]
         );
 
-        if ($this->logger) {
+        if ($this->logger !== null) {
             $this->logger->info('Showtime for the movie ' . $filmID . ' and the cinema ' . $cinemaID . ' successfully deleted.');
         }
     }

@@ -5,7 +5,7 @@ require_once __DIR__ . '/includes/managers.php';
 
 session_start();
 // si l'utilisateur n'est pas connecté ou sinon s'il n'est pas amdinistrateur
-if (!array_key_exists("user", $_SESSION) or $_SESSION['user'] !== 'admin@adm.adm') {
+if (array_key_exists("user", $_SESSION) === false || $_SESSION['user'] !== 'admin@adm.adm') {
     // renvoi à la page d'accueil
     header('Location: index.php');
     exit;
@@ -17,35 +17,33 @@ $fromFilm = false;
 $isItACreation = true;
 
 // init. des variables du formulaire
-$seance = ['dateDebut' => '',
-    'heureDebut' => '',
-    'dateFin' => '',
-    'heureFin' => '',
+$seance = [
+    'dateDebut'         => '',
+    'heureDebut'        => '',
+    'dateFin'           => '',
+    'heureFin'          => '',
     'dateheureDebutOld' => '',
-    'dateheureFinOld' => '',
-    'heureFinOld' => '',
-    'version' => ''];
+    'dateheureFinOld'   => '',
+    'heureFinOld'       => '',
+    'version'           => '',
+];
 
 // si l'on est en GET
-if (filter_input(INPUT_SERVER, 'REQUEST_METHOD') == 'GET') {
+if (filter_input(INPUT_SERVER, 'REQUEST_METHOD') === 'GET') {
     // on assainie les variables
     $sanitizedEntries = filter_input_array(
         INPUT_GET,
-        ['cinemaID' => FILTER_SANITIZE_NUMBER_INT,
-        'filmID' => FILTER_SANITIZE_NUMBER_INT,
-        'from' => FILTER_DEFAULT,
-        'heureDebut' => FILTER_DEFAULT,
-        'heureFin' => FILTER_DEFAULT,
-        'version' => FILTER_DEFAULT]
+        [
+            'cinemaID'   => FILTER_SANITIZE_NUMBER_INT,
+            'filmID'     => FILTER_SANITIZE_NUMBER_INT,
+            'from'       => FILTER_DEFAULT,
+            'heureDebut' => FILTER_DEFAULT,
+            'heureFin'   => FILTER_DEFAULT,
+            'version'    => FILTER_DEFAULT,
+        ]
     );
     // pour l'instant, on vérifie les données en GET
-    if (
-        $sanitizedEntries && isset(
-            $sanitizedEntries['cinemaID'],
-            $sanitizedEntries['filmID'],
-            $sanitizedEntries['from']
-        )
-    ) {
+    if ($sanitizedEntries !== null && isset($sanitizedEntries['cinemaID'], $sanitizedEntries['filmID'], $sanitizedEntries['from']) === true) {
         // on récupère l'identifiant du cinéma
         $cinemaID = $sanitizedEntries['cinemaID'];
         // l'identifiant du film
@@ -58,20 +56,14 @@ if (filter_input(INPUT_SERVER, 'REQUEST_METHOD') == 'GET') {
         $film = $filmsMgr->getMovieInformationsByID($filmID);
 
         // s'il on vient des séances du film
-        if (strstr($sanitizedEntries['from'], 'movie')) {
+        if (strstr($sanitizedEntries['from'], 'movie') !== false) {
             $fromCinema = false;
             // on vient du film
             $fromFilm = true;
         }
 
         // ici, on veut savoir si on modifie ou si on ajoute
-        if (
-            isset(
-                $sanitizedEntries['heureDebut'],
-                $sanitizedEntries['heureFin'],
-                $sanitizedEntries['version']
-            )
-        ) {
+        if (isset($sanitizedEntries['heureDebut'], $sanitizedEntries['heureFin'], $sanitizedEntries['version']) === true) {
             // nous sommes dans le cas d'une modification
             $isItACreation = false;
             // on récupère les anciennes valeurs (utile pour retrouver la séance avant de la modifier
@@ -94,36 +86,26 @@ if (filter_input(INPUT_SERVER, 'REQUEST_METHOD') == 'GET') {
         exit();
     }
     // sinon, on est en POST
-} elseif (filter_input(INPUT_SERVER, 'REQUEST_METHOD') == 'POST') {
+} elseif (filter_input(INPUT_SERVER, 'REQUEST_METHOD') === 'POST') {
     // on assainie les variables
     $sanitizedEntries = filter_input_array(
         INPUT_POST,
-        ['cinemaID' => FILTER_SANITIZE_NUMBER_INT,
-        'filmID' => FILTER_SANITIZE_NUMBER_INT,
-        'datedebut' => FILTER_DEFAULT,
-        'heuredebut' => FILTER_DEFAULT,
-        'datefin' => FILTER_DEFAULT,
-        'heurefin' => FILTER_DEFAULT,
-        'dateheurefinOld' => FILTER_DEFAULT,
-        'dateheuredebutOld' => FILTER_DEFAULT,
-        'version' => FILTER_DEFAULT,
-        'from' => FILTER_DEFAULT,
-        'modificationInProgress' => FILTER_DEFAULT]
+        [
+            'cinemaID'               => FILTER_SANITIZE_NUMBER_INT,
+            'filmID'                 => FILTER_SANITIZE_NUMBER_INT,
+            'datedebut'              => FILTER_DEFAULT,
+            'heuredebut'             => FILTER_DEFAULT,
+            'datefin'                => FILTER_DEFAULT,
+            'heurefin'               => FILTER_DEFAULT,
+            'dateheurefinOld'        => FILTER_DEFAULT,
+            'dateheuredebutOld'      => FILTER_DEFAULT,
+            'version'                => FILTER_DEFAULT,
+            'from'                   => FILTER_DEFAULT,
+            'modificationInProgress' => FILTER_DEFAULT,
+        ]
     );
     // si toutes les valeurs sont renseignées
-    if (
-        $sanitizedEntries && isset(
-            $sanitizedEntries['cinemaID'],
-            $sanitizedEntries['filmID'],
-            $sanitizedEntries['datedebut'],
-            $sanitizedEntries['heuredebut'],
-            $sanitizedEntries['datefin'],
-            $sanitizedEntries['heurefin'],
-            $sanitizedEntries['dateheuredebutOld'],
-            $sanitizedEntries['dateheurefinOld'],
-            $sanitizedEntries['version'],
-            $sanitizedEntries['from']
-        )
+    if ($sanitizedEntries !== null && isset($sanitizedEntries['cinemaID'], $sanitizedEntries['filmID'], $sanitizedEntries['datedebut'], $sanitizedEntries['heuredebut'], $sanitizedEntries['datefin'], $sanitizedEntries['heurefin'], $sanitizedEntries['dateheuredebutOld'], $sanitizedEntries['dateheurefinOld'], $sanitizedEntries['version'], $sanitizedEntries['from']) === true
     ) {
         // nous sommes en Français
         $formatter = new IntlDateFormatter('fr_FR', IntlDateFormatter::LONG, IntlDateFormatter::NONE);
@@ -131,7 +113,7 @@ if (filter_input(INPUT_SERVER, 'REQUEST_METHOD') == 'GET') {
         $datetimeDebut = new DateTime($sanitizedEntries['datedebut'] . ' ' . $sanitizedEntries['heuredebut']);
         $datetimeFin = new DateTime($sanitizedEntries['datefin'] . ' ' . $sanitizedEntries['heurefin']);
         // Est-on dans le cas d'une insertion ?
-        if (!isset($sanitizedEntries['modificationInProgress'])) {
+        if (isset($sanitizedEntries['modificationInProgress']) === false) {
             // j'insère dans la base
             $resultat = $seancesMgr->insertNewShowtime(
                 $sanitizedEntries['cinemaID'],
@@ -153,7 +135,7 @@ if (filter_input(INPUT_SERVER, 'REQUEST_METHOD') == 'GET') {
             );
         }
         // en fonction d'où je viens, je redirige
-        if (strstr($sanitizedEntries['from'], 'movie')) {
+        if (strstr($sanitizedEntries['from'], 'movie') !== false) {
             header('Location: movieShowtimes.php?filmID=' . $sanitizedEntries['filmID']);
             exit;
         } else {
@@ -167,4 +149,4 @@ if (filter_input(INPUT_SERVER, 'REQUEST_METHOD') == 'GET') {
 }
 
 // On appelle la vue
-include __DIR__ . '/views/viewEditShowtime.php';
+require __DIR__ . '/views/viewEditShowtime.php';

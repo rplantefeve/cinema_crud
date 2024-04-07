@@ -75,11 +75,13 @@ class Cinema extends DBFunctions
         // exécution
         $this->executeQuery(
             $requete,
-            ['denomination' => $denomination,
-            'adresse' => $adresse]
+            [
+                'denomination' => $denomination,
+                'adresse'      => $adresse,
+            ]
         );
         // log
-        if ($this->logger) {
+        if ($this->logger !== null) {
             $this->logger->info('Cinema ' . $denomination . ' successfully added.');
         }
     }
@@ -110,10 +112,12 @@ class Cinema extends DBFunctions
      */
     public function deleteCinema($cinemaID)
     {
-        $this->executeQuery("DELETE FROM cinema WHERE cinemaID = "
-                . $cinemaID);
+        $this->executeQuery(
+            "DELETE FROM cinema WHERE cinemaID = "
+            . $cinemaID
+        );
 
-        if ($this->logger) {
+        if ($this->logger !== null) {
             $this->logger->info('Cinema ' . $cinemaID . ' successfully deleted.');
         }
     }

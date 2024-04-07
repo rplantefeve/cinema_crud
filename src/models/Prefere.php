@@ -126,12 +126,14 @@ class Prefere extends DBFunctions
         // exécution de la requête
         $this->executeQuery(
             $requete,
-            ['filmID' => $filmID,
-            'userID' => $userID,
-            'comment' => $comment]
+            [
+                'filmID'  => $filmID,
+                'userID'  => $userID,
+                'comment' => $comment,
+            ]
         );
 
-        if ($this->logger) {
+        if ($this->logger !== null) {
             $this->logger->info('Movie ' . $filmID . ' successfully added to ' . $userID . '\'s preferences.');
         }
     }
@@ -143,12 +145,14 @@ class Prefere extends DBFunctions
      */
     public function deleteFavoriteMovie($userID, $filmID)
     {
-        $this->executeQuery("DELETE FROM prefere WHERE userID = "
+        $this->executeQuery(
+            "DELETE FROM prefere WHERE userID = "
                 . $userID
                 . " AND filmID = "
-                . $filmID);
+            . $filmID
+        );
 
-        if ($this->logger) {
+        if ($this->logger !== null) {
             $this->logger->info('Movie ' . $filmID . ' successfully deleted from ' . $userID . '\'s preferences.');
         }
     }

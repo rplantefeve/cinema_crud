@@ -43,13 +43,12 @@ class Utilisateur extends DBFunctions
     private function testPasswords($passwordSaisi, $passwordBDD, $email)
     {
         // on teste si les mots de passe correspondent
-        if (
-            password_verify(
-                $passwordSaisi,
-                $passwordBDD
-            )
+        if (password_verify(
+            $passwordSaisi,
+            $passwordBDD
+        ) === true
         ) {
-            if ($this->logger) {
+            if ($this->logger !== null) {
                 $this->logger->info('User ' . $email . ' now connected.');
             }
         } else {
@@ -122,13 +121,15 @@ class Utilisateur extends DBFunctions
         // exécution de la requête
         $this->executeQuery(
             $requete,
-            [':firstName' => $firstName,
-            'lastName' => $lastName,
-            'email' => $email,
-            'password' => $password]
+            [
+                ':firstName' => $firstName,
+                'lastName'   => $lastName,
+                'email'      => $email,
+                'password'   => $password,
+            ]
         );
 
-        if ($this->logger) {
+        if ($this->logger !== null) {
             $this->logger->info('User ' . $email . ' successfully created.');
         }
     }

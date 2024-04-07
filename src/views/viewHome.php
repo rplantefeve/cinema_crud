@@ -12,7 +12,7 @@
             </header>
             <?php
             // si pas encore authentifié
-            if (!$loginSuccess) :
+            if ($loginSuccess === false) :
                 ?>
                 <form method="POST" name="editFavoriteMoviesList" action="index.php">
 
@@ -22,7 +22,7 @@
                     <input type="password" name="password" required/>
                     <div class="error">
                         <?php
-                        if (!$areCredentialsOK) :
+                        if ($areCredentialsOK === false) :
                             echo "Les informations de connexions ne sont pas correctes.";
                         endif;
                         ?>

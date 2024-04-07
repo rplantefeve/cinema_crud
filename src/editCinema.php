@@ -6,7 +6,7 @@ require_once __DIR__ . '/includes/managers.php';
 
 session_start();
 // si l'utilisateur n'est pas connecté ou sinon s'il n'est pas amdinistrateur
-if (!array_key_exists("user", $_SESSION) or $_SESSION['user'] !== 'admin@adm.adm') {
+if (array_key_exists("user", $_SESSION) === false || $_SESSION['user'] !== 'admin@adm.adm') {
     // renvoi à la page d'accueil
     header('Location: index.php');
     exit;
@@ -18,11 +18,16 @@ $isItACreation = false;
 // si la méthode de formulaire est la méthode POST
 if (filter_input(INPUT_SERVER, 'REQUEST_METHOD') === "POST") {
     // on "sainifie" les entrées
-    $sanEntries = filter_input_array(INPUT_POST, ['backToList' => FILTER_DEFAULT,
-        'cinemaID' => FILTER_SANITIZE_NUMBER_INT,
-        'adresse' => FILTER_DEFAULT,
-        'denomination' => FILTER_DEFAULT,
-        'modificationInProgress' => FILTER_DEFAULT]);
+    $sanEntries = filter_input_array(
+        INPUT_POST,
+        [
+            'backToList'             => FILTER_DEFAULT,
+            'cinemaID'               => FILTER_SANITIZE_NUMBER_INT,
+            'adresse'                => FILTER_DEFAULT,
+            'denomination'           => FILTER_DEFAULT,
+            'modificationInProgress' => FILTER_DEFAULT,
+        ]
+    );
 
     // si l'action demandée est retour en arrière
     if ($sanEntries['backToList'] !== null) {
@@ -31,7 +36,7 @@ if (filter_input(INPUT_SERVER, 'REQUEST_METHOD') === "POST") {
         exit;
     } else { // sinon (l'action demandée est la sauvegarde d'un cinéma)
         // et que nous ne sommes pas en train de modifier un cinéma
-        if ($sanEntries['modificationInProgress'] == null) {
+        if ($sanEntries['modificationInProgress'] === null) {
             // on ajoute le cinéma
             $cinemasMgr->insertNewCinema($sanEntries['denomination'], $sanEntries['adresse']);
         } else { // sinon, nous sommes dans le cas d'une modification
@@ -45,15 +50,15 @@ if (filter_input(INPUT_SERVER, 'REQUEST_METHOD') === "POST") {
 } elseif (filter_input(INPUT_SERVER, 'REQUEST_METHOD') === "GET") { // si la page est chargée avec $_GET
     // on "sainifie" les entrées
     $sanEntries = filter_input_array(INPUT_GET, ['cinemaID' => FILTER_SANITIZE_NUMBER_INT]);
-    if ($sanEntries && $sanEntries['cinemaID'] !== null && $sanEntries['cinemaID'] !== '') {
+    if ($sanEntries !== null && $sanEntries['cinemaID'] !== null && $sanEntries['cinemaID'] !== '') {
         // on récupère les informations manquantes
         $cinema = $cinemasMgr->getCinemaInformationsByID($sanEntries['cinemaID']);
     } else { // sinon, c'est une création
         $isItACreation = true;
         $cinema = [
-            'CINEMAID' => '',
+            'CINEMAID'     => '',
             'DENOMINATION' => '',
-            'ADRESSE' => '',
+            'ADRESSE'      => '',
         ];
     }
 }

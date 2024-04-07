@@ -8,7 +8,7 @@ $adminConnected = false;
 
 session_start();
 // si l'utilisateur admin est connexté
-if (array_key_exists("user", $_SESSION) and $_SESSION['user'] == 'admin@adm.adm') {
+if (array_key_exists("user", $_SESSION) === true && $_SESSION['user'] === 'admin@adm.adm') {
     $adminConnected = true;
 }
 
@@ -20,7 +20,7 @@ if (filter_input(INPUT_SERVER, 'REQUEST_METHOD') === "GET") {
         ['filmID' => FILTER_SANITIZE_NUMBER_INT]
     );
     // si l'identifiant du film a bien été passé en GET'
-    if ($sanitizedEntries && $sanitizedEntries['filmID'] !== null && $sanitizedEntries['filmID'] !== '') {
+    if ($sanitizedEntries !== null && $sanitizedEntries['filmID'] !== null && $sanitizedEntries['filmID'] !== '') {
         // on récupère l'identifiant du cinéma
         $filmID = $sanitizedEntries['filmID'];
         // puis on récupère les informations du film en question
@@ -40,4 +40,4 @@ if (filter_input(INPUT_SERVER, 'REQUEST_METHOD') === "GET") {
 $cinemas = $cinemasMgr->getMovieCinemasByMovieID($filmID);
 
 // on inclut la vue correspondante
-include __DIR__ . '/views/viewMovieShowtimes.php';
+require __DIR__ . '/views/viewMovieShowtimes.php';

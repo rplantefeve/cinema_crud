@@ -8,7 +8,7 @@ $adminConnected = false;
 
 session_start();
 // si l'utilisateur admin est connecté
-if (array_key_exists("user", $_SESSION) and $_SESSION['user'] == 'admin@adm.adm') {
+if (array_key_exists("user", $_SESSION) === true && $_SESSION['user'] === 'admin@adm.adm') {
     $adminConnected = true;
 }
 
@@ -21,7 +21,7 @@ if (filter_input(INPUT_SERVER, 'REQUEST_METHOD') === "GET") {
     );
 
     // si l'identifiant du cinéma a bien été passé en GET
-    if ($sanitizedEntries && $sanitizedEntries['cinemaID'] !== null && $sanitizedEntries['cinemaID'] != '') {
+    if ($sanitizedEntries !== null && $sanitizedEntries['cinemaID'] !== null && $sanitizedEntries['cinemaID'] !== '') {
         // on récupère l'identifiant du cinéma
         $cinemaID = $sanitizedEntries['cinemaID'];
         // puis on récupère les informations du cinéma en question

@@ -9,7 +9,7 @@
         <header>
             <h1>Séances du cinéma <?= $cinema['DENOMINATION'] ?></h1>
             <h2><?= $cinema['ADRESSE'] ?></h2>
-            <?php if ($filmsUnplanned and $adminConnected) : ?>
+            <?php if ($filmsUnplanned !== null && $adminConnected === true) : ?>
                 <form action="editShowtime.php" method="get">
                     <fieldset>
                         <legend>Ajouter un film à la programmation</legend>
@@ -43,7 +43,7 @@
                             <th>Début</th>
                             <th>Fin</th>
                             <th>Version</th>
-                            <?php if ($adminConnected) : ?>
+                            <?php if ($adminConnected === true) : ?>
                                 <th colspan="2">Action</th>
                             <?php endif; ?>
                         </tr>
@@ -53,10 +53,10 @@
                             $cinemaID,
                             $film['FILMID']
                         );
-                    // boucle sur les séances
+                        // boucle sur les séances
                         foreach ($seances as $seance) {
                             /*
-                         * Formatage des dates
+                            * Formatage des dates
                              */
                             // nous sommes en Français
                             $formatter = new IntlDateFormatter('fr_FR', IntlDateFormatter::LONG, IntlDateFormatter::NONE);
@@ -72,7 +72,7 @@
                                 <td><?= $heureDebut ?></td>
                                 <td><?= $heureFin ?></td>
                                 <td><?= $seance['VERSION'] ?></td>
-                                    <?php if ($adminConnected) : ?>
+                                    <?php if ($adminConnected === true) : ?>
                                     <td>
                                         <form name="modifyMovieShowtime" action="editShowtime.php" method="GET">
                                             <input type="hidden" name="cinemaID" value="<?= $cinemaID ?>"/>
@@ -100,7 +100,7 @@
 
                                 <?php
                         }
-                        if ($adminConnected) :
+                        if ($adminConnected === true) :
                             ?>
                             <tr class="new">
                                 <td colspan="6">

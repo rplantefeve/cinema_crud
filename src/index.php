@@ -16,27 +16,27 @@ $loginSuccess = false;
 $areCredentialsOK = true;
 
 // si l'utilisateur est déjà authentifié
-if (
-    array_key_exists(
-        "user",
-        $_SESSION
-    )
+if (array_key_exists(
+    "user",
+    $_SESSION
+) === true
 ) {
     $loginSuccess = true;
     // Sinon (pas d'utilisateur authentifié pour l'instant)
 } else {
     // si la méthode POST a été employée
-    if (
-        filter_input(
-            INPUT_SERVER,
-            'REQUEST_METHOD'
-        ) === "POST"
+    if (filter_input(
+        INPUT_SERVER,
+        'REQUEST_METHOD'
+    ) === "POST"
     ) {
         // on "sainifie" les entrées
         $sanitizedEntries = filter_input_array(
             INPUT_POST,
-            ['email' => FILTER_SANITIZE_EMAIL,
-            'password' => FILTER_DEFAULT]
+            [
+                'email'    => FILTER_SANITIZE_EMAIL,
+                'password' => FILTER_DEFAULT,
+            ]
         );
         try {
             // On vérifie l'existence de l'utilisateur
@@ -59,4 +59,4 @@ if (
 }
 
 // On inclut la vue principale
-include __DIR__ . '/views/viewHome.php';
+require __DIR__ . '/views/viewHome.php';

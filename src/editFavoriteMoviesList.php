@@ -6,11 +6,10 @@ require_once __DIR__ . '/includes/managers.php';
 
 session_start();
 // si l'utilisateur n'est pas connecté
-if (
-    !array_key_exists(
-        "user",
-        $_SESSION
-    )
+if (array_key_exists(
+    "user",
+    $_SESSION
+) === false
 ) {
     // renvoi à la page d'accueil
     header('Location: index.php');
@@ -23,4 +22,4 @@ if (
 $films = $preferesMgr->getFavoriteMoviesFromUser($utilisateur['userID']);
 
 // on inclut la vue correspondante
-include __DIR__ . '/views/viewFavoriteMoviesList.php';
+require __DIR__ . '/views/viewFavoriteMoviesList.php';

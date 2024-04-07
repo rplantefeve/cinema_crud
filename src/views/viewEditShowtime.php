@@ -27,17 +27,17 @@
                 <label for="version">Version : </label>
                 <select name="version">
                     <option value="VO" <?php
-                    if ($seance['version'] == 'VO') :
+                    if ($seance['version'] === 'VO') :
                         echo "selected";
                     endif;
                     ?>>VO</option>
                     <option value="VF" <?php
-                    if ($seance['version'] == 'VF') :
+                    if ($seance['version'] === 'VF') :
                         echo "selected";
                     endif;
                     ?>>VF</option>
                     <option value="VOSTFR" <?php
-                    if ($seance['version'] == 'VOSTFR') :
+                    if ($seance['version'] === 'VOSTFR') :
                         echo "selected";
                     endif;
                     ?>>VOSTFR</option>
@@ -47,8 +47,8 @@
             <input type="hidden" name="cinemaID" value="<?= $cinemaID ?>">
             <input type="hidden" name="filmID" value="<?= $filmID ?>">
             <?php
-// si c'est une modification, c'est une information dont nous avons besoin
-            if (!$isItACreation) {
+            // si c'est une modification, c'est une information dont nous avons besoin
+            if ($isItACreation === false) {
                 ?>
                 <input type="hidden" name="modificationInProgress" value="true"/>
                 <?php
@@ -56,7 +56,7 @@
             ?>
             <button type="submit">Sauvegarder</button>
         </form>
-        <?php if ($fromCinema) : ?>
+        <?php if ($fromCinema === true) : ?>
             <form action="cinemaShowtimes.php">
                 <input name="cinemaID" type="hidden" value="<?= $cinemaID ?>">
                 <button type="submit">Retour aux séances du cinéma</button>

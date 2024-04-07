@@ -14,7 +14,7 @@
             ?>" />
             <div class="error">
                 <?php
-                if ($isFirstNameEmpty) {
+                if ($isFirstNameEmpty === true) {
                     echo "Veuillez renseigner un prénom.";
                 }
                 ?>
@@ -23,7 +23,7 @@
             <input name='lastName' type="text" maxlength="50" value="<?= $sanitizedEntries['lastName'] ?>" />
             <div class="error">
                 <?php
-                if ($isLastNameEmpty) {
+                if ($isLastNameEmpty === true) {
                     echo "Veuillez renseigner un nom.";
                 }
                 ?>
@@ -32,9 +32,9 @@
             <input name='email' type="email" maxlength="90" value="<?= $sanitizedEntries['email'] ?>" />
             <div class="error">
                 <?php
-                if ($isEmailAddressEmpty) {
+                if ($isEmailAddressEmpty === true) {
                     echo "Veuillez renseigner une adresse email.";
-                } elseif (!$isUserUnique) {
+                } elseif ($isUserUnique === false) {
                     echo "Cet utilisateur existe déjà !";
                 }
                 ?>
@@ -43,7 +43,7 @@
             <input name='password' type="password"/>
             <div class="error">
                 <?php
-                if ($isPasswordEmpty) {
+                if ($isPasswordEmpty === true) {
                     echo "Veuillez rentrer un mot de passe.";
                 }
                 ?>
@@ -52,9 +52,9 @@
             <input name='passwordConfirmation' type="password"/>
             <div class="error">
                 <?php
-                if ($isPasswordConfirmationEmpty) {
+                if ($isPasswordConfirmationEmpty === true) {
                     echo "Veuillez confirmer le mot de passe.";
-                } elseif (!$isPasswordValid) {
+                } elseif ($isPasswordValid === false) {
                     echo "Les mots de passe ne correspondent pas !";
                 }
                 ?>

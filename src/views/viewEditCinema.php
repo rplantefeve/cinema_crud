@@ -16,7 +16,7 @@
             <input type="hidden" value="<?= $cinema['CINEMAID'] ?>" name="cinemaID"/>
             <?php
             // si c'est une modification, c'est une information dont nous avons besoin
-            if (!$isItACreation) {
+            if ($isItACreation === false) {
                 ?>
                 <input type="hidden" name="modificationInProgress" value="true"/>
                 <?php

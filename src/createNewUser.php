@@ -14,20 +14,21 @@ $isPasswordConfirmationEmpty = false;
 $isPasswordValid = true;
 
 // si la méthode POST est utilisée, cela signifie que le formulaire a été envoyé
-if (
-    filter_input(
-        INPUT_SERVER,
-        'REQUEST_METHOD'
-    ) === "POST"
+if (filter_input(
+    INPUT_SERVER,
+    'REQUEST_METHOD'
+) === "POST"
 ) {
     // on "sainifie" les entrées
     $sanitizedEntries = filter_input_array(
         INPUT_POST,
-        ['firstName' => FILTER_DEFAULT,
-        'lastName' => FILTER_DEFAULT,
-        'email' => FILTER_SANITIZE_EMAIL,
-        'password' => FILTER_DEFAULT,
-        'passwordConfirmation' => FILTER_DEFAULT]
+        [
+            'firstName'            => FILTER_DEFAULT,
+            'lastName'             => FILTER_DEFAULT,
+            'email'                => FILTER_SANITIZE_EMAIL,
+            'password'             => FILTER_DEFAULT,
+            'passwordConfirmation' => FILTER_DEFAULT,
+        ]
     );
 
     // si le prénom n'a pas été renseigné
@@ -47,7 +48,7 @@ if (
         // On vérifie l'existence de l'utilisateur
         $userID = $utilisateursMgr->getUserIDByEmailAddress($sanitizedEntries['email']);
         // si on a un résultat, cela signifie que cette adresse email existe déjà
-        if ($userID) {
+        if ($userID !== null) {
             $isUserUnique = false;
         }
     }
@@ -66,7 +67,9 @@ if (
     }
 
     // si les champs nécessaires ne sont pas vides, que l'utilisateur est unique et que le mot de passe est valide
-    if (!$isFirstNameEmpty && !$isLastNameEmpty && !$isEmailAddressEmpty && $isUserUnique && !$isPasswordEmpty && $isPasswordValid) {
+    if ($isFirstNameEmpty === false && $isLastNameEmpty === false && $isEmailAddressEmpty === false
+        && $isUserUnique === true && $isPasswordEmpty === false && $isPasswordValid === true
+    ) {
         // hash du mot de passe
         $password = password_hash(
             $sanitizedEntries['password'],
@@ -96,4 +99,4 @@ if (
 }
 
 // on inclut la vue correspondante
-include __DIR__ . '/views/viewCreateUser.php';
+require __DIR__ . '/views/viewCreateUser.php';

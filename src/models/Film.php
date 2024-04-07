@@ -67,11 +67,13 @@ class Film extends DBFunctions
         // exécution
         $this->executeQuery(
             $requete,
-            ['titre' => $titre,
-            'titreOriginal' => $titreOriginal]
+            [
+                'titre'         => $titre,
+                'titreOriginal' => $titreOriginal,
+            ]
         );
         // log
-        if ($this->logger) {
+        if ($this->logger !== null) {
             $this->logger->info('Movie ' . $titre . ' successfully added.');
         }
     }
@@ -102,10 +104,12 @@ class Film extends DBFunctions
      */
     public function deleteMovie($movieID)
     {
-        $this->executeQuery("DELETE FROM film WHERE filmID = "
-                . $movieID);
+        $this->executeQuery(
+            "DELETE FROM film WHERE filmID = "
+            . $movieID
+        );
 
-        if ($this->logger) {
+        if ($this->logger !== null) {
             $this->logger->info('Movie ' . $movieID . ' successfully deleted.');
         }
     }

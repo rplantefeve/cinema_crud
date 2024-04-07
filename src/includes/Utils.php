@@ -7,13 +7,14 @@ namespace Semeformation\Mvc\Cinema_crud\includes;
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 class Utils
 {
     /**
-     * affiche le résultat d'une opération d'extraction
-     * @param array|scalar $unResultat
+     * Affiche le résultat d'une opération d'extraction
+     *
+     * @param [type] $unResultat
      * @param string $uneLegende
+     * @return void
      */
     public static function afficherResultat($unResultat, $uneLegende = "")
     {
@@ -32,7 +33,7 @@ class Utils
                      var tempo = unElt.innerHTML;
                      unElt.innerHTML = unElt.title;
                      unElt.title = tempo;
-                     if (unElt.style.backgroundColor != "Salmon") {
+                     if (unElt.style.backgroundColor !== "Salmon") {
                         unElt.style.backgroundColor= "Salmon";
                      } else {
                         unElt.style.backgroundColor= "white";
@@ -43,12 +44,11 @@ class Utils
                     <caption>$uneLegende</caption>
 
             HTML;
-        if (is_array($unResultat)) {
-            if (
-                count($unResultat) != count(
-                    $unResultat,
-                    COUNT_RECURSIVE
-                )
+        if (is_array($unResultat) === true) {
+            if (count($unResultat) !== count(
+                $unResultat,
+                COUNT_RECURSIVE
+            )
             ) {
                 self::afficherNxN(
                     $unResultat,
@@ -61,7 +61,7 @@ class Utils
                 ); // tableau à 1 dimension
             }
         } else {
-            if ($unResultat) { // valeur unique
+            if ($unResultat !== null) { // valeur unique
                 echo "<tr><td class=\"scalaire\" title=\"var\" {$event}>$unResultat</td></tr>\n";
             } else { // valeur null
                 echo "<tr><td class=\"scalaire\" title=\"null\" {$event}></td></tr>\n";
@@ -85,7 +85,7 @@ class Utils
             $noms = "";
             $valeurs = "";
             foreach ($uneLigne as $nom => $valeur) {
-                if ($entete) {
+                if ($entete === true) {
                     $noms .= "<th>['{$nom}']</th>\n";
                 }
                 $valeur = htmlentities(
@@ -95,7 +95,7 @@ class Utils
                 );
                 $valeurs .= "<td title=\"array[{$i}]['{$nom}']\" {$unEvent}>{$valeur}</td>\n";
             }
-            if ($entete) {
+            if ($entete === true) {
                 $entete = false;
                 echo "<tr><th></th>{$noms}</tr>\n";
             }

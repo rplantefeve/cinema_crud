@@ -6,11 +6,10 @@ require_once __DIR__ . '/includes/managers.php';
 
 session_start();
 // si l'utilisateur n'est pas connecté
-if (
-    !array_key_exists(
-        "user",
-        $_SESSION
-    )
+if (array_key_exists(
+    "user",
+    $_SESSION
+) === false
 ) {
     // renvoi à la page d'accueil
     header('Location: index.php');
@@ -23,20 +22,21 @@ $aFilmIsSelected = true;
 $isItACreation = false;
 
 // si la méthode de formulaire est la méthode POST
-if (
-    filter_input(
-        INPUT_SERVER,
-        'REQUEST_METHOD'
-    ) === "POST"
+if (filter_input(
+    INPUT_SERVER,
+    'REQUEST_METHOD'
+) === "POST"
 ) {
     // on "sainifie" les entrées
     $sanitizedEntries = filter_input_array(
         INPUT_POST,
-        ['backToList' => FILTER_DEFAULT,
-        'filmID' => FILTER_SANITIZE_NUMBER_INT,
-        'userID' => FILTER_SANITIZE_NUMBER_INT,
-        'comment' => FILTER_DEFAULT,
-        'modificationInProgress' => FILTER_DEFAULT]
+        [
+            'backToList'             => FILTER_DEFAULT,
+            'filmID'                 => FILTER_SANITIZE_NUMBER_INT,
+            'userID'                 => FILTER_SANITIZE_NUMBER_INT,
+            'comment'                => FILTER_DEFAULT,
+            'modificationInProgress' => FILTER_DEFAULT,
+        ]
     );
 
     // si l'action demandée est retour en arrière
@@ -48,7 +48,7 @@ if (
         // si un film a été selectionné
         if ($sanitizedEntries['filmID'] !== null) {
             // et que nous ne sommes pas en train de modifier une préférence
-            if ($sanitizedEntries['modificationInProgress'] == null) {
+            if ($sanitizedEntries['modificationInProgress'] === null) {
                 // on ajoute la préférence de l'utilisateur
                 $preferesMgr->insertNewFavoriteMovie(
                     $sanitizedEntries['userID'],
@@ -73,28 +73,30 @@ if (
             $films = $preferesMgr->getMoviesNonAlreadyMarkedAsFavorite($_SESSION['userID']);
             // initialisation des champs du formulaire
             $preference = [
-                "userID" => $sanitizedEntries["userID"],
-                "filmID" => "",
-                "titre" => "",
-                "commentaire" => $sanitizedEntries["comment"]];
+                "userID"      => $sanitizedEntries["userID"],
+                "filmID"      => "",
+                "titre"       => "",
+                "commentaire" => $sanitizedEntries["comment"],
+            ];
             $userID = $sanitizedEntries['userID'];
         }
     }
     // sinon (nous sommes en GET) et que l'id du film et l'id du user sont bien renseignés
-} elseif (
-    filter_input(
-        INPUT_SERVER,
-        'REQUEST_METHOD'
-    ) === "GET"
+} elseif (filter_input(
+    INPUT_SERVER,
+    'REQUEST_METHOD'
+) === "GET"
 ) {
     // on "sainifie" les entrées
     $sanitizedEntries = filter_input_array(
         INPUT_GET,
-        ['filmID' => FILTER_SANITIZE_NUMBER_INT,
-        'userID' => FILTER_SANITIZE_NUMBER_INT]
+        [
+            'filmID' => FILTER_SANITIZE_NUMBER_INT,
+            'userID' => FILTER_SANITIZE_NUMBER_INT,
+        ]
     );
 
-    if ($sanitizedEntries && $sanitizedEntries['filmID'] !== null && $sanitizedEntries['filmID'] !== '' && $sanitizedEntries['userID'] !== null && $sanitizedEntries['userID'] !== '') {
+    if ($sanitizedEntries !== null && $sanitizedEntries['filmID'] !== null && $sanitizedEntries['filmID'] !== '' && $sanitizedEntries['userID'] !== null && $sanitizedEntries['userID'] !== '') {
         // on récupère les informations manquantes (le commentaire afférent)
         $preference = $preferesMgr->getFavoriteMovieInformations(
             $sanitizedEntries['userID'],
@@ -108,12 +110,13 @@ if (
         $films = $preferesMgr->getMoviesNonAlreadyMarkedAsFavorite($_SESSION['userID']);
         // on initialise les autres variables de formulaire à vide
         $preference = [
-            "userID" => $_SESSION['userID'],
-            "filmID" => "",
-            "titre" => "",
-            "commentaire" => ""];
+            "userID"      => $_SESSION['userID'],
+            "filmID"      => "",
+            "titre"       => "",
+            "commentaire" => "",
+        ];
     }
 }
 
 // on inclut la vue correspondante
-include __DIR__ . '/views/viewFavoriteMovie.php';
+require __DIR__ . '/views/viewFavoriteMovie.php';

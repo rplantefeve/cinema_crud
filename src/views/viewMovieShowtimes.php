@@ -9,7 +9,7 @@
         <header>
             <h1>Séances du film <?= $film['TITRE'] ?></h1>
             <h2><?= $film['TITREORIGINAL'] ?></h2>
-            <?php if ($cinemasUnplanned and $adminConnected) : ?>
+            <?php if ($cinemasUnplanned !== null && $adminConnected === true) : ?>
                 <form action="editShowtime.php" method="get">
                     <fieldset>
                         <legend>Programmer le film dans un cinéma</legend>
@@ -31,7 +31,7 @@
         </header>
         <ul>
             <?php
-            if ($cinemas !== null and count($cinemas) > 0) :
+            if ($cinemas !== null && count($cinemas) > 0) :
                 // on boucle sur les résultats
                 foreach ($cinemas as $cinema) {
                     ?>
@@ -42,7 +42,7 @@
                             <th>Début</th>
                             <th>Fin</th>
                             <th>Version</th>
-                            <?php if ($adminConnected) : ?>
+                            <?php if ($adminConnected === true) : ?>
                                 <th colspan="2">Action</th>
                             <?php endif; ?>
                         </tr>
@@ -70,7 +70,7 @@
                                 <td><?= $heureDebut ?></td>
                                 <td><?= $heureFin ?></td>
                                 <td><?= $seance['VERSION'] ?></td>
-                                    <?php if ($adminConnected) : ?>
+                                    <?php if ($adminConnected === true) : ?>
                                     <td>
                                         <form name="modifyMovieShowtime" action="editShowtime.php" method="GET">
                                             <input type="hidden" name="cinemaID" value="<?= $cinema['CINEMAID'] ?>"/>
@@ -97,7 +97,7 @@
                             </tr>
                                 <?php
                         }
-                        if ($adminConnected) :
+                        if ($adminConnected === true) :
                             ?>
                             <tr class="new">
                                 <td colspan="6">

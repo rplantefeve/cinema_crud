@@ -15,7 +15,7 @@
             </tr>
             <?php
             // si des films ont été trouvés
-            if ($films) {
+            if ($films !== null) {
                 // boucle de création du tableau
                 foreach ($films as $film) {
                     ?>

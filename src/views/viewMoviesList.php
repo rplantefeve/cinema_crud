@@ -26,7 +26,7 @@
                             <input type="submit" value="Consulter les séances"/>
                         </form>
                     </td>
-                    <?php if ($isUserAdmin) : ?>
+                    <?php if ($isUserAdmin === true) : ?>
                         <td>
                             <form name="modifyMovie" action="editMovie.php" method="GET">
                                 <input type="hidden" name="filmID" value="<?= $film['FILMID'] ?>"/>
@@ -44,7 +44,7 @@
                 <?php
             }
             ?>
-            <?php if ($isUserAdmin) : ?>
+            <?php if ($isUserAdmin === true) : ?>
                 <tr class="new">
                     <td colspan="5">
                         <form name="addMovie" action="editMovie.php">

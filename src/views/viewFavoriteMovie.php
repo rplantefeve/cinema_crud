@@ -9,15 +9,15 @@
         <form method="POST" name="editFavoriteMovie" action="editFavoriteMovie.php">
             <label>Titre :</label>
             <select name="filmID" <?php
-            if (!$isItACreation) :
+            if ($isItACreation === false) :
                 echo "disabled";
             endif;
             ?>>
                         <?php
                         // si c'est une création, on crée la liste des films dynamiquement
-                        if ($isItACreation) {
+                        if ($isItACreation === true) {
                             // s'il y a des résultats
-                            if ($films) {
+                            if ($films !== null) {
                                 foreach ($films as $film) {
                                     ?>
                             <option value="<?= $film['filmID'] ?>"><?= $film['titre'] ?></option>
@@ -33,7 +33,7 @@
             </select>
             <div class="error">
                 <?php
-                if (!$aFilmIsSelected) {
+                if ($aFilmIsSelected === false) {
                     echo "Veuillez renseigner un titre de film.";
                 }
                 ?>
@@ -44,7 +44,7 @@
             <input type="hidden" value="<?= $preference['userID'] ?>" name="userID"/>
             <?php
             // si c'est une modification, c'est une information dont nous avons besoin
-            if (!$isItACreation) {
+            if ($isItACreation === false) {
                 ?>
                 <input type="hidden" name="modificationInProgress" value="true"/>
                 <input type="hidden" name="filmID" value="<?= $preference['filmID'] ?>"/>

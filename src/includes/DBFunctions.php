@@ -32,7 +32,7 @@ class DBFunctions
     public function executeQuery($sql, $params = null)
     {
         // si pas de paramètres
-        if ($params == null) {
+        if ($params === null) {
             // exécution directe
             $resultat = DBFactory::getFactory($this->logger)->getConnection()->query($sql);
         } else {
@@ -40,7 +40,7 @@ class DBFunctions
             $resultat = DBFactory::getFactory($this->logger)->getConnection()->prepare($sql);
             $resultat->execute($params);
         }
-        if ($this->logger) {
+        if ($this->logger !== null) {
             $this->logger->debug('Query successfully executed : ' . $sql);
         }
         return $resultat;
@@ -75,12 +75,12 @@ class DBFunctions
         unset($resultat);
 
         // si la tableau ne contient pas d'élément
-        if (count($tableau) == 0) {
+        if (count($tableau) === 0) {
             $tableau = null;
         }
 
         // si l'on souhaite afficher le contenu du tableau (DEBUG MODE)
-        if ($estVisible) {
+        if ($estVisible === true) {
             Utils::afficherResultat(
                 $tableau,
                 $unSQLSelect
@@ -105,10 +105,10 @@ class DBFunctions
             $parametres,
             false
         );
-        if (isset($result[0])) {
+        if (isset($result[0]) === true) {
             $result = $result[0];
         }
-        if ($estVisible) {
+        if ($estVisible === true) {
             Utils::afficherResultat(
                 $result,
                 $unSQLSelect
