@@ -58,14 +58,11 @@
                          * Formatage des dates
                          */
                         // nous sommes en Français
-                        setlocale(LC_TIME, 'fra_fra');
+                        $formatter = new IntlDateFormatter('fr_FR', IntlDateFormatter::LONG, IntlDateFormatter::NONE);
                         // date du jour de projection de la séance
                         $jour = new DateTime($seance['HEUREDEBUT']);
                         // On convertit pour un affichage en français
-                        $jourConverti = utf8_encode(strftime(
-                                '%d %B %Y',
-                                            $jour->getTimestamp()
-                            ));
+                        $jourConverti = $formatter->format($jour->getTimestamp());
 
                         $heureDebut = (new DateTime($seance['HEUREDEBUT']))->format('H\hi');
                         $heureFin = (new DateTime($seance['HEUREFIN']))->format('H\hi'); ?>
