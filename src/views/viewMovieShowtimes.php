@@ -9,15 +9,45 @@
         <header>
             <h1>Séances du film <?= $film['TITRE'] ?></h1>
             <h2><?= $film['TITREORIGINAL'] ?></h2>
+            <?php if ($cinemasUnplanned and $adminConnected) : ?>
+                <form action="index.php" method="get">
+                    <fieldset>
+                        <legend>Programmer le film dans un cinéma</legend>
+                        <input name="filmID" type="hidden" value="<?= $film['FILMID'] ?>">
+                        <select name="cinemaID">
+                            <?php
+                            foreach ($cinemasUnplanned as $cinema) :
+                                ?>
+                                <option value="<?= $cinema['cinemaID'] ?>"><?= $cinema['denomination'] ?></option>
+                                <?php
+                            endforeach;
+                            ?>    
+                        </select>
+                        <input name="action" type="hidden" value="editShowtime"/>
+                        <input name = "from" type = "hidden" value = "movie">
+                        <button type = "submit">Ajouter</button>
+                    </fieldset>
+                </form>
+            <?php endif; ?>
         </header>
         <ul>
             <?php
-            // on boucle sur les résultats
-            foreach ($cinemas as $cinema) {
-                ?>
-                <li><?= $cinema['DENOMINATION'] ?></li>
-                <ul>
-                    <?php
+            if ($cinemas !== null and count($cinemas) > 0):
+                // on boucle sur les résultats
+                foreach ($cinemas as $cinema) {
+                    ?>
+                    <li><h3><?= $cinema['DENOMINATION'] ?></h3></li>
+                    <table class="std">
+                        <tr>
+                            <th>Date</th>
+                            <th>Début</th>
+                            <th>Fin</th>
+                            <th>Version</th>
+                            <?php if ($adminConnected): ?>
+                                <th colspan="2">Action</th>
+                            <?php endif; ?>
+                        </tr>
+                        <?php
                     // boucle sur les séances
                     foreach ($seances[$cinema['CINEMAID']] as $seance) {
                         /*
@@ -31,15 +61,60 @@
                         $jourConverti = $formatter->format($jour->getTimestamp());
 
                         $heureDebut = (new DateTime($seance['HEUREDEBUT']))->format('H\hi');
-                        $heureFin = (new DateTime($seance['HEUREFIN']))->format('H\hi');
-                        ?>
-                        <li>Séance du <?= $jourConverti ?>. Heure de début : <?= $heureDebut ?>. Heure de fin : <?= $heureFin ?>. Version : <?= $seance['VERSION'] ?></li>
-                        <?php
+                        $heureFin = (new DateTime($seance['HEUREFIN']))->format('H\hi'); ?>
+                            <tr>
+                                <td><?= $jourConverti ?></td>
+                                <td><?= $heureDebut ?></td>
+                                <td><?= $heureFin ?></td>
+                                <td><?= $seance['VERSION'] ?></td>
+                                <?php if ($adminConnected): ?>
+                                    <td>
+                                        <form name="modifyMovieShowtime" action="index.php" method="GET">
+                                            <input name="action" type="hidden" value="editShowtime"/>
+                                            <input type="hidden" name="cinemaID" value="<?= $cinema['CINEMAID'] ?>"/>
+                                            <input type="hidden" name="filmID" value="<?= $film['FILMID'] ?>"/>
+                                            <input type="hidden" name="heureDebut" value="<?= $seance['HEUREDEBUT'] ?>"/>
+                                            <input type="hidden" name="heureFin" value="<?= $seance['HEUREFIN'] ?>"/>
+                                            <input type="hidden" name="version" value="<?= $seance['VERSION'] ?>"/>
+                                            <input type="image" src="images/modifyIcon.png" alt="Modify"/>
+                                            <input name="from" type="hidden" value="movie">
+                                        </form>
+                                    </td>
+                                    <td>
+                                        <form name="deleteMovieShowtime" action="index.php?action=deleteShowtime" method="POST">
+                                            <input type="hidden" name="cinemaID" value="<?= $cinema['CINEMAID'] ?>"/>
+                                            <input type="hidden" name="filmID" value="<?= $film['FILMID'] ?>"/>
+                                            <input type="hidden" name="heureDebut" value="<?= $seance['HEUREDEBUT'] ?>"/>
+                                            <input type="hidden" name="heureFin" value="<?= $seance['HEUREFIN'] ?>"/>
+                                            <input type="hidden" name="version" value="<?= $seance['VERSION'] ?>"/>
+                                            <input type="image" src="images/deleteIcon.png" alt="Delete"/>
+                                            <input name="from" type="hidden" value="movie">
+                                        </form>
+                                    </td>
+                                <?php endif; ?>
+                            </tr>
+                            <?php
                     }
-                    ?>
-                </ul>
-                <?php
-            }
+                    if ($adminConnected):
+                            ?>
+                            <tr class="new">
+                                <td colspan="6">
+                                    <form action="index.php" method="get">
+                                        <input name="action" type="hidden" value="editShowtime"/>
+                                        <input name="cinemaID" type="hidden" value="<?= $cinema['CINEMAID'] ?>">
+                                        <input name="filmID" type="hidden" value="<?= $film['FILMID'] ?>">
+                                        <input name="from" type="hidden" value="movie">
+                                        <button class="add" type="submit">Cliquer ici pour ajouter une séance...</button>
+                                    </form>
+                                </td>
+                            </tr>
+                            <?php
+                        endif; ?>  
+                    </table>
+                    <br>
+                    <?php
+                } // fin de la boucle
+            endif;
             ?>
         </ul>
         <form method="GET" action="index.php">

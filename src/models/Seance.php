@@ -25,6 +25,119 @@ class Seance extends Model {
         return $resultat;
     }
 
+    /**
+     * Insère une nouvelle séance pour un film donné dans un cinéma donné
+     * @param integer $cinemaID
+     * @param integer $filmID
+     * @param datetime $dateheuredebut
+     * @param datetime $dateheurefin
+     * @param string $version
+     */
+    public function insertNewShowtime(
+        $cinemaID,
+        $filmID,
+        $dateheuredebut,
+            $dateheurefin,
+        $version
+    ): \PDOStatement {
+        // construction
+        $requete = "INSERT INTO seance (cinemaID, filmID, heureDebut, heureFin, version) VALUES ("
+                . ":cinemaID"
+                . ", :filmID"
+                . ", :heureDebut"
+                . ", :heureFin"
+                . ", :version)";
+        // exécution
+        $resultat = $this->executeQuery(
+            $requete,
+                [':cinemaID' => $cinemaID,
+            ':filmID' => $filmID,
+            ':heureDebut' => $dateheuredebut,
+            ':heureFin' => $dateheurefin,
+            ':version' => $version]
+        );
+
+        // log
+        if ($this->logger) {
+            $this->logger->info('Showtime for the movie ' . $filmID . ' at the ' . $cinemaID . ' successfully added.');
+        }
+
+        return $resultat;
+    }
+
+    /**
+     * Insère une nouvelle séance pour un film donné dans un cinéma donné
+     * @param integer $cinemaID
+     * @param integer $filmID
+     * @param datetime $dateheuredebutOld
+     * @param datetime $dateheurefinOld
+     * @param datetime $dateheuredebut
+     * @param datetime $dateheurefin
+     * @param string $version
+     */
+    public function updateShowtime(
+        $cinemaID,
+        $filmID,
+        $dateheuredebutOld,
+            $dateheurefinOld,
+        $dateheuredebut,
+        $dateheurefin,
+        $version
+    ): \PDOStatement {
+        // construction
+        $requete = "UPDATE seance SET heureDebut = :heureDebut,"
+                . " heureFin = :heureFin,"
+                . " version = :version"
+                . " WHERE cinemaID = :cinemaID"
+                . " AND filmID = :filmID"
+                . " AND heureDebut = :heureDebutOld"
+                . " AND heureFin = :heureFinOld";
+        // exécution
+        $resultat = $this->executeQuery(
+            $requete,
+                [':cinemaID' => $cinemaID,
+            ':filmID' => $filmID,
+            ':heureDebutOld' => $dateheuredebutOld,
+            ':heureFinOld' => $dateheurefinOld,
+            ':heureDebut' => $dateheuredebut,
+            ':heureFin' => $dateheurefin,
+            ':version' => $version]
+        );
+
+        // log
+        if ($this->logger) {
+            $this->logger->info('Showtime for the movie ' . $filmID . ' at the ' . $cinemaID . ' successfully updated.');
+        }
+
+        return $resultat;
+    }
+
+    /**
+     * Supprime une séance pour un film donné et un cinéma donné
+     * @param type $cinemaID
+     * @param type $filmID
+     * @param type $heureDebut
+     * @param type $heureFin
+     */
+    public function deleteShowtime($cinemaID, $filmID, $heureDebut, $heureFin)
+    {
+        $this->executeQuery(
+            "DELETE FROM seance "
+                . "WHERE cinemaID = :cinemaID "
+                . "AND filmID = :filmID "
+                . "AND heureDebut = :heureDebut"
+                . " AND heureFin = :heureFin",
+                [':cinemaID' => $cinemaID,
+            ':filmID' => $filmID,
+            ':heureDebut' => $heureDebut,
+            ':heureFin' => $heureFin]
+        );
+
+        if ($this->logger) {
+            $this->logger->info('Showtime for the movie ' . $filmID . ' and the cinema ' . $cinemaID . ' successfully deleted.');
+        }
+    }
+
     /*
      * Méthode qui retourne toutes les séances de tous les films présents dans un cinéma donné
      * @param array $films Liste des films du cinéma donné
@@ -52,8 +165,7 @@ class Seance extends Model {
      */
     public function getAllCinemasShowtimesByMovieID($cinemas, $filmID)
     {
-        $seances = array(
-            array());
+        $seances = [];
         // Boucle de récupération de toutes les séances indexés sur l'identifiant du film
         foreach ($cinemas as $cinema) {
             $seances[$cinema['CINEMAID']] = $this->getMovieShowtimes($cinema['CINEMAID'], $filmID);

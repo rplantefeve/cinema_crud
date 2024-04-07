@@ -58,6 +58,10 @@ class Router
                     $this->showtimesCtrl->movieShowtimes();
                 } elseif ($sanitizedEntries['action'] == "cinemaShowtimes") {
                     $this->showtimesCtrl->cinemaShowtimes();
+                } elseif ($sanitizedEntries['action'] == "editShowtime") {
+                    $this->showtimesCtrl->editShowtime();
+                } elseif ($sanitizedEntries['action'] == "deleteShowtime") {
+                    $this->showtimesCtrl->deleteShowtime();
                 } elseif ($sanitizedEntries['action'] == "editFavoriteMoviesList") {
                     $this->favoriteCtrl->editFavoriteMoviesList();
                 } elseif ($sanitizedEntries['action'] == "editFavoriteMovie") {
