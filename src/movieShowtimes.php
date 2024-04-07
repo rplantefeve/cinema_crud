@@ -4,6 +4,8 @@ require_once __DIR__ . '/vendor/autoload.php';
 
 require_once __DIR__ . '/includes/managers.php';
 
+$adminConnected = false;
+
 session_start();
 // si l'utilisateur admin est connexté
 if (array_key_exists("user", $_SESSION) and $_SESSION['user'] == 'admin@adm.adm') {
