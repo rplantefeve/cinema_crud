@@ -1,4 +1,5 @@
 <?php
+
 require_once __DIR__ . '/vendor/autoload.php';
 require_once __DIR__ . '/includes/managers.php';
 
@@ -30,7 +31,7 @@ if (filter_input(INPUT_SERVER, 'REQUEST_METHOD') == 'GET') {
     // on assainie les variables
     $sanitizedEntries = filter_input_array(
         INPUT_GET,
-            ['cinemaID' => FILTER_SANITIZE_NUMBER_INT,
+        ['cinemaID' => FILTER_SANITIZE_NUMBER_INT,
         'filmID' => FILTER_SANITIZE_NUMBER_INT,
         'from' => FILTER_DEFAULT,
         'heureDebut' => FILTER_DEFAULT,
@@ -39,7 +40,7 @@ if (filter_input(INPUT_SERVER, 'REQUEST_METHOD') == 'GET') {
     );
     // pour l'instant, on vérifie les données en GET
     if ($sanitizedEntries && isset($sanitizedEntries['cinemaID'],
-                    $sanitizedEntries['filmID'], $sanitizedEntries['from'])) {
+        $sanitizedEntries['filmID'], $sanitizedEntries['from'])) {
         // on récupère l'identifiant du cinéma
         $cinemaID = $sanitizedEntries['cinemaID'];
         // l'identifiant du film
@@ -60,8 +61,8 @@ if (filter_input(INPUT_SERVER, 'REQUEST_METHOD') == 'GET') {
 
         // ici, on veut savoir si on modifie ou si on ajoute
         if (isset($sanitizedEntries['heureDebut'],
-                        $sanitizedEntries['heureFin'],
-                        $sanitizedEntries['version'])) {
+            $sanitizedEntries['heureFin'],
+            $sanitizedEntries['version'])) {
             // nous sommes dans le cas d'une modification
             $isItACreation = false;
             // on récupère les anciennes valeurs (utile pour retrouver la séance avant de la modifier
@@ -90,7 +91,7 @@ if (filter_input(INPUT_SERVER, 'REQUEST_METHOD') == 'GET') {
     // on assainie les variables
     $sanitizedEntries = filter_input_array(
         INPUT_POST,
-            ['cinemaID' => FILTER_SANITIZE_NUMBER_INT,
+        ['cinemaID' => FILTER_SANITIZE_NUMBER_INT,
         'filmID' => FILTER_SANITIZE_NUMBER_INT,
         'datedebut' => FILTER_DEFAULT,
         'heuredebut' => FILTER_DEFAULT,
@@ -104,12 +105,12 @@ if (filter_input(INPUT_SERVER, 'REQUEST_METHOD') == 'GET') {
     );
     // si toutes les valeurs sont renseignées
     if ($sanitizedEntries && isset($sanitizedEntries['cinemaID'],
-                    $sanitizedEntries['filmID'], $sanitizedEntries['datedebut'],
-                    $sanitizedEntries['heuredebut'],
-                    $sanitizedEntries['datefin'], $sanitizedEntries['heurefin'],
-                    $sanitizedEntries['dateheuredebutOld'],
-                    $sanitizedEntries['dateheurefinOld'],
-                    $sanitizedEntries['version'], $sanitizedEntries['from'])) {
+        $sanitizedEntries['filmID'], $sanitizedEntries['datedebut'],
+        $sanitizedEntries['heuredebut'],
+        $sanitizedEntries['datefin'], $sanitizedEntries['heurefin'],
+        $sanitizedEntries['dateheuredebutOld'],
+        $sanitizedEntries['dateheurefinOld'],
+        $sanitizedEntries['version'], $sanitizedEntries['from'])) {
         // nous sommes en Français
         $formatter = new IntlDateFormatter('fr_FR', IntlDateFormatter::LONG, IntlDateFormatter::NONE);
         // date du jour de projection de la séance
@@ -120,21 +121,21 @@ if (filter_input(INPUT_SERVER, 'REQUEST_METHOD') == 'GET') {
             // j'insère dans la base
             $resultat = $seancesMgr->insertNewShowtime(
                 $sanitizedEntries['cinemaID'],
-                    $sanitizedEntries['filmID'],
-                    $datetimeDebut->format("Y-m-d H:i"),
-                    $datetimeFin->format("Y-m-d H:i"),
-                    $sanitizedEntries['version']
+                $sanitizedEntries['filmID'],
+                $datetimeDebut->format("Y-m-d H:i"),
+                $datetimeFin->format("Y-m-d H:i"),
+                $sanitizedEntries['version']
             );
         } else {
             // c'est une mise à jour
             $resultat = $seancesMgr->updateShowtime(
                 $sanitizedEntries['cinemaID'],
-                    $sanitizedEntries['filmID'],
-                    $sanitizedEntries['dateheuredebutOld'],
-                    $sanitizedEntries['dateheurefinOld'],
-                    $datetimeDebut->format("Y-m-d H:i"),
-                    $datetimeFin->format("Y-m-d H:i"),
-                    $sanitizedEntries['version']
+                $sanitizedEntries['filmID'],
+                $sanitizedEntries['dateheuredebutOld'],
+                $sanitizedEntries['dateheurefinOld'],
+                $datetimeDebut->format("Y-m-d H:i"),
+                $datetimeFin->format("Y-m-d H:i"),
+                $sanitizedEntries['version']
             );
         }
         // en fonction d'où je viens, je redirige

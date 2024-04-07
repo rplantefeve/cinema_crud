@@ -18,7 +18,7 @@ if (filter_input(INPUT_SERVER, 'REQUEST_METHOD') === "GET") {
     // on assainie les entrées
     $sanitizedEntries = filter_input_array(
         INPUT_GET,
-            ['cinemaID' => FILTER_SANITIZE_NUMBER_INT]
+        ['cinemaID' => FILTER_SANITIZE_NUMBER_INT]
     );
 
     // si l'identifiant du cinéma a bien été passé en GET
