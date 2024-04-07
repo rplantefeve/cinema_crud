@@ -99,8 +99,8 @@ class HomeController {
                         'REQUEST_METHOD') === "POST") {
             // on "sainifie" les entrées
             $sanitizedEntries = filter_input_array(INPUT_POST,
-                    ['firstName' => FILTER_SANITIZE_STRING,
-                'lastName' => FILTER_SANITIZE_STRING,
+                    ['firstName' => FILTER_DEFAULT,
+                'lastName' => FILTER_DEFAULT,
                 'email' => FILTER_SANITIZE_EMAIL,
                 'password' => FILTER_DEFAULT,
                 'passwordConfirmation' => FILTER_DEFAULT]);

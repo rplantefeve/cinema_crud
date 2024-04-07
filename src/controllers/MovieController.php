@@ -99,9 +99,9 @@ class MovieController
                 [
                 'backToList'             => FILTER_DEFAULT,
                 'filmID'                 => FILTER_SANITIZE_NUMBER_INT,
-                'titre'                  => FILTER_SANITIZE_STRING,
-                'titreOriginal'          => FILTER_SANITIZE_STRING,
-                'modificationInProgress' => FILTER_SANITIZE_STRING
+                'titre'                  => FILTER_DEFAULT,
+                'titreOriginal'          => FILTER_DEFAULT,
+                'modificationInProgress' => FILTER_DEFAULT
             ]
             );
 

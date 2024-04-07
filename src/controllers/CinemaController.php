@@ -69,9 +69,9 @@ class CinemaController
                 [
                 'backToList'             => FILTER_DEFAULT,
                 'cinemaID'               => FILTER_SANITIZE_NUMBER_INT,
-                'adresse'                => FILTER_SANITIZE_STRING,
-                'denomination'           => FILTER_SANITIZE_STRING,
-                'modificationInProgress' => FILTER_SANITIZE_STRING]
+                'adresse'                => FILTER_DEFAULT,
+                'denomination'           => FILTER_DEFAULT,
+                'modificationInProgress' => FILTER_DEFAULT]
             );
 
             // si l'action demandée est retour en arrière
