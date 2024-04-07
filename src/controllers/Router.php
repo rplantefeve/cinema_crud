@@ -33,8 +33,10 @@ class Router {
     public function routeRequest() {
         try {
             // on "sainifie" les entrées
-            $sanitizedEntries = filter_input_array(INPUT_GET,
-                    ['action' => FILTER_SANITIZE_STRING]);
+            $sanitizedEntries = filter_input_array(
+                INPUT_GET,
+                ['action' => FILTER_DEFAULT]
+            );
             if ($sanitizedEntries && $sanitizedEntries['action'] !== '') {
                 // si l'action demandée est la liste des cinémas
                 if ($sanitizedEntries['action'] == "cinemasList") {
