@@ -74,8 +74,8 @@ if (filter_input(INPUT_SERVER, 'REQUEST_METHOD') == 'GET') {
             $seance['heureDebut'] = $dateheureDebut->format("H:i");
             $seance['heureFin'] = $dateheureFin->format("H:i");
             // découpage en jour/mois/année
-            $seance['dateDebut'] = $dateheureDebut->format("d/m/Y");
-            $seance['dateFin'] = $dateheureFin->format("d/m/Y");
+            $seance['dateDebut'] = $dateheureDebut->format("Y-m-d");
+            $seance['dateFin'] = $dateheureFin->format("Y-m-d");
             // on récupère la version
             $seance['version'] = $sanitizedEntries['version'];
         }
@@ -111,7 +111,7 @@ if (filter_input(INPUT_SERVER, 'REQUEST_METHOD') == 'GET') {
                     $sanitizedEntries['dateheurefinOld'],
                     $sanitizedEntries['version'], $sanitizedEntries['from'])) {
         // nous sommes en Français
-        setlocale(LC_TIME, 'fra_fra');
+        $formatter = new IntlDateFormatter('fr_FR', IntlDateFormatter::LONG, IntlDateFormatter::NONE);
         // date du jour de projection de la séance
         $datetimeDebut = new DateTime($sanitizedEntries['datedebut'] . ' ' . $sanitizedEntries['heuredebut']);
         $datetimeFin = new DateTime($sanitizedEntries['datefin'] . ' ' . $sanitizedEntries['heurefin']);

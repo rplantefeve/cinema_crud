@@ -13,14 +13,14 @@
         <form method="post">
             <fieldset>
                 <label for="datedebut">Date de début : </label>
-                <input id="datedebut" type="text" name="datedebut" placeholder="jj/mm/aaaa" value="<?= $seance['dateDebut'] ?>">
+                <input id="datedebut" type="date" name="datedebut" placeholder="jj/mm/aaaa" value="<?= $seance['dateDebut'] ?>">
                 <label for="heuredebut">Heure de début : </label>
-                <input type="text" name="heuredebut" placeholder="hh:mm" value="<?= $seance['heureDebut'] ?>">
+                <input type="time" name="heuredebut" placeholder="hh:mm" value="<?= $seance['heureDebut'] ?>">
 
                 <label for="datefin">Date de fin : </label>
-                <input type="text" name="datefin" placeholder="jj/mm/aaaa" value="<?= $seance['dateFin'] ?>">
+                <input type="date" name="datefin" placeholder="jj/mm/aaaa" value="<?= $seance['dateFin'] ?>">
                 <label for="heurefin">Heure de fin : </label>
-                <input type="text" name="heurefin" placeholder="hh:mm" value="<?= $seance['heureFin'] ?>">
+                <input type="time" name="heurefin" placeholder="hh:mm" value="<?= $seance['heureFin'] ?>">
                 <!-- les anciennes date et heure début et fin -->
                 <input type="hidden" name="dateheurefinOld" value="<?= $seance['dateheureFinOld'] ?>">
                 <input type="hidden" name="dateheuredebutOld" value="<?= $seance['dateheureDebutOld'] ?>">
