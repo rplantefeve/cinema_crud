@@ -138,9 +138,9 @@ function editMovie($managers)
     // on "sainifie" les entrées
         $sanEntries = filter_input_array(INPUT_POST, ['backToList' => FILTER_DEFAULT,
         'filmID' => FILTER_SANITIZE_NUMBER_INT,
-        'titre' => FILTER_SANITIZE_STRING,
-        'titreOriginal' => FILTER_SANITIZE_STRING,
-        'modificationInProgress' => FILTER_SANITIZE_STRING]);
+        'titre' => FILTER_DEFAULT,
+        'titreOriginal' => FILTER_DEFAULT,
+        'modificationInProgress' => FILTER_DEFAULT]);
 
         // si l'action demandée est retour en arrière
         if ($sanEntries['backToList'] !== null) {
@@ -300,10 +300,10 @@ function editShowtime($managers)
         INPUT_GET,
             ['cinemaID' => FILTER_SANITIZE_NUMBER_INT,
         'filmID' => FILTER_SANITIZE_NUMBER_INT,
-        'from' => FILTER_SANITIZE_STRING,
-        'heureDebut' => FILTER_SANITIZE_STRING,
-        'heureFin' => FILTER_SANITIZE_STRING,
-        'version' => FILTER_SANITIZE_STRING]
+        'from' => FILTER_DEFAULT,
+        'heureDebut' => FILTER_DEFAULT,
+        'heureFin' => FILTER_DEFAULT,
+        'version' => FILTER_DEFAULT]
     );
         // pour l'instant, on vérifie les données en GET
         if ($sanitizedEntries && isset($sanitizedEntries['cinemaID'],
@@ -360,15 +360,15 @@ function editShowtime($managers)
         INPUT_POST,
             ['cinemaID' => FILTER_SANITIZE_NUMBER_INT,
         'filmID' => FILTER_SANITIZE_NUMBER_INT,
-        'datedebut' => FILTER_SANITIZE_STRING,
-        'heuredebut' => FILTER_SANITIZE_STRING,
-        'datefin' => FILTER_SANITIZE_STRING,
-        'heurefin' => FILTER_SANITIZE_STRING,
-        'dateheurefinOld' => FILTER_SANITIZE_STRING,
-        'dateheuredebutOld' => FILTER_SANITIZE_STRING,
-        'version' => FILTER_SANITIZE_STRING,
-        'from' => FILTER_SANITIZE_STRING,
-        'modificationInProgress' => FILTER_SANITIZE_STRING]
+        'datedebut' => FILTER_DEFAULT,
+        'heuredebut' => FILTER_DEFAULT,
+        'datefin' => FILTER_DEFAULT,
+        'heurefin' => FILTER_DEFAULT,
+        'dateheurefinOld' => FILTER_DEFAULT,
+        'dateheuredebutOld' => FILTER_DEFAULT,
+        'version' => FILTER_DEFAULT,
+        'from' => FILTER_DEFAULT,
+        'modificationInProgress' => FILTER_DEFAULT]
     );
         // si toutes les valeurs sont renseignées
         if ($sanitizedEntries && isset($sanitizedEntries['cinemaID'],
@@ -443,10 +443,10 @@ function deleteShowtime($managers)
         INPUT_POST,
             ['cinemaID' => FILTER_SANITIZE_NUMBER_INT,
         'filmID' => FILTER_SANITIZE_NUMBER_INT,
-        'heureDebut' => FILTER_SANITIZE_STRING,
-        'heureFin' => FILTER_SANITIZE_STRING,
-        'version' => FILTER_SANITIZE_STRING,
-        'from' => FILTER_SANITIZE_STRING
+        'heureDebut' => FILTER_DEFAULT,
+        'heureFin' => FILTER_DEFAULT,
+        'version' => FILTER_DEFAULT,
+        'from' => FILTER_DEFAULT
     ]
     );
 
@@ -523,8 +523,8 @@ function editFavoriteMovie($managers)
             ['backToList' => FILTER_DEFAULT,
         'filmID' => FILTER_SANITIZE_NUMBER_INT,
         'userID' => FILTER_SANITIZE_NUMBER_INT,
-        'comment' => FILTER_SANITIZE_STRING,
-        'modificationInProgress' => FILTER_SANITIZE_STRING]
+        'comment' => FILTER_DEFAULT,
+        'modificationInProgress' => FILTER_DEFAULT]
     );
 
         // si l'action demandée est retour en arrière
@@ -658,9 +658,9 @@ function editCinema($managers)
     // on "sainifie" les entrées
         $sanEntries = filter_input_array(INPUT_POST, ['backToList' => FILTER_DEFAULT,
         'cinemaID' => FILTER_SANITIZE_NUMBER_INT,
-        'adresse' => FILTER_SANITIZE_STRING,
-        'denomination' => FILTER_SANITIZE_STRING,
-        'modificationInProgress' => FILTER_SANITIZE_STRING]);
+        'adresse' => FILTER_DEFAULT,
+        'denomination' => FILTER_DEFAULT,
+        'modificationInProgress' => FILTER_DEFAULT]);
 
         // si l'action demandée est retour en arrière
         if ($sanEntries['backToList'] !== null) {
@@ -750,8 +750,8 @@ function createNewUser($managers)
         // on "sainifie" les entrées
         $sanitizedEntries = filter_input_array(
         INPUT_POST,
-            ['firstName' => FILTER_SANITIZE_STRING,
-        'lastName' => FILTER_SANITIZE_STRING,
+            ['firstName' => FILTER_DEFAULT,
+        'lastName' => FILTER_DEFAULT,
         'email' => FILTER_SANITIZE_EMAIL,
         'password' => FILTER_DEFAULT,
         'passwordConfirmation' => FILTER_DEFAULT]
