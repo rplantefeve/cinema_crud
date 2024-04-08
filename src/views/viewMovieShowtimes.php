@@ -1,4 +1,4 @@
-<?php $this->titre = 'Séances par film'; ?>
+<?php $this->title = 'Séances par film'; ?>
 <header>
     <h1>Séances du film <?= $film['TITRE'] ?></h1>
     <h2><?= $film['TITREORIGINAL'] ?></h2>

@@ -1,4 +1,4 @@
-<?php $this->titre = "Films préférés"; ?>
+<?php $this->title = "Films préférés"; ?>
 <header><h1><?= $utilisateur['prenom'] ?> <?= $utilisateur['nom'] ?>, ci-dessous vos films préférés</h1></header>
 <table class="std">
     <tr>

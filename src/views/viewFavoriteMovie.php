@@ -1,4 +1,4 @@
-<?php $this->titre = "Editer un film préféré"; ?>
+<?php $this->title = "Editer un film préféré"; ?>
 <form method="POST" name="editFavoriteMovie" action="index.php?action=editFavoriteMovie">
     <label>Titre :</label>
     <select name="filmID" <?php
