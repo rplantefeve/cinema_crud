@@ -9,4 +9,3 @@ require_once __DIR__ . './init.php';
 
 $routeur = new Router($logger);
 $routeur->routeRequest();
-

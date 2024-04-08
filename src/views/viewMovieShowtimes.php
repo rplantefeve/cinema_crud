@@ -14,8 +14,8 @@
             // boucle sur les séances
             foreach ($seances[$cinema['CINEMAID']] as $seance) {
                 /*
-                 * Formatage des dates
-                 */
+                    * Formatage des dates
+                    */
                 // nous sommes en Français
                 $formatter = new IntlDateFormatter('fr_FR', IntlDateFormatter::LONG, IntlDateFormatter::NONE);
                 // date du jour de projection de la séance

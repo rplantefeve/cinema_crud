@@ -57,4 +57,3 @@
 <form name="backToMainPage" action="index.php">
     <input type="submit" value="Retour à l'accueil"/>
 </form>
-
