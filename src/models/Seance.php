@@ -148,9 +148,11 @@ class Seance extends Model {
     public function getAllMoviesShowtimesByCinemaID($films, $cinemaID) {
         $seances = [];
         // Boucle de récupération de toutes les séances indexés sur l'identifiant du film
-        foreach ($films as $film) {
-            $seances[$film['FILMID']] = $this->getMovieShowtimes($cinemaID,
-                    $film['FILMID']);
+        if($films !== null &&  count($films) > 0){
+            foreach ($films as $film) {
+                $seances[$film['FILMID']] = $this->getMovieShowtimes($cinemaID,
+                        $film['FILMID']);
+            }
         }
         // on retourne le résultat
         return $seances;
@@ -165,9 +167,11 @@ class Seance extends Model {
     public function getAllCinemasShowtimesByMovieID($cinemas, $filmID)
     {
         $seances = [];
-        // Boucle de récupération de toutes les séances indexés sur l'identifiant du film
-        foreach ($cinemas as $cinema) {
-            $seances[$cinema['CINEMAID']] = $this->getMovieShowtimes($cinema['CINEMAID'], $filmID);
+        if($cinemas !== null &&  count($cinemas) > 0){
+            // Boucle de récupération de toutes les séances indexés sur l'identifiant du film
+            foreach ($cinemas as $cinema) {
+                $seances[$cinema['CINEMAID']] = $this->getMovieShowtimes($cinema['CINEMAID'], $filmID);
+            }
         }
         // on retourne le résultat
         return $seances;
