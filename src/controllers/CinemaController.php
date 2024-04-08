@@ -109,7 +109,11 @@ class CinemaController {
             // sinon, c'est une création
             else {
                 $isItACreation = true;
-                $cinema        = null;
+                $cinema = [
+                    'CINEMAID' => '',
+                    'DENOMINATION' => '',
+                    'ADRESSE' => ''
+                ];
             }
         }
         // On génère la vue films

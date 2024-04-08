@@ -138,7 +138,11 @@ class MovieController {
             // sinon, c'est une création
             else {
                 $isItACreation = true;
-                $film          = null;
+                $film = [
+                    'FILMID' => '',
+                    'TITRE' => '',
+                    'TITREORIGINAL' => ''
+                ];
             }
         }
 
