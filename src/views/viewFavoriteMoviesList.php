@@ -11,6 +11,7 @@
             <tr>
                 <th>Titre</th>
                 <th>Commentaire</th>
+                <th colspan="2">Action</th>
             </tr>
             <?php
             // si des films ont été trouvés
@@ -41,11 +42,16 @@
                 }
             }
             ?>
+            <tr class="new">
+                <td colspan="4">
+                    <form name="addFavoriteMovie" action="index.php">
+                        <input type="hidden" name="action" value="editFavoriteMovie" />
+                        <button class="add" type="submit">Cliquer pour ajouter un film préféré...</button>
+                    </form>
+                </td>
+            </tr>        
         </table>
-        <form name="addFavoriteMovie" action="index.php">
-            <input type="hidden" name="action" value="editFavoriteMovie"/>
-            <input type="submit" value="Ajouter un film préféré"/>
-        </form>
+
         <form name="backToMainPage" action="index.php">
             <input type="submit" value="Retour à l'accueil"/>
         </form>
