@@ -18,9 +18,9 @@ class Seance extends Model {
                 . " AND s.cinemaID = :cinemaID";
         // on extrait les résultats
         $resultat = $this->extraireNxN($requete,
-                array(
+                [
             'filmID' => $filmID,
-            'cinemaID' => $cinemaID));
+            'cinemaID' => $cinemaID]);
         // on retourne la requête
         return $resultat;
     }
@@ -146,8 +146,7 @@ class Seance extends Model {
      */
 
     public function getAllMoviesShowtimesByCinemaID($films, $cinemaID) {
-        $seances = array(
-            array());
+        $seances = [];
         // Boucle de récupération de toutes les séances indexés sur l'identifiant du film
         foreach ($films as $film) {
             $seances[$film['FILMID']] = $this->getMovieShowtimes($cinemaID,
