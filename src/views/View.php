@@ -30,8 +30,8 @@ class View {
         $content = $this->genererFichier($this->fichier,
                 $donnees);
         // utilisation du template avec chargement des données spécifiques
-        $vue = $this->genererFichier(__DIR__ . './viewTemplate.php',
-                ['title' => $this->titre,
+        $vue = $this->genererFichier(__DIR__ . '/viewTemplate.php',
+                ['title' => $this->title,
             'content' => $content]);
         // Renvoi de la vue générée au navigateur
         echo $vue;
