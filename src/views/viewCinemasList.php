@@ -1,5 +1,5 @@
 <?php
-$this->titre = "Cinémas";
+$this->title = "Cinémas";
 $path        = $request->getBasePath();
 ?>
 <header><h1>Liste des cinémas</h1></header>

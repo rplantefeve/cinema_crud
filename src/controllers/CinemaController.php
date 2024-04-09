@@ -35,6 +35,7 @@ class CinemaController extends Controller {
                 'admin@adm.adm') {
             $isUserAdmin = true;
         }
+
         // on récupère la liste des cinémas ainsi que leurs informations
         $cinemas = $this->cinemaDAO->getCinemasList();
 
@@ -112,7 +113,7 @@ class CinemaController extends Controller {
             // sinon, c'est une création
             else {
                 $isItACreation = true;
-                $cinema        = null;
+                $cinema = null;
             }
         }
         // On génère la vue films
@@ -153,5 +154,4 @@ class CinemaController extends Controller {
         // redirection vers la liste des cinémas
         return $app->redirect($request->getBasePath() . '/cinema/list');
     }
-
 }

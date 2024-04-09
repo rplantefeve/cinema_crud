@@ -1,5 +1,5 @@
 <?php 
-$this->titre = "Ajouter / Modifier un film"; 
+$this->title = "Ajouter / Modifier un film"; 
 $path = $request->getBasePath();
 // si c'est une modification
 if (!$isItACreation) {
@@ -10,20 +10,20 @@ else {
 }
 ?>
 <h1>Ajouter/Modifier un film</h1>
-<form method="POST" name="editCinema" action="<?= $action ?>">
+<form method="POST" name="editMovie" action="<?= $action ?>">
     <label>Titre :</label>
     <input name="titre" type="text" value="<?php
-    if ($film): echo $film->getTitre();
+    if ($film !== null): echo $film->getTitre();
     endif;
     ?>" required/>
     <label>Titre original :</label>
     <input name="titreOriginal" type="text" value="<?php
-    if ($film): echo $film->getTitreOriginal();
+    if ($film !== null): echo $film->getTitreOriginal();
     endif;
     ?>" />
     <br/>
     <input type="hidden" value="<?php
-    if ($film) : echo $film->getFilmId();
+    if ($film !== null) : echo $film->getFilmId();
     endif;
     ?>" name="filmID"/>
            <?php

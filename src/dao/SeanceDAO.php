@@ -62,7 +62,7 @@ class SeanceDAO extends DAO {
         }
         // trouver le cinéma concerné grâce à son identifiant
         if (array_key_exists('CINEMAID', $row)) {
-            $cinemaID = $row['FILMID'];
+            $cinemaID = $row['CINEMAID'];
             $cinema   = $this->cinemaDAO->getCinemaByID($cinemaID);
             $seance->setCinema($cinema);
         }
@@ -96,17 +96,16 @@ class SeanceDAO extends DAO {
      * @return Les séances des films projetés dans ce cinéma
      */
     public function getAllMoviesShowtimesByCinemaID($films, $cinemaID) {
-        if ($films):
+        $seances = [];
+        if($films !== null &&  count($films) > 0):
             // Boucle de récupération de toutes les séances indexés sur l'identifiant du film
             foreach ($films as $film) {
                 $seances[$film->getFilmId()] = $this->getMovieShowtimes($cinemaID,
                         $film->getFilmId());
             }
-            // on retourne le résultat
-            return $seances;
-        else:
-            return null;
         endif;
+        // on retourne le résultat
+        return $seances;
     }
 
     /**
@@ -116,10 +115,13 @@ class SeanceDAO extends DAO {
      * @return Les séances du film projeté dans ces cinémas
      */
     public function getAllCinemasShowtimesByMovieID($cinemas, $filmID) {
-        // Boucle de récupération de toutes les séances indexés sur l'identifiant du film
-        foreach ($cinemas as $cinema) {
-            $seances[$cinema->getCinemaId()] = $this->getMovieShowtimes($cinema->getCinemaId(),
-                    $filmID);
+        $seances = [];
+        if($cinemas !== null &&  count($cinemas) > 0){
+            // Boucle de récupération de toutes les séances indexés sur l'identifiant du film
+            foreach ($cinemas as $cinema) {
+                $seances[$cinema->getCinemaId()] = $this->getMovieShowtimes($cinema->getCinemaId(),
+                        $filmID);
+            }
         }
         // on retourne le résultat
         return $seances;

@@ -11,6 +11,7 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Silex\Application;
 use Psr\Log\LoggerInterface;
 use DateTime;
+use Semeformation\Mvc\Cinema_crud\models\Seance;
 
 /**
  * Description of ShowtimesController
@@ -52,9 +53,6 @@ class ShowtimesController extends Controller {
             $filmID = $entries['filmID'];
             // puis on récupère les informations du film en question
             $film   = $this->seanceDAO->getFilmDAO()->getMovieByID($filmID);
-
-            // on récupère les cinémas qui ne projettent pas encore le film
-            $cinemasUnplanned = $this->seanceDAO->getCinemaDAO()->getNonPlannedCinemas($filmID);
         }
         // sinon, on retourne à l'accueil
         else {
@@ -64,8 +62,11 @@ class ShowtimesController extends Controller {
 
         // on récupère la liste des cinémas de ce film
         $cinemas = $this->seanceDAO->getCinemaDAO()->getMovieCinemasByMovieID($filmID);
-        $seances = $this->seanceDAO->getAllCinemasShowtimesByMovieID($cinemas,
-                $filmID);
+        $cinemasUnplanned = $this->seanceDAO->getCinemaDAO()->getNonPlannedCinemas($filmID);
+        $seances = $this->seanceDAO->getAllCinemasShowtimesByMovieID(
+            $cinemas,
+            $filmID
+        );
 
         // On génère la vue séances du film
         $vue = new View("MovieShowtimes");
@@ -105,9 +106,6 @@ class ShowtimesController extends Controller {
             $cinemaID = $entries['cinemaID'];
             // puis on récupère les informations du cinéma en question
             $cinema   = $this->seanceDAO->getCinemaDAO()->getCinemaByID($cinemaID);
-
-            // on récupère les films pas encore projetés
-            $filmsUnplanned = $this->seanceDAO->getFilmDAO()->getNonPlannedMovies($cinemaID);
         }
         // sinon, on retourne à l'accueil
         else {
@@ -117,6 +115,7 @@ class ShowtimesController extends Controller {
 
         // on récupère la liste des films de ce cinéma
         $films   = $this->seanceDAO->getFilmDAO()->getCinemaMoviesByCinemaID($cinemaID);
+        $filmsUnplanned = $this->seanceDAO->getFilmDAO()->getNonPlannedMovies($cinemaID);
         // on récupère toutes les séances de films pour un cinéma donné
         $seances = $this->seanceDAO->getAllMoviesShowtimesByCinemaID($films,
                 $cinemaID);
@@ -199,8 +198,8 @@ class ShowtimesController extends Controller {
         }
 
         // init. des flags. Etat par défaut => je viens du cinéma et je créé
-        $fromCinema    = true;
-        $fromFilm      = false;
+        $fromCinema = true;
+        $fromFilm = false;
         $isItACreation = true;
 
         // init. des variables du formulaire
@@ -208,7 +207,6 @@ class ShowtimesController extends Controller {
             'dateheureDebutOld' => '',
             'dateheureFinOld'   => '',
             'heureFinOld'       => ''];
-
         $seance = null;
 
         // si l'on est en GET
@@ -243,23 +241,24 @@ class ShowtimesController extends Controller {
 
                 // puis on récupère les informations du cinéma en question
                 $cinema = $this->seanceDAO->getCinemaDAO()->getCinemaByID($cinemaID);
-
                 // puis on récupère les informations du film en question
                 $film = $this->seanceDAO->getFilmDAO()->getMovieByID($filmID);
+                // on récupère les cinémas qui ne projettent pas encore le film
+                $cinemasUnplanned = $this->seanceDAO->getCinemaDAO()->getNonPlannedCinemas($filmID);
 
                 // s'il on vient des séances du film
                 if (strstr($entries['from'], 'movie')) {
                     $fromCinema = false;
                     // on vient du film
-                    $fromFilm   = true;
+                    $fromFilm = true;
                 }
 
                 // ici, on veut savoir si on modifie ou si on ajoute
                 if (isset($entries['heureDebut'], $entries['heureFin'],
                                 $entries['version'])) {
                     // nous sommes dans le cas d'une modification
-                    $isItACreation                  = false;
-                    $seance                         = new \Semeformation\Mvc\Cinema_crud\models\Seance();
+                    $isItACreation = false;
+                    $seance = new Seance;
                     // on récupère les anciennes valeurs (utile pour retrouver la séance avant de la modifier
                     $seanceOld['dateheureDebutOld'] = $entries['heureDebut'];
                     $seanceOld['dateheureFinOld']   = $entries['heureFin'];
@@ -279,7 +278,7 @@ class ShowtimesController extends Controller {
                 return $app->redirect($request->getBasePath() . '/home');
             }
             // sinon, on est en POST
-        } else if (filter_input(INPUT_SERVER, 'REQUEST_METHOD') == 'POST') {
+        } elseif (filter_input(INPUT_SERVER, 'REQUEST_METHOD') == 'POST') {
             // on assainie les variables
             $entries             = $this->extractArrayFromPostRequest($request,
                     ['datedebut',

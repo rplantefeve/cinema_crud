@@ -1,5 +1,5 @@
 <?php
-$this->titre = "Séances par cinéma";
+$this->title = "Séances par cinéma";
 $path        = $request->getBasePath();
 ?>
 <header>
@@ -26,8 +26,8 @@ $path        = $request->getBasePath();
 </header>
 <ul>
     <?php
-    // si au moins un résultat
-    if (count($films) > 0) {
+// si au moins un résultat
+    if ($films !== null && count($films) > 0) {
         // on boucle sur les résultats
         foreach ($films as $film) {
             ?>
@@ -49,12 +49,11 @@ $path        = $request->getBasePath();
                      * Formatage des dates
                      */
                     // nous sommes en Français
-                    setlocale(LC_TIME, 'fra_fra');
+                    $formatter    = new IntlDateFormatter('fr_FR', IntlDateFormatter::LONG, IntlDateFormatter::NONE);
                     // date du jour de projection de la séance
                     $jour         = $seance->getHeureDebut();
                     // On convertit pour un affichage en français
-                    $jourConverti = utf8_encode(strftime('%d %B %Y',
-                                    $jour->getTimestamp()));
+                    $jourConverti = $formatter->format($jour->getTimestamp());
 
                     $heureDebut = $seance->getHeureDebut()->format('H\hi');
                     $heureFin   = $seance->getHeureFin()->format('H\hi');

@@ -42,12 +42,12 @@ class FilmDAO extends DAO {
 
     /**
      * Méthode qui renvoie toutes les informations d'un film
-     * @return array[]
+     * @return Film
      */
     public function getMovieByID($filmID) {
         $requete  = "SELECT * FROM film WHERE filmID = :filmID";
         $resultat = $this->extraire1xN($requete, ['filmID' => $filmID]);
-        // on récupÃ¨re l'objet Film
+        // on récupère l'objet Film
         $film     = $this->buildBusinessObject($resultat);
         // on retourne le résultat extrait
         return $film;
@@ -66,9 +66,9 @@ class FilmDAO extends DAO {
 
     /**
      * Méthode qui ne renvoie que les films non encore marqués
-     * comme favoris par l'utilisateur passé en paramÃ¨tre
+     * comme favoris par l'utilisateur passé en paramètre
      * @param int $userID Identifiant de l'utilisateur
-     * @return Film[] Films présents dans la base respectant les critÃ¨res
+     * @return Film[] Films présents dans la base respectant les critères
      */
     public function getMoviesNonAlreadyMarkedAsFavorite($userID) {
         // requête de récupération des titres et des identifiants des films

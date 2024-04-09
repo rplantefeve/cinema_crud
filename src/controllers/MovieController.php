@@ -33,6 +33,7 @@ class MovieController extends Controller {
                 'admin@adm.adm') {
             $isUserAdmin = true;
         }
+
         // on récupère la liste des films ainsi que leurs informations
         $films = $this->filmDAO->getMoviesList();
 
@@ -108,7 +109,7 @@ class MovieController extends Controller {
             // sinon, c'est une création
             else {
                 $isItACreation = true;
-                $film          = null;
+                $film = null;
             }
         }
 

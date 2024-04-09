@@ -1,5 +1,5 @@
 <?php
-$this->titre = "Ajouter / Modifier un cinéma";
+$this->title = "Ajouter / Modifier un cinéma";
 $path        = $request->getBasePath();
 // si c'est une modification
 if (!$isItACreation) {

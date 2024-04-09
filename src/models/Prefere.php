@@ -39,5 +39,4 @@ class Prefere {
     public function setCommentaire($commentaire) {
         $this->commentaire = $commentaire;
     }
-
 }
