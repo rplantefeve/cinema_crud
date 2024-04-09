@@ -5,7 +5,8 @@ namespace Semeformation\Mvc\Cinema_crud\includes;
 use PDO;
 use Psr\Log\LoggerInterface;
 
-class DBFactory {
+class DBFactory
+{
 
     // logger
     private $logger;
@@ -22,7 +23,8 @@ class DBFactory {
      * Méthode utile pour récupérer le singleton depuis le programme appelant
      */
 
-    public static function getFactory(LoggerInterface $logger = null) {
+    public static function getFactory(LoggerInterface $logger = null)
+    {
         // si l'instance n'a encore jamais été instanciée
         if (!self::$factory) {
             self::$factory = new DBFactory($logger);
@@ -35,7 +37,8 @@ class DBFactory {
      * Constructeur de la classe qui initialise la connexion
      */
 
-    public function getConnection() {
+    public function getConnection()
+    {
         if (!$this->pdoInstance) {
             // on récupère les infos dans le fichier de config yml
             $infoConnexion = \parse_ini_file(\dirname(__DIR__).'/conf/parameters.ini');
@@ -55,7 +58,8 @@ class DBFactory {
         return $this->pdoInstance;
     }
 
-    private function __construct(LoggerInterface $logger = null) {
+    private function __construct(LoggerInterface $logger = null)
+    {
         if ($logger) {
             $this->logger = $logger;
         }
@@ -63,14 +67,20 @@ class DBFactory {
 
     // The clone and wakeup methods prevents external instantiation of copies of the Singleton class,
     // thus eliminating the possibility of duplicate objects.
-    public function __clone() {
-        trigger_error('Clone is not allowed.',
-                E_USER_ERROR);
+    public function __clone()
+    {
+        trigger_error(
+            'Clone is not allowed.',
+            E_USER_ERROR
+        );
     }
 
-    public function __wakeup() {
-        trigger_error('Deserializing is not allowed.',
-                E_USER_ERROR);
+    public function __wakeup()
+    {
+        trigger_error(
+            'Deserializing is not allowed.',
+            E_USER_ERROR
+        );
     }
 
 }

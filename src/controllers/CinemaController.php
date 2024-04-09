@@ -11,11 +11,13 @@ use Psr\Log\LoggerInterface;
  *
  * @author User
  */
-class CinemaController {
+class CinemaController
+{
 
     private $cinema;
 
-    public function __construct(LoggerInterface $logger) {
+    public function __construct(LoggerInterface $logger)
+    {
         $this->cinema = new Cinema($logger);
     }
 

@@ -9,13 +9,15 @@ use Semeformation\Mvc\Cinema_crud\includes\Model;
  *
  * @author User
  */
-class Film extends Model {
+class Film extends Model
+{
     /*
      * Méthode qui renvoie la liste des films
      * @return array[][]
      */
 
-    public function getMoviesList() {
+    public function getMoviesList()
+    {
         $requete = "SELECT * FROM film";
         // on retourne le résultat
         return $this->extraireNxN($requete,
@@ -28,7 +30,8 @@ class Film extends Model {
      * @return array[]
      */
 
-    public function getMovieInformationsByID($filmID) {
+    public function getMovieInformationsByID($filmID)
+    {
         $requete = "SELECT * FROM film WHERE filmID = "
                 . $filmID;
         $resultat = $this->extraire1xN($requete);
@@ -36,7 +39,8 @@ class Film extends Model {
         return $resultat;
     }
 
-    public function getCinemaMoviesByCinemaID($cinemaID) {
+    public function getCinemaMoviesByCinemaID($cinemaID)
+    {
         // requête qui nous permet de récupérer la liste des films pour un cinéma donné
         $requete = "SELECT DISTINCT f.* FROM film f"
                 . " INNER JOIN seance s ON f.filmID = s.filmID"

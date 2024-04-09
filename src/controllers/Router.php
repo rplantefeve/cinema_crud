@@ -14,15 +14,16 @@ use Psr\Log\LoggerInterface;
  *
  * @author User
  */
-class Router {
-
+class Router
+{
     private $homeCtrl;
     private $favoriteCtrl;
     private $cinemaCtrl;
     private $movieCtrl;
     private $showtimesCtrl;
 
-    public function __construct(LoggerInterface $logger) {
+    public function __construct(LoggerInterface $logger)
+    {
         $this->homeCtrl = new HomeController($logger);
         $this->favoriteCtrl = new FavoriteController($logger);
         $this->movieCtrl = new MovieController($logger);
@@ -30,7 +31,8 @@ class Router {
         $this->cinemaCtrl = new CinemaController($logger);
     }
 
-    public function routeRequest() {
+    public function routeRequest()
+    {
         try {
             // on "sainifie" les entrées
             $sanitizedEntries = filter_input_array(

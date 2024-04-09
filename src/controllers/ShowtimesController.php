@@ -7,19 +7,21 @@ use Semeformation\Mvc\Cinema_crud\models\Cinema;
 use Semeformation\Mvc\Cinema_crud\models\Seance;
 use Semeformation\Mvc\Cinema_crud\views\View;
 use Psr\Log\LoggerInterface;
+use DateTime;
 
 /**
  * Description of ShowtimesController
  *
  * @author User
  */
-class ShowtimesController {
-
+class ShowtimesController
+{
     private $cinema;
     private $film;
     private $seance;
 
-    public function __construct(LoggerInterface $logger) {
+    public function __construct(LoggerInterface $logger)
+    {
         $this->cinema = new Cinema($logger);
         $this->film = new Film($logger);
         $this->seance = new Seance($logger);

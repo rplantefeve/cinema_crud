@@ -25,7 +25,8 @@ class View {
      * Génère et affiche la vue
      */
 
-    public function generer($donnees = null) {
+    public function generer($donnees = null)
+    {
         // Génération de la partie spécifique de la vue
         $content = $this->genererFichier($this->fichier,
                 $donnees);
@@ -41,7 +42,8 @@ class View {
      * Génère et retourne la vue générée
      */
 
-    private function genererFichier($fichier, $donnees) {
+    private function genererFichier($fichier, $donnees)
+    {
         if (file_exists($fichier)) {
             // déclare autant de variables qu'il y en a dans le tableau
             if ($donnees !== null) {
