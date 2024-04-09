@@ -61,6 +61,10 @@ class Router
                 } elseif ($sanitizedEntries['action'] == "cinemaShowtimes") {
                     // Activation de la route cinemaShowtimes
                     $this->showtimesCtrl->cinemaShowtimes();
+                } elseif ($sanitizedEntries['action'] == "editShowtime") {
+                    $this->showtimesCtrl->editShowtime();
+                } elseif ($sanitizedEntries['action'] == "deleteShowtime") {
+                    $this->showtimesCtrl->deleteShowtime();
                 } elseif ($sanitizedEntries['action'] == "editFavoriteMoviesList") {
                     // Activation de la route editFavoriteMoviesList
                     $this->favoriteCtrl->editFavoriteMoviesList();

@@ -9,14 +9,14 @@ use Exception;
  *
  * @author User
  */
-class View {
+class View
+{
 
     // Nom du fichier associé à la vue
     private $fichier;
-    // titre de la vue
-    private $title;
 
-    public function __construct($action) {
+    public function __construct($action)
+    {
         // La vue à générer dépend de l'action demandée
         $this->fichier = "views/view" . $action . ".php";
     }
