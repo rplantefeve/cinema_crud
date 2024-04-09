@@ -42,7 +42,7 @@
                 <button class="add" type="submit">Cliquer pour ajouter un film préféré...</button>
             </form>
         </td>
-    </tr>
+    </tr>        
 </table>
 
 <form name="backToMainPage" action="index.php">
