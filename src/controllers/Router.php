@@ -42,9 +42,17 @@ class Router {
                 if ($sanitizedEntries['action'] == "cinemasList") {
                     // Activation de la route cinemasList
                     $this->cinemaCtrl->cinemasList();
+                } elseif ($sanitizedEntries['action'] == "deleteCinema") {
+                    $this->cinemaCtrl->deleteCinema();
+                } elseif ($sanitizedEntries['action'] == "editCinema") {
+                    $this->cinemaCtrl->editCinema();
                 } elseif ($sanitizedEntries['action'] == "moviesList") {
                     // Activation de la route moviesList
                     $this->movieCtrl->moviesList();
+                } elseif ($sanitizedEntries['action'] == "deleteMovie") {
+                    $this->movieCtrl->deleteMovie();
+                } elseif ($sanitizedEntries['action'] == "editMovie") {
+                    $this->movieCtrl->editMovie();
                 } elseif ($sanitizedEntries['action'] == "movieShowtimes") {
                     // Activation de la route movieShowtimes
                     $this->showtimesCtrl->movieShowtimes();
