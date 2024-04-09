@@ -14,6 +14,8 @@ class View
 
     // Nom du fichier associé à la vue
     private $fichier;
+    // titre de la vue
+    private $title;
 
     public function __construct($action)
     {
