@@ -96,12 +96,12 @@ class UtilisateurDAO extends DAO {
         }
     }
 
-    /*
+    /**
      * Méthode qui retourne l'utilisateur initialisé
-     * @param string $utilisateur Adresse email de l'utilisateur
+     *
+     * @param string $email Adresse email de l'utilisateur
      * @return Utilisateur L'Utilisateur initialisé
      */
-
     public function getUserByEmailAddress($email) {
         // on construit la requête qui va récupérer les informations de l'utilisateur
         $requete = "SELECT * FROM utilisateur "
