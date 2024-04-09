@@ -1,19 +1,19 @@
-<?php $this->titre = "Ajouter / Modifier un film"; ?>
+<?php $this->title = "Ajouter / Modifier un film"; ?>
 <h1>Ajouter/Modifier un film</h1>
-<form method="POST" name="editCinema" action="index.php?action=editMovie">
+<form method="POST" name="editMovie" action="index.php?action=editMovie">
     <label>Titre :</label>
     <input name="titre" type="text" value="<?php
-    if ($film): echo $film->getTitre();
+    if ($film !== null): echo $film->getTitre();
     endif;
     ?>" required/>
     <label>Titre original :</label>
     <input name="titreOriginal" type="text" value="<?php
-    if ($film): echo $film->getTitreOriginal();
+    if ($film !== null): echo $film->getTitreOriginal();
     endif;
     ?>" />
     <br/>
     <input type="hidden" value="<?php
-    if ($film) : echo $film->getFilmId();
+    if ($film !== null) : echo $film->getFilmId();
     endif;
     ?>" name="filmID"/>
            <?php

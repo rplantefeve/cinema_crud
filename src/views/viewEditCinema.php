@@ -1,4 +1,4 @@
-<?php $this->titre = "Ajouter / Modifier un cinéma"; ?>
+<?php $this->title = "Ajouter / Modifier un cinéma"; ?>
 <h1>Ajouter/Modifier un cinéma</h1>
 <form method="POST" name="editCinema" action="index.php?action=editCinema">
     <label>Dénomination :</label>

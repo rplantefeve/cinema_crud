@@ -1,8 +1,8 @@
-<?php $this->titre = 'Séances par film'; ?>
+<?php $this->title = 'Séances par film'; ?>
 <header>
     <h1>Séances du film <?= $film->getTitre() ?></h1>
     <h2><?= $film->getTitreOriginal() ?></h2>
-    <?php if ($cinemasUnplanned) : ?>
+    <?php if ($adminConnected === true && $cinemasUnplanned !== null) : ?>
         <form action="index.php" method="get">
             <fieldset>
                 <legend>Programmer le film dans un cinéma</legend>
@@ -25,7 +25,7 @@
 </header>
 <ul>
     <?php
-    if (count($cinemas) > 0):
+    if ($cinemas !== null and count($cinemas) > 0):
         // on boucle sur les résultats
         foreach ($cinemas as $cinema) {
             ?>
@@ -47,12 +47,11 @@
                      * Formatage des dates
                      */
                     // nous sommes en Français
-                    setlocale(LC_TIME, 'fra_fra');
+                    $formatter = new IntlDateFormatter('fr_FR', IntlDateFormatter::LONG, IntlDateFormatter::NONE);
                     // date du jour de projection de la séance
                     $jour         = $seance->getHeureDebut();
                     // On convertit pour un affichage en français
-                    $jourConverti = utf8_encode(strftime('%d %B %Y',
-                                    $jour->getTimestamp()));
+                    $jourConverti = $formatter->format($jour->getTimestamp());
 
                     $heureDebut = $seance->getHeureDebut()->format('H\hi');
                     $heureFin   = $seance->getHeureFin()->format('H\hi');

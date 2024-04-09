@@ -36,5 +36,4 @@ class Film {
     public function setTitreOriginal($titreOriginal) {
         $this->titreOriginal = $titreOriginal;
     }
-
 }

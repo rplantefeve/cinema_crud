@@ -78,7 +78,7 @@ class PrefereDAO extends DAO {
      * Méthode qui renvoie les informations sur un film favori donné pour un utilisateur donné
      * @param int $userID Identifiant de l'utilisateur
      * @param int $filmID Identifiant du film
-     * @return array[]
+     * @return Prefere
      */
     public function getFavoriteMovieInformations($userID, $filmID) {
         // requête qui récupère les informations d'une préférence de film pour un utilisateur donné

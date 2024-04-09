@@ -1,4 +1,4 @@
-<?php $this->titre = "Cinémas"; ?>
+<?php $this->title = "Cinémas"; ?>
 <header><h1>Liste des cinémas</h1></header>
 <table class="std">
     <tr>

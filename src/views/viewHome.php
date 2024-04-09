@@ -1,4 +1,4 @@
-<?php $this->titre = 'Accueil'; ?>
+<?php $this->title = 'Accueil'; ?>
 <div>
     <header>
         <h1>Espace personnel</h1>
@@ -48,6 +48,3 @@
         </form>
     </header>
 </div>
-
-
-

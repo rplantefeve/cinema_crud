@@ -1,4 +1,4 @@
-<?php $this->titre = "Création d'un nouvel utilisateur"; ?>
+<?php $this->title = "Création d'un nouvel utilisateur"; ?>
 <header><h1>Création d'un nouvel utilisateur</h1></header>
 <form name="createUser" method="POST" action="index.php?action=createNewUser">
     <!-- la longueur maximum des input est en corrélation avec la longueur maximum des champs dans la BDD -->
@@ -57,4 +57,3 @@
 <form name="backToMainPage" action="index.php">
     <input type="submit" value="Retour à l'accueil"/>
 </form>
-

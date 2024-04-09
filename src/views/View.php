@@ -9,14 +9,16 @@ use Exception;
  *
  * @author User
  */
-class View {
+class View
+{
 
     // Nom du fichier associé à la vue
     private $fichier;
     // titre de la vue
     private $title;
 
-    public function __construct($action) {
+    public function __construct($action)
+    {
         // La vue à générer dépend de l'action demandée
         $this->fichier = "views/view" . $action . ".php";
     }
@@ -25,13 +27,14 @@ class View {
      * Génère et affiche la vue
      */
 
-    public function generer($donnees = null) {
+    public function generer($donnees = null)
+    {
         // Génération de la partie spécifique de la vue
         $content = $this->genererFichier($this->fichier,
                 $donnees);
         // utilisation du template avec chargement des données spécifiques
-        $vue = $this->genererFichier(__DIR__ . './viewTemplate.php',
-                ['title' => $this->titre,
+        $vue = $this->genererFichier(__DIR__ . '/viewTemplate.php',
+                ['title' => $this->title,
             'content' => $content]);
         // Renvoi de la vue générée au navigateur
         echo $vue;
@@ -41,7 +44,8 @@ class View {
      * Génère et retourne la vue générée
      */
 
-    private function genererFichier($fichier, $donnees) {
+    private function genererFichier($fichier, $donnees)
+    {
         if (file_exists($fichier)) {
             // déclare autant de variables qu'il y en a dans le tableau
             if ($donnees !== null) {

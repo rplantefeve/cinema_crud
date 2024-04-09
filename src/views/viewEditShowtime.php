@@ -1,5 +1,5 @@
 <?php
-$this->titre = "Gestion des cinémas - Ajouter une séance";
+$this->title = "Gestion des cinémas - Ajouter une séance";
 ?>
 <header>
     <h1>Séances du cinéma <?= $cinema->getDenomination() ?></h1>
@@ -8,23 +8,23 @@ $this->titre = "Gestion des cinémas - Ajouter une séance";
 <form method="post">
     <fieldset>
         <label for="datedebut">Date de début : </label>
-        <input id="datedebut" type="text" name="datedebut" placeholder="jj/mm/aaaa" value="<?php
-               if ($seance): echo $seance->getHeureDebut()->format('d/m/Y');
+        <input id="datedebut" type="date" name="datedebut" placeholder="jj/mm/aaaa" value="<?php
+               if ($seance): echo $seance->getHeureDebut()->format('Y-m-d');
                endif;
                ?>">
         <label for="heuredebut">Heure de début : </label>
-        <input type="text" name="heuredebut" placeholder="hh:mm" value="<?php
+        <input type="time" name="heuredebut" placeholder="hh:mm" value="<?php
         if ($seance): echo $seance->getHeureDebut()->format('H:i');
         endif;
         ?>">
 
         <label for="datefin">Date de fin : </label>
-        <input type="text" name="datefin" placeholder="jj/mm/aaaa" value="<?php
-        if ($seance): echo $seance->getHeureFin()->format('d/m/Y');
+        <input type="date" name="datefin" placeholder="jj/mm/aaaa" value="<?php
+        if ($seance): echo $seance->getHeureFin()->format('Y-m-d');
         endif;
         ?>">
         <label for="heurefin">Heure de fin : </label>
-        <input type="text" name="heurefin" placeholder="hh:mm" value="<?php
+        <input type="time" name="heurefin" placeholder="hh:mm" value="<?php
         if ($seance) : echo $seance->getHeureFin()->format('H:i');
         endif;
         ?>">

@@ -1,5 +1,8 @@
 private.xml
 Thumbs.db
 *.bak
-/nbproject
+tools/
+.vscode/
 src/conf/parameters.ini
+/nbproject
+

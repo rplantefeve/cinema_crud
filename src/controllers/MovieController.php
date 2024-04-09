@@ -22,7 +22,8 @@ class MovieController {
     /**
      * Route Liste des films
      */
-    function moviesList() {
+    public function moviesList()
+    {
         $isUserAdmin = false;
 
         session_start();
@@ -30,6 +31,7 @@ class MovieController {
         if (array_key_exists("user", $_SESSION) and $_SESSION['user'] == 'admin@adm.adm') {
             $isUserAdmin = true;
         }
+
         // on récupère la liste des films ainsi que leurs informations
         $films = $this->filmDAO->getMoviesList();
 
@@ -44,7 +46,8 @@ class MovieController {
     /**
      * Route Supprimer un film
      */
-    public function deleteMovie() {
+    public function deleteMovie()
+    {
         session_start();
         // si l'utilisateur n'est pas connecté ou sinon s'il n'est pas amdinistrateur
         if (!array_key_exists("user", $_SESSION) or $_SESSION['user'] !== 'admin@adm.adm') {
@@ -57,8 +60,10 @@ class MovieController {
         if (filter_input(INPUT_SERVER, 'REQUEST_METHOD') === "POST") {
 
             // on "sainifie" les entrées
-            $sanitizedEntries = filter_input_array(INPUT_POST,
-                    ['filmID' => FILTER_SANITIZE_NUMBER_INT]);
+            $sanitizedEntries = filter_input_array(
+                INPUT_POST,
+                ['filmID' => FILTER_SANITIZE_NUMBER_INT]
+            );
 
             // suppression de la préférence de film
             $this->filmDAO->deleteMovie($sanitizedEntries['filmID']);
@@ -71,7 +76,8 @@ class MovieController {
     /**
      * Route Ajouter / Modifier un film
      */
-    function editMovie() {
+    public function editMovie()
+    {
         session_start();
         // si l'utilisateur n'est pas connecté ou sinon s'il n'est pas amdinistrateur
         if (!array_key_exists("user", $_SESSION) or $_SESSION['user'] !== 'admin@adm.adm') {
@@ -87,14 +93,16 @@ class MovieController {
         if (filter_input(INPUT_SERVER, 'REQUEST_METHOD') === "POST") {
 
             // on assainit les entrées
-            $sanEntries = filter_input_array(INPUT_POST,
-                    [
+            $sanEntries = filter_input_array(
+                INPUT_POST,
+                [
                 'backToList'             => FILTER_DEFAULT,
                 'filmID'                 => FILTER_SANITIZE_NUMBER_INT,
-                'titre'                  => FILTER_SANITIZE_STRING,
-                'titreOriginal'          => FILTER_SANITIZE_STRING,
-                'modificationInProgress' => FILTER_SANITIZE_STRING
-            ]);
+                'titre'                  => FILTER_DEFAULT,
+                'titreOriginal'          => FILTER_DEFAULT,
+                'modificationInProgress' => FILTER_DEFAULT
+            ]
+            );
 
             // si l'action demandée est retour en arrière
             if ($sanEntries['backToList'] !== null) {
@@ -108,14 +116,19 @@ class MovieController {
                 // et que nous ne sommes pas en train de modifier un film
                 if ($sanEntries['modificationInProgress'] == null) {
                     // on ajoute le film
-                    $this->filmDAO->insertNewMovie($sanEntries['titre'],
-                            $sanEntries['titreOriginal']);
+                    $this->filmDAO->insertNewMovie(
+                        $sanEntries['titre'],
+                        $sanEntries['titreOriginal']
+                    );
                 }
                 // sinon, nous sommes dans le cas d'une modification
                 else {
                     // mise à jour du film
-                    $this->filmDAO->updateMovie($sanEntries['filmID'],
-                            $sanEntries['titre'], $sanEntries['titreOriginal']);
+                    $this->filmDAO->updateMovie(
+                        $sanEntries['filmID'],
+                        $sanEntries['titre'],
+                        $sanEntries['titreOriginal']
+                    );
                 }
                 // on revient à la liste des films
                 header('Location: index.php?action=moviesList');
@@ -124,17 +137,19 @@ class MovieController {
         }// si la page est chargée avec $_GET
         elseif (filter_input(INPUT_SERVER, 'REQUEST_METHOD') === "GET") {
             // on assainit les entrées
-            $sanEntries = filter_input_array(INPUT_GET,
-                    ['filmID' => FILTER_SANITIZE_NUMBER_INT]);
+            $sanEntries = filter_input_array(
+                INPUT_GET,
+                ['filmID' => FILTER_SANITIZE_NUMBER_INT]
+            );
             if ($sanEntries && $sanEntries['filmID'] !== null && $sanEntries['filmID'] !==
                     '') {
-                // on récupère les informations manquantes 
+                // on récupère les informations manquantes
                 $film = $this->filmDAO->getMovieByID($sanEntries['filmID']);
             }
             // sinon, c'est une création
             else {
                 $isItACreation = true;
-                $film          = null;
+                $film = null;
             }
         }
 
@@ -145,5 +160,4 @@ class MovieController {
             'film'          => $film,
             'isItACreation' => $isItACreation]);
     }
-
 }

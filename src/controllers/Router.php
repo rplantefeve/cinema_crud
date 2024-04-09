@@ -14,30 +14,34 @@ use Psr\Log\LoggerInterface;
  *
  * @author User
  */
-class Router {
-
+class Router
+{
     private $homeCtrl;
     private $favoriteCtrl;
     private $cinemaCtrl;
     private $movieCtrl;
     private $showtimesCtrl;
 
-    public function __construct(LoggerInterface $logger) {
-        $this->homeCtrl      = new HomeController($logger);
-        $this->favoriteCtrl  = new FavoriteController($logger);
-        $this->movieCtrl     = new MovieController($logger);
+    public function __construct(LoggerInterface $logger)
+    {
+        $this->homeCtrl = new HomeController($logger);
+        $this->favoriteCtrl = new FavoriteController($logger);
+        $this->movieCtrl = new MovieController($logger);
         $this->showtimesCtrl = new ShowtimesController($logger);
-        $this->cinemaCtrl    = new CinemaController($logger);
+        $this->cinemaCtrl = new CinemaController($logger);
     }
 
     /**
      * Route les requêtes qui arrivent au front controller
      */
-    public function routeRequest() {
+    public function routeRequest()
+    {
         try {
             // on "sainifie" les entrées
-            $sanitizedEntries = filter_input_array(INPUT_GET,
-                    ['action' => FILTER_SANITIZE_STRING]);
+            $sanitizedEntries = filter_input_array(
+                INPUT_GET,
+                ['action' => FILTER_DEFAULT]
+            );
             if ($sanitizedEntries && $sanitizedEntries['action'] !== '') {
                 // si l'action demandée est la liste des cinémas
                 if ($sanitizedEntries['action'] == "cinemasList") {
@@ -96,7 +100,7 @@ class Router {
                 // Activation de la route par défaut (page d'accueil)
                 $this->homeCtrl->home();
             }
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $this->homeCtrl->error($e);
         }
     }

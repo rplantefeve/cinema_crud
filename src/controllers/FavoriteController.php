@@ -77,8 +77,8 @@ class FavoriteController {
                     ['backToList' => FILTER_DEFAULT,
                 'filmID' => FILTER_SANITIZE_NUMBER_INT,
                 'userID' => FILTER_SANITIZE_NUMBER_INT,
-                'comment' => FILTER_SANITIZE_STRING,
-                'modificationInProgress' => FILTER_SANITIZE_STRING]);
+                'comment' => FILTER_DEFAULT,
+                'modificationInProgress' => FILTER_DEFAULT]);
 
             // si l'action demandée est retour en arrière
             if (!is_null($sanitizedEntries['backToList'])) {
@@ -122,7 +122,6 @@ class FavoriteController {
                         "filmID" => "",
                         "titre" => "",
                         "commentaire" => $sanitizedEntries["comment"]];
-                    $userID = $sanitizedEntries['userID'];
                 }
             }
             // sinon (nous sommes en GET) et que l'id du film et l'id du user sont bien renseignés
