@@ -46,10 +46,9 @@ class FavoriteController {
         $films = $this->prefereDAO->getFilmDAO()->getMoviesNonAlreadyMarkedAsFavorite($utilisateur->getUserId());
         // si nous sommes en mode modification
         if($addMode === "edit"){
-            // supprimer le film pour ne pas qu'il s'affiche deux fois
             $sanitizedEntries = filter_input_array(INPUT_GET,
                     ['filmID' => FILTER_SANITIZE_NUMBER_INT]);
-            // on a besoin de récupérer le commentaire à partir du film
+            // on a besoin de récupérer la préférence de film à partir de l'utilisateur et de l'identifiant du film
             $preferenceToBeModified = $this->prefereDAO->getFavoriteMovieInformations($utilisateur->getUserId(), $sanitizedEntries['filmID']);
             $toBeModified = $preferenceToBeModified->getFilm()->getFilmId();
         }
@@ -117,8 +116,9 @@ class FavoriteController {
             }
             // sinon (un film n'a pas été sélectionné)
             else {
-                
+                // on récupère la listes des films non marqués comme favoris
                 $films = $this->prefereDAO->getFilmDAO()->getMoviesNonAlreadyMarkedAsFavorite($utilisateur->getUserId());
+                // et la listes des films favoris
                 $preferences = $this->prefereDAO->getFavoriteMoviesFromUser($utilisateur->getUserId());
             }
         } 
