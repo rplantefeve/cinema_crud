@@ -49,8 +49,14 @@ class Router
                     $this->cinemaCtrl->cinemasList();
                 }
                 // si l'action demandée est la modification / Ajout d'un cinéma
-                elseif ($sanitizedEntries['action'] == "editCinema") {
+                elseif ($sanitizedEntries['action'] === "addCinema") {
+                    // Activation de la route addCinema
+                    $this->cinemaCtrl->cinemasList("add");
+                } elseif ($sanitizedEntries['action'] == "editCinema") {
                     // Activation de la route editCinema
+                    $this->cinemaCtrl->editCinema();
+                } elseif ($sanitizedEntries['action'] == "saveCinema") {
+                    // Activation de la route saveCinema
                     $this->cinemaCtrl->editCinema();
                 } // si l'action demandée est la Suppression d'un cinéma
                 elseif ($sanitizedEntries['action'] == "deleteCinema") {
@@ -110,5 +116,4 @@ class Router
             $this->homeCtrl->error($e);
         }
     }
-
 }

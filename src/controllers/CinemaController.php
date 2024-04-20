@@ -23,7 +23,7 @@ class CinemaController
     /**
      * Route Liste des cinémas
      */
-    public function cinemasList()
+    public function cinemasList($mode = "")
     {
         $isUserAdmin = false;
 
@@ -41,7 +41,8 @@ class CinemaController
         // En passant les variables nécessaires à son bon affichage
         $vue->generer([
             'cinemas'     => $cinemas,
-            'isUserAdmin' => $isUserAdmin]);
+            'isUserAdmin' => $isUserAdmin,
+            'mode'        => $mode]);
     }
 
     /**
