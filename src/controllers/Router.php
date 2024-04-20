@@ -80,9 +80,15 @@ class Router
                 } elseif ($sanitizedEntries['action'] == "editFavoriteMoviesList") {
                     // Activation de la route editFavoriteMoviesList
                     $this->favoriteCtrl->editFavoriteMoviesList();
+                } elseif ($sanitizedEntries['action'] == "addFavoriteMovie") {
+                    // Activation de la route addFavoriteMovie
+                    $this->favoriteCtrl->editFavoriteMoviesList("add");
+                } elseif ($sanitizedEntries['action'] == "saveFavoriteMovie") {
+                    // Activation de la route saveFavoriteMovie
+                    $this->favoriteCtrl->editFavoriteMovie();
                 } elseif ($sanitizedEntries['action'] == "editFavoriteMovie") {
                     // Activation de la route editFavoriteMovie
-                    $this->favoriteCtrl->editFavoriteMovie();
+                    $this->favoriteCtrl->editFavoriteMoviesList("edit");
                 } elseif ($sanitizedEntries['action'] == "deleteFavoriteMovie") {
                     // Activation de la route deleteFavoriteMovie
                     $this->favoriteCtrl->deleteFavoriteMovie();
