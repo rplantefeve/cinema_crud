@@ -11,36 +11,52 @@
     <?php
     // boucle de construction de la liste des cinémas
     foreach ($cinemas as $cinema) {
+        if ($mode === "edit" && isset($toBeModified) && $cinema->getCinemaId() === $toBeModified) {
     ?>
-        <tr>
-            <td><?= $cinema->getDenomination(); ?></td>
-            <td><?= $cinema->getAdresse(); ?></td>
-            <td>
-                <form name="cinemaShowtimes" action="index.php" method="GET">
-                    <input name="action" type="hidden" value="cinemaShowtimes" />
-                    <input name="cinemaID" type="hidden" value="<?= $cinema->getCinemaId(); ?>" />
-                    <input type="submit" value="Consulter les séances" />
+            <tr>
+                <form name="editCinema" action="index.php?action=saveCinema" method="POST">
+                    <td><input name="denomination" value="<?= $cinemaToBeModified->getDenomination() ?>" /></td>
+                    <td><textarea name="adresse"><?= $cinemaToBeModified->getAdresse() ?></textarea></td>
+                    <td colspan="3" class="centered">
+                        <input name="cinemaID" type="hidden" value="<?= $cinemaToBeModified->getCinemaId() ?>" />
+                        <input name="modificationInProgress" type="hidden" value="" />
+                        <input type="image" src="images/validateIcon.png" alt="Add" />
+                    </td>
                 </form>
-            </td>
-            <?php
-            if ($isUserAdmin) :
-            ?>
-                <td>
-                    <form name="modifyCinema" action="index.php" method="GET">
-                        <input name="action" type="hidden" value="editCinema">
-                        <input type="hidden" name="cinemaID" value="<?= $cinema->getCinemaId() ?>" />
-                        <input type="image" src="images/modifyIcon.png" alt="Modify" />
-                    </form>
-                </td>
-                <td>
-                    <form name="deleteCinema" action="index.php?action=deleteCinema" method="POST">
-                        <input type="hidden" name="cinemaID" value="<?= $cinema->getCinemaId() ?>" />
-                        <input type="image" src="images/deleteIcon.png" alt="Delete" />
-                    </form>
-                </td>
-            <?php endif; ?>
-        </tr>
+            </tr>
         <?php
+        } else {
+        ?>
+            <tr>
+                <td><?= $cinema->getDenomination(); ?></td>
+                <td><?= $cinema->getAdresse(); ?></td>
+                <td>
+                    <form name="cinemaShowtimes" action="index.php" method="GET">
+                        <input name="action" type="hidden" value="cinemaShowtimes" />
+                        <input name="cinemaID" type="hidden" value="<?= $cinema->getCinemaId(); ?>" />
+                        <input type="submit" value="Consulter les séances" />
+                    </form>
+                </td>
+                <?php
+                if ($isUserAdmin) :
+                ?>
+                    <td>
+                        <form name="modifyCinema" action="index.php" method="GET">
+                            <input name="action" type="hidden" value="editCinema">
+                            <input type="hidden" name="cinemaID" value="<?= $cinema->getCinemaId() ?>" />
+                            <input type="image" src="images/modifyIcon.png" alt="Modify" />
+                        </form>
+                    </td>
+                    <td>
+                        <form name="deleteCinema" action="index.php?action=deleteCinema" method="POST">
+                            <input type="hidden" name="cinemaID" value="<?= $cinema->getCinemaId() ?>" />
+                            <input type="image" src="images/deleteIcon.png" alt="Delete" />
+                        </form>
+                    </td>
+                <?php endif; ?>
+            </tr>
+        <?php
+        }
     }
     if ($isUserAdmin) :
         if (isset($mode) && $mode === "add") {
@@ -48,10 +64,10 @@
             <tr>
                 <form name="saveCinema" action="index.php?action=saveCinema" method="POST">
                     <td>
-                        <input name="denomination" placeholder="Dénomination" />
+                        <input name="denomination" placeholder="Dénomination" required/>
                     </td>
                     <td>
-                        <textarea name="adresse" placeholder="Renseignez l'adresse ici..."></textarea>
+                        <textarea name="adresse" placeholder="Renseignez l'adresse ici..." required></textarea>
                     </td>
                     <td colspan="3" class="centered">
                         <input type="image" src="images/addIcon.png" alt="Add" />

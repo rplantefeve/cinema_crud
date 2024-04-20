@@ -35,6 +35,17 @@ class CinemaController
 
         // on récupère la liste des cinémas ainsi que leurs informations
         $cinemas = $this->cinemaDAO->getCinemasList();
+        $cinemaToBeModified = [];
+        $toBeModified = null;
+
+        // si nous sommes en mode modification
+        if($mode === "edit"){
+            $sanitizedEntries = filter_input_array(INPUT_GET,
+                    ['cinemaID' => FILTER_SANITIZE_NUMBER_INT]);
+            // on a besoin de récupérer les infos du cinéma à partir de l'identifiant du cinéma
+            $cinemaToBeModified = $this->cinemaDAO->getCinemaByID($sanitizedEntries['cinemaID']);
+            $toBeModified = $cinemaToBeModified->getCinemaId();
+        }
 
         // On génère la vue films
         $vue = new View("CinemasList");
@@ -42,7 +53,9 @@ class CinemaController
         $vue->generer([
             'cinemas'     => $cinemas,
             'isUserAdmin' => $isUserAdmin,
-            'mode'        => $mode]);
+            'mode'        => $mode,
+            'cinemaToBeModified' => $cinemaToBeModified,
+            'toBeModified' => $toBeModified]);
     }
 
     /**
@@ -58,9 +71,6 @@ class CinemaController
             exit;
         }
 
-        // variable qui sert à conditionner l'affichage du formulaire
-        $isItACreation = false;
-
         // si la méthode de formulaire est la méthode POST
         if (filter_input(INPUT_SERVER, 'REQUEST_METHOD') === "POST") {
 
@@ -68,70 +78,34 @@ class CinemaController
             $sanEntries = filter_input_array(
                 INPUT_POST,
                 [
-                'backToList'             => FILTER_DEFAULT,
                 'cinemaID'               => FILTER_SANITIZE_NUMBER_INT,
                 'adresse'                => FILTER_DEFAULT,
                 'denomination'           => FILTER_DEFAULT,
                 'modificationInProgress' => FILTER_DEFAULT]
             );
 
-            // si l'action demandée est retour en arrière
-            if ($sanEntries['backToList'] !== null) {
-                // on redirige vers la page des cinémas
-                header('Location: index.php?action=cinemasList');
-                exit;
-            }
-            // sinon (l'action demandée est la sauvegarde d'un cinéma)
-            else {
 
-                // et que nous ne sommes pas en train de modifier un cinéma
-                if ($sanEntries['modificationInProgress'] == null) {
-                    // on ajoute le cinéma
-                    $this->cinemaDAO->insertNewCinema(
-                        $sanEntries['denomination'],
-                        $sanEntries['adresse']
-                    );
-                }
-                // sinon, nous sommes dans le cas d'une modification
-                else {
-                    // mise à jour du cinéma
-                    $this->cinemaDAO->updateCinema(
-                        $sanEntries['cinemaID'],
-                        $sanEntries['denomination'],
-                        $sanEntries['adresse']
-                    );
-                }
-                // on revient à la liste des cinémas
-                header('Location: index.php?action=cinemasList');
-                exit;
+            // et que nous ne sommes pas en train de modifier un cinéma
+            if ($sanEntries['modificationInProgress'] === null) {
+                // on ajoute le cinéma
+                $this->cinemaDAO->insertNewCinema(
+                    $sanEntries['denomination'],
+                    $sanEntries['adresse']
+                );
             }
-        }// si la page est chargée avec $_GET
-        elseif (filter_input(INPUT_SERVER, 'REQUEST_METHOD') === "GET") {
-            // on "sainifie" les entrées
-            $sanEntries = filter_input_array(
-                INPUT_GET,
-                [
-                'cinemaID' => FILTER_SANITIZE_NUMBER_INT
-            ]
-            );
-            if ($sanEntries && $sanEntries['cinemaID'] !== null && $sanEntries['cinemaID'] !==
-                    '') {
-                // on récupère les informations manquantes
-                $cinema = $this->cinemaDAO->getCinemaByID($sanEntries['cinemaID']);
-            }
-            // sinon, c'est une création
+            // sinon, nous sommes dans le cas d'une modification
             else {
-                $isItACreation = true;
-                $cinema = null;
+                // mise à jour du cinéma
+                $this->cinemaDAO->updateCinema(
+                    $sanEntries['cinemaID'],
+                    $sanEntries['denomination'],
+                    $sanEntries['adresse']
+                );
             }
+            // on revient à la liste des cinémas
+            header('Location: index.php?action=cinemasList');
+            exit;
         }
-        // On génère la vue films
-        $vue = new View("EditCinema");
-        // En passant les variables nécessaires à son bon affichage
-        $vue->generer([
-            'cinema'        => $cinema,
-            'isItACreation' => $isItACreation,
-        ]);
     }
 
     /**

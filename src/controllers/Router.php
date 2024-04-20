@@ -54,7 +54,7 @@ class Router
                     $this->cinemaCtrl->cinemasList("add");
                 } elseif ($sanitizedEntries['action'] == "editCinema") {
                     // Activation de la route editCinema
-                    $this->cinemaCtrl->editCinema();
+                    $this->cinemaCtrl->cinemasList("edit");
                 } elseif ($sanitizedEntries['action'] == "saveCinema") {
                     // Activation de la route saveCinema
                     $this->cinemaCtrl->editCinema();
