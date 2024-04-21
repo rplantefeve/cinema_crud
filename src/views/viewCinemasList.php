@@ -70,8 +70,12 @@
                         <textarea name="adresse" placeholder="Renseignez l'adresse ici..." required></textarea>
                     </td>
                     <td colspan="3" class="centered">
+                        <input type="image" src="images/cancelIcon.png" alt="Cancel" form="cancelForm" />
                         <input type="image" src="images/addIcon.png" alt="Add" />
                     </td>
+                </form>
+                <form name="cancelForm" id="cancelForm" method="GET" action="index.php">
+                    <input name="action" type="hidden" value="cinemasList"/>
                 </form>
             </tr>
         <?php
