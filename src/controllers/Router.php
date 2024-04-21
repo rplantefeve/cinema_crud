@@ -65,6 +65,12 @@ class Router
                 } elseif ($sanitizedEntries['action'] == "moviesList") {
                     // Activation de la route moviesList
                     $this->movieCtrl->moviesList();
+                } elseif ($sanitizedEntries['action'] === "addMovie") {
+                    // Activation de la route addMovie
+                    $this->movieCtrl->moviesList("add");
+                } elseif ($sanitizedEntries['action'] == "saveMovie") {
+                    // Activation de la route saveMovie
+                    $this->movieCtrl->editMovie();
                 } elseif ($sanitizedEntries['action'] == "editMovie") {
                     // Activation de la route editMovie
                     $this->movieCtrl->editMovie();

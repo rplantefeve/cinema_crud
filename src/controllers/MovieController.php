@@ -22,7 +22,7 @@ class MovieController {
     /**
      * Route Liste des films
      */
-    public function moviesList()
+    public function moviesList($mode = "")
     {
         $isUserAdmin = false;
 
@@ -40,7 +40,8 @@ class MovieController {
         // En passant les variables nécessaires à son bon affichage
         $vue->generer([
             'films'       => $films,
-            'isUserAdmin' => $isUserAdmin]);
+            'isUserAdmin' => $isUserAdmin,
+            'mode'        => $mode]);
     }
 
     /**
