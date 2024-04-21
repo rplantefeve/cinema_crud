@@ -19,7 +19,8 @@ class ShowtimesController
 {
     private $seanceDAO;
 
-    public function __construct(LoggerInterface $logger) {
+    public function __construct(LoggerInterface $logger)
+    {
         $this->seanceDAO = new SeanceDAO($logger);
         $this->seanceDAO->setCinemaDAO(new CinemaDAO($logger));
         $this->seanceDAO->setFilmDAO(new FilmDAO($logger));
@@ -38,8 +39,10 @@ class ShowtimesController
             $isUserAdmin = true;
         }
         // on "sainifie" les entrées
-        $sanitizedEntries = filter_input_array(INPUT_GET,
-                ['filmID' => FILTER_SANITIZE_NUMBER_INT]);
+        $sanitizedEntries = filter_input_array(
+            INPUT_GET,
+            ['filmID' => FILTER_SANITIZE_NUMBER_INT]
+        );
         // si l'identifiant du film a bien été passé en GET'
         if ($sanitizedEntries && !is_null($sanitizedEntries['filmID']) && $sanitizedEntries['filmID'] !==
                 '') {
@@ -87,8 +90,10 @@ class ShowtimesController
             $isUserAdmin = true;
         }
         // on "sainifie" les entrées
-        $sanitizedEntries = filter_input_array(INPUT_GET,
-                ['cinemaID' => FILTER_SANITIZE_NUMBER_INT]);
+        $sanitizedEntries = filter_input_array(
+            INPUT_GET,
+            ['cinemaID' => FILTER_SANITIZE_NUMBER_INT]
+        );
 
         // si l'identifiant du cinéma a bien été passé en GET
         if ($sanitizedEntries && !is_null($sanitizedEntries) && $sanitizedEntries['cinemaID'] !=
@@ -108,8 +113,10 @@ class ShowtimesController
         $films   = $this->seanceDAO->getFilmDAO()->getCinemaMoviesByCinemaID($cinemaID);
         $filmsUnplanned = $this->seanceDAO->getFilmDAO()->getNonPlannedMovies($cinemaID);
         // on récupère toutes les séances de films pour un cinéma donné
-        $seances = $this->seanceDAO->getAllMoviesShowtimesByCinemaID($films,
-                $cinemaID);
+        $seances = $this->seanceDAO->getAllMoviesShowtimesByCinemaID(
+            $films,
+            $cinemaID
+        );
 
         // On génère la vue séances du cinéma
         $vue = new View("CinemaShowtimes");
@@ -198,7 +205,7 @@ class ShowtimesController
                 )) {
                     // nous sommes dans le cas d'une modification
                     $isItACreation = false;
-                    $seance = new Seance;
+                    $seance = new Seance();
                     // on récupère les anciennes valeurs (utile pour retrouver la séance avant de la modifier
                     $seanceOld['dateheureDebutOld'] = $sanitizedEntries['heureDebut'];
                     $seanceOld['dateheureFinOld'] = $sanitizedEntries['heureFin'];

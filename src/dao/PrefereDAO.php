@@ -12,24 +12,28 @@ use Semeformation\Mvc\Cinema_crud\dao\UtilisateurDAO;
  *
  * @author User
  */
-class PrefereDAO extends DAO {
-
+class PrefereDAO extends DAO
+{
     private $filmDAO;
     private $utilisateurDAO;
 
-    public function getFilmDAO() {
+    public function getFilmDAO()
+    {
         return $this->filmDAO;
     }
 
-    public function getUtilisateurDAO() {
+    public function getUtilisateurDAO()
+    {
         return $this->utilisateurDAO;
     }
 
-    public function setFilmDAO(FilmDAO $filmDAO) {
+    public function setFilmDAO(FilmDAO $filmDAO)
+    {
         $this->filmDAO = $filmDAO;
     }
 
-    public function setUtilisateurDAO(UtilisateurDAO $utilisateurDAO) {
+    public function setUtilisateurDAO(UtilisateurDAO $utilisateurDAO)
+    {
         $this->utilisateurDAO = $utilisateurDAO;
     }
 
@@ -39,7 +43,8 @@ class PrefereDAO extends DAO {
      * @param array $row La ligne de résultat de la BDD.
      * @return Prefere
      */
-    protected function buildBusinessObject($row) {
+    protected function buildBusinessObject($row)
+    {
         $prefere = new Prefere();
         $prefere->setCommentaire($row['COMMENTAIRE']);
         // trouver l'utilisateur concerné grâce à son identifiant
@@ -62,7 +67,8 @@ class PrefereDAO extends DAO {
      * @param string $utilisateur Adresse email de l'utilisateur
      * @return array[][] Les films préférés (sous forme de tableau associatif) de l'utilisateur
      */
-    public function getFavoriteMoviesFromUser($id) {
+    public function getFavoriteMoviesFromUser($id)
+    {
         // on construit la requête qui va récupérer les films de l'utilisateur
         $requete = "SELECT f.filmID, f.titre, p.commentaire, p.userID from film f" .
                 " INNER JOIN prefere p ON f.filmID = p.filmID" .
@@ -80,16 +86,19 @@ class PrefereDAO extends DAO {
      * @param int $filmID Identifiant du film
      * @return Prefere
      */
-    public function getFavoriteMovieInformations($userID, $filmID) {
+    public function getFavoriteMovieInformations($userID, $filmID)
+    {
         // requête qui récupère les informations d'une préférence de film pour un utilisateur donné
         $requete = "SELECT f.titre, p.userID, p.filmID, p.commentaire"
                 . " FROM prefere p INNER JOIN film f ON p.filmID = f.filmID"
                 . " WHERE p.userID = :userID AND p.filmID = :filmID";
 
         // on extrait les résultats de la BDD
-        $resultat = $this->extraire1xN($requete,
-                ['userID' => $userID,
-            'filmID' => $filmID]);
+        $resultat = $this->extraire1xN(
+            $requete,
+            ['userID' => $userID,
+                'filmID' => $filmID]
+        );
         // on crée l'objet métier
         $prefere  = $this->buildBusinessObject($resultat);
         // on retourne le résultat
@@ -102,15 +111,18 @@ class PrefereDAO extends DAO {
      * @param int filmID Identifiant du film
      * @param string comment Commentaire de l'utilisateur à propos de ce film
      */
-    public function updateFavoriteMovie($userID, $filmID, $comment) {
+    public function updateFavoriteMovie($userID, $filmID, $comment)
+    {
         // on construit la requête d'insertion
         $requete = "UPDATE prefere SET commentaire = :comment"
                 . " WHERE filmID = :filmID AND userID = :userID";
         // exécution de la requête
-        $this->executeQuery($requete,
-                ['userID'  => $userID,
-            'filmID'  => $filmID,
-            'comment' => $comment]);
+        $this->executeQuery(
+            $requete,
+            ['userID'  => $userID,
+                'filmID'  => $filmID,
+                'comment' => $comment]
+        );
     }
 
     /**
@@ -119,7 +131,8 @@ class PrefereDAO extends DAO {
      * @param int filmID Identifiant du film
      * @param string comment Commentaire de l'utilisateur à propos de ce film
      */
-    public function insertNewFavoriteMovie($userID, $filmID, $comment = "") {
+    public function insertNewFavoriteMovie($userID, $filmID, $comment = "")
+    {
         // on construit la requête d'insertion
         $requete = "INSERT INTO prefere (filmID, userID, commentaire) VALUES ("
                 . ":filmID"
@@ -127,10 +140,12 @@ class PrefereDAO extends DAO {
                 . ", :comment)";
 
         // exécution de la requête
-        $this->executeQuery($requete,
-                ['filmID'  => $filmID,
-            'userID'  => $userID,
-            'comment' => $comment]);
+        $this->executeQuery(
+            $requete,
+            ['filmID'  => $filmID,
+                'userID'  => $userID,
+                'comment' => $comment]
+        );
 
         if ($this->logger) {
             $this->logger->info('Movie ' . $filmID . ' successfully added to ' . $userID . '\'s preferences.');
@@ -138,15 +153,18 @@ class PrefereDAO extends DAO {
     }
 
     /**
-     * 
+     *
      * @param type $userID
      * @param type $filmID
      */
-    public function deleteFavoriteMovie($userID, $filmID) {
-        $this->executeQuery("DELETE FROM prefere"
+    public function deleteFavoriteMovie($userID, $filmID)
+    {
+        $this->executeQuery(
+            "DELETE FROM prefere"
                 . " WHERE userID = :userID AND filmID = :filmID",
-                ['userID' => $userID,
-            'filmID' => $filmID]);
+            ['userID' => $userID,
+                'filmID' => $filmID]
+        );
 
         if ($this->logger) {
             $this->logger->info('Movie ' . $filmID . ' successfully deleted from ' . $userID . '\'s preferences.');

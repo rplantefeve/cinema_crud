@@ -13,10 +13,10 @@ use Psr\Log\LoggerInterface;
  */
 class CinemaController
 {
-
     private $cinemaDAO;
 
-    public function __construct(LoggerInterface $logger) {
+    public function __construct(LoggerInterface $logger)
+    {
         $this->cinemaDAO = new CinemaDAO($logger);
     }
 
@@ -39,9 +39,11 @@ class CinemaController
         $toBeModified = null;
 
         // si nous sommes en mode modification
-        if($mode === "edit"){
-            $sanitizedEntries = filter_input_array(INPUT_GET,
-                    ['cinemaID' => FILTER_SANITIZE_NUMBER_INT]);
+        if($mode === "edit") {
+            $sanitizedEntries = filter_input_array(
+                INPUT_GET,
+                ['cinemaID' => FILTER_SANITIZE_NUMBER_INT]
+            );
             // on a besoin de récupérer les infos du cinéma à partir de l'identifiant du cinéma
             $cinemaToBeModified = $this->cinemaDAO->getCinemaByID($sanitizedEntries['cinemaID']);
             $toBeModified = $cinemaToBeModified->getCinemaId();
@@ -78,10 +80,10 @@ class CinemaController
             $sanEntries = filter_input_array(
                 INPUT_POST,
                 [
-                'cinemaID'               => FILTER_SANITIZE_NUMBER_INT,
-                'adresse'                => FILTER_DEFAULT,
-                'denomination'           => FILTER_DEFAULT,
-                'modificationInProgress' => FILTER_DEFAULT]
+                    'cinemaID'               => FILTER_SANITIZE_NUMBER_INT,
+                    'adresse'                => FILTER_DEFAULT,
+                    'denomination'           => FILTER_DEFAULT,
+                    'modificationInProgress' => FILTER_DEFAULT]
             );
 
 

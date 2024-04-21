@@ -13,25 +13,29 @@ use Psr\Log\LoggerInterface;
  *
  * @author User
  */
-class FavoriteController {
-
+class FavoriteController
+{
     private $prefereDAO;
 
     /**
      * Constructeur de la classe
      */
-    public function __construct(LoggerInterface $logger) {
+    public function __construct(LoggerInterface $logger)
+    {
         $this->prefereDAO = new PrefereDAO($logger);
         // Ajout du DAO Utilisateur et Film pour le DAO Prefere
         $this->prefereDAO->setUtilisateurDAO(new UtilisateurDAO($logger));
         $this->prefereDAO->setFilmDAO(new FilmDAO($logger));
     }
 
-    public function editFavoriteMoviesList($addMode = "") {
+    public function editFavoriteMoviesList($addMode = "")
+    {
         session_start();
         // si l'utilisateur n'est pas connecté
-        if (!array_key_exists("user",
-                        $_SESSION)) {
+        if (!array_key_exists(
+            "user",
+            $_SESSION
+        )) {
             // renvoi à la page d'accueil
             header('Location: index.php');
             exit;
@@ -45,9 +49,11 @@ class FavoriteController {
         // on récupère la liste des films non marqués comme ayant un commentaire
         $films = $this->prefereDAO->getFilmDAO()->getMoviesNonAlreadyMarkedAsFavorite($utilisateur->getUserId());
         // si nous sommes en mode modification
-        if($addMode === "edit"){
-            $sanitizedEntries = filter_input_array(INPUT_GET,
-                    ['filmID' => FILTER_SANITIZE_NUMBER_INT]);
+        if($addMode === "edit") {
+            $sanitizedEntries = filter_input_array(
+                INPUT_GET,
+                ['filmID' => FILTER_SANITIZE_NUMBER_INT]
+            );
             // on a besoin de récupérer la préférence de film à partir de l'utilisateur et de l'identifiant du film
             $preferenceToBeModified = $this->prefereDAO->getFavoriteMovieInformations($utilisateur->getUserId(), $sanitizedEntries['filmID']);
             $toBeModified = $preferenceToBeModified->getFilm()->getFilmId();
@@ -56,20 +62,23 @@ class FavoriteController {
         // On génère la vue Films préférés
         $vue = new View("FavoriteMoviesList");
         // En passant les variables nécessaires à son bon affichage
-        $vue->generer(array(
+        $vue->generer([
             'utilisateur' => $utilisateur,
             'preferences' => $preferences,
             'preferenceToBeModified' => $preferenceToBeModified,
             'addMode' => $addMode,
             'films' => $films,
-            'toBeModified' => $toBeModified));
+            'toBeModified' => $toBeModified]);
     }
 
-    public function editFavoriteMovie() {
+    public function editFavoriteMovie()
+    {
         session_start();
         // si l'utilisateur n'est pas connecté
-        if (!array_key_exists("user",
-                        $_SESSION)) {
+        if (!array_key_exists(
+            "user",
+            $_SESSION
+        )) {
             // renvoi à la page d'accueil
             header('Location: index.php');
             exit;
@@ -80,34 +89,42 @@ class FavoriteController {
         $noneSelected = true;
 
         // si la méthode de formulaire est la méthode POST
-        if (filter_input(INPUT_SERVER,
-                        'REQUEST_METHOD') === "POST") {
+        if (filter_input(
+            INPUT_SERVER,
+            'REQUEST_METHOD'
+        ) === "POST") {
 
             // on assainit les entrées
-            $sanitizedEntries = filter_input_array(INPUT_POST,
-                    ['backToList' => FILTER_DEFAULT,
-                'filmID' => FILTER_SANITIZE_NUMBER_INT,
-                'userID' => FILTER_SANITIZE_NUMBER_INT,
-                'comment' => FILTER_DEFAULT,
-                'modificationInProgress' => FILTER_DEFAULT]);
+            $sanitizedEntries = filter_input_array(
+                INPUT_POST,
+                ['backToList' => FILTER_DEFAULT,
+                    'filmID' => FILTER_SANITIZE_NUMBER_INT,
+                    'userID' => FILTER_SANITIZE_NUMBER_INT,
+                    'comment' => FILTER_DEFAULT,
+                    'modificationInProgress' => FILTER_DEFAULT]
+            );
 
             $utilisateur = $this->prefereDAO->getUtilisateurDAO()->getUserByEmailAddress($_SESSION['user']);
 
-            // si un film a été selectionné 
+            // si un film a été selectionné
             if ($sanitizedEntries['filmID'] !== null && $sanitizedEntries['filmID'] !== "") {
                 // et que nous ne sommes pas en train de modifier une préférence
                 if (is_null($sanitizedEntries['modificationInProgress'])) {
                     // on ajoute la préférence de l'utilisateur
-                    $this->prefereDAO->insertNewFavoriteMovie($sanitizedEntries['userID'],
-                            $sanitizedEntries['filmID'],
-                            $sanitizedEntries['comment']);
+                    $this->prefereDAO->insertNewFavoriteMovie(
+                        $sanitizedEntries['userID'],
+                        $sanitizedEntries['filmID'],
+                        $sanitizedEntries['comment']
+                    );
                 }
                 // sinon, nous sommes dans le cas d'une modification
                 else {
                     // mise à jour de la préférence
-                    $this->prefereDAO->updateFavoriteMovie($sanitizedEntries['userID'],
-                            $sanitizedEntries['filmID'],
-                            $sanitizedEntries['comment']);
+                    $this->prefereDAO->updateFavoriteMovie(
+                        $sanitizedEntries['userID'],
+                        $sanitizedEntries['filmID'],
+                        $sanitizedEntries['comment']
+                    );
                 }
                 // on revient à la liste des préférences
                 // redirection vers la liste des préférences de films
@@ -121,14 +138,14 @@ class FavoriteController {
                 // et la listes des films favoris
                 $preferences = $this->prefereDAO->getFavoriteMoviesFromUser($utilisateur->getUserId());
             }
-        } 
+        }
 
         $donnees = [
             'utilisateur' => $utilisateur,
             'preferences' => $preferences,
             'films' => $films,
             'addMode' => "add",
-            'noneSelected' => $noneSelected
+            'noneSelected' => $noneSelected,
         ];
         // On génère la vue Films préférés
         $vue = new View("FavoriteMoviesList");
@@ -136,15 +153,20 @@ class FavoriteController {
         $vue->generer($donnees);
     }
 
-    public function deleteFavoriteMovie() {
+    public function deleteFavoriteMovie()
+    {
         // on assainit les entrées
-        $sanitizedEntries = filter_input_array(INPUT_POST,
-                ['userID' => FILTER_SANITIZE_NUMBER_INT,
-            'filmID' => FILTER_SANITIZE_NUMBER_INT]);
+        $sanitizedEntries = filter_input_array(
+            INPUT_POST,
+            ['userID' => FILTER_SANITIZE_NUMBER_INT,
+                'filmID' => FILTER_SANITIZE_NUMBER_INT]
+        );
 
         // suppression de la préférence de film
-        $this->prefereDAO->deleteFavoriteMovie($sanitizedEntries['userID'],
-                $sanitizedEntries['filmID']);
+        $this->prefereDAO->deleteFavoriteMovie(
+            $sanitizedEntries['userID'],
+            $sanitizedEntries['filmID']
+        );
         // redirection vers la liste des préférences de films
         header("Location: index.php?action=editFavoriteMoviesList");
         exit;

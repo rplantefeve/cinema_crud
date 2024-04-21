@@ -7,16 +7,18 @@ use Semeformation\Mvc\Cinema_crud\includes\Utils;
 use Psr\Log\LoggerInterface;
 use PDO;
 
-abstract class DAO {
-
+abstract class DAO
+{
     // logger
     protected $logger;
 
-    public function __construct(LoggerInterface $logger = null) {
+    public function __construct(LoggerInterface $logger = null)
+    {
         $this->logger = $logger;
     }
 
-    public function getLogger() {
+    public function getLogger()
+    {
         return $this->logger;
     }
 
@@ -24,9 +26,10 @@ abstract class DAO {
      * Méthode abstraite de construction d'un objet métier à partir d'une ligne de la BDD
      * Cette méthode DOIT être redéfinie dans les classes filles
      */
-    protected abstract function buildBusinessObject($row);
+    abstract protected function buildBusinessObject($row);
 
-    protected function buildBusinessObjects($rows) {
+    protected function buildBusinessObjects($rows)
+    {
         foreach ($rows as $row) {
             $objets[] = $this->buildBusinessObject($row);
         }
@@ -38,7 +41,8 @@ abstract class DAO {
      * @param type $results
      * @return Object[]
      */
-    protected function extractObjects($results) {
+    protected function extractObjects($results)
+    {
         if (!is_null($results)) {
             // on crée les objets métiers
             $objects = $this->buildBusinessObjects($results);
@@ -56,7 +60,8 @@ abstract class DAO {
      * @param array $params Paramètres de la requête
      * @return PDOStatement Résultats de la requête
      */
-    public function executeQuery($sql, $params = null) {
+    public function executeQuery($sql, $params = null)
+    {
         // si pas de paramètres
         if (is_null($params)) {
             // exécution directe
@@ -84,12 +89,15 @@ abstract class DAO {
      * @param boolean $estVisible (visualisation du résultat)
      * @return array[][] ou null
      */
-    protected function extraireNxN($unSQLSelect, $parametres = null, $estVisible = false) {
+    protected function extraireNxN($unSQLSelect, $parametres = null, $estVisible = false)
+    {
         // tableau des résultats
-        $tableau = array();
+        $tableau = [];
         // résultat de la requête
-        $resultat = $this->executeQuery($unSQLSelect,
-                $parametres);
+        $resultat = $this->executeQuery(
+            $unSQLSelect,
+            $parametres
+        );
 
         // boucle de construction du tableau de résultats
         while ($ligne = $resultat->fetch(PDO::FETCH_ASSOC)) {
@@ -104,8 +112,10 @@ abstract class DAO {
 
         // si l'on souhaite afficher le contenu du tableau (DEBUG MODE)
         if ($estVisible) {
-            Utils::afficherResultat($tableau,
-                    $unSQLSelect);
+            Utils::afficherResultat(
+                $tableau,
+                $unSQLSelect
+            );
         }
 
         // on retourne le tableau de résultats
@@ -119,16 +129,21 @@ abstract class DAO {
      * @param boolean $estVisible (visualisation du résultat)
      * @return array[] ou null
      */
-    protected function extraire1xN($unSQLSelect, $parametres = null, $estVisible = false) {
-        $result = $this->extraireNxN($unSQLSelect,
-                $parametres,
-                false);
+    protected function extraire1xN($unSQLSelect, $parametres = null, $estVisible = false)
+    {
+        $result = $this->extraireNxN(
+            $unSQLSelect,
+            $parametres,
+            false
+        );
         if (isset($result[0])) {
             $result = $result[0];
         }
         if ($estVisible) {
-            Utils::afficherResultat($result,
-                    $unSQLSelect);
+            Utils::afficherResultat(
+                $result,
+                $unSQLSelect
+            );
         }
         return $result;
     }

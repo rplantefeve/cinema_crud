@@ -14,7 +14,7 @@
                         <option value="<?= $cinema->getCinemaId() ?>"><?= $cinema->getDenomination() ?></option>
                         <?php
                     endforeach;
-                    ?>    
+        ?>    
                 </select>
                 <input name="action" type="hidden" value="editShowtime">
                 <input name = "from" type = "hidden" value = "movie">
@@ -89,8 +89,8 @@
                     </tr>
                     <?php
                 }
-                if ($adminConnected):
-                    ?>
+            if ($adminConnected):
+                ?>
                     <tr class="new">
                         <td colspan="6">
                             <form action="index.php" method="get">
@@ -103,14 +103,14 @@
                         </td>
                     </tr>
                     <?php
-                endif;
-                ?>  
+            endif;
+            ?>  
             </table>
             <br>
             <?php
         } // fin de la boucle
     endif;
-    ?>
+?>
 </ul>
 <form method="GET" action="index.php">
     <input name="action" type="hidden" value="moviesList"/>

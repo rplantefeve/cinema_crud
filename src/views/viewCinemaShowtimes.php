@@ -14,7 +14,7 @@
                         <option value="<?= $film->getFilmId() ?>"><?= $film->getTitre() ?></option>
                         <?php
                     endforeach;
-                    ?>    
+        ?>    
                 </select>
                 <input name="action" type="hidden" value="editShowtime">
                 <input name = "from" type = "hidden" value = "<?= $_SERVER['SCRIPT_NAME'] ?>">
@@ -91,8 +91,8 @@
 
                     <?php
                 }
-                if ($adminConnected):
-                    ?>
+            if ($adminConnected):
+                ?>
                     <tr class="new">
                         <td colspan="6">
                             <form action="index.php" method="get">
@@ -105,13 +105,13 @@
                         </td>
                     </tr>
                 <?php endif;
-                ?>
+            ?>
             </table>
             <br>
             <?php
         } // fin de la boucle de parcours des films
     } // fin du if au moins un film
-    ?>
+?>
 </ul>
 <br>
 <form method="GET" action="index.php">

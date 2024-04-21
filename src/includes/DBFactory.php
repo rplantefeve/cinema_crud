@@ -7,7 +7,6 @@ use Psr\Log\LoggerInterface;
 
 class DBFactory
 {
-
     // logger
     private $logger;
     // instance unique de la classe (singleton)
@@ -41,7 +40,7 @@ class DBFactory
     {
         if (!$this->pdoInstance) {
             // on récupère les infos dans le fichier de config yml
-            $infoConnexion = \parse_ini_file(\dirname(__DIR__).'/conf/parameters.ini');
+            $infoConnexion = \parse_ini_file(\dirname(__DIR__) . '/conf/parameters.ini');
             // set des attributs
             $this->user = $infoConnexion['database_user'];
             $this->pass = $infoConnexion['database_password'];
@@ -52,7 +51,7 @@ class DBFactory
                 $this->user,
                 $this->pass,
                 [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-                PDO::ATTR_CASE => PDO::CASE_UPPER]
+                    PDO::ATTR_CASE => PDO::CASE_UPPER]
             );
             if ($this->logger) {
                 $this->logger->info('Database connection succeeded.');

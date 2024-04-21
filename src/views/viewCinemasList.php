@@ -12,7 +12,7 @@
     // boucle de construction de la liste des cinémas
     foreach ($cinemas as $cinema) {
         if ($mode === "edit" && isset($toBeModified) && $cinema->getCinemaId() === $toBeModified) {
-    ?>
+            ?>
             <tr>
                 <form name="editCinema" action="index.php?action=saveCinema" method="POST">
                     <td><input name="denomination" value="<?= $cinemaToBeModified->getDenomination() ?>" /></td>
@@ -27,7 +27,7 @@
             </tr>
         <?php
         } else {
-        ?>
+            ?>
             <tr>
                 <td><?= $cinema->getDenomination(); ?></td>
                 <td><?= $cinema->getAdresse(); ?></td>
@@ -39,8 +39,8 @@
                     </form>
                 </td>
                 <?php
-                if ($isUserAdmin) :
-                ?>
+                    if ($isUserAdmin) :
+                        ?>
                     <td>
                         <form name="modifyCinema" action="index.php" method="GET">
                             <input name="action" type="hidden" value="editCinema">
@@ -59,8 +59,8 @@
         <?php
         }
     }
-    if ($isUserAdmin) :
-        if (isset($mode) && $mode === "add") {
+if ($isUserAdmin) :
+    if (isset($mode) && $mode === "add") {
         ?>
             <tr>
                 <form name="saveCinema" action="index.php?action=saveCinema" method="POST">
@@ -77,7 +77,7 @@
                 </form>
             </tr>
         <?php
-        } else {
+    } else {
         ?>
             <tr class="new">
                 <td colspan="5">

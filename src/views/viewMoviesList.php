@@ -12,7 +12,7 @@
     // boucle de construction de la liste des cinémas
     foreach ($films as $film) {
         if ($mode === "edit" && isset($toBeModified) && $film->getFilmId() === $toBeModified) {
-    ?>
+            ?>
             <tr>
                 <form name="editMovie" action="index.php?action=saveMovie" method="POST">
                     <td><input name="titre" value="<?= $filmToBeModified->getTitre() ?>" /></td>
@@ -26,7 +26,7 @@
                 </form>
             </tr>
         <?php } else {
-        ?>
+            ?>
             <tr>
                 <td><?= $film->getTitre(); ?></td>
                 <td><?= $film->getTitreOriginal(); ?></td>
@@ -56,10 +56,10 @@
     <?php
         }
     }
-    ?>
+?>
     <?php if ($isUserAdmin) :
         if (isset($mode) && $mode === "add") {
-    ?>
+            ?>
             <tr>
                 <form name="saveMovie" action="index.php?action=saveMovie" method="POST">
                     <td><input name="titre" type="text" placeholder="Titre" required /></td>
@@ -72,7 +72,7 @@
             </tr>
         <?php
         } else {
-        ?>
+            ?>
             <tr class="new">
                 <td colspan="5">
                     <form name="addMovie" action="index.php">
@@ -82,7 +82,7 @@
                 </td>
             </tr>
     <?php }
-    endif; ?>
+        endif; ?>
 </table>
 <form name="cancelForm" id="cancelForm" method="GET" action="index.php">
     <input name="action" type="hidden" value="moviesList" />

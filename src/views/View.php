@@ -11,7 +11,6 @@ use Exception;
  */
 class View
 {
-
     // Nom du fichier associé à la vue
     private $fichier;
     // titre de la vue
@@ -30,12 +29,16 @@ class View
     public function generer($donnees = null)
     {
         // Génération de la partie spécifique de la vue
-        $content = $this->genererFichier($this->fichier,
-                $donnees);
+        $content = $this->genererFichier(
+            $this->fichier,
+            $donnees
+        );
         // utilisation du template avec chargement des données spécifiques
-        $vue = $this->genererFichier(__DIR__ . '/viewTemplate.php',
-                ['title' => $this->title,
-            'content' => $content]);
+        $vue = $this->genererFichier(
+            __DIR__ . '/viewTemplate.php',
+            ['title' => $this->title,
+                'content' => $content]
+        );
         // Renvoi de la vue générée au navigateur
         echo $vue;
     }
@@ -51,7 +54,7 @@ class View
             if ($donnees !== null) {
                 extract($donnees);
             }
-            // Toutes les données ne vont pas au navigateur mais dans un tampon 
+            // Toutes les données ne vont pas au navigateur mais dans un tampon
             ob_start();
             // La vue est envoyée dans la tampon de sortie
             include $fichier;

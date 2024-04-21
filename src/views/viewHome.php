@@ -18,13 +18,13 @@
                 if (!$areCredentialsOK):
                     echo "Les informations de connexions ne sont pas correctes.";
                 endif;
-                ?>
+        ?>
             </div>
             <input type="submit" value="Editer ma liste de films préférés"/>
         </form>
         <p>Pas encore d'espace personnel ? <a href="index.php?action=createNewUser">Créer sa liste de films préférés.</a></p>
         <?php
-    // sinon (utilisateur authentifié)
+        // sinon (utilisateur authentifié)
     else:
         ?>
         <form method="GET" action="index.php">

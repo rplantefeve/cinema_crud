@@ -12,8 +12,8 @@ use Exception;
  *
  * @author User
  */
-class HomeController {
-
+class HomeController
+{
     /**
      * L'utilisateur de l'application
      */
@@ -22,7 +22,8 @@ class HomeController {
     /**
      * Constructeur de la classe
      */
-    public function __construct(LoggerInterface $logger) {
+    public function __construct(LoggerInterface $logger)
+    {
         $this->utilisateurDAO = new UtilisateurDAO($logger);
     }
 
@@ -30,7 +31,8 @@ class HomeController {
      * Route Accueil
      */
 
-    public function home() {
+    public function home()
+    {
         session_start();
         // personne d'authentifié à ce niveau
         $loginSuccess = false;
@@ -39,21 +41,29 @@ class HomeController {
         $areCredentialsOK = true;
 
         // si l'utilisateur est déjà authentifié
-        if (array_key_exists("user",
-                        $_SESSION)) {
+        if (array_key_exists(
+            "user",
+            $_SESSION
+        )) {
             $loginSuccess = true;
             // Sinon (pas d'utilisateur authentifié pour l'instant)
         } else {
             // si la méthode POST a été employée
-            if (filter_input(INPUT_SERVER,
-                            'REQUEST_METHOD') === "POST") {
+            if (filter_input(
+                INPUT_SERVER,
+                'REQUEST_METHOD'
+            ) === "POST") {
                 // on "sainifie" les entrées
-                $sanitizedEntries = filter_input_array(INPUT_POST,
-                        ['email' => FILTER_SANITIZE_EMAIL,
-                    'password' => FILTER_DEFAULT]);
+                $sanitizedEntries = filter_input_array(
+                    INPUT_POST,
+                    ['email' => FILTER_SANITIZE_EMAIL,
+                        'password' => FILTER_DEFAULT]
+                );
 
-                $this->login($sanitizedEntries,
-                        $areCredentialsOK);
+                $this->login(
+                    $sanitizedEntries,
+                    $areCredentialsOK
+                );
             }
         }
 
@@ -65,11 +75,14 @@ class HomeController {
             'loginSuccess' => $loginSuccess]);
     }
 
-    private function login($sanitizedEntries, &$areCredentialsOK) {
+    private function login($sanitizedEntries, &$areCredentialsOK)
+    {
         try {
             // On vérifie l'existence de l'utilisateur
-            $this->utilisateurDAO->verifyUserCredentials($sanitizedEntries['email'],
-                    $sanitizedEntries['password']);
+            $this->utilisateurDAO->verifyUserCredentials(
+                $sanitizedEntries['email'],
+                $sanitizedEntries['password']
+            );
 
             // on enregistre l'utilisateur
             $_SESSION['user'] = $sanitizedEntries['email'];
@@ -84,7 +97,8 @@ class HomeController {
         }
     }
 
-    public function createNewUser() {
+    public function createNewUser()
+    {
         // variables de contrôles du formulaire de création
         $isFirstNameEmpty = false;
         $isLastNameEmpty = false;
@@ -95,15 +109,19 @@ class HomeController {
         $isPasswordValid = true;
 
         // si la méthode POST est utilisée, cela signifie que le formulaire a été envoyé
-        if (filter_input(INPUT_SERVER,
-                        'REQUEST_METHOD') === "POST") {
+        if (filter_input(
+            INPUT_SERVER,
+            'REQUEST_METHOD'
+        ) === "POST") {
             // on "sainifie" les entrées
-            $sanitizedEntries = filter_input_array(INPUT_POST,
-                    ['firstName' => FILTER_DEFAULT,
-                'lastName' => FILTER_DEFAULT,
-                'email' => FILTER_SANITIZE_EMAIL,
-                'password' => FILTER_DEFAULT,
-                'passwordConfirmation' => FILTER_DEFAULT]);
+            $sanitizedEntries = filter_input_array(
+                INPUT_POST,
+                ['firstName' => FILTER_DEFAULT,
+                    'lastName' => FILTER_DEFAULT,
+                    'email' => FILTER_SANITIZE_EMAIL,
+                    'password' => FILTER_DEFAULT,
+                    'passwordConfirmation' => FILTER_DEFAULT]
+            );
 
             // si le prénom n'a pas été renseigné
             if ($sanitizedEntries['firstName'] === "") {
@@ -143,13 +161,17 @@ class HomeController {
             // si les champs nécessaires ne sont pas vides, que l'utilisateur est unique et que le mot de passe est valide
             if (!$isFirstNameEmpty && !$isLastNameEmpty && !$isEmailAddressEmpty && $isUserUnique && !$isPasswordEmpty && $isPasswordValid) {
                 // hash du mot de passe
-                $password = password_hash($sanitizedEntries['password'],
-                        PASSWORD_DEFAULT);
+                $password = password_hash(
+                    $sanitizedEntries['password'],
+                    PASSWORD_DEFAULT
+                );
                 // créer l'utilisateur
-                $this->utilisateurDAO->createUser($sanitizedEntries['firstName'],
-                        $sanitizedEntries['lastName'],
-                        $sanitizedEntries['email'],
-                        $password);
+                $this->utilisateurDAO->createUser(
+                    $sanitizedEntries['firstName'],
+                    $sanitizedEntries['lastName'],
+                    $sanitizedEntries['email'],
+                    $password
+                );
 
                 session_start();
                 // authentifier l'utilisateur
@@ -183,13 +205,15 @@ class HomeController {
         $vue->generer($donnees);
     }
 
-    public function logout() {
+    public function logout()
+    {
         session_start();
         session_destroy();
         header('Location: index.php');
     }
 
-    public function error($e) {
+    public function error($e)
+    {
 
         $this->utilisateurDAO->getLogger()->error('Exception : ' . $e->getMessage() . ', File : ' . $e->getFile() . ', Line : ' . $e->getLine() . ', Stack trace : ' . $e->getTraceAsString());
         $vue = new View("Error");

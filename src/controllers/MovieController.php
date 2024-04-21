@@ -11,11 +11,12 @@ use Psr\Log\LoggerInterface;
  *
  * @author User
  */
-class MovieController {
-
+class MovieController
+{
     private $filmDAO;
 
-    public function __construct(LoggerInterface $logger) {
+    public function __construct(LoggerInterface $logger)
+    {
         $this->filmDAO = new FilmDAO($logger);
     }
 
@@ -38,9 +39,11 @@ class MovieController {
         $toBeModified = null;
 
         // si nous sommes en mode modification
-        if($mode === "edit"){
-            $sanitizedEntries = filter_input_array(INPUT_GET,
-                    ['filmID' => FILTER_SANITIZE_NUMBER_INT]);
+        if($mode === "edit") {
+            $sanitizedEntries = filter_input_array(
+                INPUT_GET,
+                ['filmID' => FILTER_SANITIZE_NUMBER_INT]
+            );
             // on a besoin de récupérer les infos du film à partir de l'identifiant du film
             $filmToBeModified = $this->filmDAO->getMovieByID($sanitizedEntries['filmID']);
             $toBeModified = $filmToBeModified->getFilmId();
@@ -110,11 +113,11 @@ class MovieController {
             $sanEntries = filter_input_array(
                 INPUT_POST,
                 [
-                'filmID'                 => FILTER_SANITIZE_NUMBER_INT,
-                'titre'                  => FILTER_DEFAULT,
-                'titreOriginal'          => FILTER_DEFAULT,
-                'modificationInProgress' => FILTER_DEFAULT
-            ]
+                    'filmID'                 => FILTER_SANITIZE_NUMBER_INT,
+                    'titre'                  => FILTER_DEFAULT,
+                    'titreOriginal'          => FILTER_DEFAULT,
+                    'modificationInProgress' => FILTER_DEFAULT,
+                ]
             );
 
 

@@ -14,7 +14,7 @@
         // boucle de création du tableau
         foreach ($preferences as $prefere) {
             if ($addMode === "edit" && isset($toBeModified) && $prefere->getFilm()->getFilmId() === $toBeModified) {
-            ?>
+                ?>
                 <tr>
                     <form name="editFavoriteMovie" action="index.php?action=saveFavoriteMovie" method="POST">
                         <td><?= $preferenceToBeModified->getFilm()->getTitre() ?></td>
@@ -30,7 +30,7 @@
                 </tr>
             <?php
             } else {
-            ?>
+                ?>
                 <tr>
                     <td><?= $prefere->getFilm()->getTitre(); ?></td>
                     <td><?= $prefere->getCommentaire(); ?></td>
@@ -54,23 +54,23 @@
             }
         }
     }
-    if ($addMode === "add") {
-        ?>
+if ($addMode === "add") {
+    ?>
         <tr>
             <form name="addFavoriteMovie" action="index.php?action=saveFavoriteMovie" method="POST">
                 <td>
                     <select name="filmID">
                         <option value="default">Choisissez un film</option>
                         <?php
-                        // s'il y a des résultats
-                        if ($films) {
-                            foreach ($films as $film) {
-                        ?>
+                    // s'il y a des résultats
+                    if ($films) {
+                        foreach ($films as $film) {
+                            ?>
                                 <option value="<?= $film->getFilmId(); ?>"><?= $film->getTitre(); ?></option>
                         <?php
-                            }
                         }
-                        ?>
+                    }
+    ?>
                     </select>
                     <?php
                     if (isset($noneSelected) && $noneSelected === true) : ?>
@@ -88,7 +88,7 @@
             </form>
         </tr>
     <?php
-    } else {
+} else {
     ?>
         <tr class="new">
             <td colspan="4">
