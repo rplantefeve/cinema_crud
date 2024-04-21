@@ -31,7 +31,7 @@
         foreach ($films as $film) {
             ?>
             <li><h3><?= $film->getTitre() ?></h3></li>
-            <table class="std">
+            <table class="showtime">
                 <tr>
                     <th>Date</th>
                     <th>Début</th>

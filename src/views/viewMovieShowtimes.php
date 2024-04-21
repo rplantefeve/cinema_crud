@@ -30,7 +30,7 @@
         foreach ($cinemas as $cinema) {
             ?>
             <li><h3><?= $cinema->getDenomination() ?></h3></li>
-            <table class="std">
+            <table class="showtime">
                 <tr>
                     <th>Date</th>
                     <th>Début</th>
