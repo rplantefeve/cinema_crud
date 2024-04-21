@@ -16,10 +16,11 @@
             <tr>
                 <form name="editMovie" action="index.php?action=saveMovie" method="POST">
                     <td><input name="titre" value="<?= $filmToBeModified->getTitre() ?>" /></td>
-                    <td><input name="titreOriginal" value="<?= $filmToBeModified->getTitreOriginal() ?>"/></td>
+                    <td><input name="titreOriginal" value="<?= $filmToBeModified->getTitreOriginal() ?>" /></td>
                     <td colspan="3" class="centered">
                         <input name="filmID" type="hidden" value="<?= $filmToBeModified->getFilmId() ?>" />
                         <input name="modificationInProgress" type="hidden" value="" />
+                        <input type="image" src="images/cancelIcon.png" alt="Cancel" form="cancelForm" />
                         <input type="image" src="images/validateIcon.png" alt="Add" />
                     </td>
                 </form>
@@ -64,6 +65,7 @@
                     <td><input name="titre" type="text" placeholder="Titre" required /></td>
                     <td><input name="titreOriginal" type="text" placeholder="Titre original" /></td>
                     <td colspan="3" class="centered">
+                        <input type="image" src="images/cancelIcon.png" alt="Cancel" form="cancelForm" />
                         <input type="image" src="images/addIcon.png" alt="Add" />
                     </td>
                 </form>
@@ -82,6 +84,9 @@
     <?php }
     endif; ?>
 </table>
+<form name="cancelForm" id="cancelForm" method="GET" action="index.php">
+    <input name="action" type="hidden" value="moviesList" />
+</form>
 <form name="backToMainPage" action="index.php">
     <input type="submit" value="Retour à l'accueil" />
 </form>

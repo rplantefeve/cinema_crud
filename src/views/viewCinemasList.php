@@ -20,6 +20,7 @@
                     <td colspan="3" class="centered">
                         <input name="cinemaID" type="hidden" value="<?= $cinemaToBeModified->getCinemaId() ?>" />
                         <input name="modificationInProgress" type="hidden" value="" />
+                        <input type="image" src="images/cancelIcon.png" alt="Cancel" form="cancelForm" />
                         <input type="image" src="images/validateIcon.png" alt="Add" />
                     </td>
                 </form>
@@ -74,9 +75,6 @@
                         <input type="image" src="images/addIcon.png" alt="Add" />
                     </td>
                 </form>
-                <form name="cancelForm" id="cancelForm" method="GET" action="index.php">
-                    <input name="action" type="hidden" value="cinemasList"/>
-                </form>
             </tr>
         <?php
         } else {
@@ -93,6 +91,9 @@
     <?php }
     endif; ?>
 </table>
+<form name="cancelForm" id="cancelForm" method="GET" action="index.php">
+    <input name="action" type="hidden" value="cinemasList" />
+</form>
 <form name="backToMainPage" action="index.php">
     <input type="submit" value="Retour à l'accueil" />
 </form>

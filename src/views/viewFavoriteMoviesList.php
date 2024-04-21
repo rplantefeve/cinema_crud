@@ -23,6 +23,7 @@
                             <input type="hidden" name="userID" value="<?= $utilisateur->getUserId(); ?>" />
                             <input name="filmID" type="hidden" value="<?= $preferenceToBeModified->getFilm()->getFilmId() ?>" />
                             <input name="modificationInProgress" type="hidden" value="" />
+                            <input type="image" src="images/cancelIcon.png" alt="Cancel" form="cancelForm" />
                             <input type="image" src="images/validateIcon.png" alt="Add" />
                         </td>
                     </form>
@@ -81,6 +82,7 @@
                 </td>
                 <td colspan="2" class="centered">
                     <input type="hidden" name="userID" value="<?= $utilisateur->getUserId(); ?>" />
+                    <input type="image" src="images/cancelIcon.png" alt="Cancel" form="cancelForm" />
                     <input type="image" src="images/addIcon.png" alt="Add" />
                 </td>
             </form>
@@ -98,7 +100,9 @@
         </tr>
     <?php } ?>
 </table>
-
+<form name="cancelForm" id="cancelForm" method="GET" action="index.php">
+    <input name="action" type="hidden" value="editFavoriteMoviesList" />
+</form>
 <form name="backToMainPage" action="index.php">
     <input type="submit" value="Retour à l'accueil" />
 </form>
