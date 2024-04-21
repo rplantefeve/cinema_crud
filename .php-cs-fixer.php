@@ -8,8 +8,13 @@ $finder = (new PhpCsFixer\Finder())
     ->ignoreVCS(true);
 
 return (new PhpCsFixer\Config())
+    ->setUsingCache(false)
+    ->setRiskyAllowed(true)
     ->setRules([
         '@PER-CS' => true,
         '@PHP82Migration' => true,
+        '@PSR1' => true,
+        '@PSR12' => true,
+        'psr_autoloading' => true
     ])
     ->setFinder($finder);
