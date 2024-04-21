@@ -11,34 +11,49 @@
     <?php
     // boucle de construction de la liste des cinémas
     foreach ($films as $film) {
+        if ($mode === "edit" && isset($toBeModified) && $film->getFilmId() === $toBeModified) {
     ?>
-        <tr>
-            <td><?= $film->getTitre(); ?></td>
-            <td><?= $film->getTitreOriginal(); ?></td>
-            <td>
-                <form name="movieShowtimes" action="index.php" method="GET">
-                    <input name="action" type="hidden" value="movieShowtimes" />
-                    <input name="filmID" type="hidden" value="<?= $film->getFilmId(); ?>" />
-                    <input type="submit" value="Consulter les séances" />
+            <tr>
+                <form name="editMovie" action="index.php?action=saveMovie" method="POST">
+                    <td><input name="titre" value="<?= $filmToBeModified->getTitre() ?>" /></td>
+                    <td><input name="titreOriginal" value="<?= $filmToBeModified->getTitreOriginal() ?>"/></td>
+                    <td colspan="3" class="centered">
+                        <input name="filmID" type="hidden" value="<?= $filmToBeModified->getFilmId() ?>" />
+                        <input name="modificationInProgress" type="hidden" value="" />
+                        <input type="image" src="images/validateIcon.png" alt="Add" />
+                    </td>
                 </form>
-            </td>
-            <?php if ($isUserAdmin) : ?>
+            </tr>
+        <?php } else {
+        ?>
+            <tr>
+                <td><?= $film->getTitre(); ?></td>
+                <td><?= $film->getTitreOriginal(); ?></td>
                 <td>
-                    <form name="modifyMovie" action="index.php" method="GET">
-                        <input name="action" type="hidden" value="editMovie">
-                        <input type="hidden" name="filmID" value="<?= $film->getFilmId() ?>" />
-                        <input type="image" src="images/modifyIcon.png" alt="Modify" />
+                    <form name="movieShowtimes" action="index.php" method="GET">
+                        <input name="action" type="hidden" value="movieShowtimes" />
+                        <input name="filmID" type="hidden" value="<?= $film->getFilmId(); ?>" />
+                        <input type="submit" value="Consulter les séances" />
                     </form>
                 </td>
-                <td>
-                    <form name="deleteMovie" action="index.php?action=deleteMovie" method="POST">
-                        <input type="hidden" name="filmID" value="<?= $film->getFilmId() ?>" />
-                        <input type="image" src="images/deleteIcon.png" alt="Delete" />
-                    </form>
-                </td>
-            <?php endif; ?>
-        </tr>
+                <?php if ($isUserAdmin) : ?>
+                    <td>
+                        <form name="modifyMovie" action="index.php" method="GET">
+                            <input name="action" type="hidden" value="editMovie">
+                            <input type="hidden" name="filmID" value="<?= $film->getFilmId() ?>" />
+                            <input type="image" src="images/modifyIcon.png" alt="Modify" />
+                        </form>
+                    </td>
+                    <td>
+                        <form name="deleteMovie" action="index.php?action=deleteMovie" method="POST">
+                            <input type="hidden" name="filmID" value="<?= $film->getFilmId() ?>" />
+                            <input type="image" src="images/deleteIcon.png" alt="Delete" />
+                        </form>
+                    </td>
+                <?php endif; ?>
+            </tr>
     <?php
+        }
     }
     ?>
     <?php if ($isUserAdmin) :
@@ -47,7 +62,7 @@
             <tr>
                 <form name="saveMovie" action="index.php?action=saveMovie" method="POST">
                     <td><input name="titre" type="text" placeholder="Titre" required /></td>
-                    <td><input name="titreOriginal" type="text" placeholder="Titre original"/></td>
+                    <td><input name="titreOriginal" type="text" placeholder="Titre original" /></td>
                     <td colspan="3" class="centered">
                         <input type="image" src="images/addIcon.png" alt="Add" />
                     </td>

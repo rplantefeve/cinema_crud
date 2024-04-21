@@ -34,6 +34,17 @@ class MovieController {
 
         // on récupère la liste des films ainsi que leurs informations
         $films = $this->filmDAO->getMoviesList();
+        $filmToBeModified = [];
+        $toBeModified = null;
+
+        // si nous sommes en mode modification
+        if($mode === "edit"){
+            $sanitizedEntries = filter_input_array(INPUT_GET,
+                    ['filmID' => FILTER_SANITIZE_NUMBER_INT]);
+            // on a besoin de récupérer les infos du film à partir de l'identifiant du film
+            $filmToBeModified = $this->filmDAO->getMovieByID($sanitizedEntries['filmID']);
+            $toBeModified = $filmToBeModified->getFilmId();
+        }
 
         // On génère la vue films
         $vue = new View("MoviesList");
@@ -41,7 +52,9 @@ class MovieController {
         $vue->generer([
             'films'       => $films,
             'isUserAdmin' => $isUserAdmin,
-            'mode'        => $mode]);
+            'mode'        => $mode,
+            'filmToBeModified' => $filmToBeModified,
+            'toBeModified' => $toBeModified]);
     }
 
     /**
@@ -97,7 +110,6 @@ class MovieController {
             $sanEntries = filter_input_array(
                 INPUT_POST,
                 [
-                'backToList'             => FILTER_DEFAULT,
                 'filmID'                 => FILTER_SANITIZE_NUMBER_INT,
                 'titre'                  => FILTER_DEFAULT,
                 'titreOriginal'          => FILTER_DEFAULT,
@@ -105,60 +117,27 @@ class MovieController {
             ]
             );
 
-            // si l'action demandée est retour en arrière
-            if ($sanEntries['backToList'] !== null) {
-                // on redirige vers la page des films
-                header('Location: index.php?action=moviesList');
-                exit;
-            }
-            // sinon (l'action demandée est la sauvegarde d'un film)
-            else {
 
-                // et que nous ne sommes pas en train de modifier un film
-                if ($sanEntries['modificationInProgress'] == null) {
-                    // on ajoute le film
-                    $this->filmDAO->insertNewMovie(
-                        $sanEntries['titre'],
-                        $sanEntries['titreOriginal']
-                    );
-                }
-                // sinon, nous sommes dans le cas d'une modification
-                else {
-                    // mise à jour du film
-                    $this->filmDAO->updateMovie(
-                        $sanEntries['filmID'],
-                        $sanEntries['titre'],
-                        $sanEntries['titreOriginal']
-                    );
-                }
-                // on revient à la liste des films
-                header('Location: index.php?action=moviesList');
-                exit;
+            // et que nous ne sommes pas en train de modifier un film
+            if ($sanEntries['modificationInProgress'] === null) {
+                // on ajoute le film
+                $this->filmDAO->insertNewMovie(
+                    $sanEntries['titre'],
+                    $sanEntries['titreOriginal']
+                );
             }
-        }// si la page est chargée avec $_GET
-        elseif (filter_input(INPUT_SERVER, 'REQUEST_METHOD') === "GET") {
-            // on assainit les entrées
-            $sanEntries = filter_input_array(
-                INPUT_GET,
-                ['filmID' => FILTER_SANITIZE_NUMBER_INT]
-            );
-            if ($sanEntries && $sanEntries['filmID'] !== null && $sanEntries['filmID'] !==
-                    '') {
-                // on récupère les informations manquantes
-                $film = $this->filmDAO->getMovieByID($sanEntries['filmID']);
-            }
-            // sinon, c'est une création
+            // sinon, nous sommes dans le cas d'une modification
             else {
-                $isItACreation = true;
-                $film = null;
+                // mise à jour du film
+                $this->filmDAO->updateMovie(
+                    $sanEntries['filmID'],
+                    $sanEntries['titre'],
+                    $sanEntries['titreOriginal']
+                );
             }
+            // on revient à la liste des films
+            header('Location: index.php?action=moviesList');
+            exit;
         }
-
-        // On génère la vue films
-        $vue = new View("EditMovie");
-        // En passant les variables nécessaires à son bon affichage
-        $vue->generer([
-            'film'          => $film,
-            'isItACreation' => $isItACreation]);
     }
 }

@@ -73,7 +73,7 @@ class Router
                     $this->movieCtrl->editMovie();
                 } elseif ($sanitizedEntries['action'] == "editMovie") {
                     // Activation de la route editMovie
-                    $this->movieCtrl->editMovie();
+                    $this->movieCtrl->moviesList("edit");
                 } elseif ($sanitizedEntries['action'] == "deleteMovie") {
                     // Activation de la route deleteMovie
                     $this->movieCtrl->deleteMovie();

@@ -64,7 +64,7 @@
             <tr>
                 <form name="saveCinema" action="index.php?action=saveCinema" method="POST">
                     <td>
-                        <input name="denomination" placeholder="Dénomination" required/>
+                        <input name="denomination" placeholder="Dénomination" required />
                     </td>
                     <td>
                         <textarea name="adresse" placeholder="Renseignez l'adresse ici..." required></textarea>
