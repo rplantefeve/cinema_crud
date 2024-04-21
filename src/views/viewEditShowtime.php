@@ -8,14 +8,11 @@ $this->title = "Gestion des cinémas - Ajouter une séance";
 <form method="post">
     <fieldset>
         <label for="datedebut">Date de début : </label>
-        <input id="datedebut" type="date" name="datedebut" placeholder="jj/mm/aaaa" value="<?php
-               if ($seance): echo $seance->getHeureDebut()->format('Y-m-d');
-               endif;
-?>">
+        <input id="datedebut" type="date" name="datedebut" placeholder="jj/mm/aaaa" value="<?= isset($seance) ? $seance->getHeureDebut()->format('Y-m-d') : "" ?>">
         <label for="heuredebut">Heure de début : </label>
         <input type="time" name="heuredebut" placeholder="hh:mm" value="<?php
-        if ($seance): echo $seance->getHeureDebut()->format('H:i');
-        endif;
+if ($seance): echo $seance->getHeureDebut()->format('H:i');
+endif;
 ?>">
 
         <label for="datefin">Date de fin : </label>
