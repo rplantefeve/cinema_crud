@@ -29,7 +29,7 @@ class CinemaController
 
         session_start();
         // si l'utilisateur est pas connecté et qu'il est amdinistrateur
-        if (array_key_exists("user", $_SESSION) and $_SESSION['user'] == 'admin@adm.adm') {
+        if (array_key_exists("user", $_SESSION) and $_SESSION['user'] === 'admin@adm.adm') {
             $isUserAdmin = true;
         }
 
@@ -39,7 +39,7 @@ class CinemaController
         $toBeModified = null;
 
         // si nous sommes en mode modification
-        if($mode === "edit") {
+        if ($mode === "edit") {
             $sanitizedEntries = filter_input_array(
                 INPUT_GET,
                 ['cinemaID' => FILTER_SANITIZE_NUMBER_INT]
@@ -52,12 +52,15 @@ class CinemaController
         // On génère la vue films
         $vue = new View("CinemasList");
         // En passant les variables nécessaires à son bon affichage
-        $vue->generer([
-            'cinemas'     => $cinemas,
-            'isUserAdmin' => $isUserAdmin,
-            'mode'        => $mode,
-            'cinemaToBeModified' => $cinemaToBeModified,
-            'toBeModified' => $toBeModified]);
+        $vue->generer(
+            [
+                'cinemas'            => $cinemas,
+                'isUserAdmin'        => $isUserAdmin,
+                'mode'               => $mode,
+                'cinemaToBeModified' => $cinemaToBeModified,
+                'toBeModified'       => $toBeModified,
+            ]
+        );
     }
 
     /**
@@ -75,7 +78,6 @@ class CinemaController
 
         // si la méthode de formulaire est la méthode POST
         if (filter_input(INPUT_SERVER, 'REQUEST_METHOD') === "POST") {
-
             // on "sainifie" les entrées
             $sanEntries = filter_input_array(
                 INPUT_POST,
@@ -83,7 +85,8 @@ class CinemaController
                     'cinemaID'               => FILTER_SANITIZE_NUMBER_INT,
                     'adresse'                => FILTER_DEFAULT,
                     'denomination'           => FILTER_DEFAULT,
-                    'modificationInProgress' => FILTER_DEFAULT]
+                    'modificationInProgress' => FILTER_DEFAULT,
+                ]
             );
 
 
@@ -94,9 +97,7 @@ class CinemaController
                     $sanEntries['denomination'],
                     $sanEntries['adresse']
                 );
-            }
-            // sinon, nous sommes dans le cas d'une modification
-            else {
+            } else { // sinon, nous sommes dans le cas d'une modification
                 // mise à jour du cinéma
                 $this->cinemaDAO->updateCinema(
                     $sanEntries['cinemaID'],
@@ -125,7 +126,6 @@ class CinemaController
 
         // si la méthode de formulaire est la méthode POST
         if (filter_input(INPUT_SERVER, 'REQUEST_METHOD') === "POST") {
-
             // on "sainifie" les entrées
             $sanitizedEntries = filter_input_array(
                 INPUT_POST,

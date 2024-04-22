@@ -12,21 +12,23 @@ use Exception;
 class View
 {
     // Nom du fichier associé à la vue
-    private $fichier;
+    private string $fichier;
     // titre de la vue
-    private $title;
+    private string $title;
 
-    public function __construct($action)
+    public function __construct(string $action)
     {
         // La vue à générer dépend de l'action demandée
         $this->fichier = "views/view" . $action . ".php";
     }
 
-    /*
-     * Génère et affiche la vue
-     */
-
-    public function generer($donnees = null)
+     /**
+      * Génère et affiche la vue
+      *
+      * @param array<mixed>|null $donnees
+      * @return void
+      */
+    public function generer(array $donnees = null): void
     {
         // Génération de la partie spécifique de la vue
         $content = $this->genererFichier(
@@ -43,11 +45,14 @@ class View
         echo $vue;
     }
 
-    /*
+    /**
      * Génère et retourne la vue générée
+     *
+     * @param string $fichier
+     * @param array<mixed> $donnees
+     * @return string
      */
-
-    private function genererFichier($fichier, $donnees)
+    private function genererFichier(string $fichier, array $donnees): string
     {
         if (file_exists($fichier)) {
             // déclare autant de variables qu'il y en a dans le tableau

@@ -10,7 +10,7 @@ use PDO;
 abstract class DAO
 {
     // logger
-    protected $logger;
+    protected LoggerInterface $logger;
 
     public function __construct(LoggerInterface $logger = null)
     {
@@ -33,13 +33,13 @@ abstract class DAO
         foreach ($rows as $row) {
             $objets[] = $this->buildBusinessObject($row);
         }
-        return $objets;
+        return $objets ?? null;
     }
 
     /**
      * Extrait des résultats, un vecteur d'objets métiers
      * @param type $results
-     * @return Object[]
+     * @return array<object>
      */
     protected function extractObjects($results)
     {
