@@ -17,5 +17,12 @@ return (new PhpCsFixer\Config())
         '@PSR12' => true,
         'psr_autoloading' => true,
         'statement_indentation' => false,
+        'array_indentation' => true,
+        'array_syntax' => ['syntax' => 'short'],
+        'binary_operator_spaces' => [
+            'operators' => [
+                '=>' => 'align_single_space_minimal',
+            ],
+        ],
     ])
     ->setFinder($finder);
