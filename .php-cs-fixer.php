@@ -15,6 +15,7 @@ return (new PhpCsFixer\Config())
         '@PHP82Migration' => true,
         '@PSR1' => true,
         '@PSR12' => true,
-        'psr_autoloading' => true
+        'psr_autoloading' => true,
+        'statement_indentation' => false,
     ])
     ->setFinder($finder);
