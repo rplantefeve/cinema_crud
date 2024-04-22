@@ -28,7 +28,7 @@
                         </td>
                     </form>
                 </tr>
-            <?php
+                <?php
             } else {
                 ?>
                 <tr>
@@ -50,32 +50,32 @@
                         </form>
                     </td>
                 </tr>
-            <?php
+                <?php
             }
         }
     }
-if ($addMode === "add") {
-    ?>
+    if ($addMode === "add") {
+        ?>
         <tr>
             <form name="addFavoriteMovie" action="index.php?action=saveFavoriteMovie" method="POST">
                 <td>
                     <select name="filmID">
                         <option value="default">Choisissez un film</option>
                         <?php
-                    // s'il y a des résultats
-                    if ($films) {
-                        foreach ($films as $film) {
-                            ?>
+                        // s'il y a des résultats
+                        if ($films) {
+                            foreach ($films as $film) {
+                                ?>
                                 <option value="<?= $film->getFilmId(); ?>"><?= $film->getTitre(); ?></option>
-                        <?php
+                                <?php
+                            }
                         }
-                    }
-    ?>
+                        ?>
                     </select>
                     <?php
                     if (isset($noneSelected) && $noneSelected === true) : ?>
                         <div class="error">Veuillez renseigner un titre de film.</span>
-                        <?php endif; ?>
+                    <?php endif; ?>
                 </td>
                 <td>
                     <textarea name="comment" placeholder="Écrivez un commentaire ici..."></textarea>
@@ -87,9 +87,9 @@ if ($addMode === "add") {
                 </td>
             </form>
         </tr>
-    <?php
-} else {
-    ?>
+        <?php
+    } else {
+        ?>
         <tr class="new">
             <td colspan="4">
                 <form name="addFavoriteMovie" method="get">

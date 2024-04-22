@@ -14,7 +14,7 @@
                         <option value="<?= $cinema->getCinemaId() ?>"><?= $cinema->getDenomination() ?></option>
                         <?php
                     endforeach;
-        ?>    
+                    ?>    
                 </select>
                 <input name="action" type="hidden" value="editShowtime">
                 <input name = "from" type = "hidden" value = "movie">
@@ -25,7 +25,7 @@
 </header>
 <ul>
     <?php
-    if ($cinemas !== null and count($cinemas) > 0):
+    if ($cinemas !== null and count($cinemas) > 0) :
         // on boucle sur les résultats
         foreach ($cinemas as $cinema) {
             ?>
@@ -36,7 +36,7 @@
                     <th>Début</th>
                     <th>Fin</th>
                     <th>Version</th>
-                    <?php if ($adminConnected): ?>
+                    <?php if ($adminConnected) : ?>
                         <th colspan="2">Action</th>
                     <?php endif; ?>
                 </tr>
@@ -61,7 +61,7 @@
                         <td><?= $heureDebut ?></td>
                         <td><?= $heureFin ?></td>
                         <td><?= $seance->getVersion() ?></td>
-                        <?php if ($adminConnected): ?>
+                        <?php if ($adminConnected) : ?>
                             <td>
                                 <form name="modifyMovieShowtime" action="index.php" method="GET">
                                     <input name="action" type="hidden" value="editShowtime">
@@ -89,8 +89,8 @@
                     </tr>
                     <?php
                 }
-            if ($adminConnected):
-                ?>
+                if ($adminConnected) :
+                    ?>
                     <tr class="new">
                         <td colspan="6">
                             <form action="index.php" method="get">
@@ -103,14 +103,14 @@
                         </td>
                     </tr>
                     <?php
-            endif;
-            ?>  
+                endif;
+                ?>  
             </table>
             <br>
             <?php
         } // fin de la boucle
     endif;
-?>
+    ?>
 </ul>
 <form method="GET" action="index.php">
     <input name="action" type="hidden" value="moviesList"/>

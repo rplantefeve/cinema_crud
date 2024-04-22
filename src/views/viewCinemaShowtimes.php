@@ -14,7 +14,7 @@
                         <option value="<?= $film->getFilmId() ?>"><?= $film->getTitre() ?></option>
                         <?php
                     endforeach;
-        ?>    
+                    ?>    
                 </select>
                 <input name="action" type="hidden" value="editShowtime">
                 <input name = "from" type = "hidden" value = "<?= $_SERVER['SCRIPT_NAME'] ?>">
@@ -25,7 +25,7 @@
 </header>
 <ul>
     <?php
-// si au moins un résultat
+    // si au moins un résultat
     if ($films !== null && count($films) > 0) {
         // on boucle sur les résultats
         foreach ($films as $film) {
@@ -37,7 +37,7 @@
                     <th>Début</th>
                     <th>Fin</th>
                     <th>Version</th>
-                    <?php if ($adminConnected): ?>
+                    <?php if ($adminConnected) : ?>
                         <th colspan="2">Action</th>
                     <?php endif; ?>
                 </tr>
@@ -62,7 +62,7 @@
                         <td><?= $heureDebut ?></td>
                         <td><?= $heureFin ?></td>
                         <td><?= $seance->getVersion() ?></td>
-                        <?php if ($adminConnected): ?>
+                        <?php if ($adminConnected) : ?>
                             <td>
                                 <form name="modifyMovieShowtime" method="GET">
                                     <input type="hidden" name="action" value="editShowtime">
@@ -91,8 +91,8 @@
 
                     <?php
                 }
-            if ($adminConnected):
-                ?>
+                if ($adminConnected) :
+                    ?>
                     <tr class="new">
                         <td colspan="6">
                             <form action="index.php" method="get">
@@ -104,14 +104,14 @@
                             </form>
                         </td>
                     </tr>
-                <?php endif;
-            ?>
+    <?php endif;
+                ?>
             </table>
             <br>
             <?php
         } // fin de la boucle de parcours des films
     } // fin du if au moins un film
-?>
+    ?>
 </ul>
 <br>
 <form method="GET" action="index.php">

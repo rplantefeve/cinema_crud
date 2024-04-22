@@ -53,10 +53,10 @@
                     </td>
                 <?php endif; ?>
             </tr>
-    <?php
+            <?php
         }
     }
-?>
+    ?>
     <?php if ($isUserAdmin) :
         if (isset($mode) && $mode === "add") {
             ?>
@@ -70,7 +70,7 @@
                     </td>
                 </form>
             </tr>
-        <?php
+            <?php
         } else {
             ?>
             <tr class="new">
@@ -81,8 +81,9 @@
                     </form>
                 </td>
             </tr>
-    <?php }
-        endif; ?>
+            <?php
+        }
+    endif; ?>
 </table>
 <form name="cancelForm" id="cancelForm" method="GET" action="index.php">
     <input name="action" type="hidden" value="moviesList" />

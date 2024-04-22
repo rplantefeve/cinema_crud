@@ -129,7 +129,8 @@ class FilmDAO extends DAO
             $requete,
             [
                 'titre'         => $titre,
-                'titreOriginal' => $titreOriginal]
+                'titreOriginal' => $titreOriginal,
+            ]
         );
         // log
         if ($this->logger) {
@@ -163,12 +164,13 @@ class FilmDAO extends DAO
      */
     public function deleteMovie($movieID)
     {
-        $this->executeQuery("DELETE FROM film WHERE filmID = "
-                . $movieID);
+        $this->executeQuery(
+            "DELETE FROM film WHERE filmID = "
+            . $movieID
+        );
 
         if ($this->logger) {
             $this->logger->info('Movie ' . $movieID . ' successfully deleted.');
         }
     }
-
 }

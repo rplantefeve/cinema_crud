@@ -111,7 +111,8 @@ class CinemaDAO extends DAO
             $requete,
             [
                 'denomination' => $denomination,
-                'adresse'      => $adresse]
+                'adresse'      => $adresse,
+            ]
         );
         // log
         if ($this->logger) {
@@ -145,12 +146,13 @@ class CinemaDAO extends DAO
      */
     public function deleteCinema($cinemaID)
     {
-        $this->executeQuery("DELETE FROM cinema WHERE cinemaID = "
-                . $cinemaID);
+        $this->executeQuery(
+            "DELETE FROM cinema WHERE cinemaID = "
+            . $cinemaID
+        );
 
         if ($this->logger) {
             $this->logger->info('Cinema ' . $cinemaID . ' successfully deleted.');
         }
     }
-
 }

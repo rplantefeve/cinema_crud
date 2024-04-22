@@ -11,37 +11,38 @@ $this->title = "Gestion des cinémas - Ajouter une séance";
         <input id="datedebut" type="date" name="datedebut" placeholder="jj/mm/aaaa" value="<?= isset($seance) ? $seance->getHeureDebut()->format('Y-m-d') : "" ?>">
         <label for="heuredebut">Heure de début : </label>
         <input type="time" name="heuredebut" placeholder="hh:mm" value="<?php
-if ($seance): echo $seance->getHeureDebut()->format('H:i');
-endif;
-?>">
+        if ($seance) :
+            echo $seance->getHeureDebut()->format('H:i');
+        endif;
+        ?>">
 
         <label for="datefin">Date de fin : </label>
         <input type="date" name="datefin" placeholder="jj/mm/aaaa" value="<?php
-if ($seance): echo $seance->getHeureFin()->format('Y-m-d');
-endif;
-?>">
+        if ($seance): echo $seance->getHeureFin()->format('Y-m-d');
+        endif;
+        ?>">
         <label for="heurefin">Heure de fin : </label>
         <input type="time" name="heurefin" placeholder="hh:mm" value="<?php
-if ($seance) : echo $seance->getHeureFin()->format('H:i');
-endif;
-?>">
+        if ($seance) : echo $seance->getHeureFin()->format('H:i');
+        endif;
+        ?>">
         <!-- les anciennes date et heure début et fin -->
         <input type="hidden" name="dateheurefinOld" value="<?= $seanceOld['dateheureFinOld'] ?>">
         <input type="hidden" name="dateheuredebutOld" value="<?= $seanceOld['dateheureDebutOld'] ?>">
         <label for="version">Version : </label>
         <select name="version">
             <option value="VO" <?php
-    if ($seance && $seance->getVersion() == 'VO'): echo "selected";
-    endif;
-?>>VO</option>
+            if ($seance && $seance->getVersion() == 'VO'): echo "selected";
+            endif;
+            ?>>VO</option>
             <option value="VF" <?php
-if ($seance && $seance->getVersion() == 'VF'): echo "selected";
-endif;
-?>>VF</option>
+            if ($seance && $seance->getVersion() == 'VF'): echo "selected";
+            endif;
+            ?>>VF</option>
             <option value="VOSTFR" <?php
-if ($seance && $seance->getVersion() == 'VOSTFR'): echo "selected";
-endif;
-?>>VOSTFR</option>
+            if ($seance && $seance->getVersion() == 'VOSTFR'): echo "selected";
+            endif;
+            ?>>VOSTFR</option>
         </select>
         <input type="hidden" value="<?= $from ?>" name="from">
     </fieldset>
