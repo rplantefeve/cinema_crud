@@ -48,7 +48,17 @@
                     <td>
                         <form name="deleteMovie" action="index.php?action=deleteMovie" method="POST">
                             <input type="hidden" name="filmID" value="<?= $film->getFilmId() ?>" />
-                            <input type="image" src="images/deleteIcon.png" alt="Delete" />
+                            <?php
+                            if (in_array($film->getFilmId(), $onAirFilms) === true) {
+                                ?>
+                                <input type="image" src="images/deleteIconDisabled.png" alt="Delete" disabled/>
+                                <?php
+                            } else {
+                                ?>
+                                <input type="image" src="images/deleteIcon.png" alt="Delete" />
+                                <?php
+                            }
+                            ?>
                         </form>
                     </td>
                 <?php endif; ?>

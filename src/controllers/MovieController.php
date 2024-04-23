@@ -30,6 +30,8 @@ class MovieController extends Controller
 
         // on récupère la liste des films ainsi que leurs informations
         $films = $this->filmDAO->getMoviesList();
+        // liste des cinémas qui diffuse au moins un film
+        $moviesUndeletable = $this->filmDAO->getOnAirMoviesId();
         $filmToBeModified = [];
         $toBeModified = null;
 
@@ -50,6 +52,7 @@ class MovieController extends Controller
         $vue->generer(
             [
                 'films'            => $films,
+                'onAirFilms'       => $moviesUndeletable,
                 'isUserAdmin'      => $isUserAdmin,
                 'mode'             => $mode,
                 'filmToBeModified' => $filmToBeModified,
