@@ -12,9 +12,14 @@ use Semeformation\Mvc\Cinema_crud\models\Utilisateur;
  */
 class Prefere
 {
-    private $utilisateur;
+    private Utilisateur $utilisateur;
     private $film;
     private $commentaire;
+
+    public function getUtilisateur(): Utilisateur
+    {
+        return $this->utilisateur;
+    }
 
     public function getFilm()
     {

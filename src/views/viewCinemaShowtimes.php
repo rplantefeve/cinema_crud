@@ -17,7 +17,7 @@
                     ?>    
                 </select>
                 <input name="action" type="hidden" value="editShowtime">
-                <input name = "from" type = "hidden" value = "<?= $_SERVER['SCRIPT_NAME'] ?>">
+                <input name = "from" type = "hidden" value = "cinema">
                 <button type = "submit">Ajouter</button>
             </fieldset>
         </form>

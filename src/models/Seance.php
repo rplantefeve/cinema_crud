@@ -43,6 +43,11 @@ class Seance
      */
     private $version;
 
+    public function getCinema(): Cinema
+    {
+        return $this->cinema;
+    }
+
     public function getFilm(): Film
     {
         return $this->film;

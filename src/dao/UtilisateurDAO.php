@@ -64,10 +64,6 @@ class UtilisateurDAO extends DAO
         }
     }
 
-    /*
-     *
-     */
-
     /**
      * @return void
      */

@@ -29,6 +29,16 @@ class Utilisateur
         return $this->prenom;
     }
 
+    public function getAdresseCourriel(): string
+    {
+        return $this->adresseCourriel;
+    }
+
+    public function getPassword(): string
+    {
+        return $this->password;
+    }
+
     public function setUserId($userId): void
     {
         $this->userId = $userId;
