@@ -63,11 +63,12 @@ class PrefereDAO extends DAO
     }
 
     /**
-     * Méthode qui retourne les films préférés d'un utilisateur donné
-     * @param string $utilisateur Adresse email de l'utilisateur
-     * @return array[][] Les films préférés (sous forme de tableau associatif) de l'utilisateur
+     * Retourne les films préférés d'un utilisateur donné à partir de l'id
+     *
+     * @param int $id Identifiant de l'utilisateur
+     * @return array<Prefere> Les films préférés (sous forme de tableau associatif) de l'utilisateur
      */
-    public function getFavoriteMoviesFromUser($id)
+    public function getFavoriteMoviesFromUser(int $id): array|null
     {
         // on construit la requête qui va récupérer les films de l'utilisateur
         $requete = "SELECT f.filmID, f.titre, p.commentaire, p.userID from film f" .
@@ -108,12 +109,14 @@ class PrefereDAO extends DAO
     }
 
     /**
-     * Méthode qui met à jour une préférence de film pour un utilisateur
-     * @param int userID Identifiant de l'utilisateur
-     * @param int filmID Identifiant du film
-     * @param string comment Commentaire de l'utilisateur à propos de ce film
+     * Met à jour une préférence de film pour un utilisateur
+     *
+     * @param int $userID Identifiant de l'utilisateur
+     * @param int $filmID Identifiant du film
+     * @param string $comment Commentaire de l'utilisateur à propos de ce film
+     * @return void
      */
-    public function updateFavoriteMovie($userID, $filmID, $comment)
+    public function updateFavoriteMovie($userID, $filmID, $comment): void
     {
         // on construit la requête d'insertion
         $requete = "UPDATE prefere SET commentaire = :comment"

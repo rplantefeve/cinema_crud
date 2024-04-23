@@ -76,11 +76,11 @@ class SeanceDAO extends DAO
 
     /**
      *
-     * @param type $cinemaID
-     * @param type $filmID
-     * @return type
+     * @param int $cinemaID
+     * @param int $filmID
+     * @return array<Seance>
      */
-    public function getMovieShowtimes($cinemaID, $filmID)
+    public function getMovieShowtimes($cinemaID, $filmID): array
     {
         // requête qui permet de récupérer la liste des séances d'un film donné dans un cinéma donné
         $requete = "SELECT s.* FROM seance s"
@@ -102,9 +102,9 @@ class SeanceDAO extends DAO
      * Méthode qui retourne toutes les séances de tous les films présents dans un cinéma donné
      * @param array $films Liste des films du cinéma donné
      * @param int $cinemaID Identifiant du cinéma concerné
-     * @return Les séances des films projetés dans ce cinéma
+     * @return array<Seance> Les séances des films projetées dans ce cinéma
      */
-    public function getAllMoviesShowtimesByCinemaID($films, $cinemaID)
+    public function getAllMoviesShowtimesByCinemaID($films, $cinemaID): array
     {
         $seances = [];
         if ($films !== null && count($films) > 0) :
@@ -124,9 +124,9 @@ class SeanceDAO extends DAO
      * Méthode qui retourne toutes les séances de tous les cinémas d'un film donné
      * @param array $cinemas Liste des cinémas qui projettent ce film
      * @param int $filmID Identifiant du film concerné
-     * @return Les séances du film projeté dans ces cinémas
+     * @return array<Seance> Les séances du film projeté dans ces cinémas
      */
-    public function getAllCinemasShowtimesByMovieID($cinemas, $filmID)
+    public function getAllCinemasShowtimesByMovieID($cinemas, $filmID): array
     {
         $seances = [];
         if ($cinemas !== null && count($cinemas) > 0) {

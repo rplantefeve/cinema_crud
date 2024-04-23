@@ -12,7 +12,7 @@ class Utils
 {
     /**
      * Affiche le résultat d'une opération d'extraction
-     * @param array|scalar $unResultat
+     * @param array $unResultat
      * @param string $uneLegende
      */
     public static function afficherResultat(array $unResultat, string $uneLegende = "")

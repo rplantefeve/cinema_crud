@@ -238,7 +238,7 @@ class ShowtimesController extends Controller
                 $datetimeDebut = new DateTime($sanitizedEntries['datedebut'] . ' ' . $sanitizedEntries['heuredebut']);
                 $datetimeFin = new DateTime($sanitizedEntries['datefin'] . ' ' . $sanitizedEntries['heurefin']);
                 // Est-on dans le cas d'une insertion ?
-                if ($sanitizedEntries['modificationInProgress'] !== null) {
+                if ($sanitizedEntries['modificationInProgress'] === null) {
                     // j'insère dans la base
                     $this->seanceDAO->insertNewShowtime(
                         $sanitizedEntries['cinemaID'],

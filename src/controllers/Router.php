@@ -37,7 +37,7 @@ class Router
     public function routeRequest()
     {
         try {
-            // on "sainifie" les entrées
+            // on assainit les entrées
             $sanitizedEntries = filter_input_array(
                 INPUT_GET,
                 ['action' => FILTER_DEFAULT]

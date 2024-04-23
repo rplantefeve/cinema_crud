@@ -1,7 +1,5 @@
 <?php
 
-use ErrorException;
-
 /*
  * Change toutes les erreurs en exceptions
  */

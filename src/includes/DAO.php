@@ -6,6 +6,7 @@ use Semeformation\Mvc\Cinema_crud\includes\DBFactory;
 use Semeformation\Mvc\Cinema_crud\includes\Utils;
 use Psr\Log\LoggerInterface;
 use PDO;
+use PDOStatement;
 
 abstract class DAO
 {
@@ -39,10 +40,10 @@ abstract class DAO
 
     /**
      * Extrait des résultats, un vecteur d'objets métiers
-     * @param type $results
-     * @return array<object>
+     * @param array $results
+     * @return array<object>|null
      */
-    protected function extractObjects($results)
+    protected function extractObjects($results): array|null
     {
         if ($results !== null) {
             // on crée les objets métiers
@@ -59,9 +60,9 @@ abstract class DAO
      *
      * @param string $sql Requête SQL
      * @param array $params Paramètres de la requête
-     * @return PDOStatement Résultats de la requête
+     * @return \PDOStatement Résultats de la requête
      */
-    public function executeQuery($sql, $params = null)
+    public function executeQuery($sql, $params = null): \PDOStatement
     {
         // si pas de paramètres
         if ($params === null) {
@@ -102,7 +103,7 @@ abstract class DAO
         );
 
         // boucle de construction du tableau de résultats
-        while ($ligne = $resultat->fetch(PDO::FETCH_ASSOC) !== null) {
+        while ($ligne = $resultat->fetch(PDO::FETCH_ASSOC)) {
             $tableau[] = $ligne;
         }
         unset($resultat);
