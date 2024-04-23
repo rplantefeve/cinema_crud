@@ -35,7 +35,7 @@ class FilmDAO extends DAO
      */
     public function getMoviesList()
     {
-        $requete   = "SELECT * FROM film";
+        $requete = "SELECT * FROM film";
         // on extrait les résultats
         $resultats = $this->extraireNxN($requete);
         // on extrait les objets métiers des résultats
@@ -48,10 +48,10 @@ class FilmDAO extends DAO
      */
     public function getMovieByID($filmID)
     {
-        $requete  = "SELECT * FROM film WHERE filmID = :filmID";
+        $requete = "SELECT * FROM film WHERE filmID = :filmID";
         $resultat = $this->extraire1xN($requete, ['filmID' => $filmID]);
         // on récupère l'objet Film
-        $film     = $this->buildBusinessObject($resultat);
+        $film = $this->buildBusinessObject($resultat);
         // on retourne le résultat extrait
         return $film;
     }
@@ -59,7 +59,7 @@ class FilmDAO extends DAO
     public function getCinemaMoviesByCinemaID($cinemaID)
     {
         // requête qui nous permet de récupérer la liste des films pour un cinéma donné
-        $requete   = "SELECT DISTINCT f.* FROM film f"
+        $requete = "SELECT DISTINCT f.* FROM film f"
                 . " INNER JOIN seance s ON f.filmID = s.filmID"
                 . " AND s.cinemaID = :cinemaID";
         // on extrait les résultats
@@ -78,7 +78,7 @@ class FilmDAO extends DAO
     {
         // requête de récupération des titres et des identifiants des films
         // qui n'ont pas encore été marqués comme favoris par l'utilisateur
-        $requete   = "SELECT f.filmID, f.titre "
+        $requete = "SELECT f.filmID, f.titre "
                 . "FROM film f"
                 . " WHERE f.filmID NOT IN ("
                 . "SELECT filmID"
@@ -100,7 +100,7 @@ class FilmDAO extends DAO
     {
         // requête de récupération des titres et des identifiants des films
         // qui n'ont pas encore été programmés dans ce cinéma
-        $requete  = "SELECT f.filmID, f.titre "
+        $requete = "SELECT f.filmID, f.titre "
                 . "FROM film f"
                 . " WHERE f.filmID NOT IN ("
                 . "SELECT filmID"

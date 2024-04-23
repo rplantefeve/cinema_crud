@@ -34,11 +34,11 @@ class CinemaDAO extends DAO
      */
     public function getCinemaByID($cinemaID)
     {
-        $requete  = "SELECT * FROM cinema WHERE cinemaID = "
+        $requete = "SELECT * FROM cinema WHERE cinemaID = "
                 . $cinemaID;
         $resultat = $this->extraire1xN($requete);
         // on crée l'objet métier Cinema
-        $cinema   = $this->buildBusinessObject($resultat);
+        $cinema = $this->buildBusinessObject($resultat);
         // on retourne le résultat extrait
         return $cinema;
     }
@@ -51,7 +51,7 @@ class CinemaDAO extends DAO
     public function getMovieCinemasByMovieID($filmID)
     {
         // requête qui nous permet de récupérer la liste des cinémas pour un film donné
-        $requete   = "SELECT DISTINCT c.* FROM cinema c"
+        $requete = "SELECT DISTINCT c.* FROM cinema c"
                 . " INNER JOIN seance s ON c.cinemaID = s.cinemaID"
                 . " AND s.filmID = " . $filmID;
         // on extrait les résultats
@@ -66,7 +66,7 @@ class CinemaDAO extends DAO
      */
     public function getCinemasList()
     {
-        $requete   = "SELECT * FROM cinema";
+        $requete = "SELECT * FROM cinema";
         // on extrait les résultats
         $resultats = $this->extraireNxN($requete);
         // on extrait les objets métiers des résultats
@@ -82,7 +82,7 @@ class CinemaDAO extends DAO
     {
         // requête de récupération des titres et des identifiants des films
         // qui n'ont pas encore été programmés dans ce cinéma
-        $requete   = "SELECT c.cinemaID, c.denomination, c.adresse "
+        $requete = "SELECT c.cinemaID, c.denomination, c.adresse "
                 . "FROM cinema c"
                 . " WHERE c.cinemaID NOT IN ("
                 . "SELECT cinemaID"

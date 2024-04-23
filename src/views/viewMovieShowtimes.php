@@ -49,12 +49,12 @@
                     // nous sommes en Français
                     $formatter = new IntlDateFormatter('fr_FR', IntlDateFormatter::LONG, IntlDateFormatter::NONE);
                     // date du jour de projection de la séance
-                    $jour         = $seance->getHeureDebut();
+                    $jour = $seance->getHeureDebut();
                     // On convertit pour un affichage en français
                     $jourConverti = $formatter->format($jour->getTimestamp());
 
                     $heureDebut = $seance->getHeureDebut()->format('H\hi');
-                    $heureFin   = $seance->getHeureFin()->format('H\hi');
+                    $heureFin = $seance->getHeureFin()->format('H\hi');
                     ?>
                     <tr>
                         <td><?= $jourConverti ?></td>
