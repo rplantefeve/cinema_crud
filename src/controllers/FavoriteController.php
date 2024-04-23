@@ -29,7 +29,7 @@ class FavoriteController extends Controller
         $this->prefereDAO->setFilmDAO(new FilmDAO($logger));
     }
 
-    public function editFavoriteMoviesList($addMode = "")
+    public function editFavoriteMoviesList($addMode = ""): void
     {
         $this->redirectIfNotNotConnected();
         // l'utilisateur est loggué
@@ -66,6 +66,9 @@ class FavoriteController extends Controller
         );
     }
 
+    /**
+     * @return void
+     */
     public function editFavoriteMovie()
     {
         $this->redirectIfNotNotConnected();
@@ -133,6 +136,9 @@ class FavoriteController extends Controller
         $vue->generer($donnees);
     }
 
+    /**
+     * @return never
+     */
     public function deleteFavoriteMovie()
     {
         // on assainit les entrées

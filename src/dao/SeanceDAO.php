@@ -27,22 +27,22 @@ class SeanceDAO extends DAO
      */
     private $cinemaDAO;
 
-    public function getFilmDAO()
+    public function getFilmDAO(): FilmDAO
     {
         return $this->filmDAO;
     }
 
-    public function getCinemaDAO()
+    public function getCinemaDAO(): CinemaDAO
     {
         return $this->cinemaDAO;
     }
 
-    public function setFilmDAO(FilmDAO $filmDAO)
+    public function setFilmDAO(FilmDAO $filmDAO): void
     {
         $this->filmDAO = $filmDAO;
     }
 
-    public function setCinemaDAO(CinemaDAO $cinemaDAO)
+    public function setCinemaDAO(CinemaDAO $cinemaDAO): void
     {
         $this->cinemaDAO = $cinemaDAO;
     }
@@ -75,12 +75,12 @@ class SeanceDAO extends DAO
     }
 
     /**
-     *
      * @param int $cinemaID
      * @param int $filmID
-     * @return array<int,Seance>
+     *
+     * @return array<object>|null
      */
-    public function getMovieShowtimes($cinemaID, $filmID): array
+    public function getMovieShowtimes($cinemaID, $filmID): array|null
     {
         // requête qui permet de récupérer la liste des séances d'un film donné dans un cinéma donné
         $requete = "SELECT s.* FROM seance s"
@@ -235,12 +235,13 @@ class SeanceDAO extends DAO
 
     /**
      * Supprime une séance pour un film donné et un cinéma donné
+     *
      * @param int $cinemaID
      * @param int $filmID
      * @param string $heureDebut
      * @param string $heureFin
      */
-    public function deleteShowtime($cinemaID, $filmID, $heureDebut, $heureFin)
+    public function deleteShowtime($cinemaID, $filmID, $heureDebut, $heureFin): void
     {
         $this->executeQuery(
             "DELETE FROM seance "

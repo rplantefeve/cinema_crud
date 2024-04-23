@@ -24,7 +24,7 @@ class CinemaController extends Controller
     /**
      * Route Liste des cinémas
      */
-    public function cinemasList($mode = "")
+    public function cinemasList($mode = ""): void
     {
         // Vérifie que l'utilisateur est connecté et qu'il est administrateur
         $isUserAdmin = $this->checkAdminRights();
@@ -61,6 +61,8 @@ class CinemaController extends Controller
 
     /**
      * Route Ajouter/Modifier un cinéma
+     *
+     * @return void
      */
     public function editCinema()
     {
@@ -103,6 +105,8 @@ class CinemaController extends Controller
 
     /**
      * Route supprimer un cinéma
+     *
+     * @return never
      */
     public function deleteCinema()
     {

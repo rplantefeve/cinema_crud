@@ -31,9 +31,10 @@ class FilmDAO extends DAO
 
     /**
      * Méthode qui renvoie la liste des films
-     * @return array<Film>
+     *
+     * @return array<object>|null
      */
-    public function getMoviesList(): array
+    public function getMoviesList(): array|null
     {
         $requete = "SELECT * FROM film";
         // on extrait les résultats
@@ -56,7 +57,10 @@ class FilmDAO extends DAO
         return $film;
     }
 
-    public function getCinemaMoviesByCinemaID($cinemaID)
+    /**
+     * @return array<object>|null
+     */
+    public function getCinemaMoviesByCinemaID($cinemaID): array|null
     {
         // requête qui nous permet de récupérer la liste des films pour un cinéma donné
         $requete = "SELECT DISTINCT f.* FROM film f"
@@ -71,10 +75,12 @@ class FilmDAO extends DAO
     /**
      * Méthode qui ne renvoie que les films non encore marqués
      * comme favoris par l'utilisateur passé en paramètre
+     *
      * @param int $userID Identifiant de l'utilisateur
-     * @return Film[] Films présents dans la base respectant les critères
+     *
+     * @return array<object>|null Films présents dans la base respectant les critères
      */
-    public function getMoviesNonAlreadyMarkedAsFavorite($userID)
+    public function getMoviesNonAlreadyMarkedAsFavorite($userID): array|null
     {
         // requête de récupération des titres et des identifiants des films
         // qui n'ont pas encore été marqués comme favoris par l'utilisateur
@@ -93,10 +99,12 @@ class FilmDAO extends DAO
 
     /**
      * Renvoie une liste de films pas encore programmés pour un cinema donné
+     *
      * @param integer $cinemaID
-     * @return array
+     *
+     * @return array<object>|null
      */
-    public function getNonPlannedMovies($cinemaID)
+    public function getNonPlannedMovies($cinemaID): array|null
     {
         // requête de récupération des titres et des identifiants des films
         // qui n'ont pas encore été programmés dans ce cinéma
@@ -115,10 +123,11 @@ class FilmDAO extends DAO
 
     /**
      * Crée un nouveau film
+     *
      * @param string $titre
      * @param string $titreOriginal
      */
-    public function insertNewMovie($titre, $titreOriginal = null)
+    public function insertNewMovie($titre, $titreOriginal = null): void
     {
         // construction
         $requete = "INSERT INTO film (titre, titreOriginal) VALUES ("
@@ -140,11 +149,12 @@ class FilmDAO extends DAO
 
     /**
      * Met un jour un film
+     *
      * @param integer $filmID
      * @param string $titre
      * @param string $titreOriginal
      */
-    public function updateMovie($filmID, $titre, $titreOriginal)
+    public function updateMovie($filmID, $titre, $titreOriginal): void
     {
         // on construit la requête d'insertion
         $requete = "UPDATE film SET "
@@ -160,9 +170,10 @@ class FilmDAO extends DAO
 
     /**
      * Supprime un film
+     *
      * @param integer $movieID
      */
-    public function deleteMovie($movieID)
+    public function deleteMovie($movieID): void
     {
         $this->executeQuery(
             "DELETE FROM film WHERE filmID = "

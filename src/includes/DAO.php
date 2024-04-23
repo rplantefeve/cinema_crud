@@ -18,7 +18,7 @@ abstract class DAO
         $this->logger = $logger;
     }
 
-    public function getLogger()
+    public function getLogger(): LoggerInterface
     {
         return $this->logger;
     }
@@ -29,7 +29,10 @@ abstract class DAO
      */
     abstract protected function buildBusinessObject($row);
 
-    protected function buildBusinessObjects($rows)
+    /**
+     * @psalm-return list{mixed,...}|null
+     */
+    protected function buildBusinessObjects(array $rows): array|null
     {
         $objets = null;
         foreach ($rows as $row) {
@@ -127,12 +130,14 @@ abstract class DAO
 
     /**
      * Retourne une ligne d'enregistrement sous forme de tableau associatif
+     *
      * @param string $unSQLSelect
      * @param array $parametres Tableau des paramètres de la requête
      * @param boolean $estVisible (visualisation du résultat)
-     * @return array[] ou null
+     *
+     * @return array<array|mixed>|null
      */
-    protected function extraire1xN($unSQLSelect, $parametres = null, $estVisible = false)
+    protected function extraire1xN($unSQLSelect, $parametres = null, $estVisible = false): array|null
     {
         $result = $this->extraireNxN(
             $unSQLSelect,

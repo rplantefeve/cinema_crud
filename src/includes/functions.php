@@ -4,7 +4,7 @@
  * Change toutes les erreurs en exceptions
  */
 
-function exception_error_handler($severity, $message, $file, $line)
+function exception_error_handler($severity, $message, $file, $line): void
 {
     if (!(error_reporting() & $severity)) {
         // Ce code d'erreur n'est pas inclus dans error_reporting

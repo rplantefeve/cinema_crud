@@ -31,7 +31,7 @@ class HomeController extends Controller
      * Route Accueil
      */
 
-    public function home()
+    public function home(): void
     {
         // variables de contrôle du formulaire
         $areCredentialsOK = true;
@@ -69,7 +69,12 @@ class HomeController extends Controller
         );
     }
 
-    private function login($sanitizedEntries, &$areCredentialsOK)
+    /**
+     * @param true $areCredentialsOK
+     *
+     * @return void
+     */
+    private function login(array|false|null $sanitizedEntries, bool &$areCredentialsOK)
     {
         try {
             // On vérifie l'existence de l'utilisateur
@@ -91,6 +96,9 @@ class HomeController extends Controller
         }
     }
 
+    /**
+     * @return void
+     */
     public function createNewUser()
     {
         // variables de contrôles du formulaire de création
@@ -197,14 +205,14 @@ class HomeController extends Controller
         $vue->generer($donnees);
     }
 
-    public function logout()
+    public function logout(): void
     {
         session_start();
         session_destroy();
         header('Location: index.php');
     }
 
-    public function error($e)
+    public function error($e): void
     {
 
         $this->utilisateurDAO->getLogger()->error('Exception : ' . $e->getMessage() . ', File : ' . $e->getFile() . ', Line : ' . $e->getLine() . ', Stack trace : ' . $e->getTraceAsString());

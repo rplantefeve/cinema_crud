@@ -27,12 +27,12 @@ class PrefereDAO extends DAO
         return $this->utilisateurDAO;
     }
 
-    public function setFilmDAO(FilmDAO $filmDAO)
+    public function setFilmDAO(FilmDAO $filmDAO): void
     {
         $this->filmDAO = $filmDAO;
     }
 
-    public function setUtilisateurDAO(UtilisateurDAO $utilisateurDAO)
+    public function setUtilisateurDAO(UtilisateurDAO $utilisateurDAO): void
     {
         $this->utilisateurDAO = $utilisateurDAO;
     }
@@ -134,11 +134,12 @@ class PrefereDAO extends DAO
 
     /**
      * Méthode qui ajoute une préférence de film à un utilisateur
+     *
      * @param int $userID Identifiant de l'utilisateur
      * @param int $filmID Identifiant du film
      * @param string $comment Commentaire de l'utilisateur à propos de ce film
      */
-    public function insertNewFavoriteMovie($userID, $filmID, $comment = "")
+    public function insertNewFavoriteMovie($userID, $filmID, $comment = ""): void
     {
         // on construit la requête d'insertion
         $requete = "INSERT INTO prefere (filmID, userID, commentaire) VALUES ("

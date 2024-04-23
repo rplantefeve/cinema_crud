@@ -29,37 +29,27 @@ class Utilisateur
         return $this->prenom;
     }
 
-    public function getAdresseCourriel()
-    {
-        return $this->adresseCourriel;
-    }
-
-    public function getPassword()
-    {
-        return $this->password;
-    }
-
-    public function setUserId($userId)
+    public function setUserId($userId): void
     {
         $this->userId = $userId;
     }
 
-    public function setNom($nom)
+    public function setNom($nom): void
     {
         $this->nom = $nom;
     }
 
-    public function setPrenom($prenom)
+    public function setPrenom($prenom): void
     {
         $this->prenom = $prenom;
     }
 
-    public function setAdresseCourriel($adresseCourriel)
+    public function setAdresseCourriel($adresseCourriel): void
     {
         $this->adresseCourriel = $adresseCourriel;
     }
 
-    public function setPassword($password)
+    public function setPassword($password): void
     {
         $this->password = $password;
     }

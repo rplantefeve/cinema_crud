@@ -45,10 +45,12 @@ class CinemaDAO extends DAO
 
     /**
      * Renvoie la liste des cinéma d'un film
+     *
      * @param integer $filmID
-     * @return array
+     *
+     * @return array<object>|null
      */
-    public function getMovieCinemasByMovieID($filmID)
+    public function getMovieCinemasByMovieID($filmID): array|null
     {
         // requête qui nous permet de récupérer la liste des cinémas pour un film donné
         $requete = "SELECT DISTINCT c.* FROM cinema c"
@@ -62,9 +64,10 @@ class CinemaDAO extends DAO
 
     /**
      * Renvoie la liste des cinémas
-     * @return array
+     *
+     * @return array<object>|null
      */
-    public function getCinemasList()
+    public function getCinemasList(): array|null
     {
         $requete = "SELECT * FROM cinema";
         // on extrait les résultats
@@ -75,10 +78,12 @@ class CinemaDAO extends DAO
 
     /**
      * Renvoie une liste de cinémas qui ne projettent pas le film donné
+     *
      * @param integer $filmID
-     * @return array
+     *
+     * @return array<object>|null
      */
-    public function getNonPlannedCinemas($filmID)
+    public function getNonPlannedCinemas($filmID): array|null
     {
         // requête de récupération des titres et des identifiants des films
         // qui n'ont pas encore été programmés dans ce cinéma
@@ -97,10 +102,11 @@ class CinemaDAO extends DAO
 
     /**
      * Insère un nouveau cinéma
+     *
      * @param string $denomination
      * @param string $adresse
      */
-    public function insertNewCinema($denomination, $adresse)
+    public function insertNewCinema($denomination, $adresse): void
     {
         // construction
         $requete = "INSERT INTO cinema (denomination, adresse) VALUES ("
@@ -122,11 +128,12 @@ class CinemaDAO extends DAO
 
     /**
      * Met à jour un cinéma
+     *
      * @param integer $cinemaID
      * @param string $denomination
      * @param string $adresse
      */
-    public function updateCinema($cinemaID, $denomination, $adresse)
+    public function updateCinema($cinemaID, $denomination, $adresse): void
     {
         // on construit la requête d'insertion
         $requete = "UPDATE cinema SET "
@@ -142,9 +149,10 @@ class CinemaDAO extends DAO
 
     /**
      * Supprime un cinéma
+     *
      * @param integer $cinemaID
      */
-    public function deleteCinema($cinemaID)
+    public function deleteCinema($cinemaID): void
     {
         $this->executeQuery(
             "DELETE FROM cinema WHERE cinemaID = "

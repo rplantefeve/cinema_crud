@@ -28,6 +28,8 @@ class ShowtimesController extends Controller
 
     /**
      * Route liste des séances d'un film
+     *
+     * @return void
      */
     public function movieShowtimes()
     {
@@ -73,6 +75,8 @@ class ShowtimesController extends Controller
 
     /**
      * Route liste des séances d'un cinéma
+     *
+     * @return void
      */
     public function cinemaShowtimes()
     {
@@ -166,8 +170,6 @@ class ShowtimesController extends Controller
                 $cinema = $this->seanceDAO->getCinemaDAO()->getCinemaByID($cinemaID);
                 // puis on récupère les informations du film en question
                 $film = $this->seanceDAO->getFilmDAO()->getMovieByID($filmID);
-                // on récupère les cinémas qui ne projettent pas encore le film
-                $cinemasUnplanned = $this->seanceDAO->getCinemaDAO()->getNonPlannedCinemas($filmID);
 
                 // s'il on vient des séances du film
                 if (strstr($sanitizedEntries['from'], 'movie') !== false) {
@@ -294,7 +296,7 @@ class ShowtimesController extends Controller
     /**
      * Route suppression d'une séance
      *
-     * @return void
+     * @return never
      */
     public function deleteShowtime()
     {

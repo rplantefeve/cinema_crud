@@ -28,17 +28,17 @@ class Film
         return $this->titreOriginal;
     }
 
-    public function setFilmId($filmId)
+    public function setFilmId($filmId): void
     {
         $this->filmId = $filmId;
     }
 
-    public function setTitre($titre)
+    public function setTitre($titre): void
     {
         $this->titre = $titre;
     }
 
-    public function setTitreOriginal($titreOriginal)
+    public function setTitreOriginal($titreOriginal): void
     {
         $this->titreOriginal = $titreOriginal;
     }

@@ -34,7 +34,7 @@ class Router
     /**
      * Route les requêtes qui arrivent au front controller
      */
-    public function routeRequest()
+    public function routeRequest(): void
     {
         try {
             // on assainit les entrées

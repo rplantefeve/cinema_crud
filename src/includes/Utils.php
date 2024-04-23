@@ -12,10 +12,11 @@ class Utils
 {
     /**
      * Affiche le résultat d'une opération d'extraction
+     *
      * @param array $unResultat
      * @param string $uneLegende
      */
-    public static function afficherResultat(array $unResultat, string $uneLegende = "")
+    public static function afficherResultat(array $unResultat, string $uneLegende = ""): void
     {
         $event = 'onmouseover="basculeTitreValeur(this)" onmouseout="basculeTitreValeur(this)"';
         echo <<<HTML

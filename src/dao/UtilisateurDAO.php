@@ -37,6 +37,9 @@ class UtilisateurDAO extends DAO
      * @throw Exception si on ne trouve pas l'utilisateur en BDD
      */
 
+    /**
+     * @return void
+     */
     public function verifyUserCredentials($email, $passwordSaisi)
     {
         // extraction du mdp de l'utilisateur
@@ -65,6 +68,9 @@ class UtilisateurDAO extends DAO
      *
      */
 
+    /**
+     * @return void
+     */
     private function testPasswords($passwordSaisi, $passwordBDD, $email)
     {
         // on teste si les mots de passe correspondent
@@ -141,7 +147,7 @@ class UtilisateurDAO extends DAO
      * @return Utilisateur
      */
 
-    public function getUserByID($userID)
+    public function getUserByID($userID): Utilisateur
     {
         $requete = "SELECT * FROM utilisateur WHERE userID = :userID";
         $resultat = $this->extraire1xN(
@@ -162,7 +168,7 @@ class UtilisateurDAO extends DAO
      * @param string $password Mot de passe de l'utilisateur
      */
 
-    public function createUser($firstName, $lastName, $email, $password)
+    public function createUser($firstName, $lastName, $email, $password): void
     {
         // construction de la requête
         $requete = "INSERT INTO utilisateur (prenom, nom, adresseCourriel, password) "

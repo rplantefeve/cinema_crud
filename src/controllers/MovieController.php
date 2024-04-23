@@ -24,7 +24,7 @@ class MovieController extends Controller
     /**
      * Route Liste des films
      */
-    public function moviesList($mode = "")
+    public function moviesList($mode = ""): void
     {
         $isUserAdmin = $this->checkAdminRights();
 
@@ -60,6 +60,8 @@ class MovieController extends Controller
 
     /**
      * Route Supprimer un film
+     *
+     * @return never
      */
     public function deleteMovie()
     {
@@ -83,6 +85,8 @@ class MovieController extends Controller
 
     /**
      * Route Ajouter / Modifier un film
+     *
+     * @return void
      */
     public function editMovie()
     {
