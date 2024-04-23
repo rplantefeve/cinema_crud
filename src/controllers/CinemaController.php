@@ -31,6 +31,8 @@ class CinemaController extends Controller
 
         // on récupère la liste des cinémas ainsi que leurs informations
         $cinemas = $this->cinemaDAO->getCinemasList();
+        // liste des cinémas qui diffuse au moins un film
+        $cinemasUndeletable = $this->cinemaDAO->getOnAirCinemasId();
         $cinemaToBeModified = [];
         $toBeModified = null;
 
@@ -51,6 +53,7 @@ class CinemaController extends Controller
         $vue->generer(
             [
                 'cinemas'            => $cinemas,
+                'onAirCinemas'       => $cinemasUndeletable,
                 'isUserAdmin'        => $isUserAdmin,
                 'mode'               => $mode,
                 'cinemaToBeModified' => $cinemaToBeModified,

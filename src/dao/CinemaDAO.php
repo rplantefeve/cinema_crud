@@ -76,6 +76,17 @@ class CinemaDAO extends DAO
         return $this->extractObjects($resultats);
     }
 
+    public function getOnAirCinemasId(): array
+    {
+        $resultats = [];
+        $requete = "SELECT DISTINCT CINEMAID FROM seance";
+        $statement = $this->executeQuery($requete);
+        while (($row = $statement->fetch(\PDO::FETCH_NUM)) !== false) {
+            $resultats[] = $row[0];
+        }
+        return $resultats;
+    }
+
     /**
      * Renvoie une liste de cinémas qui ne projettent pas le film donné
      *
