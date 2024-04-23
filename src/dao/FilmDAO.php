@@ -31,9 +31,9 @@ class FilmDAO extends DAO
 
     /**
      * Méthode qui renvoie la liste des films
-     * @return array[]
+     * @return array<Film>
      */
-    public function getMoviesList()
+    public function getMoviesList(): array
     {
         $requete = "SELECT * FROM film";
         // on extrait les résultats

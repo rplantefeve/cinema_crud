@@ -46,7 +46,8 @@
         ],
         "sniffer:check": "phpcs --standard=.phpcs.xml --report=full --report-width=120 --colors -p -s",
         "sniffer:fix": "phpcbf --standard=.phpcs.xml -p",
-        "stan": "phpstan analyse -c phpstan.neon --no-progress --ansi",
+        "stan": "phpstan analyse -c phpstan.neon --ansi",
+        "stan:bl": "phpstan analyse -c phpstan.neon --ansi --generate-baseline",
         "start": "php -S localhost:8080 -t src/",
         "test:all": [
             "@cs:check",

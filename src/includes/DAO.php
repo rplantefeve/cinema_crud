@@ -40,7 +40,7 @@ abstract class DAO
 
     /**
      * Extrait des résultats, un vecteur d'objets métiers
-     * @param array $results
+     * @param array|null $results
      * @return array<object>|null
      */
     protected function extractObjects($results): array|null
@@ -103,7 +103,7 @@ abstract class DAO
         );
 
         // boucle de construction du tableau de résultats
-        while ($ligne = $resultat->fetch(PDO::FETCH_ASSOC)) {
+        while (($ligne = $resultat->fetch(PDO::FETCH_ASSOC)) !== false) {
             $tableau[] = $ligne;
         }
         unset($resultat);

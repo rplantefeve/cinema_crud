@@ -78,7 +78,7 @@ class SeanceDAO extends DAO
      *
      * @param int $cinemaID
      * @param int $filmID
-     * @return array<Seance>
+     * @return array<int,Seance>
      */
     public function getMovieShowtimes($cinemaID, $filmID): array
     {
@@ -102,7 +102,7 @@ class SeanceDAO extends DAO
      * Méthode qui retourne toutes les séances de tous les films présents dans un cinéma donné
      * @param array $films Liste des films du cinéma donné
      * @param int $cinemaID Identifiant du cinéma concerné
-     * @return array<Seance> Les séances des films projetées dans ce cinéma
+     * @return array<array<Seance>> Les séances des films projetées dans ce cinéma
      */
     public function getAllMoviesShowtimesByCinemaID($films, $cinemaID): array
     {
@@ -124,7 +124,7 @@ class SeanceDAO extends DAO
      * Méthode qui retourne toutes les séances de tous les cinémas d'un film donné
      * @param array $cinemas Liste des cinémas qui projettent ce film
      * @param int $filmID Identifiant du film concerné
-     * @return array<Seance> Les séances du film projeté dans ces cinémas
+     * @return array<array<Seance>> Les séances du film projeté dans ces cinémas
      */
     public function getAllCinemasShowtimesByMovieID($cinemas, $filmID): array
     {
@@ -235,10 +235,10 @@ class SeanceDAO extends DAO
 
     /**
      * Supprime une séance pour un film donné et un cinéma donné
-     * @param type $cinemaID
-     * @param type $filmID
-     * @param type $heureDebut
-     * @param type $heureFin
+     * @param int $cinemaID
+     * @param int $filmID
+     * @param string $heureDebut
+     * @param string $heureFin
      */
     public function deleteShowtime($cinemaID, $filmID, $heureDebut, $heureFin)
     {
