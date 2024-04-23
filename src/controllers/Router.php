@@ -42,72 +42,71 @@ class Router
                 INPUT_GET,
                 ['action' => FILTER_DEFAULT]
             );
-            if ($sanitizedEntries && $sanitizedEntries['action'] !== '') {
+            if (isset($sanitizedEntries) === true && $sanitizedEntries['action'] !== '') {
                 // si l'action demandée est la liste des cinémas
-                if ($sanitizedEntries['action'] == "cinemasList") {
+                if ($sanitizedEntries['action'] === "cinemasList") {
                     // Activation de la route cinemasList
                     $this->cinemaCtrl->cinemasList();
-                }
-                // si l'action demandée est la modification / Ajout d'un cinéma
-                elseif ($sanitizedEntries['action'] === "addCinema") {
+                } elseif ($sanitizedEntries['action'] === "addCinema") {
+                    // si l'action demandée est la modification / Ajout d'un cinéma
                     // Activation de la route addCinema
                     $this->cinemaCtrl->cinemasList("add");
-                } elseif ($sanitizedEntries['action'] == "editCinema") {
+                } elseif ($sanitizedEntries['action'] === "editCinema") {
                     // Activation de la route editCinema
                     $this->cinemaCtrl->cinemasList("edit");
-                } elseif ($sanitizedEntries['action'] == "saveCinema") {
+                } elseif ($sanitizedEntries['action'] === "saveCinema") {
                     // Activation de la route saveCinema
                     $this->cinemaCtrl->editCinema();
-                } // si l'action demandée est la Suppression d'un cinéma
-                elseif ($sanitizedEntries['action'] == "deleteCinema") {
+                } elseif ($sanitizedEntries['action'] === "deleteCinema") {
+                    // si l'action demandée est la Suppression d'un cinéma
                     // Activation de la route deleteCinema
                     $this->cinemaCtrl->deleteCinema();
-                } elseif ($sanitizedEntries['action'] == "moviesList") {
+                } elseif ($sanitizedEntries['action'] === "moviesList") {
                     // Activation de la route moviesList
                     $this->movieCtrl->moviesList();
                 } elseif ($sanitizedEntries['action'] === "addMovie") {
                     // Activation de la route addMovie
                     $this->movieCtrl->moviesList("add");
-                } elseif ($sanitizedEntries['action'] == "saveMovie") {
+                } elseif ($sanitizedEntries['action'] === "saveMovie") {
                     // Activation de la route saveMovie
                     $this->movieCtrl->editMovie();
-                } elseif ($sanitizedEntries['action'] == "editMovie") {
+                } elseif ($sanitizedEntries['action'] === "editMovie") {
                     // Activation de la route editMovie
                     $this->movieCtrl->moviesList("edit");
-                } elseif ($sanitizedEntries['action'] == "deleteMovie") {
+                } elseif ($sanitizedEntries['action'] === "deleteMovie") {
                     // Activation de la route deleteMovie
                     $this->movieCtrl->deleteMovie();
-                } elseif ($sanitizedEntries['action'] == "movieShowtimes") {
+                } elseif ($sanitizedEntries['action'] === "movieShowtimes") {
                     // Activation de la route movieShowtimes
                     $this->showtimesCtrl->movieShowtimes();
-                } elseif ($sanitizedEntries['action'] == "cinemaShowtimes") {
+                } elseif ($sanitizedEntries['action'] === "cinemaShowtimes") {
                     // Activation de la route cinemaShowtimes
                     $this->showtimesCtrl->cinemaShowtimes();
-                } elseif ($sanitizedEntries['action'] == "editShowtime") {
+                } elseif ($sanitizedEntries['action'] === "editShowtime") {
                     // Activation de la route editShowtime
                     $this->showtimesCtrl->editShowtime();
-                } elseif ($sanitizedEntries['action'] == "deleteShowtime") {
+                } elseif ($sanitizedEntries['action'] === "deleteShowtime") {
                     // Activation de la route deleteShowtime
                     $this->showtimesCtrl->deleteShowtime();
-                } elseif ($sanitizedEntries['action'] == "editFavoriteMoviesList") {
+                } elseif ($sanitizedEntries['action'] === "editFavoriteMoviesList") {
                     // Activation de la route editFavoriteMoviesList
                     $this->favoriteCtrl->editFavoriteMoviesList();
-                } elseif ($sanitizedEntries['action'] == "addFavoriteMovie") {
+                } elseif ($sanitizedEntries['action'] === "addFavoriteMovie") {
                     // Activation de la route addFavoriteMovie
                     $this->favoriteCtrl->editFavoriteMoviesList("add");
-                } elseif ($sanitizedEntries['action'] == "saveFavoriteMovie") {
+                } elseif ($sanitizedEntries['action'] === "saveFavoriteMovie") {
                     // Activation de la route saveFavoriteMovie
                     $this->favoriteCtrl->editFavoriteMovie();
-                } elseif ($sanitizedEntries['action'] == "editFavoriteMovie") {
+                } elseif ($sanitizedEntries['action'] === "editFavoriteMovie") {
                     // Activation de la route editFavoriteMovie
                     $this->favoriteCtrl->editFavoriteMoviesList("edit");
-                } elseif ($sanitizedEntries['action'] == "deleteFavoriteMovie") {
+                } elseif ($sanitizedEntries['action'] === "deleteFavoriteMovie") {
                     // Activation de la route deleteFavoriteMovie
                     $this->favoriteCtrl->deleteFavoriteMovie();
-                } elseif ($sanitizedEntries['action'] == "createNewUser") {
+                } elseif ($sanitizedEntries['action'] === "createNewUser") {
                     // Activation de la route createNewUser
                     $this->homeCtrl->createNewUser();
-                } elseif ($sanitizedEntries['action'] == "logout") {
+                } elseif ($sanitizedEntries['action'] === "logout") {
                     // Activation de la route logout
                     $this->homeCtrl->logout();
                 } else {

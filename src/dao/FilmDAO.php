@@ -23,7 +23,7 @@ class FilmDAO extends DAO
         $film = new Film();
         $film->setFilmId($row['FILMID']);
         $film->setTitre($row['TITRE']);
-        if (array_key_exists('TITREORIGINAL', $row)) {
+        if (array_key_exists('TITREORIGINAL', $row) === true) {
             $film->setTitreOriginal($row['TITREORIGINAL']);
         }
         return $film;
@@ -31,7 +31,7 @@ class FilmDAO extends DAO
 
     /**
      * Méthode qui renvoie la liste des films
-     * @return array[][]
+     * @return array[]
      */
     public function getMoviesList()
     {
@@ -133,7 +133,7 @@ class FilmDAO extends DAO
             ]
         );
         // log
-        if ($this->logger) {
+        if ($this->logger !== null) {
             $this->logger->info('Movie ' . $titre . ' successfully added.');
         }
     }
@@ -169,7 +169,7 @@ class FilmDAO extends DAO
             . $movieID
         );
 
-        if ($this->logger) {
+        if ($this->logger !== null) {
             $this->logger->info('Movie ' . $movieID . ' successfully deleted.');
         }
     }

@@ -2,6 +2,7 @@
 
 namespace Semeformation\Mvc\Cinema_crud\controllers;
 
+use Semeformation\Mvc\Cinema_crud\controllers\Controller;
 use Semeformation\Mvc\Cinema_crud\dao\FilmDAO;
 use Semeformation\Mvc\Cinema_crud\views\View;
 use Psr\Log\LoggerInterface;
@@ -11,7 +12,7 @@ use Psr\Log\LoggerInterface;
  *
  * @author User
  */
-class MovieController
+class MovieController extends Controller
 {
     private $filmDAO;
 
@@ -25,13 +26,7 @@ class MovieController
      */
     public function moviesList($mode = "")
     {
-        $isUserAdmin = false;
-
-        session_start();
-        // si l'utilisateur est pas connecté et qu'il est amdinistrateur
-        if (array_key_exists("user", $_SESSION) and $_SESSION['user'] == 'admin@adm.adm') {
-            $isUserAdmin = true;
-        }
+        $isUserAdmin = $this->checkAdminRights();
 
         // on récupère la liste des films ainsi que leurs informations
         $films = $this->filmDAO->getMoviesList();
@@ -39,7 +34,7 @@ class MovieController
         $toBeModified = null;
 
         // si nous sommes en mode modification
-        if($mode === "edit") {
+        if ($mode === "edit") {
             $sanitizedEntries = filter_input_array(
                 INPUT_GET,
                 ['filmID' => FILTER_SANITIZE_NUMBER_INT]
@@ -52,12 +47,15 @@ class MovieController
         // On génère la vue films
         $vue = new View("MoviesList");
         // En passant les variables nécessaires à son bon affichage
-        $vue->generer([
-            'films'       => $films,
-            'isUserAdmin' => $isUserAdmin,
-            'mode'        => $mode,
-            'filmToBeModified' => $filmToBeModified,
-            'toBeModified' => $toBeModified]);
+        $vue->generer(
+            [
+                'films'            => $films,
+                'isUserAdmin'      => $isUserAdmin,
+                'mode'             => $mode,
+                'filmToBeModified' => $filmToBeModified,
+                'toBeModified'     => $toBeModified,
+            ]
+        );
     }
 
     /**
@@ -65,17 +63,10 @@ class MovieController
      */
     public function deleteMovie()
     {
-        session_start();
-        // si l'utilisateur n'est pas connecté ou sinon s'il n'est pas amdinistrateur
-        if (!array_key_exists("user", $_SESSION) or $_SESSION['user'] !== 'admin@adm.adm') {
-            // renvoi à la page d'accueil
-            header('Location: index.php');
-            exit;
-        }
+        $this->redirectIfNotNotConnectedOrNotAdmin();
 
         // si la méthode de formulaire est la méthode POST
         if (filter_input(INPUT_SERVER, 'REQUEST_METHOD') === "POST") {
-
             // on "sainifie" les entrées
             $sanitizedEntries = filter_input_array(
                 INPUT_POST,
@@ -95,20 +86,10 @@ class MovieController
      */
     public function editMovie()
     {
-        session_start();
-        // si l'utilisateur n'est pas connecté ou sinon s'il n'est pas amdinistrateur
-        if (!array_key_exists("user", $_SESSION) or $_SESSION['user'] !== 'admin@adm.adm') {
-            // renvoi à la page d'accueil
-            header('Location: index.php');
-            exit;
-        }
-
-        // variable qui sert à conditionner l'affichage du formulaire
-        $isItACreation = false;
+        $this->redirectIfNotNotConnectedOrNotAdmin();
 
         // si la méthode de formulaire est la méthode POST
         if (filter_input(INPUT_SERVER, 'REQUEST_METHOD') === "POST") {
-
             // on assainit les entrées
             $sanEntries = filter_input_array(
                 INPUT_POST,
@@ -120,7 +101,6 @@ class MovieController
                 ]
             );
 
-
             // et que nous ne sommes pas en train de modifier un film
             if ($sanEntries['modificationInProgress'] === null) {
                 // on ajoute le film
@@ -128,9 +108,7 @@ class MovieController
                     $sanEntries['titre'],
                     $sanEntries['titreOriginal']
                 );
-            }
-            // sinon, nous sommes dans le cas d'une modification
-            else {
+            } else { // sinon, nous sommes dans le cas d'une modification
                 // mise à jour du film
                 $this->filmDAO->updateMovie(
                     $sanEntries['filmID'],

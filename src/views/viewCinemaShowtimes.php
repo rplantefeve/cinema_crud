@@ -2,7 +2,7 @@
 <header>
     <h1>Séances du cinéma <?= $cinema->getDenomination(); ?></h1>
     <h2><?= $cinema->getAdresse(); ?></h2>
-    <?php if ($adminConnected && $filmsUnplanned) : ?>
+    <?php if ($adminConnected === true && $filmsUnplanned !== null) : ?>
         <form action="index.php" method="get">
             <fieldset>
                 <legend>Ajouter un film à la programmation</legend>
@@ -37,7 +37,7 @@
                     <th>Début</th>
                     <th>Fin</th>
                     <th>Version</th>
-                    <?php if ($adminConnected) : ?>
+                    <?php if ($adminConnected === true) : ?>
                         <th colspan="2">Action</th>
                     <?php endif; ?>
                 </tr>
@@ -48,21 +48,21 @@
                      * Formatage des dates
                      */
                     // nous sommes en Français
-                    $formatter    = new IntlDateFormatter('fr_FR', IntlDateFormatter::LONG, IntlDateFormatter::NONE);
+                    $formatter = new IntlDateFormatter('fr_FR', IntlDateFormatter::LONG, IntlDateFormatter::NONE);
                     // date du jour de projection de la séance
-                    $jour         = $seance->getHeureDebut();
+                    $jour = $seance->getHeureDebut();
                     // On convertit pour un affichage en français
                     $jourConverti = $formatter->format($jour->getTimestamp());
 
                     $heureDebut = $seance->getHeureDebut()->format('H\hi');
-                    $heureFin   = $seance->getHeureFin()->format('H\hi');
+                    $heureFin = $seance->getHeureFin()->format('H\hi');
                     ?>
                     <tr>
                         <td><?= $jourConverti ?></td>
                         <td><?= $heureDebut ?></td>
                         <td><?= $heureFin ?></td>
                         <td><?= $seance->getVersion() ?></td>
-                        <?php if ($adminConnected) : ?>
+                        <?php if ($adminConnected === true) : ?>
                             <td>
                                 <form name="modifyMovieShowtime" method="GET">
                                     <input type="hidden" name="action" value="editShowtime">
@@ -91,7 +91,7 @@
 
                     <?php
                 }
-                if ($adminConnected) :
+                if ($adminConnected === true) :
                     ?>
                     <tr class="new">
                         <td colspan="6">
@@ -104,7 +104,7 @@
                             </form>
                         </td>
                     </tr>
-    <?php endif;
+                <?php endif;
                 ?>
             </table>
             <br>

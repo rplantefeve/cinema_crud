@@ -36,7 +36,7 @@
                     <th>Début</th>
                     <th>Fin</th>
                     <th>Version</th>
-                    <?php if ($adminConnected) : ?>
+                    <?php if ($adminConnected === true) : ?>
                         <th colspan="2">Action</th>
                     <?php endif; ?>
                 </tr>
@@ -61,7 +61,7 @@
                         <td><?= $heureDebut ?></td>
                         <td><?= $heureFin ?></td>
                         <td><?= $seance->getVersion() ?></td>
-                        <?php if ($adminConnected) : ?>
+                        <?php if ($adminConnected === true) : ?>
                             <td>
                                 <form name="modifyMovieShowtime" action="index.php" method="GET">
                                     <input name="action" type="hidden" value="editShowtime">
@@ -89,7 +89,7 @@
                     </tr>
                     <?php
                 }
-                if ($adminConnected) :
+                if ($adminConnected === true) :
                     ?>
                     <tr class="new">
                         <td colspan="6">

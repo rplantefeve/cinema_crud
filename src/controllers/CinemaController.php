@@ -2,6 +2,7 @@
 
 namespace Semeformation\Mvc\Cinema_crud\controllers;
 
+use Semeformation\Mvc\Cinema_crud\controllers\Controller;
 use Semeformation\Mvc\Cinema_crud\dao\CinemaDAO;
 use Semeformation\Mvc\Cinema_crud\views\View;
 use Psr\Log\LoggerInterface;
@@ -11,7 +12,7 @@ use Psr\Log\LoggerInterface;
  *
  * @author User
  */
-class CinemaController
+class CinemaController extends Controller
 {
     private $cinemaDAO;
 
@@ -25,13 +26,8 @@ class CinemaController
      */
     public function cinemasList($mode = "")
     {
-        $isUserAdmin = false;
-
-        session_start();
-        // si l'utilisateur est pas connecté et qu'il est amdinistrateur
-        if (array_key_exists("user", $_SESSION) and $_SESSION['user'] === 'admin@adm.adm') {
-            $isUserAdmin = true;
-        }
+        // Vérifie que l'utilisateur est connecté et qu'il est administrateur
+        $isUserAdmin = $this->checkAdminRights();
 
         // on récupère la liste des cinémas ainsi que leurs informations
         $cinemas = $this->cinemaDAO->getCinemasList();
@@ -68,13 +64,8 @@ class CinemaController
      */
     public function editCinema()
     {
-        session_start();
-        // si l'utilisateur n'est pas connecté ou sinon s'il n'est pas amdinistrateur
-        if (!array_key_exists("user", $_SESSION) or $_SESSION['user'] !== 'admin@adm.adm') {
-            // renvoi à la page d'accueil
-            header('Location: index.php');
-            exit;
-        }
+        // Redirige l'utilisateur vers la page d'accueil s'il n'est pas connecté ou s'il n'est pas administrateur
+        $this->redirectIfNotNotConnectedOrNotAdmin();
 
         // si la méthode de formulaire est la méthode POST
         if (filter_input(INPUT_SERVER, 'REQUEST_METHOD') === "POST") {
@@ -88,7 +79,6 @@ class CinemaController
                     'modificationInProgress' => FILTER_DEFAULT,
                 ]
             );
-
 
             // et que nous ne sommes pas en train de modifier un cinéma
             if ($sanEntries['modificationInProgress'] === null) {
@@ -116,13 +106,7 @@ class CinemaController
      */
     public function deleteCinema()
     {
-        session_start();
-        // si l'utilisateur n'est pas connecté ou sinon s'il n'est pas amdinistrateur
-        if (!array_key_exists("user", $_SESSION) or $_SESSION['user'] !== 'admin@adm.adm') {
-            // renvoi à la page d'accueil
-            header('Location: index.php');
-            exit;
-        }
+        $this->redirectIfNotNotConnectedOrNotAdmin();
 
         // si la méthode de formulaire est la méthode POST
         if (filter_input(INPUT_SERVER, 'REQUEST_METHOD') === "POST") {

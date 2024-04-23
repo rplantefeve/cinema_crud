@@ -11,7 +11,7 @@
     <?php
     // boucle de construction de la liste des cinémas
     foreach ($cinemas as $cinema) {
-        if ($mode === "edit" && isset($toBeModified) && $cinema->getCinemaId() === $toBeModified) {
+        if ($mode === "edit" && isset($toBeModified) === true && $cinema->getCinemaId() === $toBeModified) {
             ?>
             <tr>
                 <form name="editCinema" action="index.php?action=saveCinema" method="POST">
@@ -25,7 +25,7 @@
                     </td>
                 </form>
             </tr>
-        <?php
+            <?php
         } else {
             ?>
             <tr>
@@ -39,8 +39,8 @@
                     </form>
                 </td>
                 <?php
-                    if ($isUserAdmin) :
-                        ?>
+                if ($isUserAdmin === true) :
+                    ?>
                     <td>
                         <form name="modifyCinema" action="index.php" method="GET">
                             <input name="action" type="hidden" value="editCinema">
@@ -56,12 +56,12 @@
                     </td>
                 <?php endif; ?>
             </tr>
-        <?php
+            <?php
         }
     }
-if ($isUserAdmin) :
-    if (isset($mode) && $mode === "add") {
-        ?>
+    if ($isUserAdmin === true) :
+        if (isset($mode) === true && $mode === "add") {
+            ?>
             <tr>
                 <form name="saveCinema" action="index.php?action=saveCinema" method="POST">
                     <td>
@@ -76,9 +76,9 @@ if ($isUserAdmin) :
                     </td>
                 </form>
             </tr>
-        <?php
-    } else {
-        ?>
+            <?php
+        } else {
+            ?>
             <tr class="new">
                 <td colspan="5">
                     <form name="addCinema" method="get">
@@ -88,7 +88,7 @@ if ($isUserAdmin) :
                 </td>
             </tr>
 
-    <?php }
+        <?php }
     endif; ?>
 </table>
 <form name="cancelForm" id="cancelForm" method="GET" action="index.php">

@@ -38,8 +38,10 @@ class View
         // utilisation du template avec chargement des données spécifiques
         $vue = $this->genererFichier(
             __DIR__ . '/viewTemplate.php',
-            ['title' => $this->title,
-                'content' => $content]
+            [
+                'title'   => $this->title,
+                'content' => $content,
+            ]
         );
         // Renvoi de la vue générée au navigateur
         echo $vue;
@@ -54,7 +56,7 @@ class View
      */
     private function genererFichier(string $fichier, array $donnees): string
     {
-        if (file_exists($fichier)) {
+        if (file_exists($fichier) === true) {
             // déclare autant de variables qu'il y en a dans le tableau
             if ($donnees !== null) {
                 extract($donnees);
@@ -69,5 +71,4 @@ class View
             throw new Exception('Impossible de find a view named ' . $fichier);
         }
     }
-
 }

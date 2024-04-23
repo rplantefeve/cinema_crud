@@ -10,10 +10,10 @@
     </tr>
     <?php
     // si des films ont été trouvés
-    if ($preferences) {
+    if ($preferences !== null) {
         // boucle de création du tableau
         foreach ($preferences as $prefere) {
-            if ($addMode === "edit" && isset($toBeModified) && $prefere->getFilm()->getFilmId() === $toBeModified) {
+            if ($addMode === "edit" && isset($toBeModified) === true && $prefere->getFilm()->getFilmId() === $toBeModified) {
                 ?>
                 <tr>
                     <form name="editFavoriteMovie" action="index.php?action=saveFavoriteMovie" method="POST">
@@ -63,7 +63,7 @@
                         <option value="default">Choisissez un film</option>
                         <?php
                         // s'il y a des résultats
-                        if ($films) {
+                        if ($films !== null) {
                             foreach ($films as $film) {
                                 ?>
                                 <option value="<?= $film->getFilmId(); ?>"><?= $film->getTitre(); ?></option>
@@ -73,7 +73,7 @@
                         ?>
                     </select>
                     <?php
-                    if (isset($noneSelected) && $noneSelected === true) : ?>
+                    if (isset($noneSelected) === true && $noneSelected === true) : ?>
                         <div class="error">Veuillez renseigner un titre de film.</span>
                     <?php endif; ?>
                 </td>

@@ -11,7 +11,7 @@
     <?php
     // boucle de construction de la liste des cinémas
     foreach ($films as $film) {
-        if ($mode === "edit" && isset($toBeModified) && $film->getFilmId() === $toBeModified) {
+        if ($mode === "edit" && isset($toBeModified) === true && $film->getFilmId() === $toBeModified) {
             ?>
             <tr>
                 <form name="editMovie" action="index.php?action=saveMovie" method="POST">
@@ -37,7 +37,7 @@
                         <input type="submit" value="Consulter les séances" />
                     </form>
                 </td>
-                <?php if ($isUserAdmin) : ?>
+                <?php if ($isUserAdmin === true) : ?>
                     <td>
                         <form name="modifyMovie" action="index.php" method="GET">
                             <input name="action" type="hidden" value="editMovie">
@@ -57,8 +57,8 @@
         }
     }
     ?>
-    <?php if ($isUserAdmin) :
-        if (isset($mode) && $mode === "add") {
+    <?php if ($isUserAdmin === true) :
+        if (isset($mode) === true && $mode === "add") {
             ?>
             <tr>
                 <form name="saveMovie" action="index.php?action=saveMovie" method="POST">

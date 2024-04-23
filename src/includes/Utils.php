@@ -11,11 +11,11 @@ namespace Semeformation\Mvc\Cinema_crud\includes;
 class Utils
 {
     /**
-     * affiche le résultat d'une opération d'extraction
+     * Affiche le résultat d'une opération d'extraction
      * @param array|scalar $unResultat
      * @param string $uneLegende
      */
-    public static function afficherResultat($unResultat, $uneLegende = "")
+    public static function afficherResultat(array $unResultat, string $uneLegende = "")
     {
         $event = 'onmouseover="basculeTitreValeur(this)" onmouseout="basculeTitreValeur(this)"';
         echo <<<HTML
@@ -43,11 +43,8 @@ class Utils
                     <caption>$uneLegende</caption>
 
             HTML;
-        if (is_array($unResultat)) {
-            if (count($unResultat) != count(
-                $unResultat,
-                COUNT_RECURSIVE
-            )) {
+        if (is_array($unResultat) === true) {
+            if (count($unResultat) !== count($unResultat, COUNT_RECURSIVE)) {
                 self::afficherNxN(
                     $unResultat,
                     $event
@@ -59,7 +56,7 @@ class Utils
                 ); // tableau à 1 dimension
             }
         } else {
-            if ($unResultat) { // valeur unique
+            if ($unResultat !== null) { // valeur unique
                 echo "<tr><td class=\"scalaire\" title=\"var\" {$event}>$unResultat</td></tr>\n";
             } else { // valeur null
                 echo "<tr><td class=\"scalaire\" title=\"null\" {$event}></td></tr>\n";
@@ -69,10 +66,13 @@ class Utils
     }
 
     /**
-     * affiche les lignes d'un tableau à 2 dimensions
-     * @param array[][] $unResultat
+     * Affiche les lignes d'un tableau à 2 dimensions
+     *
+     * @param array<array> $unResultat
+     * @param string $unEvent
+     * @return void
      */
-    private static function afficherNxN($unResultat, $unEvent)
+    private static function afficherNxN(array $unResultat, string $unEvent): void
     {
         $entete = true;
         $i = 0;
@@ -80,7 +80,7 @@ class Utils
             $noms = "";
             $valeurs = "";
             foreach ($uneLigne as $nom => $valeur) {
-                if ($entete) {
+                if ($entete === true) {
                     $noms .= "<th>['{$nom}']</th>\n";
                 }
                 $valeur = htmlentities(
@@ -90,7 +90,7 @@ class Utils
                 );
                 $valeurs .= "<td title=\"array[{$i}]['{$nom}']\" {$unEvent}>{$valeur}</td>\n";
             }
-            if ($entete) {
+            if ($entete === true) {
                 $entete = false;
                 echo "<tr><th></th>{$noms}</tr>\n";
             }
@@ -100,10 +100,11 @@ class Utils
     }
 
     /**
-     * affiche les champs d'un tableau à 1 dimension
-     * @param array[] $unResultat
+     * Affiche les champs d'un tableau à 1 dimension
+     * @param array $unResultat
+     * @param string $unEvent
      */
-    private static function afficher1xN($unResultat, $unEvent)
+    private static function afficher1xN(array $unResultat, string $unEvent): void
     {
         foreach ($unResultat as $nom => $valeur) {
             $valeur = htmlentities(
@@ -115,5 +116,4 @@ class Utils
             echo "<td title=\"array['$nom']\" {$unEvent}>{$valeur}</td></tr>\n";
         }
     }
-
 }

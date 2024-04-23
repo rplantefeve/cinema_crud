@@ -30,10 +30,11 @@ abstract class DAO
 
     protected function buildBusinessObjects($rows)
     {
+        $objets = null;
         foreach ($rows as $row) {
             $objets[] = $this->buildBusinessObject($row);
         }
-        return $objets ?? null;
+        return ($objets ?? null);
     }
 
     /**
@@ -43,7 +44,7 @@ abstract class DAO
      */
     protected function extractObjects($results)
     {
-        if (!is_null($results)) {
+        if ($results !== null) {
             // on crée les objets métiers
             $objects = $this->buildBusinessObjects($results);
             // on retourne le résultat
@@ -63,7 +64,7 @@ abstract class DAO
     public function executeQuery($sql, $params = null)
     {
         // si pas de paramètres
-        if (is_null($params)) {
+        if ($params === null) {
             // exécution directe
             $resultat = DBFactory::getFactory($this->logger)->getConnection()->query($sql);
         } else {
@@ -71,7 +72,7 @@ abstract class DAO
             $resultat = DBFactory::getFactory($this->logger)->getConnection()->prepare($sql);
             $resultat->execute($params);
         }
-        if ($this->logger) {
+        if ($this->logger !== null) {
             $this->logger->debug('Query successfully executed : ' . $sql);
         }
         return $resultat;
@@ -84,10 +85,11 @@ abstract class DAO
     /**
      * Retourne les lignes d'enregistrements sous forme de tableau associatif
      * Ici, on aura N lignes, N colonnes
+     *
      * @param string $unSQLSelect La requête SQL
      * @param array $parametres Les éventuels paramètres de la requête
      * @param boolean $estVisible (visualisation du résultat)
-     * @return array[][] ou null
+     * @return array[]|null
      */
     protected function extraireNxN($unSQLSelect, $parametres = null, $estVisible = false)
     {
@@ -100,18 +102,18 @@ abstract class DAO
         );
 
         // boucle de construction du tableau de résultats
-        while ($ligne = $resultat->fetch(PDO::FETCH_ASSOC)) {
+        while ($ligne = $resultat->fetch(PDO::FETCH_ASSOC) !== null) {
             $tableau[] = $ligne;
         }
         unset($resultat);
 
         // si la tableau ne contient pas d'élément
-        if (count($tableau) == 0) {
+        if (count($tableau) === 0) {
             $tableau = null;
         }
 
         // si l'on souhaite afficher le contenu du tableau (DEBUG MODE)
-        if ($estVisible) {
+        if ($estVisible === true) {
             Utils::afficherResultat(
                 $tableau,
                 $unSQLSelect
@@ -136,10 +138,10 @@ abstract class DAO
             $parametres,
             false
         );
-        if (isset($result[0])) {
+        if (isset($result[0]) === true) {
             $result = $result[0];
         }
-        if ($estVisible) {
+        if ($estVisible === true) {
             Utils::afficherResultat(
                 $result,
                 $unSQLSelect
@@ -147,5 +149,4 @@ abstract class DAO
         }
         return $result;
     }
-
 }

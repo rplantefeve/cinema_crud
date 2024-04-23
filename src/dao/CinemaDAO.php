@@ -115,7 +115,7 @@ class CinemaDAO extends DAO
             ]
         );
         // log
-        if ($this->logger) {
+        if ($this->logger !== null) {
             $this->logger->info('Cinema ' . $denomination . ' successfully added.');
         }
     }
@@ -151,7 +151,7 @@ class CinemaDAO extends DAO
             . $cinemaID
         );
 
-        if ($this->logger) {
+        if ($this->logger !== null) {
             $this->logger->info('Cinema ' . $cinemaID . ' successfully deleted.');
         }
     }

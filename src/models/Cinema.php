@@ -42,5 +42,4 @@ class Cinema
     {
         $this->adresse = $adresse;
     }
-
 }

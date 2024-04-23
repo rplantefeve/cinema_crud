@@ -4,15 +4,14 @@ namespace Semeformation\Mvc\Cinema_crud\models;
 
 class Utilisateur
 {
-    
     private $userId;
-    
+
     private $nom;
-    
+
     private $prenom;
-    
+
     private $adresseCourriel;
-    
+
     private $password;
 
     public function getUserId()
@@ -64,5 +63,4 @@ class Utilisateur
     {
         $this->password = $password;
     }
-
 }

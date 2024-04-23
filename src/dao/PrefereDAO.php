@@ -48,15 +48,15 @@ class PrefereDAO extends DAO
         $prefere = new Prefere();
         $prefere->setCommentaire($row['COMMENTAIRE']);
         // trouver l'utilisateur concerné grâce à son identifiant
-        if (array_key_exists('USERID', $row)) {
-            $userId      = $row['USERID'];
+        if (array_key_exists('USERID', $row) === true) {
+            $userId = $row['USERID'];
             $utilisateur = $this->utilisateurDAO->getUserByID($userId);
             $prefere->setUtilisateur($utilisateur);
         }
         // trouver le film concerné grâce à son identifiant
-        if (array_key_exists('FILMID', $row)) {
+        if (array_key_exists('FILMID', $row) === true) {
             $filmId = $row['FILMID'];
-            $film   = $this->filmDAO->getMovieByID($filmId);
+            $film = $this->filmDAO->getMovieByID($filmId);
             $prefere->setFilm($film);
         }
         return $prefere;
@@ -96,11 +96,13 @@ class PrefereDAO extends DAO
         // on extrait les résultats de la BDD
         $resultat = $this->extraire1xN(
             $requete,
-            ['userID' => $userID,
-                'filmID' => $filmID]
+            [
+                'userID' => $userID,
+                'filmID' => $filmID,
+            ]
         );
         // on crée l'objet métier
-        $prefere  = $this->buildBusinessObject($resultat);
+        $prefere = $this->buildBusinessObject($resultat);
         // on retourne le résultat
         return $prefere;
     }
@@ -119,9 +121,11 @@ class PrefereDAO extends DAO
         // exécution de la requête
         $this->executeQuery(
             $requete,
-            ['userID'  => $userID,
+            [
+                'userID'  => $userID,
                 'filmID'  => $filmID,
-                'comment' => $comment]
+                'comment' => $comment,
+            ]
         );
     }
 
@@ -142,12 +146,14 @@ class PrefereDAO extends DAO
         // exécution de la requête
         $this->executeQuery(
             $requete,
-            ['filmID'  => $filmID,
+            [
+                'filmID'  => $filmID,
                 'userID'  => $userID,
-                'comment' => $comment]
+                'comment' => $comment,
+            ]
         );
 
-        if ($this->logger) {
+        if ($this->logger !== null) {
             $this->logger->info('Movie ' . $filmID . ' successfully added to ' . $userID . '\'s preferences.');
         }
     }
@@ -162,13 +168,14 @@ class PrefereDAO extends DAO
         $this->executeQuery(
             "DELETE FROM prefere"
                 . " WHERE userID = :userID AND filmID = :filmID",
-            ['userID' => $userID,
-                'filmID' => $filmID]
+            [
+                'userID' => $userID,
+                'filmID' => $filmID,
+            ]
         );
 
-        if ($this->logger) {
+        if ($this->logger !== null) {
             $this->logger->info('Movie ' . $filmID . ' successfully deleted from ' . $userID . '\'s preferences.');
         }
     }
-
 }

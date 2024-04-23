@@ -12,7 +12,7 @@ use Exception;
  *
  * @author User
  */
-class HomeController
+class HomeController extends Controller
 {
     /**
      * L'utilisateur de l'application
@@ -33,31 +33,22 @@ class HomeController
 
     public function home()
     {
-        session_start();
-        // personne d'authentifié à ce niveau
-        $loginSuccess = false;
-
         // variables de contrôle du formulaire
         $areCredentialsOK = true;
 
+
+        $loginSuccess = $this->checkUserConnected();
         // si l'utilisateur est déjà authentifié
-        if (array_key_exists(
-            "user",
-            $_SESSION
-        )) {
-            $loginSuccess = true;
-            // Sinon (pas d'utilisateur authentifié pour l'instant)
-        } else {
+        if ($loginSuccess === false) {
             // si la méthode POST a été employée
-            if (filter_input(
-                INPUT_SERVER,
-                'REQUEST_METHOD'
-            ) === "POST") {
+            if (filter_input(INPUT_SERVER, 'REQUEST_METHOD') === "POST") {
                 // on "sainifie" les entrées
                 $sanitizedEntries = filter_input_array(
                     INPUT_POST,
-                    ['email' => FILTER_SANITIZE_EMAIL,
-                        'password' => FILTER_DEFAULT]
+                    [
+                        'email'    => FILTER_SANITIZE_EMAIL,
+                        'password' => FILTER_DEFAULT,
+                    ]
                 );
 
                 $this->login(
@@ -70,9 +61,12 @@ class HomeController
         // On génère la vue Accueil
         $vue = new View("Home");
         // En passant les variables nécessaires à son bon affichage
-        $vue->generer([
-            'areCredentialsOK' => $areCredentialsOK,
-            'loginSuccess' => $loginSuccess]);
+        $vue->generer(
+            [
+                'areCredentialsOK' => $areCredentialsOK,
+                'loginSuccess'     => $loginSuccess,
+            ]
+        );
     }
 
     private function login($sanitizedEntries, &$areCredentialsOK)
@@ -109,18 +103,17 @@ class HomeController
         $isPasswordValid = true;
 
         // si la méthode POST est utilisée, cela signifie que le formulaire a été envoyé
-        if (filter_input(
-            INPUT_SERVER,
-            'REQUEST_METHOD'
-        ) === "POST") {
+        if (filter_input(INPUT_SERVER, 'REQUEST_METHOD') === "POST") {
             // on "sainifie" les entrées
             $sanitizedEntries = filter_input_array(
                 INPUT_POST,
-                ['firstName' => FILTER_DEFAULT,
-                    'lastName' => FILTER_DEFAULT,
-                    'email' => FILTER_SANITIZE_EMAIL,
-                    'password' => FILTER_DEFAULT,
-                    'passwordConfirmation' => FILTER_DEFAULT]
+                [
+                    'firstName'            => FILTER_DEFAULT,
+                    'lastName'             => FILTER_DEFAULT,
+                    'email'                => FILTER_SANITIZE_EMAIL,
+                    'password'             => FILTER_DEFAULT,
+                    'passwordConfirmation' => FILTER_DEFAULT,
+                ]
             );
 
             // si le prénom n'a pas été renseigné
@@ -140,7 +133,7 @@ class HomeController
                 // On vérifie l'existence de l'utilisateur
                 $userID = $this->utilisateurDAO->getUserIDByEmailAddress($sanitizedEntries['email']);
                 // si on a un résultat, cela signifie que cette adresse email existe déjà
-                if ($userID) {
+                if ($userID !== null) {
                     $isUserUnique = false;
                 }
             }
@@ -159,7 +152,7 @@ class HomeController
             }
 
             // si les champs nécessaires ne sont pas vides, que l'utilisateur est unique et que le mot de passe est valide
-            if (!$isFirstNameEmpty && !$isLastNameEmpty && !$isEmailAddressEmpty && $isUserUnique && !$isPasswordEmpty && $isPasswordValid) {
+            if ($isFirstNameEmpty === false && $isLastNameEmpty === false && $isEmailAddressEmpty === false && $isUserUnique === true && $isPasswordEmpty === false && $isPasswordValid === true) {
                 // hash du mot de passe
                 $password = password_hash(
                     $sanitizedEntries['password'],
@@ -181,9 +174,7 @@ class HomeController
                 header("Location: index.php?action=editFavoriteMoviesList");
                 exit;
             }
-        }
-        // sinon (le formulaire n'a pas été envoyé)
-        else {
+        } else { // sinon (le formulaire n'a pas été envoyé)
             // initialisation des variables du formulaire
             $sanitizedEntries['firstName'] = '';
             $sanitizedEntries['lastName'] = '';
@@ -191,14 +182,15 @@ class HomeController
         }
 
         $donnees = [
-            'sanitizedEntries' => $sanitizedEntries,
-            'isFirstNameEmpty' => $isFirstNameEmpty,
-            'isLastNameEmpty' => $isLastNameEmpty,
-            'isEmailAddressEmpty' => $isEmailAddressEmpty,
-            'isUserUnique' => $isUserUnique,
-            'isPasswordEmpty' => $isPasswordEmpty,
+            'sanitizedEntries'            => $sanitizedEntries,
+            'isFirstNameEmpty'            => $isFirstNameEmpty,
+            'isLastNameEmpty'             => $isLastNameEmpty,
+            'isEmailAddressEmpty'         => $isEmailAddressEmpty,
+            'isUserUnique'                => $isUserUnique,
+            'isPasswordEmpty'             => $isPasswordEmpty,
             'isPasswordConfirmationEmpty' => $isPasswordConfirmationEmpty,
-            'isPasswordValid' => $isPasswordValid];
+            'isPasswordValid'             => $isPasswordValid,
+        ];
         // On génère la vue Création d'un utilisateur
         $vue = new View("CreateUser");
         // En passant les variables nécessaires à son bon affichage
@@ -219,5 +211,4 @@ class HomeController
         $vue = new View("Error");
         $vue->generer(['messageErreur' => $e->getMessage()]);
     }
-
 }

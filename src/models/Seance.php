@@ -92,5 +92,4 @@ class Seance
     {
         $this->version = $version;
     }
-
 }
