@@ -29,16 +29,24 @@ $app->match('/user/add',
 // Ajouter / Modifier des préférences de films
 $app->match('/favorite/list',
                 'Semeformation\\Mvc\\Cinema_crud\\controllers\\FavoriteController::editFavoriteMoviesList')
-        ->bind('favorite_list');
+->bind('favorite_list');
+
+$app->match('/favorite/list/{addMode}',
+        'Semeformation\\Mvc\\Cinema_crud\\controllers\\FavoriteController::editFavoriteMoviesList')
+->bind('favorite_list_add');
 
 $app->match('/favorite/add',
                 'Semeformation\\Mvc\\Cinema_crud\\controllers\\FavoriteController::editFavoriteMovie')
-        ->bind('favorite_add');
+->bind('favorite_add');
 
 // Modifier une préférence de film
-$app->match('/favorite/edit/{userId}/{filmId}',
+$app->match('/favorite/list/{addMode}/{filmId}',
+        'Semeformation\\Mvc\\Cinema_crud\\controllers\\FavoriteController::editFavoriteMoviesList'
+)->bind('favorite_list_edit');
+
+$app->post('/favorite/save/{filmId}',
         'Semeformation\\Mvc\\Cinema_crud\\controllers\\FavoriteController::editFavoriteMovie'
-)->bind('favorite_edit');
+)->bind('favorite_save');
 
 // Supprimer une préférence de film
 $app->post('/favorite/delete/{userId}/{filmId}',

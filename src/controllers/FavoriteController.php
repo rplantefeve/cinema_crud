@@ -31,42 +31,54 @@ class FavoriteController extends Controller {
     }
 
     public function editFavoriteMoviesList(Request $request = null,
-            Application $app = null) {
+            Application $app = null, $addMode = "", $filmId = null) {
         // si l'utilisateur n'est pas connecté
         if (!$app['session']->get('user')) {
             // renvoi à la page d'accueil
             return $app->redirect($request->getBasePath() . '/home');
         }
         // l'utilisateur est loggué
-        else {
-            $utilisateur = $this->prefereDAO->getUtilisateurDAO()->getUserByEmailAddress($app['session']->get('user')['username']);
-        }
+        $utilisateur = $this->prefereDAO->getUtilisateurDAO()->getUserByEmailAddress($app['session']->get('user')['username']);
 
         // on récupère la liste des films préférés grâce à l'utilisateur identifié
-        $preferes = $this->prefereDAO->getFavoriteMoviesFromUser($utilisateur->getUserId());
+        $preferences = $this->prefereDAO->getFavoriteMoviesFromUser($utilisateur->getUserId());
+        $preferenceToBeModified = [];
+        $toBeModified = null;
+        // on récupère la liste des films non marqués comme ayant un commentaire QUE SI NOUS SOMMES EN AJOUT !
+        $films = $this->prefereDAO->getFilmDAO()->getMoviesNonAlreadyMarkedAsFavorite($utilisateur->getUserId());
+        // si nous sommes en mode modification
+        if($addMode === "edit")
+        {
+            // on a besoin de récupérer le commentaire à partir du film
+            $preferenceToBeModified = $this->prefereDAO->getFavoriteMovieInformations($utilisateur->getUserId(), $filmId);
+            $toBeModified = $preferenceToBeModified->getFilm()->getFilmId();
+        }
 
         // On génère la vue Films préférés
         $vue = new View("FavoriteMoviesList");
         // En passant les variables nécessaires à son bon affichage
         return $vue->generer($request,
-                        array(
-                    'utilisateur' => $utilisateur,
-                    'preferes'    => $preferes));
+                        [
+                    'utilisateur'            => $utilisateur,
+                    'preferences'            => $preferences,
+                    'preferenceToBeModified' => $preferenceToBeModified,
+                    'addMode'                => $addMode,
+                    'films'                 => $films,
+                    'toBeModified'          => $toBeModified,
+                        ]);
     }
 
     public function editFavoriteMovie(Request $request = null,
-            Application $app = null, $userId = null, $filmId = null) {
+            Application $app = null, $filmId = null) {
         // si l'utilisateur n'est pas connecté
         if (!$app['session']->get('user')) {
             // renvoi à la page d'accueil
             return $app->redirect($request->getBasePath() . '/home');
         }
 
-        $films           = null;
+        $films = null;
         // variable de contrôle de formulaire
-        $aFilmIsSelected = true;
-        // variable qui sert à conditionner l'affichage du formulaire
-        $isItACreation   = false;
+        $noneSelected = true;
 
         // si la méthode de formulaire est la méthode POST
         if (filter_input(INPUT_SERVER, 'REQUEST_METHOD') === "POST") {
@@ -81,89 +93,45 @@ class FavoriteController extends Controller {
                 'modificationInProgress']);
 
 
-            // si l'action demandée est retour en arrière
-            if (!is_null($entries['backToList'])) {
+                $utilisateur = $this->prefereDAO->getUtilisateurDAO()->getUserByEmailAddress($app['session']->get('user')['username']);
+
+            // si un film a été selectionné 
+            if ($entries['filmID'] !== null && $entries['filmID'] !== "") {
+                // et que nous ne sommes pas en train de modifier une préférence
+                if (is_null($entries['modificationInProgress'])) {
+                    // on ajoute la préférence de l'utilisateur
+                    $this->prefereDAO->insertNewFavoriteMovie($entries['userID'],
+                            $entries['filmID'],
+                            $entries['comment']);
+                }
+                // sinon, nous sommes dans le cas d'une modification
+                else {
+                    // mise à jour de la préférence
+                    $this->prefereDAO->updateFavoriteMovie($entries['userID'],
+                            $entries['filmID'],
+                            $entries['comment']);
+                }
+                // on revient à la liste des préférences
                 // redirection vers la liste des préférences de films
                 return $app->redirect($request->getBasePath() . '/favorite/list');
             }
-            // sinon (l'action demandée est la sauvegarde d'un favori)
+            // sinon (un film n'a pas été sélectionné)
             else {
-                // si un film a été selectionné 
-                if (!is_null($entries['filmID'])) {
-
-                    // et que nous ne sommes pas en train de modifier une préférence
-                    if (is_null($entries['modificationInProgress'])) {
-                        // on ajoute la préférence de l'utilisateur
-                        $this->prefereDAO->insertNewFavoriteMovie($entries['userID'],
-                                $entries['filmID'], $entries['comment']);
-                    }
-                    // sinon, nous sommes dans le cas d'une modification
-                    else {
-                        // mise à jour de la préférence
-                        $this->prefereDAO->updateFavoriteMovie($entries['userID'],
-                                $entries['filmID'], $entries['comment']);
-                    }
-                    // on revient à la liste des préférences
-                    // redirection vers la liste des préférences de films
-                    return $app->redirect($request->getBasePath() . '/favorite/list');
-                }
-                // sinon (un film n'a pas été sélectionné)
-                else {
-                    // 
-                    $aFilmIsSelected = false;
-                    $isItACreation   = true;
-                    $films           = $this->prefereDAO->getFilmDAO()->getMoviesNonAlreadyMarkedAsFavorite($_SESSION['userID']);
-                    // initialisation des champs du formulaire
-                    $preference      = [
-                        "userID"      => $entries["userID"],
-                        "filmID"      => "",
-                        "titre"       => "",
-                        "commentaire" => $entries["comment"]];
-                    $userID          = $entries['userID'];
-                }
+                
+                $films = $this->prefereDAO->getFilmDAO()->getMoviesNonAlreadyMarkedAsFavorite($utilisateur->getUserId());
+                $preferences = $this->prefereDAO->getFavoriteMoviesFromUser($utilisateur->getUserId());
             }
-            // sinon (nous sommes en GET) et que l'id du film et l'id du user sont bien renseignés
-        } elseif (filter_input(INPUT_SERVER, 'REQUEST_METHOD') === "GET") {
+        } 
 
-            // on récupère les données depuis l'URL (transmises en paramètres d'entrée de la fonction
-            $entries['filmID'] = $filmId;
-            $entries['userID'] = $userId;
-
-            if ($entries && !is_null($entries['filmID']) && $entries['filmID'] !==
-                    '' && !is_null($entries['userID']) && $entries['userID'] !==
-                    '') {
-                // on récupère les informations manquantes (le commentaire afférent)
-                $prefere    = $this->prefereDAO->getFavoriteMovieInformations($entries['userID'],
-                        $entries['filmID']);
-                // TODO : faire autrement qu'avec un vecteur
-                $preference = [
-                    "userID"      => $app['session']->get('user')['userId'],
-                    "filmID"      => $prefere->getFilm()->getFilmId(),
-                    "titre"       => $prefere->getFilm()->getTitre(),
-                    "commentaire" => $prefere->getCommentaire()];
-                // sinon, c'est une création
-            } else {
-                // C'est une création
-                $isItACreation = true;
-
-                $films      = $this->prefereDAO->getFilmDAO()->getMoviesNonAlreadyMarkedAsFavorite($app['session']->get('user')['userId']);
-                // on initialise les autres variables de formulaire à vide
-                $preference = [
-                    "userID"      => $app['session']->get('user')['userId'],
-                    "filmID"      => "",
-                    "titre"       => "",
-                    "commentaire" => ""];
-            }
-        }
-
-        $donnees = ['aFilmIsSelected' => $aFilmIsSelected,
-            'isItACreation'   => $isItACreation,
-            'preference'      => $preference,
-            'userID'          => $preference['userID'],
-            'films'           => $films
+        $donnees = [
+            'utilisateur' => $utilisateur,
+            'preferences' => $preferences,
+            'films' => $films,
+            'addMode' => "add",
+            'noneSelected' => $noneSelected
         ];
         // On génère la vue Films préférés
-        $vue     = new View("FavoriteMovie");
+        $vue = new View("FavoriteMoviesList");
         // En passant les variables nécessaires à son bon affichage
         return $vue->generer($request, $donnees);
     }
