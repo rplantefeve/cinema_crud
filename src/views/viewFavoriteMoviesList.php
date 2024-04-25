@@ -16,12 +16,12 @@
             if ($addMode === "edit" && isset($toBeModified) === true && $prefere->getFilm()->getFilmId() === $toBeModified) {
                 ?>
                 <tr>
-                    <form name="editFavoriteMovie" action="<?= $request->getBasePath() . '/favorite/save/' . $prefere->getFilm()->getFilmId() ?>" method="POST">
+                    <form name="editFavoriteMovie" action="<?= $request->getBasePath() . '/favorite/save/' . $toBeModified ?>" method="POST">
                         <td><?= $preferenceToBeModified->getFilm()->getTitre() ?></td>
                         <td><textarea name="comment"><?= $preferenceToBeModified->getCommentaire() ?></textarea></td>
                         <td colspan="2" class="centered">
                             <input type="hidden" name="userID" value="<?= $utilisateur->getUserId(); ?>" />
-                            <input name="filmID" type="hidden" value="<?= $preferenceToBeModified->getFilm()->getFilmId() ?>" />
+                            <input name="filmID" type="hidden" value="<?= $toBeModified ?>" />
                             <input name="modificationInProgress" type="hidden" value="" />
                             <input type="image" src="<?= $request->getBasePath() . '/images/cancelIcon.png' ?>" alt="Cancel" form="cancelForm" />
                             <input type="image" src="<?= $request->getBasePath() . '/images/validateIcon.png' ?>" alt="Validate" />

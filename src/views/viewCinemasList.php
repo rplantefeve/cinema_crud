@@ -15,14 +15,14 @@ $path        = $request->getBasePath();
         if ($mode === "edit" && isset($toBeModified) === true && $cinema->getCinemaId() === $toBeModified) {
             ?>
             <tr>
-                <form name="editCinema" action="index.php?action=saveCinema" method="POST">
+                <form name="editCinema" action="<?= $path . '/cinema/save/' . $toBeModified ?>" method="POST">
                     <td><input name="denomination" value="<?= $cinemaToBeModified->getDenomination() ?>" /></td>
                     <td><textarea name="adresse"><?= $cinemaToBeModified->getAdresse() ?></textarea></td>
                     <td colspan="3" class="centered">
-                        <input name="cinemaID" type="hidden" value="<?= $cinemaToBeModified->getCinemaId() ?>" />
+                        <input name="cinemaID" type="hidden" value="<?= $toBeModified ?>" />
                         <input name="modificationInProgress" type="hidden" value="" />
-                        <input type="image" src="images/cancelIcon.png" alt="Cancel" form="cancelForm" />
-                        <input type="image" src="images/validateIcon.png" alt="Add" />
+                        <input type="image" src="<?= $path . '/images/cancelIcon.png' ?>" alt="Cancel" form="cancelForm" />
+                        <input type="image" src="<?= $path . '/images/validateIcon.png' ?>" alt="Add" />
                     </td>
                 </form>
             </tr>
@@ -41,23 +41,20 @@ $path        = $request->getBasePath();
                 if ($isUserAdmin === true) :
                     ?>
                     <td>
-                        <form name="modifyCinema" action="index.php" method="GET">
-                            <input name="action" type="hidden" value="editCinema">
-                            <input type="hidden" name="cinemaID" value="<?= $cinema->getCinemaId() ?>" />
-                            <input type="image" src="images/modifyIcon.png" alt="Modify" />
+                        <form name="modifyCinema" action="<?= $path . '/cinema/list/edit/' . $cinema->getCinemaId() ?>" method="GET">
+                            <input type="image" src="<?= $path . '/images/modifyIcon.png' ?>" alt="Modify" />
                         </form>
                     </td>
                     <td>
-                        <form name="deleteCinema" action="index.php?action=deleteCinema" method="POST">
-                            <input type="hidden" name="cinemaID" value="<?= $cinema->getCinemaId() ?>" />
+                        <form name="deleteCinema" action="<?= $path . '/cinema/delete/' . $cinema->getCinemaId() ?>" method="POST">
                             <?php
                             if (in_array($cinema->getCinemaId(), $onAirCinemas) === true) {
                                 ?>
-                                <input type="image" src="images/deleteIconDisabled.png" alt="Delete" disabled/>
+                                <input type="image" src="<?= $path . '/images/deleteIconDisabled.png' ?>" alt="Delete" disabled/>
                                 <?php
                             } else {
                                 ?>
-                                <input type="image" src="images/deleteIcon.png" alt="Delete" />
+                                <input type="image" src="<?= $path . '/images/deleteIcon.png' ?>" alt="Delete" />
                                 <?php
                             }
                             ?>
@@ -72,7 +69,7 @@ $path        = $request->getBasePath();
         if (isset($mode) === true && $mode === "add") {
             ?>
             <tr>
-                <form name="saveCinema" action="index.php?action=saveCinema" method="POST">
+                <form name="addCinema" action="<?= $path . '/cinema/add' ?>" method="POST">
                     <td>
                         <input name="denomination" placeholder="Dénomination" required />
                     </td>
@@ -80,8 +77,8 @@ $path        = $request->getBasePath();
                         <textarea name="adresse" placeholder="Renseignez l'adresse ici..." required></textarea>
                     </td>
                     <td colspan="3" class="centered">
-                        <input type="image" src="images/cancelIcon.png" alt="Cancel" form="cancelForm" />
-                        <input type="image" src="images/addIcon.png" alt="Add" />
+                        <input type="image" src="<?= $path . '/images/cancelIcon.png' ?>" alt="Cancel" form="cancelForm" />
+                        <input type="image" src="<?= $path . '/images/addIcon.png' ?>" alt="Add" />
                     </td>
                 </form>
             </tr>
@@ -90,8 +87,7 @@ $path        = $request->getBasePath();
             ?>
             <tr class="new">
                 <td colspan="5">
-                    <form name="addCinema" method="get">
-                        <input name="action" type="hidden" value="addCinema">
+                    <form name="addCinema" method="get" action="<?= $request->getBasePath() . '/cinema/list/add' ?>">
                         <button class="add" type="submit">Cliquer ici pour ajouter un cinéma</button>
                     </form>
                 </td>

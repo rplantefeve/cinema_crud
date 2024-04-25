@@ -29,7 +29,7 @@ class CinemaController extends Controller
      * @param Request $request
      * @param Application $app
      */
-    public function cinemasList(Request $request = null, Application $app = null, $mode = "") {
+    public function cinemasList(Request $request = null, Application $app = null, $addMode = "", $cinemaId = null) {
         $isUserAdmin = false;
 
         // si l'utilisateur est pas connecté et qu'il est amdinistrateur
@@ -46,13 +46,9 @@ class CinemaController extends Controller
         $toBeModified = null;
 
         // si nous sommes en mode modification
-        if ($mode === "edit") {
-            $sanitizedEntries = filter_input_array(
-                INPUT_GET,
-                ['cinemaID' => FILTER_SANITIZE_NUMBER_INT]
-            );
+        if ($addMode === "edit") {
             // on a besoin de récupérer les infos du cinéma à partir de l'identifiant du cinéma
-            $cinemaToBeModified = $this->cinemaDAO->getCinemaByID($sanitizedEntries['cinemaID']);
+            $cinemaToBeModified = $this->cinemaDAO->getCinemaByID($cinemaId);
             $toBeModified = $cinemaToBeModified->getCinemaId();
         }
 
@@ -64,7 +60,7 @@ class CinemaController extends Controller
                 'cinemas'            => $cinemas,
                 'onAirCinemas'       => $cinemasUndeletable,
                 'isUserAdmin'        => $isUserAdmin,
-                'mode'               => $mode,
+                'mode'               => $addMode,
                 'cinemaToBeModified' => $cinemaToBeModified,
                 'toBeModified'       => $toBeModified,
             ]
@@ -100,29 +96,21 @@ class CinemaController extends Controller
                 'denomination',
                 'modificationInProgress']);
 
-            // si l'action demandée est retour en arrière
-            if ($entries['backToList'] !== null) {
-                // on redirige vers la page des cinémas
-                return $app->redirect($request->getBasePath() . '/cinema/list');
-            }
-            // sinon (l'action demandée est la sauvegarde d'un cinéma)
-            else {
 
-                // et que nous ne sommes pas en train de modifier un cinéma
-                if ($entries['modificationInProgress'] == null) {
-                    // on ajoute le cinéma
-                    $this->cinemaDAO->insertNewCinema($entries['denomination'],
-                            $entries['adresse']);
-                }
-                // sinon, nous sommes dans le cas d'une modification
-                else {
-                    // mise à jour du cinéma
-                    $this->cinemaDAO->updateCinema($cinemaId,
-                            $entries['denomination'], $entries['adresse']);
-                }
-                // on revient à la liste des cinémas
-                return $app->redirect($request->getBasePath() . '/cinema/list');
+            // nous ne sommes pas en train de modifier un cinéma
+            if ($entries['modificationInProgress'] === null) {
+                // on ajoute le cinéma
+                $this->cinemaDAO->insertNewCinema($entries['denomination'],
+                        $entries['adresse']);
             }
+            // sinon, nous sommes dans le cas d'une modification
+            else {
+                // mise à jour du cinéma
+                $this->cinemaDAO->updateCinema($cinemaId,
+                        $entries['denomination'], $entries['adresse']);
+            }
+            // on revient à la liste des cinémas
+            return $app->redirect($request->getBasePath() . '/cinema/list');
         }// si la page est chargée avec $_GET
         elseif (filter_input(INPUT_SERVER, 'REQUEST_METHOD') === "GET") {
             // on assainit les entrées
