@@ -2,6 +2,7 @@
 
 namespace Semeformation\Mvc\Cinema_crud\controllers;
 
+use Semeformation\Mvc\Cinema_crud\controllers\Controller;
 use Semeformation\Mvc\Cinema_crud\dao\CinemaDAO;
 use Semeformation\Mvc\Cinema_crud\views\View;
 use Symfony\Component\HttpFoundation\Request;
@@ -14,11 +15,12 @@ use Psr\Log\LoggerInterface;
  *
  * @author User
  */
-class CinemaController extends Controller {
-
+class CinemaController extends Controller
+{
     private $cinemaDAO;
 
-    public function __construct(LoggerInterface $logger = null) {
+    public function __construct(LoggerInterface $logger = null)
+    {
         $this->cinemaDAO = new CinemaDAO($logger);
     }
 
@@ -27,7 +29,7 @@ class CinemaController extends Controller {
      * @param Request $request
      * @param Application $app
      */
-    public function cinemasList(Request $request = null, Application $app = null) {
+    public function cinemasList(Request $request = null, Application $app = null, $mode = "") {
         $isUserAdmin = false;
 
         // si l'utilisateur est pas connecté et qu'il est amdinistrateur
@@ -38,14 +40,35 @@ class CinemaController extends Controller {
 
         // on récupère la liste des cinémas ainsi que leurs informations
         $cinemas = $this->cinemaDAO->getCinemasList();
+        // liste des cinémas qui diffuse au moins un film
+        $cinemasUndeletable = $this->cinemaDAO->getOnAirCinemasId();
+        $cinemaToBeModified = [];
+        $toBeModified = null;
+
+        // si nous sommes en mode modification
+        if ($mode === "edit") {
+            $sanitizedEntries = filter_input_array(
+                INPUT_GET,
+                ['cinemaID' => FILTER_SANITIZE_NUMBER_INT]
+            );
+            // on a besoin de récupérer les infos du cinéma à partir de l'identifiant du cinéma
+            $cinemaToBeModified = $this->cinemaDAO->getCinemaByID($sanitizedEntries['cinemaID']);
+            $toBeModified = $cinemaToBeModified->getCinemaId();
+        }
 
         // On génère la vue films
         $vue = new View("CinemasList");
         // En passant les variables nécessaires à son bon affichage
         return $vue->generer($request,
-                        [
-                    'cinemas'     => $cinemas,
-                    'isUserAdmin' => $isUserAdmin]);
+            [
+                'cinemas'            => $cinemas,
+                'onAirCinemas'       => $cinemasUndeletable,
+                'isUserAdmin'        => $isUserAdmin,
+                'mode'               => $mode,
+                'cinemaToBeModified' => $cinemaToBeModified,
+                'toBeModified'       => $toBeModified,
+            ]
+        );
     }
 
     /**

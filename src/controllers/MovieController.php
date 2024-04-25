@@ -2,6 +2,7 @@
 
 namespace Semeformation\Mvc\Cinema_crud\controllers;
 
+use Semeformation\Mvc\Cinema_crud\controllers\Controller;
 use Semeformation\Mvc\Cinema_crud\dao\FilmDAO;
 use Semeformation\Mvc\Cinema_crud\views\View;
 use Symfony\Component\HttpFoundation\Request;
@@ -14,18 +15,19 @@ use Psr\Log\LoggerInterface;
  *
  * @author User
  */
-class MovieController extends Controller {
-
+class MovieController extends Controller
+{
     private $filmDAO;
 
-    public function __construct(LoggerInterface $logger = null) {
+    public function __construct(LoggerInterface $logger = null)
+    {
         $this->filmDAO = new FilmDAO($logger);
     }
 
     /**
      * Route Liste des films
      */
-    function moviesList(Request $request = null, Application $app = null) {
+    function moviesList(Request $request = null, Application $app = null, $mode = "") {
         $isUserAdmin = false;
 
         // si l'utilisateur est pas connecté et qu'il est amdinistrateur
@@ -36,18 +38,42 @@ class MovieController extends Controller {
 
         // on récupère la liste des films ainsi que leurs informations
         $films = $this->filmDAO->getMoviesList();
+        // liste des cinémas qui diffuse au moins un film
+        $moviesUndeletable = $this->filmDAO->getOnAirMoviesId();
+        $filmToBeModified = [];
+        $toBeModified = null;
+
+        // si nous sommes en mode modification
+        if ($mode === "edit") {
+            $sanitizedEntries = filter_input_array(
+                INPUT_GET,
+                ['filmID' => FILTER_SANITIZE_NUMBER_INT]
+            );
+            // on a besoin de récupérer les infos du film à partir de l'identifiant du film
+            $filmToBeModified = $this->filmDAO->getMovieByID($sanitizedEntries['filmID']);
+            $toBeModified = $filmToBeModified->getFilmId();
+        }
 
         // On génère la vue films
         $vue = new View("MoviesList");
         // En passant les variables nécessaires à son bon affichage
         return $vue->generer($request,
-                [
-            'films'       => $films,
-            'isUserAdmin' => $isUserAdmin]);
+                
+            [
+                'films'            => $films,
+                'onAirFilms'       => $moviesUndeletable,
+                'isUserAdmin'      => $isUserAdmin,
+                'mode'             => $mode,
+                'filmToBeModified' => $filmToBeModified,
+                'toBeModified'     => $toBeModified,
+            ]
+        );
     }
 
     /**
      * Route Ajouter / Modifier un film
+     *
+     * @return void
      */
     function editMovie(Request $request = null, Application $app = null,
             string $filmId = null) {
@@ -64,7 +90,6 @@ class MovieController extends Controller {
 
         // si la méthode de formulaire est la méthode POST
         if (filter_input(INPUT_SERVER, 'REQUEST_METHOD') === "POST") {
-
             // on assainit les entrées
             $entries = $this->extractArrayFromPostRequest($request,
                     [

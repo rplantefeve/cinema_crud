@@ -2,6 +2,7 @@
 
 namespace Semeformation\Mvc\Cinema_crud\controllers;
 
+use Semeformation\Mvc\Cinema_crud\controllers\Controller;
 use Semeformation\Mvc\Cinema_crud\dao\UtilisateurDAO;
 use Semeformation\Mvc\Cinema_crud\dao\FilmDAO;
 use Semeformation\Mvc\Cinema_crud\dao\PrefereDAO;
@@ -16,14 +17,15 @@ use Silex\Application;
  *
  * @author User
  */
-class FavoriteController extends Controller {
-
+class FavoriteController extends Controller
+{
     private $prefereDAO;
 
     /**
      * Constructeur de la classe
      */
-    public function __construct(LoggerInterface $logger = null) {
+    public function __construct(LoggerInterface $logger = null)
+    {
         $this->prefereDAO = new PrefereDAO($logger);
         // Ajout du DAO Utilisateur et Film pour le DAO Prefere
         $this->prefereDAO->setUtilisateurDAO(new UtilisateurDAO($logger));
@@ -98,7 +100,7 @@ class FavoriteController extends Controller {
             // si un film a été selectionné 
             if ($entries['filmID'] !== null && $entries['filmID'] !== "") {
                 // et que nous ne sommes pas en train de modifier une préférence
-                if (is_null($entries['modificationInProgress'])) {
+                if ($entries['modificationInProgress'] === null) {
                     // on ajoute la préférence de l'utilisateur
                     $this->prefereDAO->insertNewFavoriteMovie($entries['userID'],
                             $entries['filmID'],
@@ -119,16 +121,17 @@ class FavoriteController extends Controller {
             else {
                 
                 $films = $this->prefereDAO->getFilmDAO()->getMoviesNonAlreadyMarkedAsFavorite($utilisateur->getUserId());
+                // et la listes des films favoris
                 $preferences = $this->prefereDAO->getFavoriteMoviesFromUser($utilisateur->getUserId());
             }
-        } 
+        }
 
         $donnees = [
-            'utilisateur' => $utilisateur,
-            'preferences' => $preferences,
-            'films' => $films,
-            'addMode' => "add",
-            'noneSelected' => $noneSelected
+            'utilisateur'  => $utilisateur,
+            'preferences'  => $preferences,
+            'films'        => $films,
+            'addMode'      => "add",
+            'noneSelected' => $noneSelected,
         ];
         // On génère la vue Films préférés
         $vue = new View("FavoriteMoviesList");
@@ -145,7 +148,7 @@ class FavoriteController extends Controller {
      * @return RedirectResponse
      */
     public function deleteFavoriteMovie(Request $request = null,
-            Application $app = null, $userId = null, $filmId = null): RedirectResponse {
+            Application $app = null, $userId = null, $filmId = null) {
         // si l'utilisateur n'est pas connecté
         if (!$app['session']->get('user')) {
             // renvoi à la page d'accueil
@@ -157,5 +160,4 @@ class FavoriteController extends Controller {
         // redirection vers la liste des préférences de films
         return $app->redirect($request->getBasePath() . '/favorite/list');
     }
-
 }

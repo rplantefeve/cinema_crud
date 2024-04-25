@@ -15,8 +15,8 @@ use Exception;
  *
  * @author User
  */
-class HomeController extends Controller {
-
+class HomeController extends Controller
+{
     /**
      * L'utilisateur de l'application
      */
@@ -25,7 +25,8 @@ class HomeController extends Controller {
     /**
      * Constructeur de la classe
      */
-    public function __construct(LoggerInterface $logger = null) {
+    public function __construct(LoggerInterface $logger = null)
+    {
         $this->utilisateurDAO = new UtilisateurDAO($logger);
     }
 
@@ -39,7 +40,6 @@ class HomeController extends Controller {
 
         // variables de contrôle du formulaire
         $areCredentialsOK = true;
-
 
         // si l'utilisateur est déjà authentifié
         if ($app['session']->get('user')) {
@@ -77,8 +77,10 @@ class HomeController extends Controller {
             Application $app, Request $request) : RedirectResponse{
         try {
             // On vérifie l'existence de l'utilisateur
-            $this->utilisateurDAO->verifyUserCredentials($sanitizedEntries['email'],
-                    $sanitizedEntries['password']);
+            $this->utilisateurDAO->verifyUserCredentials(
+                $sanitizedEntries['email'],
+                $sanitizedEntries['password']
+            );
 
             // on enregistre l'utilisateur en session
             $username = $sanitizedEntries['email'];
@@ -89,7 +91,10 @@ class HomeController extends Controller {
             return $app->redirect($request->getBasePath() . '/favorite/list');
         } catch (Exception $ex) {
             $areCredentialsOK = false;
-            $this->utilisateurDAO->getLogger()->error($ex->getMessage());
+            // FIXME ne fonctionne pas car pas de logger injecté dans les contrôleurs
+            // $this->utilisateurDAO->getLogger()->error($ex->getMessage());
+            // redirection vers la liste des préférences de films
+            return $app->redirect($request->getBasePath() . '/home');
         }
     }
 
@@ -133,7 +138,7 @@ class HomeController extends Controller {
                 // On vérifie l'existence de l'utilisateur
                 $userID = $this->utilisateurDAO->getUserIDByEmailAddress($entries['email']);
                 // si on a un résultat, cela signifie que cette adresse email existe déjà
-                if ($userID) {
+                if ($userID !== null) {
                     $isUserUnique = false;
                 }
             }
@@ -152,8 +157,7 @@ class HomeController extends Controller {
             }
 
             // si les champs nécessaires ne sont pas vides, que l'utilisateur est unique et que le mot de passe est valide
-            if (!$isFirstNameEmpty && !$isLastNameEmpty && !$isEmailAddressEmpty &&
-                    $isUserUnique && !$isPasswordEmpty && $isPasswordValid) {
+            if ($isFirstNameEmpty === false && $isLastNameEmpty === false && $isEmailAddressEmpty === false && $isUserUnique === true && $isPasswordEmpty === false && $isPasswordValid === true) {
                 // hash du mot de passe
                 $password = password_hash($entries['password'], PASSWORD_DEFAULT);
                 // créer l'utilisateur
@@ -167,9 +171,7 @@ class HomeController extends Controller {
                 // redirection vers la liste des préférences de films
                 return $app->redirect($request->getBasePath() . '/favorite/list');
             }
-        }
-        // sinon (le formulaire n'a pas été envoyé)
-        else {
+        } else { // sinon (le formulaire n'a pas été envoyé)
             // initialisation des variables du formulaire
             $entries['firstName'] = '';
             $entries['lastName']  = '';
@@ -205,11 +207,10 @@ class HomeController extends Controller {
         return $app->redirect($request->getBasePath() . '/home');
     }
 
-    public function error($e) {
-
+    public function error($e): string
+    {
         $this->utilisateurDAO->getLogger()->error('Exception : ' . $e->getMessage() . ', File : ' . $e->getFile() . ', Line : ' . $e->getLine() . ', Stack trace : ' . $e->getTraceAsString());
         $vue = new View("Error");
         return $vue->generer(['messageErreur' => $e->getMessage()]);
     }
-
 }

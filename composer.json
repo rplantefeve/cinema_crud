@@ -18,7 +18,35 @@
             "Semeformation\\Mvc\\Cinema_crud\\": "src/"
         }
     },
+    "autoload-dev": {
+        "psr-4": {
+            "Semeformation\\Mvc\\Cinema_crud\\Test\\": "tests/"
+        }
+    },
     "config": {
-        "vendor-dir": "src/vendor"
-    }
+        "vendor-dir": "src/vendor",
+        "process-timeout": 0,
+        "sort-packages": true
+    },
+    "scripts": {
+        "phpmd" : "phpmd -vvv --color src/ --exclude src/vendor text phpmd_config.xml",
+        "cs:check": [
+            "@putenv PHP_CS_FIXER_IGNORE_ENV=1",
+            "php-cs-fixer fix --dry-run --format=txt --verbose --diff --config=.php-cs-fixer.php --ansi"
+        ],
+        "cs:fix": [
+            "@putenv PHP_CS_FIXER_IGNORE_ENV=1",
+            "php-cs-fixer fix --config=.php-cs-fixer.php --ansi --verbose"
+        ],
+        "sniffer:check": "phpcs --standard=.phpcs.xml --report=full --report-width=120 --colors -p -s",
+        "sniffer:fix": "phpcbf --standard=.phpcs.xml -p",
+        "stan": "phpstan analyse -c phpstan.neon --ansi",
+        "stan:bl": "phpstan analyse -c phpstan.neon --ansi --generate-baseline",
+        "start": "php -S localhost:8080 -t src/",
+        "test:all": [
+            "@cs:check",
+            "@sniffer:check",
+            "@stan"
+        ]
+    }  
 }

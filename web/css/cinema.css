@@ -4,14 +4,25 @@ body {
     background-color: #fafaaa;
 }
 
+/* Style des cellules de données */
 td {
     font-family: arial, helvetica;
     font-size: 12px;
+    padding: 10px; /* Ajustement de la marge intérieure */
+    border: 1px solid #c7d8e5;
+    color: #333;
+    background-color: #eaf1f7;
 }
 
+/* Style des en-têtes de colonne */
 th {
     font-family: arial, helvetica;
     font-size: 14px;
+    background-color: #cbe3f3;
+    padding: 10px; /* Ajustement de la marge intérieure */
+    color: #4c2c00;
+    font-weight: bold;
+    border: 1px solid #acc7dd;
 }
 
 label {
@@ -22,48 +33,41 @@ label {
     margin-bottom: 2px;
 }
 
-table.std {
+/* Style de base pour le tableau */
+table {
     margin-bottom: 15px;
     border-collapse: separate;
-    border-spacing: 0px;
+    border-spacing: 0;
     border: 1px solid #ccc;
+    width: 75%; /* Ajout d'une largeur pour remplir la largeur du conteneur */
 }
 
-table.std th {
-    background-color: #cbe3f3;
-    padding: 6px 12px;
-    color: #4c2c00;
-    font-weight: bold;
-    border-bottom: 1px solid #acc7dd;
-    border-right: 1px solid #acc7dd;
-    border-top: 1px solid #dceffd;
-    border-left: 1px solid #dceffd;
+/* Première et deuxième colonne */
+table.std th:nth-child(-n+2),
+table.std td:nth-child(-n+2) {
+    width: 50%; /* Répartir équitablement l'espace restant entre les deux premières colonnes */
 }
-table.std td {
-    padding: 6px 12px;
-    border-bottom: 1px solid #c7d8e5;
-    border-right: 1px solid #c7d8e5;
-    border-top: 1px solid #fff;
-    border-left: 1px solid #fff;
-    color:#333;
-    background-color: #eaf1f7;
+
+/* Colonnes 1-4 */
+table.showtime th:nth-child(-n+4),
+table.showtime td:nth-child(-n+4) {
+    width: 25%;
 }
-table.std tr.new {
+
+/* Style des lignes ajoutées */
+tr.new td {
+    font-style: italic;
+    border-width: 3px;
+    border-style: dotted;
+    border-color: dimgray;
+    padding: 0px; /* Ajustement de la marge intérieure */
+}
+
+tr.new {
     border-bottom: 1px dotted #acc7dd;
     border-right: 1px dotted #acc7dd;
     border-top: 1px dotted #dceffd;
     border-left: 1px dotted #dceffd;
-
-}
-
-tr.new td {
-    font-style: italic;
-    background-color: transparent;
-    border-bottom: 3px dotted dimgray;
-    border-right: 3px dotted dimgray;
-    border-top: 3px dotted dimgray;
-    border-left: 3px dotted dimgray;
-    padding: 0 0 0 0;
 }
 
 button.add {
@@ -76,24 +80,6 @@ button.add {
 
 button.add:hover{
     background: #cbe3f3;
-}
-
-table.std tr.new {
-    border-bottom: 1px dotted #acc7dd;
-    border-right: 1px dotted #acc7dd;
-    border-top: 1px dotted #dceffd;
-    border-left: 1px dotted #dceffd;
-
-}
-
-tr.new td {
-    font-style: italic;
-    background-color: transparent;
-    border-bottom: 3px dotted dimgray;
-    border-right: 3px dotted dimgray;
-    border-top: 3px dotted dimgray;
-    border-left: 3px dotted dimgray;
-    padding: 0 0 0 0;
 }
 
 button.add {

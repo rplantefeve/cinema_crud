@@ -10,15 +10,16 @@ use Semeformation\Mvc\Cinema_crud\models\Cinema;
  *
  * @author User
  */
-class CinemaDAO extends DAO {
-
+class CinemaDAO extends DAO
+{
     /**
      * Crée un cinéma à partir d'une ligne de la BDD.
      *
      * @param array $row La ligne de résultat de la BDD.
      * @return Cinema
      */
-    protected function buildBusinessObject($row) {
+    protected function buildBusinessObject($row)
+    {
         $cinema = new Cinema();
         $cinema->setCinemaId($row['CINEMAID']);
         $cinema->setDenomination($row['DENOMINATION']);
@@ -31,24 +32,28 @@ class CinemaDAO extends DAO {
      * @param integer $cinemaID
      * @return Cinema
      */
-    public function getCinemaByID($cinemaID) {
-        $requete  = "SELECT * FROM cinema WHERE cinemaID = "
+    public function getCinemaByID($cinemaID)
+    {
+        $requete = "SELECT * FROM cinema WHERE cinemaID = "
                 . $cinemaID;
         $resultat = $this->extraire1xN($requete);
         // on crée l'objet métier Cinema
-        $cinema   = $this->buildBusinessObject($resultat);
+        $cinema = $this->buildBusinessObject($resultat);
         // on retourne le résultat extrait
         return $cinema;
     }
 
     /**
      * Renvoie la liste des cinéma d'un film
+     *
      * @param integer $filmID
-     * @return array
+     *
+     * @return array<object>|null
      */
-    public function getMovieCinemasByMovieID($filmID) {
+    public function getMovieCinemasByMovieID($filmID): array
+    {
         // requête qui nous permet de récupérer la liste des cinémas pour un film donné
-        $requete   = "SELECT DISTINCT c.* FROM cinema c"
+        $requete = "SELECT DISTINCT c.* FROM cinema c"
                 . " INNER JOIN seance s ON c.cinemaID = s.cinemaID"
                 . " AND s.filmID = " . $filmID;
         // on extrait les résultats
@@ -59,25 +64,41 @@ class CinemaDAO extends DAO {
 
     /**
      * Renvoie la liste des cinémas
-     * @return array
+     *
+     * @return array<object>|null
      */
-    public function getCinemasList() {
-        $requete   = "SELECT * FROM cinema";
+    public function getCinemasList(): array
+    {
+        $requete = "SELECT * FROM cinema";
         // on extrait les résultats
         $resultats = $this->extraireNxN($requete);
         // on extrait les objets métiers des résultats
         return $this->extractObjects($resultats);
     }
 
+    public function getOnAirCinemasId(): array
+    {
+        $resultats = [];
+        $requete = "SELECT DISTINCT CINEMAID FROM seance";
+        $statement = $this->executeQuery($requete);
+        while (($row = $statement->fetch(\PDO::FETCH_NUM)) !== false) {
+            $resultats[] = $row[0];
+        }
+        return $resultats;
+    }
+
     /**
      * Renvoie une liste de cinémas qui ne projettent pas le film donné
+     *
      * @param integer $filmID
-     * @return array
+     *
+     * @return array<object>|null
      */
-    public function getNonPlannedCinemas($filmID) {
+    public function getNonPlannedCinemas($filmID): array
+    {
         // requête de récupération des titres et des identifiants des films
         // qui n'ont pas encore été programmés dans ce cinéma
-        $requete   = "SELECT c.cinemaID, c.denomination, c.adresse "
+        $requete = "SELECT c.cinemaID, c.denomination, c.adresse "
                 . "FROM cinema c"
                 . " WHERE c.cinemaID NOT IN ("
                 . "SELECT cinemaID"
@@ -92,32 +113,39 @@ class CinemaDAO extends DAO {
 
     /**
      * Insère un nouveau cinéma
+     *
      * @param string $denomination
      * @param string $adresse
      */
-    public function insertNewCinema($denomination, $adresse) {
+    public function insertNewCinema($denomination, $adresse): void
+    {
         // construction
         $requete = "INSERT INTO cinema (denomination, adresse) VALUES ("
                 . ":denomination"
                 . ", :adresse)";
         // exécution
-        $this->executeQuery($requete,
-                [
-            'denomination' => $denomination,
-            'adresse'      => $adresse]);
+        $this->executeQuery(
+            $requete,
+            [
+                'denomination' => $denomination,
+                'adresse'      => $adresse,
+            ]
+        );
         // log
-        if ($this->logger) {
+        if ($this->logger !== null) {
             $this->logger->info('Cinema ' . $denomination . ' successfully added.');
         }
     }
 
     /**
      * Met à jour un cinéma
+     *
      * @param integer $cinemaID
      * @param string $denomination
      * @param string $adresse
      */
-    public function updateCinema($cinemaID, $denomination, $adresse) {
+    public function updateCinema($cinemaID, $denomination, $adresse): void
+    {
         // on construit la requête d'insertion
         $requete = "UPDATE cinema SET "
                 . "denomination = "
@@ -132,15 +160,18 @@ class CinemaDAO extends DAO {
 
     /**
      * Supprime un cinéma
+     *
      * @param integer $cinemaID
      */
-    public function deleteCinema($cinemaID) {
-        $this->executeQuery("DELETE FROM cinema WHERE cinemaID = "
-                . $cinemaID);
+    public function deleteCinema($cinemaID): void
+    {
+        $this->executeQuery(
+            "DELETE FROM cinema WHERE cinemaID = "
+            . $cinemaID
+        );
 
-        if ($this->logger) {
+        if ($this->logger !== null) {
             $this->logger->info('Cinema ' . $cinemaID . ' successfully deleted.');
         }
     }
-
 }

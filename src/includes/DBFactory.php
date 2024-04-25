@@ -7,7 +7,6 @@ use Psr\Log\LoggerInterface;
 
 class DBFactory
 {
-
     // logger
     private $logger;
     // instance unique de la classe (singleton)
@@ -26,7 +25,7 @@ class DBFactory
     public static function getFactory(LoggerInterface $logger = null)
     {
         // si l'instance n'a encore jamais été instanciée
-        if (!self::$factory) {
+        if (self::$factory === null) {
             self::$factory = new DBFactory($logger);
         }
         // on retourne l'instance de la classe
@@ -39,9 +38,9 @@ class DBFactory
 
     public function getConnection()
     {
-        if (!$this->pdoInstance) {
+        if ($this->pdoInstance === null) {
             // on récupère les infos dans le fichier de config yml
-            $infoConnexion = \parse_ini_file(\dirname(__DIR__).'/conf/parameters.ini');
+            $infoConnexion = \parse_ini_file(\dirname(__DIR__) . '/conf/parameters.ini');
             // set des attributs
             $this->user = $infoConnexion['database_user'];
             $this->pass = $infoConnexion['database_password'];
@@ -51,10 +50,12 @@ class DBFactory
                 $this->dataSourceName,
                 $this->user,
                 $this->pass,
-                [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-                PDO::ATTR_CASE => PDO::CASE_UPPER]
+                [
+                    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+                    PDO::ATTR_CASE    => PDO::CASE_UPPER,
+                ]
             );
-            if ($this->logger) {
+            if ($this->logger !== null) {
                 $this->logger->info('Database connection succeeded.');
             }
         }
@@ -63,7 +64,7 @@ class DBFactory
 
     private function __construct(LoggerInterface $logger = null)
     {
-        if ($logger) {
+        if ($logger !== null) {
             $this->logger = $logger;
         }
     }

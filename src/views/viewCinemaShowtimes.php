@@ -1,11 +1,11 @@
 <?php
-$this->title = "Séances par cinéma";
+$this->titre = "Séances par cinéma";
 $path        = $request->getBasePath();
 ?>
 <header>
     <h1>Séances du cinéma <?= $cinema->getDenomination(); ?></h1>
     <h2><?= $cinema->getAdresse(); ?></h2>
-    <?php if ($adminConnected && $filmsUnplanned) : ?>
+    <?php if ($adminConnected === true && $filmsUnplanned !== null) : ?>
         <form action="<?= $path . '/showtime/cinema/add/' . $cinema->getCinemaId() ?>" method="get">
             <fieldset>
                 <legend>Ajouter un film à la programmation</legend>
@@ -18,7 +18,8 @@ $path        = $request->getBasePath();
                     endforeach;
                     ?>    
                 </select>
-                <input name = "from" type = "hidden" value = "<?= $_SERVER['SCRIPT_NAME'] ?>">
+                <input name="action" type="hidden" value="editShowtime">
+                <input name = "from" type = "hidden" value = "cinema">
                 <button type = "submit">Ajouter</button>
             </fieldset>
         </form>
@@ -26,19 +27,19 @@ $path        = $request->getBasePath();
 </header>
 <ul>
     <?php
-// si au moins un résultat
+    // si au moins un résultat
     if ($films !== null && count($films) > 0) {
         // on boucle sur les résultats
         foreach ($films as $film) {
             ?>
             <li><h3><?= $film->getTitre() ?></h3></li>
-            <table class="std">
+            <table class="showtime">
                 <tr>
                     <th>Date</th>
                     <th>Début</th>
                     <th>Fin</th>
                     <th>Version</th>
-                    <?php if ($adminConnected): ?>
+                    <?php if ($adminConnected === true) : ?>
                         <th colspan="2">Action</th>
                     <?php endif; ?>
                 </tr>
@@ -49,21 +50,21 @@ $path        = $request->getBasePath();
                      * Formatage des dates
                      */
                     // nous sommes en Français
-                    $formatter    = new IntlDateFormatter('fr_FR', IntlDateFormatter::LONG, IntlDateFormatter::NONE);
+                    $formatter = new IntlDateFormatter('fr_FR', IntlDateFormatter::LONG, IntlDateFormatter::NONE);
                     // date du jour de projection de la séance
-                    $jour         = $seance->getHeureDebut();
+                    $jour = $seance->getHeureDebut();
                     // On convertit pour un affichage en français
                     $jourConverti = $formatter->format($jour->getTimestamp());
 
                     $heureDebut = $seance->getHeureDebut()->format('H\hi');
-                    $heureFin   = $seance->getHeureFin()->format('H\hi');
+                    $heureFin = $seance->getHeureFin()->format('H\hi');
                     ?>
                     <tr>
                         <td><?= $jourConverti ?></td>
                         <td><?= $heureDebut ?></td>
                         <td><?= $heureFin ?></td>
                         <td><?= $seance->getVersion() ?></td>
-                        <?php if ($adminConnected): ?>
+                        <?php if ($adminConnected === true) : ?>
                             <td>
                                 <form name="modifyMovieShowtime" action="<?= $path . '/showtime/edit/' . $film->getFilmId() . '/' . $cinema->getCinemaId() ?>" method="GET">
                                     <input type="hidden" name="heureDebut" value="<?= $seance->getHeureDebut()->format('Y-m-d H:i') ?>"/>
@@ -87,7 +88,7 @@ $path        = $request->getBasePath();
 
                     <?php
                 }
-                if ($adminConnected):
+                if ($adminConnected === true) :
                     ?>
                     <tr class="new">
                         <td colspan="6">

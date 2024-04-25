@@ -1,5 +1,5 @@
 <?php
-$this->title = "Gestion des cinémas - Ajouter une séance";
+$this->titre = "Gestion des cinémas - Ajouter une séance";
 $path        = $request->getBasePath();
 ?>
 <header>
@@ -9,24 +9,24 @@ $path        = $request->getBasePath();
 <form method="post" action="<?= $path . '/showtime/add/' . $film->getFilmId() . '/' . $cinema->getCinemaId() ?>">
     <fieldset>
         <label for="datedebut">Date de début : </label>
-        <input id="datedebut" type="date" name="datedebut" placeholder="jj/mm/aaaa" value="<?php
-               if ($seance): echo $seance->getHeureDebut()->format('Y-m-d');
-               endif;
-               ?>">
+        <input id="datedebut" type="date" name="datedebut" placeholder="jj/mm/aaaa" value="<?= isset($seance) === true ? $seance->getHeureDebut()->format('Y-m-d') : "" ?>">
         <label for="heuredebut">Heure de début : </label>
         <input type="time" name="heuredebut" placeholder="hh:mm" value="<?php
-        if ($seance): echo $seance->getHeureDebut()->format('H:i');
+        if ($seance !== null) :
+            echo $seance->getHeureDebut()->format('H:i');
         endif;
         ?>">
 
         <label for="datefin">Date de fin : </label>
         <input type="date" name="datefin" placeholder="jj/mm/aaaa" value="<?php
-        if ($seance): echo $seance->getHeureFin()->format('Y-m-d');
+        if ($seance !== null) :
+            echo $seance->getHeureFin()->format('Y-m-d');
         endif;
         ?>">
         <label for="heurefin">Heure de fin : </label>
         <input type="time" name="heurefin" placeholder="hh:mm" value="<?php
-        if ($seance) : echo $seance->getHeureFin()->format('H:i');
+        if ($seance !== null) :
+            echo $seance->getHeureFin()->format('H:i');
         endif;
         ?>">
         <!-- les anciennes date et heure début et fin -->
@@ -35,15 +35,18 @@ $path        = $request->getBasePath();
         <label for="version">Version : </label>
         <select name="version">
             <option value="VO" <?php
-            if ($seance && $seance->getVersion() == 'VO'): echo "selected";
+            if ($seance !== null && $seance->getVersion() === 'VO') :
+                echo "selected";
             endif;
             ?>>VO</option>
             <option value="VF" <?php
-            if ($seance && $seance->getVersion() == 'VF'): echo "selected";
+            if ($seance !== null && $seance->getVersion() === 'VF') :
+                echo "selected";
             endif;
             ?>>VF</option>
             <option value="VOSTFR" <?php
-            if ($seance && $seance->getVersion() == 'VOSTFR'): echo "selected";
+            if ($seance !== null && $seance->getVersion() === 'VOSTFR') :
+                echo "selected";
             endif;
             ?>>VOSTFR</option>
         </select>
@@ -51,7 +54,7 @@ $path        = $request->getBasePath();
     </fieldset>
     <?php
     // si c'est une modification, c'est une information dont nous avons besoin
-    if (!$isItACreation) {
+    if ($isItACreation === false) {
         ?>
         <input type="hidden" name="modificationInProgress" value="true"/>
         <?php
@@ -59,12 +62,12 @@ $path        = $request->getBasePath();
     ?>
     <button type="submit">Sauvegarder</button>
 </form>
-<?php if ($fromCinema): ?>
+<?php if ($fromCinema === true) : ?>
     <form method="get" action="<?= $path . '/showtime/cinema/' . $cinema->getCinemaId() ?>">
         <button type="submit">Retour aux séances du cinéma</button>
     </form>
-<?php else: ?>
+<?php else : ?>
     <form method="get" action="<?= $path . '/showtime/movie/' . $film->getFilmId() ?>">
         <button type="submit">Retour aux séances du film</button>
     </form>
-<?php endif; ?>
+<?php endif;

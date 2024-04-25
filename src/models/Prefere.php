@@ -10,33 +10,39 @@ use Semeformation\Mvc\Cinema_crud\models\Utilisateur;
  *
  * @author User
  */
-class Prefere {
-
-    private $utilisateur;
+class Prefere
+{
+    private Utilisateur $utilisateur;
     private $film;
     private $commentaire;
 
-    public function getUtilisateur() {
+    public function getUtilisateur(): Utilisateur
+    {
         return $this->utilisateur;
     }
 
-    public function getFilm() {
+    public function getFilm()
+    {
         return $this->film;
     }
 
-    public function setUtilisateur(Utilisateur $utilisateur) {
+    public function setUtilisateur(Utilisateur $utilisateur): void
+    {
         $this->utilisateur = $utilisateur;
     }
 
-    public function setFilm(Film $film) {
+    public function setFilm(Film $film): void
+    {
         $this->film = $film;
     }
 
-    public function getCommentaire() {
+    public function getCommentaire()
+    {
         return $this->commentaire;
     }
 
-    public function setCommentaire($commentaire) {
+    public function setCommentaire($commentaire): void
+    {
         $this->commentaire = $commentaire;
     }
 }

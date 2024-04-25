@@ -26,18 +26,18 @@ $path        = $request->getBasePath();
 </header>
 <ul>
     <?php
-    if ($cinemas !== null and count($cinemas) > 0):
+    if ($cinemas !== null and count($cinemas) > 0) :
         // on boucle sur les résultats
         foreach ($cinemas as $cinema) {
             ?>
             <li><h3><?= $cinema->getDenomination() ?></h3></li>
-            <table class="std">
+            <table class="showtime">
                 <tr>
                     <th>Date</th>
                     <th>Début</th>
                     <th>Fin</th>
                     <th>Version</th>
-                    <?php if ($adminConnected): ?>
+                    <?php if ($adminConnected === true) : ?>
                         <th colspan="2">Action</th>
                     <?php endif; ?>
                 </tr>
@@ -50,19 +50,19 @@ $path        = $request->getBasePath();
                     // nous sommes en Français
                     $formatter = new IntlDateFormatter('fr_FR', IntlDateFormatter::LONG, IntlDateFormatter::NONE);
                     // date du jour de projection de la séance
-                    $jour         = $seance->getHeureDebut();
+                    $jour = $seance->getHeureDebut();
                     // On convertit pour un affichage en français
                     $jourConverti = $formatter->format($jour->getTimestamp());
 
                     $heureDebut = $seance->getHeureDebut()->format('H\hi');
-                    $heureFin   = $seance->getHeureFin()->format('H\hi');
+                    $heureFin = $seance->getHeureFin()->format('H\hi');
                     ?>
                     <tr>
                         <td><?= $jourConverti ?></td>
                         <td><?= $heureDebut ?></td>
                         <td><?= $heureFin ?></td>
                         <td><?= $seance->getVersion() ?></td>
-                        <?php if ($adminConnected): ?>
+                        <?php if ($adminConnected === true) : ?>
                             <td>
                                 <form name="modifyMovieShowtime" action="<?= $path . '/showtime/edit/' . $film->getFilmId() . '/' . $cinema->getCinemaId() ?>" method="GET">
                                     <input type="hidden" name="heureDebut" value="<?= $seance->getHeureDebut()->format('Y-m-d H:i') ?>"/>
@@ -85,7 +85,7 @@ $path        = $request->getBasePath();
                     </tr>
                     <?php
                 }
-                if ($adminConnected):
+                if ($adminConnected === true) :
                     ?>
                     <tr class="new">
                         <td colspan="6">

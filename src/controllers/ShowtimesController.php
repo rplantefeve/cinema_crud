@@ -18,11 +18,12 @@ use Semeformation\Mvc\Cinema_crud\models\Seance;
  *
  * @author User
  */
-class ShowtimesController extends Controller {
-
+class ShowtimesController extends Controller
+{
     private $seanceDAO;
 
-    public function __construct(LoggerInterface $logger = null) {
+    public function __construct(LoggerInterface $logger= null)
+    {
         $this->seanceDAO = new SeanceDAO($logger);
         $this->seanceDAO->setCinemaDAO(new CinemaDAO($logger));
         $this->seanceDAO->setFilmDAO(new FilmDAO($logger));
@@ -114,11 +115,13 @@ class ShowtimesController extends Controller {
         }
 
         // on récupère la liste des films de ce cinéma
-        $films   = $this->seanceDAO->getFilmDAO()->getCinemaMoviesByCinemaID($cinemaID);
+        $films = $this->seanceDAO->getFilmDAO()->getCinemaMoviesByCinemaID($cinemaID);
         $filmsUnplanned = $this->seanceDAO->getFilmDAO()->getNonPlannedMovies($cinemaID);
         // on récupère toutes les séances de films pour un cinéma donné
-        $seances = $this->seanceDAO->getAllMoviesShowtimesByCinemaID($films,
-                $cinemaID);
+        $seances = $this->seanceDAO->getAllMoviesShowtimesByCinemaID(
+            $films,
+            $cinemaID
+        );
 
         // On génère la vue séances du cinéma
         $vue = new View("CinemaShowtimes");
@@ -206,11 +209,12 @@ class ShowtimesController extends Controller {
         $seanceOld = [
             'dateheureDebutOld' => '',
             'dateheureFinOld'   => '',
-            'heureFinOld'       => ''];
+            'heureFinOld'       => '',
+        ];
         $seance = null;
 
         // si l'on est en GET
-        if (filter_input(INPUT_SERVER, 'REQUEST_METHOD') == 'GET') {
+        if (filter_input(INPUT_SERVER, 'REQUEST_METHOD') === 'GET') {
             // on assainie les variables
             $entries = $this->extractArrayFromGetRequest($request,
                     ['from',
@@ -243,11 +247,9 @@ class ShowtimesController extends Controller {
                 $cinema = $this->seanceDAO->getCinemaDAO()->getCinemaByID($cinemaID);
                 // puis on récupère les informations du film en question
                 $film = $this->seanceDAO->getFilmDAO()->getMovieByID($filmID);
-                // on récupère les cinémas qui ne projettent pas encore le film
-                $cinemasUnplanned = $this->seanceDAO->getCinemaDAO()->getNonPlannedCinemas($filmID);
 
                 // s'il on vient des séances du film
-                if (strstr($entries['from'], 'movie')) {
+                if (strstr($entries['from'], 'movie') !== false) {
                     $fromCinema = false;
                     // on vient du film
                     $fromFilm = true;
@@ -258,7 +260,7 @@ class ShowtimesController extends Controller {
                                 $entries['version'])) {
                     // nous sommes dans le cas d'une modification
                     $isItACreation = false;
-                    $seance = new Seance;
+                    $seance = new Seance();
                     // on récupère les anciennes valeurs (utile pour retrouver la séance avant de la modifier
                     $seanceOld['dateheureDebutOld'] = $entries['heureDebut'];
                     $seanceOld['dateheureFinOld']   = $entries['heureFin'];
@@ -278,7 +280,7 @@ class ShowtimesController extends Controller {
                 return $app->redirect($request->getBasePath() . '/home');
             }
             // sinon, on est en POST
-        } elseif (filter_input(INPUT_SERVER, 'REQUEST_METHOD') == 'POST') {
+        } elseif (filter_input(INPUT_SERVER, 'REQUEST_METHOD') === 'POST') {
             // on assainie les variables
             $entries             = $this->extractArrayFromPostRequest($request,
                     ['datedebut',
@@ -307,7 +309,7 @@ class ShowtimesController extends Controller {
                 $datetimeFin   = DateTime::createFromFormat('d/m/Y H:i',
                                 $entries['datefin'] . ' ' . $entries['heurefin']);
                 // Est-on dans le cas d'une insertion ?
-                if (!isset($entries['modificationInProgress'])) {
+                if ($entries['modificationInProgress'] === null) {
                     // j'insère dans la base
                     $resultat = $this->seanceDAO->insertNewShowtime($entries['cinemaID'],
                             $entries['filmID'],
