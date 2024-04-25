@@ -145,7 +145,7 @@ class ShowtimesController extends Controller
      */
     public function deleteShowtime(Request $request = null,
             Application $app = null, string $filmId = null,
-            string $cinemaId = null): RedirectResponse {
+            string $cinemaId = null) {
         // si l'utilisateur n'est pas connecté ou sinon s'il n'est pas amdinistrateur
         if (!$app['session']->get('user') or $app['session']->get('user')['username'] !==
                 'admin@adm.adm') {
@@ -304,10 +304,16 @@ class ShowtimesController extends Controller
                 // nous sommes en Français
                 setlocale(LC_TIME, 'fra_fra');
                 // date du jour de projection de la séance
-                $datetimeDebut = DateTime::createFromFormat('d/m/Y H:i',
+                $datetimeDebut = DateTime::createFromFormat('Y-m-d H:i',
                                 $entries['datedebut'] . ' ' . $entries['heuredebut']);
-                $datetimeFin   = DateTime::createFromFormat('d/m/Y H:i',
+                $datetimeFin   = DateTime::createFromFormat('Y-m-d H:i',
                                 $entries['datefin'] . ' ' . $entries['heurefin']);
+                if($datetimeDebut === false){
+                    $datetimeDebut = new DateTime();
+                }
+                if($datetimeFin === false){
+                    $datetimeFin = new DateTime();
+                }
                 // Est-on dans le cas d'une insertion ?
                 if ($entries['modificationInProgress'] === null) {
                     // j'insère dans la base
