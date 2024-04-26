@@ -72,7 +72,7 @@ class CinemaController extends Controller
      * @param Request $request
      * @param Application $app
      * @param string $cinemaId
-     * @return type
+     * @return never
      */
     public function editCinema(Request $request = null, Application $app = null,
             string $cinemaId = null) {
@@ -83,12 +83,8 @@ class CinemaController extends Controller
             return $app->redirect($request->getBasePath() . '/home');
         }
 
-        // variable qui sert à conditionner l'affichage du formulaire
-        $isItACreation = false;
-
         // si la méthode de formulaire est la méthode POST
         if (filter_input(INPUT_SERVER, 'REQUEST_METHOD') === "POST") {
-
             // on assainit les entrées
             $entries = $this->extractArrayFromPostRequest($request,
                     ['backToList',
@@ -111,30 +107,7 @@ class CinemaController extends Controller
             }
             // on revient à la liste des cinémas
             return $app->redirect($request->getBasePath() . '/cinema/list');
-        }// si la page est chargée avec $_GET
-        elseif (filter_input(INPUT_SERVER, 'REQUEST_METHOD') === "GET") {
-            // on assainit les entrées
-            $entries['cinemaID'] = $cinemaId;
-            // si l'id est bien renseigné
-            if ($entries && $entries['cinemaID'] !== null && $entries['cinemaID'] !==
-                    '') {
-                // on récupère les informations manquantes 
-                $cinema = $this->cinemaDAO->getCinemaByID($entries['cinemaID']);
-            }
-            // sinon, c'est une création
-            else {
-                $isItACreation = true;
-                $cinema = null;
-            }
         }
-        // On génère la vue films
-        $vue = new View("EditCinema");
-        // En passant les variables nécessaires à son bon affichage
-        return $vue->generer($request,
-                        [
-                    'cinema'        => $cinema,
-                    'isItACreation' => $isItACreation,
-        ]);
     }
 
     /**
@@ -145,7 +118,7 @@ class CinemaController extends Controller
      * @return RedirectResponse
      */
     public function deleteCinema(Request $request = null,
-            Application $app = null, string $cinemaId): RedirectResponse {
+            Application $app = null, string $cinemaId) {
         // si l'utilisateur n'est pas connecté ou sinon s'il n'est pas administrateur
         if (!$app['session']->get('user') or $app['session']->get('user')['username'] !==
                 'admin@adm.adm') {

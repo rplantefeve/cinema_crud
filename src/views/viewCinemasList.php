@@ -22,7 +22,7 @@ $path        = $request->getBasePath();
                         <input name="cinemaID" type="hidden" value="<?= $toBeModified ?>" />
                         <input name="modificationInProgress" type="hidden" value="" />
                         <input type="image" src="<?= $path . '/images/cancelIcon.png' ?>" alt="Cancel" form="cancelForm" />
-                        <input type="image" src="<?= $path . '/images/validateIcon.png' ?>" alt="Add" />
+                        <input type="image" src="<?= $path . '/images/validateIcon.png' ?>" alt="Validate" />
                     </td>
                 </form>
             </tr>

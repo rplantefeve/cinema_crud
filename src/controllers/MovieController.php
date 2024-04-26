@@ -27,7 +27,7 @@ class MovieController extends Controller
     /**
      * Route Liste des films
      */
-    function moviesList(Request $request = null, Application $app = null, $mode = "") {
+    function moviesList(Request $request = null, Application $app = null, $addMode = "", $filmId = null) {
         $isUserAdmin = false;
 
         // si l'utilisateur est pas connecté et qu'il est amdinistrateur
@@ -44,13 +44,9 @@ class MovieController extends Controller
         $toBeModified = null;
 
         // si nous sommes en mode modification
-        if ($mode === "edit") {
-            $sanitizedEntries = filter_input_array(
-                INPUT_GET,
-                ['filmID' => FILTER_SANITIZE_NUMBER_INT]
-            );
+        if ($addMode === "edit") {
             // on a besoin de récupérer les infos du film à partir de l'identifiant du film
-            $filmToBeModified = $this->filmDAO->getMovieByID($sanitizedEntries['filmID']);
+            $filmToBeModified = $this->filmDAO->getMovieByID($filmId);
             $toBeModified = $filmToBeModified->getFilmId();
         }
 
@@ -58,12 +54,11 @@ class MovieController extends Controller
         $vue = new View("MoviesList");
         // En passant les variables nécessaires à son bon affichage
         return $vue->generer($request,
-                
             [
                 'films'            => $films,
                 'onAirFilms'       => $moviesUndeletable,
                 'isUserAdmin'      => $isUserAdmin,
-                'mode'             => $mode,
+                'mode'             => $addMode,
                 'filmToBeModified' => $filmToBeModified,
                 'toBeModified'     => $toBeModified,
             ]
@@ -73,7 +68,7 @@ class MovieController extends Controller
     /**
      * Route Ajouter / Modifier un film
      *
-     * @return void
+     * @return never
      */
     function editMovie(Request $request = null, Application $app = null,
             string $filmId = null) {
@@ -84,9 +79,6 @@ class MovieController extends Controller
             // renvoi à la page d'accueil
             return $app->redirect($request->getBasePath() . '/home');
         }
-
-        // variable qui sert à conditionner l'affichage du formulaire
-        $isItACreation = false;
 
         // si la méthode de formulaire est la méthode POST
         if (filter_input(INPUT_SERVER, 'REQUEST_METHOD') === "POST") {
@@ -99,52 +91,23 @@ class MovieController extends Controller
                 'modificationInProgress'
             ]);
 
-            // si l'action demandée est retour en arrière
-            if ($entries['backToList'] !== null) {
-                // on redirige vers la page des films
-                return $app->redirect($request->getBasePath() . '/movie/list');
+            // et que nous ne sommes pas en train de modifier un film
+            if ($entries['modificationInProgress'] === null) {
+                // on ajoute le film
+                $this->filmDAO->insertNewMovie($entries['titre'],
+                        $entries['titreOriginal']);
             }
-            // sinon (l'action demandée est la sauvegarde d'un film)
+            // sinon, nous sommes dans le cas d'une modification
             else {
-
-                // et que nous ne sommes pas en train de modifier un film
-                if ($entries['modificationInProgress'] == null) {
-                    // on ajoute le film
-                    $this->filmDAO->insertNewMovie($entries['titre'],
-                            $entries['titreOriginal']);
-                }
-                // sinon, nous sommes dans le cas d'une modification
-                else {
-                    // mise à jour du film
-                    $this->filmDAO->updateMovie($filmId,
-                            $entries['titre'], $entries['titreOriginal']);
-                }
-                // on revient à la liste des films
-                return $app->redirect($request->getBasePath() . '/movie/list');
+                // mise à jour du film
+                $this->filmDAO->updateMovie($filmId,
+                        $entries['titre'], $entries['titreOriginal']);
             }
-        }// si la page est chargée avec $_GET
-        elseif (filter_input(INPUT_SERVER, 'REQUEST_METHOD') === "GET") {
-            // on assainit les entrées
-            $entries['filmID'] = $filmId;
-            if ($entries && $entries['filmID'] !== null && $entries['filmID'] !==
-                    '') {
-                // on récupère les informations manquantes 
-                $film = $this->filmDAO->getMovieByID($entries['filmID']);
-            }
-            // sinon, c'est une création
-            else {
-                $isItACreation = true;
-                $film = null;
-            }
+            // on revient à la liste des films
+            return $app->redirect($request->getBasePath() . '/movie/list');
         }
-
-        // On génère la vue films
-        $vue = new View("EditMovie");
-        // En passant les variables nécessaires à son bon affichage
-        return $vue->generer($request, [
-            'film'          => $film,
-            'isItACreation' => $isItACreation]);
     }
+    
 
     /**
      * Route Supprimer un film

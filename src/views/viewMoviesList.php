@@ -15,14 +15,14 @@ $path        = $request->getBasePath();
         if ($mode === "edit" && isset($toBeModified) === true && $film->getFilmId() === $toBeModified) {
             ?>
             <tr>
-                <form name="editMovie" action="index.php?action=saveMovie" method="POST">
+                <form name="editMovie" action="<?= $path . '/movie/save/' . $toBeModified ?>" method="POST">
                     <td><input name="titre" value="<?= $filmToBeModified->getTitre() ?>" /></td>
                     <td><input name="titreOriginal" value="<?= $filmToBeModified->getTitreOriginal() ?>" /></td>
                     <td colspan="3" class="centered">
-                        <input name="filmID" type="hidden" value="<?= $filmToBeModified->getFilmId() ?>" />
+                        <input name="filmID" type="hidden" value="<?= $toBeModified ?>" />
                         <input name="modificationInProgress" type="hidden" value="" />
-                        <input type="image" src="images/cancelIcon.png" alt="Cancel" form="cancelForm" />
-                        <input type="image" src="images/validateIcon.png" alt="Add" />
+                        <input type="image" src="<?= $path . '/images/cancelIcon.png' ?>" alt="Cancel" form="cancelForm" />
+                        <input type="image" src="<?= $path . '/images/validateIcon.png' ?>" alt="Validate" />
                     </td>
                 </form>
             </tr>
@@ -38,23 +38,21 @@ $path        = $request->getBasePath();
                 </td>
                 <?php if ($isUserAdmin === true) : ?>
                     <td>
-                        <form name="modifyMovie" action="index.php" method="GET">
-                            <input name="action" type="hidden" value="editMovie">
+                        <form name="modifyMovie" action="<?= $path . '/movie/list/edit/' . $film->getFilmId() ?>" method="GET">
                             <input type="hidden" name="filmID" value="<?= $film->getFilmId() ?>" />
-                            <input type="image" src="images/modifyIcon.png" alt="Modify" />
+                            <input type="image" src="<?= $path . '/images/modifyIcon.png' ?>" alt="Modify" />
                         </form>
                     </td>
                     <td>
-                        <form name="deleteMovie" action="index.php?action=deleteMovie" method="POST">
-                            <input type="hidden" name="filmID" value="<?= $film->getFilmId() ?>" />
+                        <form name="deleteMovie" action="<?= $path . '/movie/delete/' . $film->getFilmId() ?>" method="POST">
                             <?php
                             if (in_array($film->getFilmId(), $onAirFilms) === true) {
                                 ?>
-                                <input type="image" src="images/deleteIconDisabled.png" alt="Delete" disabled/>
+                                <input type="image" src="<?= $path . '/images/deleteIconDisabled.png' ?>" alt="Delete" disabled/>
                                 <?php
                             } else {
                                 ?>
-                                <input type="image" src="images/deleteIcon.png" alt="Delete" />
+                                <input type="image" src="<?= $path . '/images/deleteIcon.png' ?>" alt="Delete" />
                                 <?php
                             }
                             ?>
@@ -69,12 +67,12 @@ $path        = $request->getBasePath();
         if (isset($mode) === true && $mode === "add") {
             ?>
             <tr>
-                <form name="saveMovie" action="index.php?action=saveMovie" method="POST">
+                <form name="addMovie" action="<?= $path . '/movie/add' ?>" method="POST">
                     <td><input name="titre" type="text" placeholder="Titre" required /></td>
                     <td><input name="titreOriginal" type="text" placeholder="Titre original" /></td>
                     <td colspan="3" class="centered">
-                        <input type="image" src="images/cancelIcon.png" alt="Cancel" form="cancelForm" />
-                        <input type="image" src="images/addIcon.png" alt="Add" />
+                        <input type="image" src="<?= $path . '/images/cancelIcon.png' ?>" alt="Cancel" form="cancelForm" />
+                        <input type="image" src="<?= $path . '/images/addIcon.png' ?>" alt="Add" />
                     </td>
                 </form>
             </tr>
@@ -83,8 +81,7 @@ $path        = $request->getBasePath();
             ?>
             <tr class="new">
                 <td colspan="5">
-                    <form name="addMovie" action="index.php">
-                        <input name="action" type="hidden" value="addMovie">
+                    <form name="addMovie" method="get" action="<?= $request->getBasePath() . '/movie/list/add' ?>">
                         <button class="add" type="submit">Cliquer ici pour ajouter un film...</button>
                     </form>
                 </td>
@@ -94,7 +91,6 @@ $path        = $request->getBasePath();
     endif; ?>
 </table>
 <form name="cancelForm" id="cancelForm" method="GET" action="<?= $path . '/movie/list' ?>">
-    <input name="action" type="hidden" value="moviesList" />
 </form>
 <form name="backToMainPage" action="<?= $path . '/home' ?>">
     <input type="submit" value="Retour à l'accueil" />

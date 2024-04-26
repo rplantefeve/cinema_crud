@@ -54,43 +54,45 @@ $app->post('/favorite/delete/{userId}/{filmId}',
 )->bind('favorite_delete');
 
 /*
- * Routes CinemaController 
+ * Routes CinemaController et MovieController 
  */
 $app->get('/cinema/list',
         'Semeformation\\Mvc\\Cinema_crud\\controllers\\CinemaController::cinemasList')->bind('cinema_list');
+
+$app->get('/movie/list',
+        'Semeformation\\Mvc\\Cinema_crud\\controllers\\MovieController::moviesList')->bind('movie_list');
 
 $app->match('/cinema/list/{addMode}',
         'Semeformation\\Mvc\\Cinema_crud\\controllers\\CinemaController::cinemasList')
 ->bind('cinema_list_add');
 
-$app->match('/cinema/list/{addMode}/{cinemaId}',
-        'Semeformation\\Mvc\\Cinema_crud\\controllers\\CinemaController::cinemasList'
-)->bind('cinema_list_edit');
+$app->match('/movie/list/{addMode}',
+        'Semeformation\\Mvc\\Cinema_crud\\controllers\\MovieController::moviesList')
+->bind('movie_list_add');
+
+$app->match('/movie/list/{addMode}/{filmId}',
+        'Semeformation\\Mvc\\Cinema_crud\\controllers\\MovieController::moviesList'
+)->bind('movie_list_edit');
 
 $app->match('/cinema/add',
         'Semeformation\\Mvc\\Cinema_crud\\controllers\\CinemaController::editCinema')->bind('cinema_add');
+
+$app->match('/movie/add',
+        'Semeformation\\Mvc\\Cinema_crud\\controllers\\MovieController::editMovie')->bind('movie_add');
 
 $app->post('/cinema/save/{cinemaId}',
         'Semeformation\\Mvc\\Cinema_crud\\controllers\\CinemaController::editCinema'
 )->bind('cinema_save');
 
+$app->post('/movie/save/{filmId}',
+        'Semeformation\\Mvc\\Cinema_crud\\controllers\\MovieController::editMovie'
+)->bind('movie_save');
+
 $app->post('/cinema/delete/{cinemaId}',
         'Semeformation\\Mvc\\Cinema_crud\\controllers\\CinemaController::deleteCinema')->bind('cinema_delete');
 
-/*
- * Routes MovieController 
- */
-$app->get('/movie/list',
-        'Semeformation\\Mvc\\Cinema_crud\\controllers\\MovieController::moviesList')->bind('movie_list');
-
 $app->post('/movie/delete/{filmId}',
         'Semeformation\\Mvc\\Cinema_crud\\controllers\\MovieController::deleteMovie')->bind('movie_delete');
-
-$app->match('/movie/add',
-        'Semeformation\\Mvc\\Cinema_crud\\controllers\\MovieController::editMovie')->bind('movie_add');
-
-$app->match('/movie/edit/{filmId}',
-        'Semeformation\\Mvc\\Cinema_crud\\controllers\\MovieController::editMovie')->bind('movie_edit');
 
 /*
  * Routes ShowtimesControlle
