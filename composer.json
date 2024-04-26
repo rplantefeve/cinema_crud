@@ -9,9 +9,13 @@
         }
     ],
     "require": {
+        "php" : "^7.4",
         "silex/silex": "2.0.*",
         "psr/log": "1.0.0",
         "monolog/monolog": "1.17.1"
+    },
+    "require-dev": {
+        "phpmd/phpmd": "^2.15"
     },
     "autoload": {
         "psr-4": {
@@ -29,7 +33,7 @@
         "sort-packages": true
     },
     "scripts": {
-        "phpmd" : "phpmd -vvv --color src/ --exclude src/vendor text phpmd_config.xml",
+        "phpmd" : "phpmd --verbose --exclude *\\vendor\\* --color src\\ text phpmd_config.xml",
         "cs:check": [
             "@putenv PHP_CS_FIXER_IGNORE_ENV=1",
             "php-cs-fixer fix --dry-run --format=txt --verbose --diff --config=.php-cs-fixer.php --ansi"
@@ -48,5 +52,5 @@
             "@sniffer:check",
             "@stan"
         ]
-    }  
+    }
 }

@@ -28,13 +28,7 @@ class MovieController extends Controller
      * Route Liste des films
      */
     function moviesList(Request $request = null, Application $app = null, $addMode = "", $filmId = null) {
-        $isUserAdmin = false;
-
-        // si l'utilisateur est pas connecté et qu'il est amdinistrateur
-        if ($app['session']->get('user') and $app['session']->get('user')['username'] ==
-                'admin@adm.adm') {
-            $isUserAdmin = true;
-        }
+        $isUserAdmin = $this->checkIfUserIsConnectedAndAdmin($app);
 
         // on récupère la liste des films ainsi que leurs informations
         $films = $this->filmDAO->getMoviesList();
@@ -74,11 +68,7 @@ class MovieController extends Controller
             string $filmId = null) {
         
         // si l'utilisateur n'est pas connecté ou sinon s'il n'est pas amdinistrateur
-        if (!$app['session']->get('user') or $app['session']->get('user')['username'] !==
-                'admin@adm.adm') {
-            // renvoi à la page d'accueil
-            return $app->redirect($request->getBasePath() . '/home');
-        }
+        $this->redirectIfUserNotConnectedOrNotAdmin($request, $app);
 
         // si la méthode de formulaire est la méthode POST
         if (filter_input(INPUT_SERVER, 'REQUEST_METHOD') === "POST") {
@@ -116,24 +106,13 @@ class MovieController extends Controller
      * @param Application $app
      * @return type
      */
-    public function deleteMovie(string $filmId, Request $request = null,
-            Application $app = null) {
-        
+    public function deleteMovie(Request $request = null, Application $app = null, string $filmId) {
         // si l'utilisateur n'est pas connecté ou sinon s'il n'est pas administrateur
-        if (!$app['session']->get('user') or $app['session']->get('user')['username'] !==
-                'admin@adm.adm') {
-            // renvoi à la page d'accueil
-            return $app->redirect($request->getBasePath() . '/home');
-        }
-
+        $this->redirectIfUserNotConnectedOrNotAdmin($request,  $app);
         // si la méthode de formulaire est la méthode POST
-        if (filter_input(INPUT_SERVER, 'REQUEST_METHOD') === "POST") {
-
-            // on assainit les entrées
-            $entries['filmID'] = $filmId;
-
+        if ($filmId !== null && $filmId !== "") {
             // suppression de la préférence de film
-            $this->filmDAO->deleteMovie($entries['filmID']);
+            $this->filmDAO->deleteMovie($filmId);
         }
         // redirection vers la liste des films
         return $app->redirect($request->getBasePath() . '/movie/list');

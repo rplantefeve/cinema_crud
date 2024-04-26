@@ -30,13 +30,8 @@ class CinemaController extends Controller
      * @param Application $app
      */
     public function cinemasList(Request $request = null, Application $app = null, $addMode = "", $cinemaId = null) {
-        $isUserAdmin = false;
-
-        // si l'utilisateur est pas connecté et qu'il est amdinistrateur
-        if ($app['session']->get('user') and $app['session']->get('user')['username'] ==
-                'admin@adm.adm') {
-            $isUserAdmin = true;
-        }
+        // si l'utilisateur est connecté et qu'il est amdinistrateur
+        $isUserAdmin = $this->checkIfUserIsConnectedAndAdmin($app);
 
         // on récupère la liste des cinémas ainsi que leurs informations
         $cinemas = $this->cinemaDAO->getCinemasList();
@@ -74,14 +69,9 @@ class CinemaController extends Controller
      * @param string $cinemaId
      * @return never
      */
-    public function editCinema(Request $request = null, Application $app = null,
-            string $cinemaId = null) {
+    public function editCinema(Request $request = null, Application $app = null, string $cinemaId = null) {
         // si l'utilisateur n'est pas connecté ou sinon s'il n'est pas amdinistrateur
-        if (!$app['session']->get('user') or $app['session']->get('user')['username'] !==
-                'admin@adm.adm') {
-            // renvoi à la page d'accueil
-            return $app->redirect($request->getBasePath() . '/home');
-        }
+        $this->redirectIfUserNotConnectedOrNotAdmin($request, $app);
 
         // si la méthode de formulaire est la méthode POST
         if (filter_input(INPUT_SERVER, 'REQUEST_METHOD') === "POST") {
@@ -92,15 +82,12 @@ class CinemaController extends Controller
                 'denomination',
                 'modificationInProgress']);
 
-
             // nous ne sommes pas en train de modifier un cinéma
             if ($entries['modificationInProgress'] === null) {
                 // on ajoute le cinéma
                 $this->cinemaDAO->insertNewCinema($entries['denomination'],
                         $entries['adresse']);
-            }
-            // sinon, nous sommes dans le cas d'une modification
-            else {
+            } else { // sinon, nous sommes dans le cas d'une modification
                 // mise à jour du cinéma
                 $this->cinemaDAO->updateCinema($cinemaId,
                         $entries['denomination'], $entries['adresse']);
@@ -117,23 +104,12 @@ class CinemaController extends Controller
      * @param Application $app
      * @return RedirectResponse
      */
-    public function deleteCinema(Request $request = null,
-            Application $app = null, string $cinemaId) {
+    public function deleteCinema(Request $request = null, Application $app = null, string $cinemaId = null) {
         // si l'utilisateur n'est pas connecté ou sinon s'il n'est pas administrateur
-        if (!$app['session']->get('user') or $app['session']->get('user')['username'] !==
-                'admin@adm.adm') {
-            // renvoi à la page d'accueil
-            return $app->redirect($request->getBasePath() . '/home');
-        }
-
-        // si la méthode de formulaire est la méthode POST
-        if (filter_input(INPUT_SERVER, 'REQUEST_METHOD') === "POST") {
-
-            // on assainit les entrées
-            $entries['cinemaID'] = $cinemaId;
-
-            // suppression de la préférence de film
-            $this->cinemaDAO->deleteCinema($entries['cinemaID']);
+        $this->redirectIfUserNotConnectedOrNotAdmin($request, $app);
+        // suppression de la préférence de film
+        if($cinemaId !== null) {
+            $this->cinemaDAO->deleteCinema($cinemaId);
         }
         // redirection vers la liste des cinémas
         return $app->redirect($request->getBasePath() . '/cinema/list');

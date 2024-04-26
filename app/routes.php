@@ -74,6 +74,10 @@ $app->match('/movie/list/{addMode}/{filmId}',
         'Semeformation\\Mvc\\Cinema_crud\\controllers\\MovieController::moviesList'
 )->bind('movie_list_edit');
 
+$app->match('/cinema/list/{addMode}/{cinemaId}',
+        'Semeformation\\Mvc\\Cinema_crud\\controllers\\CinemaController::cinemasList'
+)->bind('cinema_list_edit');
+
 $app->match('/cinema/add',
         'Semeformation\\Mvc\\Cinema_crud\\controllers\\CinemaController::editCinema')->bind('cinema_add');
 

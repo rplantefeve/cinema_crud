@@ -35,10 +35,7 @@ class FavoriteController extends Controller
     public function editFavoriteMoviesList(Request $request = null,
             Application $app = null, $addMode = "", $filmId = null) {
         // si l'utilisateur n'est pas connecté
-        if (!$app['session']->get('user')) {
-            // renvoi à la page d'accueil
-            return $app->redirect($request->getBasePath() . '/home');
-        }
+        $this->redirectIfUserNotConnected($request,  $app);
         // l'utilisateur est loggué
         $utilisateur = $this->prefereDAO->getUtilisateurDAO()->getUserByEmailAddress($app['session']->get('user')['username']);
 
@@ -70,13 +67,9 @@ class FavoriteController extends Controller
                         ]);
     }
 
-    public function editFavoriteMovie(Request $request = null,
-            Application $app = null, $filmId = null) {
+    public function editFavoriteMovie(Request $request = null, Application $app = null, $filmId = null) {
         // si l'utilisateur n'est pas connecté
-        if (!$app['session']->get('user')) {
-            // renvoi à la page d'accueil
-            return $app->redirect($request->getBasePath() . '/home');
-        }
+        $this->redirectIfUserNotConnected($request, $app);
 
         $films = null;
         // variable de contrôle de formulaire
@@ -94,8 +87,7 @@ class FavoriteController extends Controller
                 'comment',
                 'modificationInProgress']);
 
-
-                $utilisateur = $this->prefereDAO->getUtilisateurDAO()->getUserByEmailAddress($app['session']->get('user')['username']);
+            $utilisateur = $this->prefereDAO->getUtilisateurDAO()->getUserByEmailAddress($app['session']->get('user')['username']);
 
             // si un film a été selectionné 
             if ($entries['filmID'] !== null && $entries['filmID'] !== "") {
@@ -150,10 +142,7 @@ class FavoriteController extends Controller
     public function deleteFavoriteMovie(Request $request = null,
             Application $app = null, $userId = null, $filmId = null) {
         // si l'utilisateur n'est pas connecté
-        if (!$app['session']->get('user')) {
-            // renvoi à la page d'accueil
-            return $app->redirect($request->getBasePath() . '/home');
-        }
+        $this->redirectIfUserNotConnected($request, $app);
 
         // suppression de la préférence de film
         $this->prefereDAO->deleteFavoriteMovie($userId, $filmId);

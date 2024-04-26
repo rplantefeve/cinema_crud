@@ -43,4 +43,24 @@ class Controller {
         return $entries;
     }
 
+    protected function redirectIfUserNotConnected($request, $app) {
+        if ($app['session']->get('user') === null) {
+            // renvoi à la page d'accueil
+            return $app->redirect($request->getBasePath() . '/home');
+        }
+    }
+
+    protected function redirectIfUserNotConnectedOrNotAdmin($request, $app) {
+        if ($app['session']->get('user') === null || $app['session']->get('user')['username'] !== 'admin@adm.adm') {
+            // renvoi à la page d'accueil
+            return $app->redirect($request->getBasePath() . '/home');
+        }
+    }
+
+    protected function checkIfUserIsConnectedAndAdmin($app) {
+        if ($app['session']->get('user') && $app['session']->get('user')['username'] === 'admin@adm.adm') {
+            return true;
+        }
+        return false;
+    }
 }

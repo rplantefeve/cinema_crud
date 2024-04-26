@@ -42,6 +42,7 @@ $path        = $request->getBasePath();
                     ?>
                     <td>
                         <form name="modifyCinema" action="<?= $path . '/cinema/list/edit/' . $cinema->getCinemaId() ?>" method="GET">
+                            <input type="hidden" name="cinemaID" value="<?= $cinema->getCinemaId() ?>" />
                             <input type="image" src="<?= $path . '/images/modifyIcon.png' ?>" alt="Modify" />
                         </form>
                     </td>

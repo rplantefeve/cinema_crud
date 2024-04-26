@@ -34,7 +34,6 @@ class HomeController extends Controller
      * Route Accueil
      */
     public function home(Request $request = null, Application $app = null) {
-        //session_start();
         // personne d'authentifié à ce niveau
         $loginSuccess = false;
 
