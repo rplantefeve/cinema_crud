@@ -1,6 +1,6 @@
 <?php
 $this->titre = "Séances par cinéma";
-$path        = $request->getBasePath();
+$path = $request->getBasePath();
 ?>
 <header>
     <h1>Séances du cinéma <?= $cinema->getDenomination(); ?></h1>
@@ -57,8 +57,7 @@ $path        = $request->getBasePath();
                     $jourConverti = $formatter->format($jour->getTimestamp());
 
                     $heureDebut = $seance->getHeureDebut()->format('H\hi');
-                    $heureFin = $seance->getHeureFin()->format('H\hi');
-                    ?>
+                    $heureFin = $seance->getHeureFin()->format('H\hi'); ?>
                     <tr>
                         <td><?= $jourConverti ?></td>
                         <td><?= $heureDebut ?></td>
@@ -88,7 +87,7 @@ $path        = $request->getBasePath();
 
                     <?php
                 }
-                if ($adminConnected === true) :
+            if ($adminConnected === true) :
                     ?>
                     <tr class="new">
                         <td colspan="6">
@@ -98,8 +97,7 @@ $path        = $request->getBasePath();
                             </form>
                         </td>
                     </tr>
-                <?php endif;
-                ?>
+                <?php endif; ?>
             </table>
             <br>
             <?php

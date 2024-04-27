@@ -119,7 +119,7 @@ class MovieController extends Controller
     public function deleteMovie(Request $request = null, Application $app = null, string $filmId)
     {
         // si l'utilisateur n'est pas connecté ou sinon s'il n'est pas administrateur
-        $this->redirectIfUserNotConnectedOrNotAdmin($request,  $app);
+        $this->redirectIfUserNotConnectedOrNotAdmin($request, $app);
         // si la méthode de formulaire est la méthode POST
         if ($filmId !== null && $filmId !== "") {
             // suppression de la préférence de film

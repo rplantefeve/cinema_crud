@@ -39,7 +39,7 @@ class FavoriteController extends Controller
         $filmId = null
     ) {
         // si l'utilisateur n'est pas connecté
-        $this->redirectIfUserNotConnected($request,  $app);
+        $this->redirectIfUserNotConnected($request, $app);
         // l'utilisateur est loggué
         $utilisateur = $this->prefereDAO->getUtilisateurDAO()->getUserByEmailAddress($app['session']->get('user')['username']);
 

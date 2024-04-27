@@ -67,8 +67,7 @@
                                 <option value="<?= $film->getFilmId(); ?>"><?= $film->getTitre(); ?></option>
                                 <?php
                             }
-                        }
-                        ?>
+                        } ?>
                     </select>
                     <?php
                     if (isset($noneSelected) === true && $noneSelected === true) : ?>
@@ -95,7 +94,8 @@
                 </form>
             </td>
         </tr>
-    <?php } ?>
+    <?php
+    } ?>
 </table>
 <form name="cancelForm" id="cancelForm" method="GET" action="<?= $request->getBasePath() . '/favorite/list' ?>">
 </form>

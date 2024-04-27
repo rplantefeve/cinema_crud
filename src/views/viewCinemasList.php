@@ -1,6 +1,6 @@
 <?php
 $this->titre = "Cinémas";
-$path        = $request->getBasePath();
+$path = $request->getBasePath();
 ?>
 <header><h1>Liste des cinémas</h1></header>
 <table class="std">
@@ -57,8 +57,7 @@ $path        = $request->getBasePath();
                                 ?>
                                 <input type="image" src="<?= $path . '/images/deleteIcon.png' ?>" alt="Delete" />
                                 <?php
-                            }
-                            ?>
+                            } ?>
                         </form>
                     </td>
                 <?php endif; ?>
@@ -94,7 +93,8 @@ $path        = $request->getBasePath();
                 </td>
             </tr>
 
-        <?php }
+        <?php
+        }
     endif; ?>
 </table>
 <form name="cancelForm" id="cancelForm" method="GET" action="<?= $path . '/cinema/list' ?>">

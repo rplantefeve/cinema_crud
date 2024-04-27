@@ -1,6 +1,6 @@
 <?php
  $this->titre = 'Séances par film';
-$path        = $request->getBasePath();
+$path = $request->getBasePath();
 ?>
 <header>
     <h1>Séances du film <?= $film->getTitre() ?></h1>
@@ -55,8 +55,7 @@ $path        = $request->getBasePath();
                     $jourConverti = $formatter->format($jour->getTimestamp());
 
                     $heureDebut = $seance->getHeureDebut()->format('H\hi');
-                    $heureFin = $seance->getHeureFin()->format('H\hi');
-                    ?>
+                    $heureFin = $seance->getHeureFin()->format('H\hi'); ?>
                     <tr>
                         <td><?= $jourConverti ?></td>
                         <td><?= $heureDebut ?></td>
@@ -85,7 +84,7 @@ $path        = $request->getBasePath();
                     </tr>
                     <?php
                 }
-                if ($adminConnected === true) :
+            if ($adminConnected === true) :
                     ?>
                     <tr class="new">
                         <td colspan="6">
@@ -96,8 +95,7 @@ $path        = $request->getBasePath();
                         </td>
                     </tr>
                     <?php
-                endif;
-                ?>  
+                endif; ?>  
             </table>
             <br>
             <?php

@@ -1,6 +1,6 @@
 <?php
 $this->titre = 'Films';
-$path        = $request->getBasePath();
+$path = $request->getBasePath();
 ?>
 <header><h1>Liste des films</h1></header>
 <table class="std">
@@ -26,7 +26,8 @@ $path        = $request->getBasePath();
                     </td>
                 </form>
             </tr>
-        <?php } else {
+        <?php
+        } else {
             ?>
             <tr>
                 <td><?= $film->getTitre(); ?></td>
@@ -54,8 +55,7 @@ $path        = $request->getBasePath();
                                 ?>
                                 <input type="image" src="<?= $path . '/images/deleteIcon.png' ?>" alt="Delete" />
                                 <?php
-                            }
-                            ?>
+                            } ?>
                         </form>
                     </td>
                 <?php endif; ?>

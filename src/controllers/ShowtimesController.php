@@ -46,7 +46,7 @@ class ShowtimesController extends Controller
         // si l'identifiant du film a bien été passé en GET
         if ($filmId !== null && $filmId !== "") {
             // puis on récupère les informations du film en question
-            $film   = $this->seanceDAO->getFilmDAO()->getMovieByID($filmId);
+            $film = $this->seanceDAO->getFilmDAO()->getMovieByID($filmId);
         } else { // sinon, on retourne à l'accueil
             return $app->redirect($request->getBasePath() . '/home');
         }
@@ -141,7 +141,7 @@ class ShowtimesController extends Controller
         // si la méthode de formulaire est la méthode POST
         if (filter_input(INPUT_SERVER, 'REQUEST_METHOD') === "POST") {
             // on assainie les variables
-            $entries             = $this->extractArrayFromPostRequest(
+            $entries = $this->extractArrayFromPostRequest(
                 $request,
                 [
                     'heureDebut',
@@ -234,9 +234,9 @@ class ShowtimesController extends Controller
                 // on récupère l'identifiant du cinéma
                 $cinemaID = $entries['cinemaID'];
                 // l'identifiant du film
-                $filmID   = $entries['filmID'];
+                $filmID = $entries['filmID'];
                 // d'où vient on ?
-                $from     = $entries['from'];
+                $from = $entries['from'];
 
                 // puis on récupère les informations du cinéma en question
                 $cinema = $this->seanceDAO->getCinemaDAO()->getCinemaByID($cinemaID);
@@ -262,10 +262,10 @@ class ShowtimesController extends Controller
                     $seance = new Seance();
                     // on récupère les anciennes valeurs (utile pour retrouver la séance avant de la modifier
                     $seanceOld['dateheureDebutOld'] = $entries['heureDebut'];
-                    $seanceOld['dateheureFinOld']   = $entries['heureFin'];
+                    $seanceOld['dateheureFinOld'] = $entries['heureFin'];
                     // dates PHP
-                    $dateheureDebut                 = new DateTime($entries['heureDebut']);
-                    $dateheureFin                   = new DateTime($entries['heureFin']);
+                    $dateheureDebut = new DateTime($entries['heureDebut']);
+                    $dateheureFin = new DateTime($entries['heureFin']);
                     // découpage en heures
                     $seance->setHeureDebut($dateheureDebut);
                     $seance->setHeureFin($dateheureFin);
@@ -279,7 +279,7 @@ class ShowtimesController extends Controller
             // sinon, on est en POST
         } elseif (filter_input(INPUT_SERVER, 'REQUEST_METHOD') === 'POST') {
             // on assainie les variables
-            $entries             = $this->extractArrayFromPostRequest(
+            $entries = $this->extractArrayFromPostRequest(
                 $request,
                 [
                     'datedebut',
@@ -294,7 +294,7 @@ class ShowtimesController extends Controller
                 ]
             );
             $entries['cinemaID'] = $cinemaId;
-            $entries['filmID']   = $filmId;
+            $entries['filmID'] = $filmId;
             // si toutes les valeurs sont renseignées
             if ($entries !== null && isset(
                 $entries['cinemaID'],
@@ -316,7 +316,7 @@ class ShowtimesController extends Controller
                     'Y-m-d H:i',
                     $entries['datedebut'] . ' ' . $entries['heuredebut']
                 );
-                $datetimeFin   = DateTime::createFromFormat(
+                $datetimeFin = DateTime::createFromFormat(
                     'Y-m-d H:i',
                     $entries['datefin'] . ' ' . $entries['heurefin']
                 );

@@ -1,6 +1,6 @@
 <?php
 $this->titre = "Gestion des cinémas - Ajouter une séance";
-$path        = $request->getBasePath();
+$path = $request->getBasePath();
 ?>
 <header>
     <h1>Séances du cinéma <?= $cinema->getDenomination() ?></h1>

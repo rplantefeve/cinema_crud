@@ -92,7 +92,7 @@ class HomeController extends Controller
 
             // on enregistre l'utilisateur en session
             $username = $sanitizedEntries['email'];
-            $userId   = $this->utilisateurDAO->getUserIDByEmailAddress($username);
+            $userId = $this->utilisateurDAO->getUserIDByEmailAddress($username);
             $app['session']->set(
                 'user',
                 [
@@ -122,13 +122,13 @@ class HomeController extends Controller
         Application $app = null
     ) {
         // variables de contrôles du formulaire de création
-        $isFirstNameEmpty            = false;
-        $isLastNameEmpty             = false;
-        $isEmailAddressEmpty         = false;
-        $isUserUnique                = true;
-        $isPasswordEmpty             = false;
+        $isFirstNameEmpty = false;
+        $isLastNameEmpty = false;
+        $isEmailAddressEmpty = false;
+        $isUserUnique = true;
+        $isPasswordEmpty = false;
         $isPasswordConfirmationEmpty = false;
-        $isPasswordValid             = true;
+        $isPasswordValid = true;
 
         // si la méthode POST est utilisée, cela signifie que le formulaire a été envoyé
         if (filter_input(INPUT_SERVER, 'REQUEST_METHOD') === "POST") {
@@ -192,7 +192,7 @@ class HomeController extends Controller
                 );
 
                 $username = $entries['email'];
-                $userId   = $this->utilisateurDAO->getUserIDByEmailAddress($username);
+                $userId = $this->utilisateurDAO->getUserIDByEmailAddress($username);
                 $app['session']->set(
                     'user',
                     [
@@ -206,8 +206,8 @@ class HomeController extends Controller
         } else { // sinon (le formulaire n'a pas été envoyé)
             // initialisation des variables du formulaire
             $entries['firstName'] = '';
-            $entries['lastName']  = '';
-            $entries['email']     = '';
+            $entries['lastName'] = '';
+            $entries['email'] = '';
         }
 
         $donnees = [
@@ -221,7 +221,7 @@ class HomeController extends Controller
             'isPasswordValid'             => $isPasswordValid,
         ];
         // On génère la vue Création d'un utilisateur
-        $vue     = new View("CreateUser");
+        $vue = new View("CreateUser");
         // En passant les variables nécessaires à son bon affichage
         return $vue->generer($request, $donnees);
     }
