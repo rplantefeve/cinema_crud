@@ -44,7 +44,7 @@ abstract class DAO
     /**
      * Extrait des résultats, un vecteur d'objets métiers
      * @param array|null $results
-     * @return array<object>|null
+     * @return array<object>
      */
     protected function extractObjects($results): array
     {
