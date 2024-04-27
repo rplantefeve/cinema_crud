@@ -19,6 +19,9 @@
         }
     },
     "config": {
-        "vendor-dir": "src/vendor"
+        "vendor-dir": "src/vendor",
+        "allow-plugins": {
+            "composer/package-versions-deprecated": true
+        }
     }
 }
