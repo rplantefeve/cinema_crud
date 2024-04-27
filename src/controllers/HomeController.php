@@ -71,7 +71,7 @@ class HomeController extends Controller
 
     /**
      * Vérifie si l'utilisateur existe et que son mot de passe est bon
-     * @param type $sanitizedEntries
+     * @param array $sanitizedEntries
      * @param boolean $areCredentialsOK
      * @param Application $app
      * @param Request $request
@@ -115,7 +115,7 @@ class HomeController extends Controller
      * Route Création d'un nouvel utilisateur
      * @param Request $request
      * @param Application $app
-     * @return type
+     * @return string
      */
     public function createNewUser(
         Request $request = null,
@@ -241,10 +241,10 @@ class HomeController extends Controller
         return $app->redirect($request->getBasePath() . '/home');
     }
 
-    public function error($e): string
+    public function error(Request $request, Exception $e): string
     {
         $this->utilisateurDAO->getLogger()->error('Exception : ' . $e->getMessage() . ', File : ' . $e->getFile() . ', Line : ' . $e->getLine() . ', Stack trace : ' . $e->getTraceAsString());
         $vue = new View("Error");
-        return $vue->generer(['messageErreur' => $e->getMessage()]);
+        return $vue->generer($request, ['messageErreur' => $e->getMessage()]);
     }
 }

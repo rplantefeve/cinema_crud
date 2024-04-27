@@ -69,7 +69,7 @@ class CinemaController extends Controller
      * @param Request $request
      * @param Application $app
      * @param string $cinemaId
-     * @return never
+     * @return RedirectResponse|void
      */
     public function editCinema(Request $request = null, Application $app = null, string $cinemaId = null)
     {

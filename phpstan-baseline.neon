@@ -11,11 +11,6 @@ parameters:
 			path: src/controllers/FavoriteController.php
 
 		-
-			message: "#^Variable \\$sanitizedEntries in isset\\(\\) always exists and is not nullable\\.$#"
-			count: 1
-			path: src/controllers/Router.php
-
-		-
 			message: "#^Variable \\$cinema might not be defined\\.$#"
 			count: 1
 			path: src/controllers/ShowtimesController.php
@@ -31,9 +26,34 @@ parameters:
 			path: src/controllers/ShowtimesController.php
 
 		-
-			message: "#^Variable \\$sanitizedEntries in isset\\(\\) always exists and is not nullable\\.$#"
+			message: "#^PHPDoc tag @return with type array\\<object\\>\\|null is not subtype of native type array\\.$#"
+			count: 3
+			path: src/dao/CinemaDAO.php
+
+		-
+			message: "#^PHPDoc tag @return with type array\\<object\\>\\|null is not subtype of native type array\\.$#"
+			count: 4
+			path: src/dao/FilmDAO.php
+
+		-
+			message: "#^PHPDoc tag @return with type array\\<object\\>\\|null is not subtype of native type array\\.$#"
 			count: 1
-			path: src/controllers/ShowtimesController.php
+			path: src/dao/SeanceDAO.php
+
+		-
+			message: "#^PHPDoc tag @return with type array\\<int, mixed\\>\\|null is not subtype of native type array\\.$#"
+			count: 1
+			path: src/includes/DAO.php
+
+		-
+			message: "#^PHPDoc tag @return with type array\\<object\\>\\|null is not subtype of native type array\\.$#"
+			count: 1
+			path: src/includes/DAO.php
+
+		-
+			message: "#^PHPDoc tag @return with type array\\|null is not subtype of native type array\\.$#"
+			count: 1
+			path: src/includes/DAO.php
 
 		-
 			message: "#^Else branch is unreachable because previous condition is always true\\.$#"
@@ -41,12 +61,7 @@ parameters:
 			path: src/includes/Utils.php
 
 		-
-			message: "#^Variable \\$logger might not be defined\\.$#"
-			count: 1
-			path: src/index.php
-
-		-
-			message: "#^Property Semeformation\\\\Mvc\\\\Cinema_crud\\\\views\\\\View\\:\\:\\$title is never written, only read\\.$#"
+			message: "#^Property Semeformation\\\\Mvc\\\\Cinema_crud\\\\views\\\\View\\:\\:\\$titre is never written, only read\\.$#"
 			count: 1
 			path: src/views/View.php
 
@@ -71,6 +86,11 @@ parameters:
 			path: src/views/viewCinemaShowtimes.php
 
 		-
+			message: "#^Variable \\$request might not be defined\\.$#"
+			count: 1
+			path: src/views/viewCinemaShowtimes.php
+
+		-
 			message: "#^Variable \\$seances might not be defined\\.$#"
 			count: 1
 			path: src/views/viewCinemaShowtimes.php
@@ -82,7 +102,7 @@ parameters:
 
 		-
 			message: "#^Variable \\$cinemaToBeModified might not be defined\\.$#"
-			count: 3
+			count: 2
 			path: src/views/viewCinemasList.php
 
 		-
@@ -98,6 +118,16 @@ parameters:
 		-
 			message: "#^Variable \\$mode might not be defined\\.$#"
 			count: 1
+			path: src/views/viewCinemasList.php
+
+		-
+			message: "#^Variable \\$onAirCinemas might not be defined\\.$#"
+			count: 1
+			path: src/views/viewCinemasList.php
+
+		-
+			message: "#^Variable \\$request might not be defined\\.$#"
+			count: 2
 			path: src/views/viewCinemasList.php
 
 		-
@@ -141,6 +171,11 @@ parameters:
 			path: src/views/viewCreateUser.php
 
 		-
+			message: "#^Variable \\$request might not be defined\\.$#"
+			count: 2
+			path: src/views/viewCreateUser.php
+
+		-
 			message: "#^Variable \\$sanitizedEntries might not be defined\\.$#"
 			count: 3
 			path: src/views/viewCreateUser.php
@@ -172,6 +207,11 @@ parameters:
 
 		-
 			message: "#^Variable \\$isItACreation might not be defined\\.$#"
+			count: 1
+			path: src/views/viewEditShowtime.php
+
+		-
+			message: "#^Variable \\$request might not be defined\\.$#"
 			count: 1
 			path: src/views/viewEditShowtime.php
 
@@ -212,12 +252,17 @@ parameters:
 
 		-
 			message: "#^Variable \\$preferenceToBeModified might not be defined\\.$#"
-			count: 3
+			count: 2
 			path: src/views/viewFavoriteMoviesList.php
 
 		-
 			message: "#^Variable \\$preferences might not be defined\\.$#"
 			count: 1
+			path: src/views/viewFavoriteMoviesList.php
+
+		-
+			message: "#^Variable \\$request might not be defined\\.$#"
+			count: 13
 			path: src/views/viewFavoriteMoviesList.php
 
 		-
@@ -227,7 +272,7 @@ parameters:
 
 		-
 			message: "#^Variable \\$utilisateur might not be defined\\.$#"
-			count: 6
+			count: 7
 			path: src/views/viewFavoriteMoviesList.php
 
 		-
@@ -238,6 +283,11 @@ parameters:
 		-
 			message: "#^Variable \\$loginSuccess might not be defined\\.$#"
 			count: 1
+			path: src/views/viewHome.php
+
+		-
+			message: "#^Variable \\$request might not be defined\\.$#"
+			count: 6
 			path: src/views/viewHome.php
 
 		-
@@ -266,6 +316,11 @@ parameters:
 			path: src/views/viewMovieShowtimes.php
 
 		-
+			message: "#^Variable \\$request might not be defined\\.$#"
+			count: 1
+			path: src/views/viewMovieShowtimes.php
+
+		-
 			message: "#^Variable \\$seances might not be defined\\.$#"
 			count: 1
 			path: src/views/viewMovieShowtimes.php
@@ -277,7 +332,7 @@ parameters:
 
 		-
 			message: "#^Variable \\$filmToBeModified might not be defined\\.$#"
-			count: 3
+			count: 2
 			path: src/views/viewMoviesList.php
 
 		-
@@ -296,12 +351,27 @@ parameters:
 			path: src/views/viewMoviesList.php
 
 		-
+			message: "#^Variable \\$onAirFilms might not be defined\\.$#"
+			count: 1
+			path: src/views/viewMoviesList.php
+
+		-
+			message: "#^Variable \\$request might not be defined\\.$#"
+			count: 2
+			path: src/views/viewMoviesList.php
+
+		-
 			message: "#^Variable \\$this might not be defined\\.$#"
 			count: 1
 			path: src/views/viewMoviesList.php
 
 		-
 			message: "#^Variable \\$content might not be defined\\.$#"
+			count: 1
+			path: src/views/viewTemplate.php
+
+		-
+			message: "#^Variable \\$request might not be defined\\.$#"
 			count: 1
 			path: src/views/viewTemplate.php
 

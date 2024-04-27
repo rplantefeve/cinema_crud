@@ -11,7 +11,7 @@ $logger = new Logger("App");
 $logger->pushHandler(new StreamHandler(__DIR__ . './logs/application.log'));
 
 // Initialisation de l'application Silex
-$app          = new Application();
+$app = new Application();
 // Mode debug ON
 $app['debug'] = true;
 // Enregistrement du gestionnaire de sessions

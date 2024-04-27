@@ -64,7 +64,7 @@ class MovieController extends Controller
     /**
      * Route Ajouter / Modifier un film
      *
-     * @return never
+     * @return RedirectResponse
      */
     public function editMovie(
         Request $request = null,
@@ -106,6 +106,8 @@ class MovieController extends Controller
             // on revient à la liste des films
             return $app->redirect($request->getBasePath() . '/movie/list');
         }
+
+        return $app->redirect($request->getBasePath() . '/home');
     }
 
 
@@ -114,7 +116,7 @@ class MovieController extends Controller
      * @param string $filmId
      * @param Request $request
      * @param Application $app
-     * @return type
+     * @return RedirectResponse
      */
     public function deleteMovie(Request $request = null, Application $app = null, string $filmId)
     {

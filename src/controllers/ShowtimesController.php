@@ -225,7 +225,7 @@ class ShowtimesController extends Controller
                 $entries['cinemaID'] = $cinemaId;
             }
             // pour l'instant, on vérifie les données en GET
-            if (isset($entries) === true && isset(
+            if (isset(
                 $entries['cinemaID'],
                 $entries['filmID'],
                 $entries['from']
