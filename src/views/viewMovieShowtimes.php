@@ -1,11 +1,11 @@
 <?php
- $this->titre = 'Séances par film'; 
+ $this->titre = 'Séances par film';
 $path        = $request->getBasePath();
 ?>
 <header>
     <h1>Séances du film <?= $film->getTitre() ?></h1>
     <h2><?= $film->getTitreOriginal() ?></h2>
-    <?php if ($adminConnected === true && $adminConnected && $cinemasUnplanned !== null) : ?>
+    <?php if ($adminConnected === true && $adminConnected === true && $cinemasUnplanned !== null) : ?>
         <form action="<?= $path . '/showtime/movie/add/' . $film->getFilmId() ?>" method="get">
             <fieldset>
                 <legend>Programmer le film dans un cinéma</legend>

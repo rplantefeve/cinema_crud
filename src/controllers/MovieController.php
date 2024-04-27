@@ -27,7 +27,8 @@ class MovieController extends Controller
     /**
      * Route Liste des films
      */
-    function moviesList(Request $request = null, Application $app = null, $addMode = "", $filmId = null) {
+    public function moviesList(Request $request = null, Application $app = null, $addMode = "", $filmId = null)
+    {
         $isUserAdmin = $this->checkIfUserIsConnectedAndAdmin($app);
 
         // on récupère la liste des films ainsi que leurs informations
@@ -47,7 +48,8 @@ class MovieController extends Controller
         // On génère la vue films
         $vue = new View("MoviesList");
         // En passant les variables nécessaires à son bon affichage
-        return $vue->generer($request,
+        return $vue->generer(
+            $request,
             [
                 'films'            => $films,
                 'onAirFilms'       => $moviesUndeletable,
@@ -64,40 +66,48 @@ class MovieController extends Controller
      *
      * @return never
      */
-    function editMovie(Request $request = null, Application $app = null,
-            string $filmId = null) {
-        
+    public function editMovie(
+        Request $request = null,
+        Application $app = null,
+        string $filmId = null
+    ) {
+
         // si l'utilisateur n'est pas connecté ou sinon s'il n'est pas amdinistrateur
         $this->redirectIfUserNotConnectedOrNotAdmin($request, $app);
 
         // si la méthode de formulaire est la méthode POST
         if (filter_input(INPUT_SERVER, 'REQUEST_METHOD') === "POST") {
             // on assainit les entrées
-            $entries = $this->extractArrayFromPostRequest($request,
-                    [
-                'backToList',
-                'titre',
-                'titreOriginal',
-                'modificationInProgress'
-            ]);
+            $entries = $this->extractArrayFromPostRequest(
+                $request,
+                [
+                    'backToList',
+                    'titre',
+                    'titreOriginal',
+                    'modificationInProgress',
+                ]
+            );
 
             // et que nous ne sommes pas en train de modifier un film
             if ($entries['modificationInProgress'] === null) {
                 // on ajoute le film
-                $this->filmDAO->insertNewMovie($entries['titre'],
-                        $entries['titreOriginal']);
-            }
-            // sinon, nous sommes dans le cas d'une modification
-            else {
+                $this->filmDAO->insertNewMovie(
+                    $entries['titre'],
+                    $entries['titreOriginal']
+                );
+            } else { // sinon, nous sommes dans le cas d'une modification
                 // mise à jour du film
-                $this->filmDAO->updateMovie($filmId,
-                        $entries['titre'], $entries['titreOriginal']);
+                $this->filmDAO->updateMovie(
+                    $filmId,
+                    $entries['titre'],
+                    $entries['titreOriginal']
+                );
             }
             // on revient à la liste des films
             return $app->redirect($request->getBasePath() . '/movie/list');
         }
     }
-    
+
 
     /**
      * Route Supprimer un film
@@ -106,7 +116,8 @@ class MovieController extends Controller
      * @param Application $app
      * @return type
      */
-    public function deleteMovie(Request $request = null, Application $app = null, string $filmId) {
+    public function deleteMovie(Request $request = null, Application $app = null, string $filmId)
+    {
         // si l'utilisateur n'est pas connecté ou sinon s'il n'est pas administrateur
         $this->redirectIfUserNotConnectedOrNotAdmin($request,  $app);
         // si la méthode de formulaire est la méthode POST
@@ -117,5 +128,4 @@ class MovieController extends Controller
         // redirection vers la liste des films
         return $app->redirect($request->getBasePath() . '/movie/list');
     }
-
 }

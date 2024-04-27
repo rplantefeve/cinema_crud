@@ -1,4 +1,4 @@
-<?php 
+<?php
 $this->titre = 'Films';
 $path        = $request->getBasePath();
 ?>

@@ -23,23 +23,28 @@ class View
     }
 
     /**
-     * 
+     *
      * @param \Symfony\Component\HttpFoundation\Request $request
      * @param array $donnees
      * @return string
      */
-    public function generer(\Symfony\Component\HttpFoundation\Request $request,
-            $donnees = null) : string{
-        // on passe 
+    public function generer(
+        \Symfony\Component\HttpFoundation\Request $request,
+        $donnees = null
+    ): string {
+        // on passe
         $donnees['request'] = $request;
         // Génération de la partie spécifique de la vue
         $content            = $this->genererFichier($this->fichier, $donnees);
         // utilisation du template avec chargement des données spécifiques
-        $vue                = $this->genererFichier(__DIR__ . '/viewTemplate.php',
-                [
-            'title'   => $this->titre,
-            'content' => $content,
-            'request' => $request]);
+        $vue                = $this->genererFichier(
+            __DIR__ . '/viewTemplate.php',
+            [
+                'title'   => $this->titre,
+                'content' => $content,
+                'request' => $request,
+            ]
+        );
         // Renvoi de la vue générée au navigateur
         return $vue;
     }

@@ -29,7 +29,8 @@ class CinemaController extends Controller
      * @param Request $request
      * @param Application $app
      */
-    public function cinemasList(Request $request = null, Application $app = null, $addMode = "", $cinemaId = null) {
+    public function cinemasList(Request $request = null, Application $app = null, $addMode = "", $cinemaId = null)
+    {
         // si l'utilisateur est connecté et qu'il est amdinistrateur
         $isUserAdmin = $this->checkIfUserIsConnectedAndAdmin($app);
 
@@ -50,7 +51,8 @@ class CinemaController extends Controller
         // On génère la vue films
         $vue = new View("CinemasList");
         // En passant les variables nécessaires à son bon affichage
-        return $vue->generer($request,
+        return $vue->generer(
+            $request,
             [
                 'cinemas'            => $cinemas,
                 'onAirCinemas'       => $cinemasUndeletable,
@@ -69,28 +71,38 @@ class CinemaController extends Controller
      * @param string $cinemaId
      * @return never
      */
-    public function editCinema(Request $request = null, Application $app = null, string $cinemaId = null) {
+    public function editCinema(Request $request = null, Application $app = null, string $cinemaId = null)
+    {
         // si l'utilisateur n'est pas connecté ou sinon s'il n'est pas amdinistrateur
         $this->redirectIfUserNotConnectedOrNotAdmin($request, $app);
 
         // si la méthode de formulaire est la méthode POST
         if (filter_input(INPUT_SERVER, 'REQUEST_METHOD') === "POST") {
             // on assainit les entrées
-            $entries = $this->extractArrayFromPostRequest($request,
-                    ['backToList',
-                'adresse',
-                'denomination',
-                'modificationInProgress']);
+            $entries = $this->extractArrayFromPostRequest(
+                $request,
+                [
+                    'backToList',
+                    'adresse',
+                    'denomination',
+                    'modificationInProgress',
+                ]
+            );
 
             // nous ne sommes pas en train de modifier un cinéma
             if ($entries['modificationInProgress'] === null) {
                 // on ajoute le cinéma
-                $this->cinemaDAO->insertNewCinema($entries['denomination'],
-                        $entries['adresse']);
+                $this->cinemaDAO->insertNewCinema(
+                    $entries['denomination'],
+                    $entries['adresse']
+                );
             } else { // sinon, nous sommes dans le cas d'une modification
                 // mise à jour du cinéma
-                $this->cinemaDAO->updateCinema($cinemaId,
-                        $entries['denomination'], $entries['adresse']);
+                $this->cinemaDAO->updateCinema(
+                    $cinemaId,
+                    $entries['denomination'],
+                    $entries['adresse']
+                );
             }
             // on revient à la liste des cinémas
             return $app->redirect($request->getBasePath() . '/cinema/list');
@@ -104,11 +116,12 @@ class CinemaController extends Controller
      * @param Application $app
      * @return RedirectResponse
      */
-    public function deleteCinema(Request $request = null, Application $app = null, string $cinemaId = null) {
+    public function deleteCinema(Request $request = null, Application $app = null, string $cinemaId = null)
+    {
         // si l'utilisateur n'est pas connecté ou sinon s'il n'est pas administrateur
         $this->redirectIfUserNotConnectedOrNotAdmin($request, $app);
         // suppression de la préférence de film
-        if($cinemaId !== null) {
+        if ($cinemaId !== null) {
             $this->cinemaDAO->deleteCinema($cinemaId);
         }
         // redirection vers la liste des cinémas
