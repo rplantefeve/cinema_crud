@@ -133,7 +133,7 @@ class PrefereDAO extends DAO
 
         try {
             // la préférence existe-t-elle ?
-            $existe = $this->find(
+            $this->find(
                 $donneesPrefere['userId'],
                 $donneesPrefere['filmId']
             );

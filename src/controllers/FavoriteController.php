@@ -61,17 +61,15 @@ class FavoriteController extends Controller
      *
      * @param Request|null $request
      * @param Application|null $app
-     * @param [type] $filmId
      * @return void
      */
-    public function editFavoriteMovie(Request $request = null, Application $app = null, $filmId = null)
+    public function editFavoriteMovie(Request $request = null, Application $app = null)
     {
         // si l'utilisateur n'est pas connecté
         $this->redirectIfUserNotConnected($request, $app);
 
         $films = null;
         // variable de contrôle de formulaire
-        $aFilmIsSelected = true;
         $prefere = null;
         $noneSelected = true;
 

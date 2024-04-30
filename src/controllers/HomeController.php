@@ -37,7 +37,7 @@ class HomeController extends Controller
                     ]
                 );
 
-                return $this->login($entries, $areCredentialsOK, $app, $request);
+                return $this->login($entries, $app, $request);
             }
         }
 
@@ -63,7 +63,6 @@ class HomeController extends Controller
      */
     private function login(
         $sanitizedEntries,
-        &$areCredentialsOK,
         Application $app,
         Request $request
     ): RedirectResponse {
@@ -225,7 +224,7 @@ class HomeController extends Controller
         return $app->redirect($request->getBasePath() . '/home');
     }
 
-    public function error(Request $request, Exception $e): string
+    public function error(Application $app, Request $request, Exception $e): string
     {
         $app['dao.utilisateur']->getLogger()->error('Exception : ' . $e->getMessage() . ', File : ' . $e->getFile() . ', Line : ' . $e->getLine() . ', Stack trace : ' . $e->getTraceAsString());
         $vue = new View("Error");
