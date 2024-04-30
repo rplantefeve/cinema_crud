@@ -13,9 +13,8 @@ use Psr\Log\LoggerInterface;
  *
  * @author User
  */
-class MovieController extends Controller 
+class MovieController extends Controller
 {
-
     /**
      * Route Liste des films
      */

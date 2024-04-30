@@ -6,17 +6,17 @@ use Doctrine\DBAL\Connection;
 use Semeformation\Mvc\Cinema_crud\includes\DBFactory;
 use Psr\Log\LoggerInterface;
 
-abstract class DAO {
-
+abstract class DAO
+{
     /**
      * Connexion à la BDD
-     * @var Doctrine\DBAL\Connection 
+     * @var Doctrine\DBAL\Connection
      */
     private $db;
 
     /**
      * Logger du DAO
-     * @var Psr\Log\LoggerInterface 
+     * @var Psr\Log\LoggerInterface
      */
     protected $logger;
 
@@ -25,10 +25,13 @@ abstract class DAO {
      * @param Connection $connexion
      * @param LoggerInterface $logger
      */
-    public function __construct(Connection $connexion = null,
-            LoggerInterface $logger = null) {
+    public function __construct(
+        Connection $connexion = null,
+        LoggerInterface $logger = null
+    )
+    {
         // init. de la connexion à la BDD
-        $this->db     = $connexion;
+        $this->db = $connexion;
         // init. du logger
         $this->logger = $logger;
     }
@@ -37,7 +40,8 @@ abstract class DAO {
      * Donne accès à la connexion à la BDD
      * @return Connection
      */
-    protected function getDb() {
+    protected function getDb()
+    {
         return $this->db;
     }
 
@@ -45,7 +49,8 @@ abstract class DAO {
      * Donne accès au logger du DAO
      * @return Psr\Log\LoggerInterface
      */
-    public function getLogger() {
+    public function getLogger()
+    {
         return $this->logger;
     }
 
@@ -58,20 +63,21 @@ abstract class DAO {
     /**
      * Méthode abstraite de recherche d'un BO à partir de son id
      */
-    public abstract function find(...$id);
+    abstract public function find(...$id);
 
     /**
      * Recherche tous les BO présents dans la BDD
      */
-    public abstract function findAll();
+    abstract public function findAll();
 
     /**
      * Construit un tableau d'objets métiers à partir d'un résultat de BDD
      * @param type $rows
      * @return array
      */
-    protected function buildBusinessObjects($rows) {
-        $objets = array();
+    protected function buildBusinessObjects($rows)
+    {
+        $objets = [];
         foreach ($rows as $row) {
             $objets[] = $this->buildBusinessObject($row);
         }

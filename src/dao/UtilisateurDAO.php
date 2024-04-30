@@ -23,7 +23,7 @@ class UtilisateurDAO extends DAO
     protected function buildBusinessObject($row)
     {
         $utilisateur = new Utilisateur();
-        if($row !== false) {
+        if ($row !== false) {
             $utilisateur->setUserId($row['USERID']);
             $utilisateur->setNom($row['NOM']);
             $utilisateur->setPrenom($row['PRENOM']);
@@ -38,11 +38,14 @@ class UtilisateurDAO extends DAO
      * @param type $userId
      * @throws Exception
      */
-    public function find(...$userId) {
-        $requete  = "SELECT * FROM utilisateur WHERE userID = ?";
-        $resultat = $this->getDb()->fetchAssoc($requete,
-                [
-            $userId[0]]);
+    public function find(...$userId)
+    {
+        $requete = "SELECT * FROM utilisateur WHERE userID = ?";
+        $resultat = $this->getDb()->fetchAssoc(
+            $requete,
+            [
+                $userId[0]]
+        );
         // si trouvé
         if ($resultat) {
             // on récupère l'objet Film
@@ -56,9 +59,10 @@ class UtilisateurDAO extends DAO
      * Retourne tous les utilisateurs de la BDD
      * @return array
      */
-    public function findAll() {
+    public function findAll()
+    {
         // requête d'extraction de tous les utilisateurs
-        $sql       = "SELECT * FROM utilisateur ORDER BY adresseCourriel ASC";
+        $sql = "SELECT * FROM utilisateur ORDER BY adresseCourriel ASC";
         $resultats = $this->getDb()->fetchAll($sql);
 
         // on extrait les objets métiers des résultats
@@ -71,14 +75,17 @@ class UtilisateurDAO extends DAO
      * @param string $password Mot de passe de l'utilisateur
      * @throw Exception si on ne trouve pas l'utilisateur en BDD
      */
-    public function findOneByCourrielAndPassword($email, $passwordSaisi) {
+    public function findOneByCourrielAndPassword($email, $passwordSaisi)
+    {
         // extraction du mdp de l'utilisateur
         $requete = "SELECT password FROM utilisateur WHERE adresseCourriel = :email";
         // on prépare la requête
 
-        $result = $this->getDb()->fetchAssoc($requete,
-                [
-            'email' => $email]);
+        $result = $this->getDb()->fetchAssoc(
+            $requete,
+            [
+                'email' => $email]
+        );
 
         // on teste le nombre de lignes renvoyées
         if ($result && $result['password'] !== '') {
@@ -114,18 +121,21 @@ class UtilisateurDAO extends DAO
         }
     }
 
-    /** 
+    /**
      * Méthode qui retourne l'id d'un utilisateur passé en paramètre
      * @param string $utilisateur Adresse email de l'utilisateur
      * @return string $id Identifiant de l'utilisateur
      */
-    public function getUserIDByEmailAddress($utilisateur) {
+    public function getUserIDByEmailAddress($utilisateur)
+    {
         // requête qui récupère l'ID grâce à l'adresse email
         $requete = "SELECT userID FROM utilisateur WHERE adresseCourriel = :email";
 
         // on récupère le résultat de la requête
-        $resultat = $this->executeQuery($requete,
-                ['email' => $utilisateur]);
+        $resultat = $this->executeQuery(
+            $requete,
+            ['email' => $utilisateur]
+        );
 
         // on teste le nombre de lignes renvoyées
         if ($resultat->rowCount() > 0) {
@@ -144,14 +154,17 @@ class UtilisateurDAO extends DAO
      * @param string $email Adresse email de l'utilisateur
      * @return Utilisateur L'Utilisateur initialisé
      */
-    public function findOneByCourriel($email) {
+    public function findOneByCourriel($email)
+    {
         // on construit la requête qui va récupérer les informations de l'utilisateur
         $requete = "SELECT * FROM utilisateur "
                 . "WHERE adresseCourriel = :email";
 
         // on extrait le résultat de la BDD sous forme de tableau associatif
-        $resultat = $this->getDb()->fetchAssoc($requete,
-                ['email' => $email]);
+        $resultat = $this->getDb()->fetchAssoc(
+            $requete,
+            ['email' => $email]
+        );
 
         // on construit l'objet Utilisateur
         $utilisateur = $this->buildBusinessObject($resultat);
@@ -164,14 +177,15 @@ class UtilisateurDAO extends DAO
      * Sauvegarde un BO Utilisateur en BDD
      * @param Utilisateur $utilisateur
      */
-    public function save(Utilisateur $utilisateur) {
+    public function save(Utilisateur $utilisateur)
+    {
         // je récupère les données de l'utilisateur sous forme de tableau
-        $donneesUtilisateur = array(
+        $donneesUtilisateur = [
             'prenom'          => $utilisateur->getPrenom(),
             'nom'             => $utilisateur->getNom(),
             'adresseCourriel' => $utilisateur->getAdresseCourriel(),
             'password'        => $utilisateur->getPassword(),
-        );
+        ];
 
         // Sinon, nous faisons une insertion
         $this->getDb()->insert('utilisateur', $donneesUtilisateur);

@@ -14,9 +14,8 @@ use Silex\Application;
  *
  * @author User
  */
-class CinemaController extends Controller 
+class CinemaController extends Controller
 {
-
     /**
      * Route Liste des cinémas
      * @param Request $request
@@ -73,12 +72,14 @@ class CinemaController extends Controller
         if ($request->isMethod('POST')) {
 
             // on assainit les entrées
-            $entries = $this->extractArrayFromPostRequest($request,
+            $entries = $this->extractArrayFromPostRequest(
+                $request,
                 [
                     'backToList',
                     'adresse',
                     'denomination',
-                ]);
+                ]
+            );
 
             // Je crée l'objet $cinema
             $cinema = new Cinema();
@@ -90,7 +91,6 @@ class CinemaController extends Controller
             $app['dao.cinema']->save($cinema);
             // on revient à la liste des cinémas
             return $app->redirect($request->getBasePath() . '/cinema/list');
-            
         }
     }
 

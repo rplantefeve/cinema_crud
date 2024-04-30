@@ -35,18 +35,21 @@ class SeanceDAO extends DAO
      * @return Seance
      * @throws \Exception
      */
-    public function find(...$primaryKey) {
-        $requete  = "SELECT * FROM seance "
+    public function find(...$primaryKey)
+    {
+        $requete = "SELECT * FROM seance "
                 . "WHERE cinemaID = ? "
                 . "AND filmID = ? "
                 . "AND heureDebut = ? "
                 . "AND heureFin = ?";
-        $resultat = $this->getDb()->fetchAssoc($requete,
-                [
-            $primaryKey[0],
-            $primaryKey[1],
-            $primaryKey[2],
-            $primaryKey[3]]);
+        $resultat = $this->getDb()->fetchAssoc(
+            $requete,
+            [
+                $primaryKey[0],
+                $primaryKey[1],
+                $primaryKey[2],
+                $primaryKey[3]]
+        );
         // si trouvé
         if ($resultat) {
             return $this->buildBusinessObject($resultat);
@@ -59,9 +62,10 @@ class SeanceDAO extends DAO
      * Retourne toutes les séances de la BDD
      * @return array
      */
-    public function findAll() {
+    public function findAll()
+    {
         // requête d'extraction de toutes les séances
-        $sql       = "SELECT * FROM seance";
+        $sql = "SELECT * FROM seance";
         $resultats = $this->getDb()->fetchAll($sql);
 
         // on extrait les objets métiers des résultats
@@ -89,7 +93,7 @@ class SeanceDAO extends DAO
         // trouver le cinéma concerné grâce à son identifiant
         if (array_key_exists('CINEMAID', $row) === true) {
             $cinemaID = $row['CINEMAID'];
-            $cinema   = $this->cinemaDAO->find($cinemaID);
+            $cinema = $this->cinemaDAO->find($cinemaID);
             $seance->setCinema($cinema);
         }
         return $seance;
@@ -131,12 +135,13 @@ class SeanceDAO extends DAO
         if ($films !== null && count($films) > 0) :
             // Boucle de récupération de toutes les séances indexés sur l'identifiant du film
             foreach ($films as $film) {
-                $seances[$film->getFilmId()] = $this->findAllByCinemaIdAndFilmId($cinemaID,
-                        $film->getFilmId());
+                $seances[$film->getFilmId()] = $this->findAllByCinemaIdAndFilmId(
+                    $cinemaID,
+                    $film->getFilmId()
+                );
             }
-            // on retourne le résultat
-            return $seances;
-        else:
+        // on retourne le résultat
+        return $seances; else:
             return [];
         endif;
         // on retourne le résultat
@@ -169,32 +174,42 @@ class SeanceDAO extends DAO
      * Sauvegarde un objet Seance en BDD
      * @param Seance $seance
      */
-    public function save(Seance $seance, $dateheuredebutOld = null,
-            $dateheurefinOld = null) {
+    public function save(
+        Seance $seance,
+        $dateheuredebutOld = null,
+        $dateheurefinOld = null
+    )
+    {
         // je récupère les données de l'objet métier sous forme de tableau
-        $donneesSeance = array(
+        $donneesSeance = [
             'cinemaId'   => $seance->getCinema()->getCinemaId(),
             'filmId'     => $seance->getFilm()->getFilmId(),
             'heureDebut' => $seance->getHeureDebut()->format('Y-m-d H:i'),
             'heureFin'   => $seance->getHeureFin()->format('Y-m-d H:i'),
             'version'    => $seance->getVersion()
-        );
+        ];
 
         if ($dateheuredebutOld !== '' && $dateheurefinOld !== '') {
             // il faut faire une mise à jour
-            $this->getDb()->update('seance', $donneesSeance,
-                    array(
-                'cinemaId'   => $seance->getCinema()->getCinemaId(),
-                'filmId'     => $seance->getFilm()->getFilmId(),
-                'heureDebut' => $dateheuredebutOld,
-                'heureFin'   => $dateheurefinOld));
+            $this->getDb()->update(
+                'seance',
+                $donneesSeance,
+                [
+                    'cinemaId'   => $seance->getCinema()->getCinemaId(),
+                    'filmId'     => $seance->getFilm()->getFilmId(),
+                    'heureDebut' => $dateheuredebutOld,
+                    'heureFin'   => $dateheurefinOld]
+            );
         } else {
             // Sinon, nous faisons une insertion
             try {
                 // la séance existe-t-elle déjà ?
-                $this->find($donneesSeance['cinemaId'],
-                        $donneesSeance['filmId'], $donneesSeance['heureDebut'],
-                        $donneesSeance['heureFin']);
+                $this->find(
+                    $donneesSeance['cinemaId'],
+                    $donneesSeance['filmId'],
+                    $donneesSeance['heureDebut'],
+                    $donneesSeance['heureFin']
+                );
                 throw new BusinessObjectAlreadyExists('La séance existe déjà !');
             } catch (BusinessObjectDoNotExist $ex) {
                 // insertion en BDD
@@ -211,28 +226,35 @@ class SeanceDAO extends DAO
      * @param string $heureDebut
      * @param string $heureFin
      */
-    public function delete($cinemaID, $filmID, $heureDebut, $heureFin) {
-        $this->getDb()->delete('seance',
-                array(
-            'cinemaId'   => $cinemaID,
-            'filmID'     => $filmID,
-            'heureDebut' => $heureDebut,
-            'heureFin'   => $heureFin));
+    public function delete($cinemaID, $filmID, $heureDebut, $heureFin)
+    {
+        $this->getDb()->delete(
+            'seance',
+            [
+                'cinemaId'   => $cinemaID,
+                'filmID'     => $filmID,
+                'heureDebut' => $heureDebut,
+                'heureFin'   => $heureFin]
+        );
     }
 
-    public function getFilmDAO() {
+    public function getFilmDAO()
+    {
         return $this->filmDAO;
     }
 
-    public function getCinemaDAO() {
+    public function getCinemaDAO()
+    {
         return $this->cinemaDAO;
     }
 
-    public function setFilmDAO(FilmDAO $filmDAO) {
+    public function setFilmDAO(FilmDAO $filmDAO)
+    {
         $this->filmDAO = $filmDAO;
     }
 
-    public function setCinemaDAO(CinemaDAO $cinemaDAO) {
+    public function setCinemaDAO(CinemaDAO $cinemaDAO)
+    {
         $this->cinemaDAO = $cinemaDAO;
     }
 }

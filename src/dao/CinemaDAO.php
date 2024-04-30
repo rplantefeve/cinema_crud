@@ -34,8 +34,9 @@ class CinemaDAO extends DAO
      * @return Cinema
      * @throws Exception
      */
-    public function find(...$cinemaID) {
-        $requete  = "SELECT * FROM cinema WHERE cinemaID = ?";
+    public function find(...$cinemaID)
+    {
+        $requete = "SELECT * FROM cinema WHERE cinemaID = ?";
         $resultat = $this->getDb()->fetchAssoc($requete, [$cinemaID[0]]);
         // si trouvé
         if ($resultat) {
@@ -50,9 +51,10 @@ class CinemaDAO extends DAO
      * Recherche tous les cinémas en BDD et retourne le résultat sous forme de tableau
      * @return array Le tableau de cinémas
      */
-    public function findAll() {
+    public function findAll()
+    {
         // requête d'extraction de tous les cinémas
-        $sql       = "SELECT * FROM cinema ORDER BY denomination ASC";
+        $sql = "SELECT * FROM cinema ORDER BY denomination ASC";
         $resultats = $this->getDb()->fetchAll($sql);
 
         // on extrait les objets métiers des résultats
@@ -65,7 +67,8 @@ class CinemaDAO extends DAO
      *
      * @return array<object>|null Le tableau d'objets Cinema
      */
-    public function findAllByFilmId($filmID) {
+    public function findAllByFilmId($filmID)
+    {
         // requête qui nous permet de récupérer la liste des cinémas pour un film donné
         $requete = "SELECT DISTINCT c.* FROM cinema c"
                 . " INNER JOIN seance s ON c.cinemaID = s.cinemaID"
@@ -83,10 +86,11 @@ class CinemaDAO extends DAO
      *
      * @return array<object>|null Le tableau d'objets Cinema
      */
-    public function findAllByFilmIdNotIn($filmID) {
+    public function findAllByFilmIdNotIn($filmID)
+    {
         // requête de récupération des titres et des identifiants des films
         // qui n'ont pas encore été programmés dans ce cinéma
-        $requete   = "SELECT c.CINEMAID, c.DENOMINATION, c.ADRESSE "
+        $requete = "SELECT c.CINEMAID, c.DENOMINATION, c.ADRESSE "
                 . "FROM cinema c"
                 . " WHERE c.cinemaID NOT IN ("
                 . "SELECT cinemaID"
@@ -104,7 +108,8 @@ class CinemaDAO extends DAO
      *
      * @return array<object>|null Le tableau d'objets Cinema
      */
-    public function findAllOnAir() {
+    public function findAllOnAir()
+    {
         $resultatsFormatted = [];
         $requete = "SELECT DISTINCT CINEMAID FROM seance";
         // extraction des résultats
@@ -120,18 +125,22 @@ class CinemaDAO extends DAO
      * Sauvegarde un objet Cinema en BDD
      * @param Cinema $cinema
      */
-    public function save(Cinema $cinema) {
+    public function save(Cinema $cinema)
+    {
         // je récupère les données du cinéma sous forme de tableau
-        $donneesCinema = array(
+        $donneesCinema = [
             'denomination' => $cinema->getDenomination(),
             'adresse'      => $cinema->getAdresse(),
-        );
+        ];
 
         // Si le cinéma existe déja
         if ($cinema->getCinemaId()) {
             // il faut faire une mise à jour
-            $this->getDb()->update('cinema', $donneesCinema,
-                    array('cinemaId' => $cinema->getCinemaId()));
+            $this->getDb()->update(
+                'cinema',
+                $donneesCinema,
+                ['cinemaId' => $cinema->getCinemaId()]
+            );
         } else {
             // Sinon, nous faisons une insertion
             $this->getDb()->insert('cinema', $donneesCinema);
@@ -147,8 +156,9 @@ class CinemaDAO extends DAO
      *
      * @param integer $cinemaID
      */
-    public function delete($cinemaID) {
+    public function delete($cinemaID)
+    {
         // Supprime le cinéma
-        $this->getDb()->delete('cinema', array('cinemaId' => $cinemaID));
+        $this->getDb()->delete('cinema', ['cinemaId' => $cinemaID]);
     }
 }

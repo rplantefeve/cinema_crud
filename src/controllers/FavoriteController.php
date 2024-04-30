@@ -14,9 +14,8 @@ use Silex\Application;
  *
  * @author User
  */
-class FavoriteController extends Controller 
+class FavoriteController extends Controller
 {
-
     public function editFavoriteMoviesList(
         Request $request = null,
         Application $app = null,
@@ -95,8 +94,8 @@ class FavoriteController extends Controller
 
             // si un film a été selectionné
             if ($entries['filmID'] !== null && $entries['filmID'] !== "") {
-                // on crée la préférence 
-                $prefere     = new Prefere();
+                // on crée la préférence
+                $prefere = new Prefere();
                 // on récupère l'utilisateur
                 $utilisateur = $app['dao.prefere']->getUtilisateurDAO()->find($entries['userID']);
                 $prefere->setUtilisateur($utilisateur);

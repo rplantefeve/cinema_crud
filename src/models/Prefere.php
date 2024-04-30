@@ -11,24 +11,23 @@ use Semeformation\Mvc\Cinema_crud\models\Utilisateur;
  *
  * @author User
  */
-class Prefere 
+class Prefere
 {
-
     /**
      * Utilisateur
-     * @var \Semeformation\Mvc\Cinema_crud\models\Utilisateur 
+     * @var \Semeformation\Mvc\Cinema_crud\models\Utilisateur
      */
     private $utilisateur;
 
     /**
      * Film
-     * @var \Semeformation\Mvc\Cinema_crud\models\Film 
+     * @var \Semeformation\Mvc\Cinema_crud\models\Film
      */
     private $film;
 
     /**
      * Commentaire
-     * @var string 
+     * @var string
      */
     private $commentaire;
 

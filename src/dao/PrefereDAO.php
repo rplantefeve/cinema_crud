@@ -13,18 +13,17 @@ use Semeformation\Mvc\Cinema_crud\exceptions\BusinessObjectDoNotExist;
  *
  * @author User
  */
-class PrefereDAO extends DAO 
+class PrefereDAO extends DAO
 {
-
     /**
      * DAO Film
-     * @var \Semeformation\Mvc\Cinema_crud\dao\FilmDAO 
+     * @var \Semeformation\Mvc\Cinema_crud\dao\FilmDAO
      */
     private $filmDAO;
 
     /**
      * DAO Utilisateur
-     * @var \Semeformation\Mvc\Cinema_crud\dao\UtilisateurDAO; 
+     * @var \Semeformation\Mvc\Cinema_crud\dao\UtilisateurDAO;
      */
     private $utilisateurDAO;
 
@@ -60,15 +59,18 @@ class PrefereDAO extends DAO
      * @return type
      * @throws Exception
      */
-    public function find(...$userIdAndFilmId) {
+    public function find(...$userIdAndFilmId)
+    {
         // requête qui récupère les informations d'une préférence de film pour un utilisateur donné
-        $requete  = "SELECT f.TITRE, p.*"
+        $requete = "SELECT f.TITRE, p.*"
                 . " FROM prefere p INNER JOIN film f ON p.filmID = f.filmID"
                 . " WHERE p.userID = ? AND p.filmID = ?";
-        $resultat = $this->getDb()->fetchAssoc($requete,
-                [
-            $userIdAndFilmId[0],
-            $userIdAndFilmId[1]]);
+        $resultat = $this->getDb()->fetchAssoc(
+            $requete,
+            [
+                $userIdAndFilmId[0],
+                $userIdAndFilmId[1]]
+        );
         // si trouvé
         if ($resultat) {
             // on récupère et on retourne l'objet préférence
@@ -83,9 +85,10 @@ class PrefereDAO extends DAO
      *
      * @return array<Prefere>
      */
-    public function findAll() {
+    public function findAll()
+    {
         // requête d'extraction de toutes les préférences
-        $sql       = "SELECT * FROM prefere";
+        $sql = "SELECT * FROM prefere";
         $resultats = $this->getDb()->fetchAll($sql);
 
         // on extrait les objets métiers des résultats
@@ -106,9 +109,11 @@ class PrefereDAO extends DAO
                 " AND p.userID = :userID";
 
         // on extrait le résultat de la BDD sous forme de tableau associatif
-        $resultats = $this->getDb()->fetchAll($requete,
-                [
-            'userID' => $id]);
+        $resultats = $this->getDb()->fetchAll(
+            $requete,
+            [
+                'userID' => $id]
+        );
         // on extrait les objets métiers des résultats
         return $this->extractObjects($resultats);
     }
@@ -117,23 +122,29 @@ class PrefereDAO extends DAO
      * Sauvegarde un objet Prefere en BDD
      * @param Prefere $prefere
      */
-    public function save(Prefere $prefere) {
+    public function save(Prefere $prefere)
+    {
         // je récupère les données de l'objet métier sous forme de tableau
-        $donneesPrefere = array(
+        $donneesPrefere = [
             'filmId'      => $prefere->getFilm()->getFilmId(),
             'userId'      => $prefere->getUtilisateur()->getUserId(),
             'commentaire' => $prefere->getCommentaire()
-        );
+        ];
 
         try {
             // la préférence existe-t-elle ?
-            $existe = $this->find($donneesPrefere['userId'],
-                    $donneesPrefere['filmId']);
+            $existe = $this->find(
+                $donneesPrefere['userId'],
+                $donneesPrefere['filmId']
+            );
             // il faut faire une mise à jour
-            $this->getDb()->update('prefere', $donneesPrefere,
-                    array(
-                'filmId' => $prefere->getFilm()->getFilmId(),
-                'userId' => $prefere->getUtilisateur()->getUserId()));
+            $this->getDb()->update(
+                'prefere',
+                $donneesPrefere,
+                [
+                    'filmId' => $prefere->getFilm()->getFilmId(),
+                    'userId' => $prefere->getUtilisateur()->getUserId()]
+            );
         } catch (BusinessObjectDoNotExist $e) {
             // Sinon, nous faisons une insertion
             $this->getDb()->insert('prefere', $donneesPrefere);
@@ -145,26 +156,33 @@ class PrefereDAO extends DAO
      * @param type $userID
      * @param type $filmID
      */
-    public function delete($userID, $filmID) {
-        $this->getDb()->delete('prefere',
-                array(
-            'userId' => $userID,
-            'filmId' => $filmID));
+    public function delete($userID, $filmID)
+    {
+        $this->getDb()->delete(
+            'prefere',
+            [
+                'userId' => $userID,
+                'filmId' => $filmID]
+        );
     }
 
-    public function getFilmDAO() {
+    public function getFilmDAO()
+    {
         return $this->filmDAO;
     }
 
-    public function getUtilisateurDAO() {
+    public function getUtilisateurDAO()
+    {
         return $this->utilisateurDAO;
     }
 
-    public function setFilmDAO(FilmDAO $filmDAO) {
+    public function setFilmDAO(FilmDAO $filmDAO)
+    {
         $this->filmDAO = $filmDAO;
     }
 
-    public function setUtilisateurDAO(UtilisateurDAO $utilisateurDAO) {
+    public function setUtilisateurDAO(UtilisateurDAO $utilisateurDAO)
+    {
         $this->utilisateurDAO = $utilisateurDAO;
     }
 }

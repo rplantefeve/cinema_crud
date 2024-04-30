@@ -3,7 +3,7 @@
 namespace Semeformation\Mvc\Cinema_crud\controllers;
 
 use Semeformation\Mvc\Cinema_crud\views\View;
-use \Semeformation\Mvc\Cinema_crud\models\Utilisateur;
+use Semeformation\Mvc\Cinema_crud\models\Utilisateur;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Silex\Application;
@@ -15,9 +15,8 @@ use Exception;
  *
  * @author User
  */
-class HomeController extends Controller 
+class HomeController extends Controller
 {
-
     /**
      * Route Accueil
      */
@@ -48,8 +47,8 @@ class HomeController extends Controller
         return $vue->generer(
             $request,
             [
-                'loginSuccess'     => $loginSuccess,
-                'error'            => $error
+                'loginSuccess' => $loginSuccess,
+                'error'        => $error
             ]
         );
     }
@@ -70,8 +69,10 @@ class HomeController extends Controller
     ): RedirectResponse {
         try {
             // On vérifie l'existence de l'utilisateur
-            $app['dao.utilisateur']->findOneByCourrielAndPassword($sanitizedEntries['email'],
-                    $sanitizedEntries['password']);
+            $app['dao.utilisateur']->findOneByCourrielAndPassword(
+                $sanitizedEntries['email'],
+                $sanitizedEntries['password']
+            );
 
             // on enregistre l'utilisateur en session
             $username = $sanitizedEntries['email'];
@@ -80,7 +81,7 @@ class HomeController extends Controller
                 'user',
                 [
                     'username' => $username,
-                    'userId'     => $userId,
+                    'userId'   => $userId,
                 ]
             );
             // redirection vers la liste des préférences de films
@@ -178,9 +179,9 @@ class HomeController extends Controller
                 $userId = $utilisateur->getUserId();
                 $app['session']->set(
                     'user',
-                    [   
+                    [
                         'username' => $username,
-                        'userId'     => $userId,
+                        'userId'   => $userId,
                     ]
                 );
                 // redirection vers la liste des préférences de films

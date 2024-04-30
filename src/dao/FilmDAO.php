@@ -36,8 +36,9 @@ class FilmDAO extends DAO
      * @return type
      * @throws Exception
      */
-    public function find(...$filmId) {
-        $requete  = "SELECT * FROM film WHERE filmID = ?";
+    public function find(...$filmId)
+    {
+        $requete = "SELECT * FROM film WHERE filmID = ?";
         $resultat = $this->getDb()->fetchAssoc($requete, [
             $filmId[0]]);
         // si trouvé
@@ -53,29 +54,33 @@ class FilmDAO extends DAO
      * Retourne tous les films de la base de données
      * @return array
      */
-    public function findAll() {
+    public function findAll()
+    {
         // requête d'extraction de tous les films
-        $sql       = "SELECT * FROM film ORDER BY titre ASC";
+        $sql = "SELECT * FROM film ORDER BY titre ASC";
         $resultats = $this->getDb()->fetchAll($sql);
 
         // on extrait les objets métiers des résultats
         return $this->extractObjects($resultats);
     }
 
-	/**
+    /**
      * Retourne les films d'un cinéma
      * @param type $cinemaID
      * @return array Tableau d'objes Film
      */
-    public function findAllByCinemaId($cinemaID) {
+    public function findAllByCinemaId($cinemaID)
+    {
         // requête qui nous permet de récupérer la liste des films pour un cinéma donné
         $requete = "SELECT DISTINCT f.* FROM film f"
                 . " INNER JOIN seance s ON f.filmID = s.filmID"
                 . " AND s.cinemaID = :cinemaID";
         // on extrait les résultats
-        $resultats = $this->getDb()->fetchAll($requete,
-                [
-            'cinemaID' => $cinemaID]);
+        $resultats = $this->getDb()->fetchAll(
+            $requete,
+            [
+                'cinemaID' => $cinemaID]
+        );
         // on extrait les objets métiers des résultats
         return $this->extractObjects($resultats);
     }
@@ -90,7 +95,7 @@ class FilmDAO extends DAO
         return $resultats;
     }
 
-    
+
 
     /**
      * Méthode qui ne renvoie que les films non encore marqués
@@ -147,7 +152,8 @@ class FilmDAO extends DAO
      *
      * @return array<object>|null Le tableau d'objets Film
      */
-    public function findAllOnAir() {
+    public function findAllOnAir()
+    {
         $resultatsFormatted = [];
         $requete = "SELECT DISTINCT FILMID FROM seance";
         $resultats = $this->getDb()->fetchAll($requete);
@@ -161,19 +167,23 @@ class FilmDAO extends DAO
      * Sauvegarde un objet Film en BDD
      * @param Film $film
      */
-    public function save(Film $film) {
+    public function save(Film $film)
+    {
         // je récupère les données du film sous forme de tableau
-        $donneesFilm = array(
+        $donneesFilm = [
             'titre'         => $film->getTitre(),
             'titreOriginal' => $film->getTitreOriginal(),
-        );
+        ];
 
         // Si le film existe déja
         if ($film->getFilmId()) {
             // il faut faire une mise à jour
-            $this->getDb()->update('film', $donneesFilm,
-                    array(
-                'filmId' => $film->getFilmId()));
+            $this->getDb()->update(
+                'film',
+                $donneesFilm,
+                [
+                    'filmId' => $film->getFilmId()]
+            );
         } else {
             // Sinon, nous faisons une insertion
             $this->getDb()->insert('film', $donneesFilm);
@@ -189,8 +199,9 @@ class FilmDAO extends DAO
      *
      * @param integer $movieID
      */
-    public function delete($movieID) {
-        $this->getDb()->delete('film', array(
-            'filmId' => $movieID));
+    public function delete($movieID)
+    {
+        $this->getDb()->delete('film', [
+            'filmId' => $movieID]);
     }
 }

@@ -15,9 +15,8 @@ use Semeformation\Mvc\Cinema_crud\models\Seance;
  *
  * @author User
  */
-class ShowtimesController extends Controller 
+class ShowtimesController extends Controller
 {
-
     /**
      * Route liste des séances d'un film
      * @param string $filmId
@@ -35,7 +34,7 @@ class ShowtimesController extends Controller
         // si l'identifiant du film a bien été passé en GET
         if ($filmId !== null && $filmId !== "") {
             // puis on récupère les informations du film en question
-            $film   = $app['dao.seance']->getFilmDAO()->find($filmId);
+            $film = $app['dao.seance']->getFilmDAO()->find($filmId);
 
             // on récupère les cinémas qui ne projettent pas encore le film
             $cinemasUnplanned = $app['dao.seance']->getCinemaDAO()->findAllByFilmIdNotIn($filmId);
@@ -83,7 +82,7 @@ class ShowtimesController extends Controller
         // si l'identifiant du cinéma a bien été passé en GET
         if ($cinemaId !== null && $cinemaId !== "") {
             // puis on récupère les informations du cinéma en question
-            $cinema   = $app['dao.seance']->getCinemaDAO()->find($cinemaId);
+            $cinema = $app['dao.seance']->getCinemaDAO()->find($cinemaId);
 
             // on récupère les films pas encore projetés
             $filmsUnplanned = $app['dao.seance']->getFilmDAO()->findAllByCinemaIdNotIn($cinemaId);
@@ -95,7 +94,7 @@ class ShowtimesController extends Controller
         }
 
         // on récupère la liste des films de ce cinéma
-        $films   = $app['dao.seance']->getFilmDAO()->findAllByCinemaId($cinemaId);
+        $films = $app['dao.seance']->getFilmDAO()->findAllByCinemaId($cinemaId);
         // on récupère toutes les séances de films pour un cinéma donné
         $seances = $app['dao.seance']->findAllByCinemaId($films, $cinemaId);
 
@@ -134,18 +133,23 @@ class ShowtimesController extends Controller
         // si la méthode de formulaire est la méthode POST
         if (filter_input(INPUT_SERVER, 'REQUEST_METHOD') === "POST") {
             // on assainie les variables
-            $entries             = $this->extractArrayFromPostRequest($request,
-                    [
-                'heureDebut',
-                'heureFin',
-                'version',
-                'from']);
+            $entries = $this->extractArrayFromPostRequest(
+                $request,
+                [
+                    'heureDebut',
+                    'heureFin',
+                    'version',
+                    'from']
+            );
             $entries['cinemaID'] = $cinemaId;
-            $entries['filmID']   = $filmId;
+            $entries['filmID'] = $filmId;
 
             // suppression de la séance
-            $app['dao.seance']->delete($entries['cinemaID'], $entries['filmID'],
-                    $entries['heureDebut'], $entries['heureFin']
+            $app['dao.seance']->delete(
+                $entries['cinemaID'],
+                $entries['filmID'],
+                $entries['heureDebut'],
+                $entries['heureFin']
             );
             // en fonction d'où je viens, je redirige
             if (strstr($entries['from'], 'movie') !== false) {
@@ -285,9 +289,9 @@ class ShowtimesController extends Controller
                 ]
             );
             $entries['cinemaID'] = $cinemaId;
-            $entries['filmID']   = $filmId;
+            $entries['filmID'] = $filmId;
             // d'où vient on ?
-            $from                = $entries['from'];
+            $from = $entries['from'];
             // si toutes les valeurs sont renseignées
             if ($entries !== null && isset(
                 $entries['cinemaID'],
@@ -332,9 +336,11 @@ class ShowtimesController extends Controller
                 $seance->setFilm($film);
                 try {
                     // je sauvegarde l'objet en BDD
-                    $app['dao.seance']->save($seance,
-                            $entries['dateheuredebutOld'],
-                            $entries['dateheurefinOld']);
+                    $app['dao.seance']->save(
+                        $seance,
+                        $entries['dateheuredebutOld'],
+                        $entries['dateheurefinOld']
+                    );
                     // en fonction d'où je viens, je redirige
                     return $this->redirectFrom($app, $request, $entries['from'], $entries['filmID'], $entries['cinemaID']);
                 } catch (BusinessObjectAlreadyExists $ex) {
@@ -349,18 +355,20 @@ class ShowtimesController extends Controller
         // On génère la vue édition d'une séance
         $vue = new View("EditShowtime");
         // En passant les variables nécessaires à son bon affichage
-        return $vue->generer($request,
-                        [
-                    'cinema'        => $cinema,
-                    'film'          => $film,
-                    'seance'        => $seance,
-                    'seanceOld'     => $seanceOld,
-                    'from'          => $from,
-                    'isItACreation' => $isItACreation,
-                    'fromCinema'    => $fromCinema,
-                    'fromFilm'      => $fromFilm,
-                    'alreadyExists' => $alreadyExists
-        ]);
+        return $vue->generer(
+            $request,
+            [
+                'cinema'        => $cinema,
+                'film'          => $film,
+                'seance'        => $seance,
+                'seanceOld'     => $seanceOld,
+                'from'          => $from,
+                'isItACreation' => $isItACreation,
+                'fromCinema'    => $fromCinema,
+                'fromFilm'      => $fromFilm,
+                'alreadyExists' => $alreadyExists
+            ]
+        );
     }
 
     /**
@@ -373,7 +381,8 @@ class ShowtimesController extends Controller
      * @param string $cinemaId
      * @return RedirectResponse
      */
-    private function redirectFrom(Application $app, Request $request, string $from, string $filmId = "", string $cinemaId = "") : RedirectResponse {
+    private function redirectFrom(Application $app, Request $request, string $from, string $filmId = "", string $cinemaId = ""): RedirectResponse
+    {
         // en fonction d'où je viens, je redirige
         if (strstr($from, 'movie') !== false) {
             // on redirige vers les séances du film
