@@ -19,8 +19,12 @@ class HomeController extends Controller
 {
     /**
      * Route Accueil
+     *
+     * @param Request|null $request
+     * @param Application|null $app
+     * @return RedirectResponse|string
      */
-    public function home(Request $request = null, Application $app = null, string $error = null)
+    public function home(Request $request = null, Application $app = null)
     {
         // le user est-il authentifié à ce niveau ?
         $loginSuccess = $this->checkIfUserIsConnected($app);
@@ -38,6 +42,15 @@ class HomeController extends Controller
                 );
 
                 return $this->login($entries, $app, $request);
+            }
+        }
+
+        $error = null;
+        // si une erreur est présente dans la requête GET
+        if ($request->getMethod() === 'GET'){
+            $entries = $this->extractArrayFromGetRequest($request, ['error']);
+            if ($entries['error'] !== null) {
+                $error = $entries['error'];
             }
         }
 

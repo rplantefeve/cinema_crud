@@ -15,7 +15,7 @@
             <input type="password" name="password" required/>
             <div class="error">
                 <?php
-                if ($error === null) :
+                if ($error !== null) :
                     echo "Les informations de connexions ne sont pas correctes.";
                 endif;
                 ?>
