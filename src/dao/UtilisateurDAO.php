@@ -119,33 +119,6 @@ class UtilisateurDAO extends DAO
         }
     }
 
-    /**
-     * Méthode qui retourne l'id d'un utilisateur passé en paramètre
-     * @param string $utilisateur Adresse email de l'utilisateur
-     * @return string $id Identifiant de l'utilisateur
-     */
-    public function getUserIDByEmailAddress($utilisateur)
-    {
-        // requête qui récupère l'ID grâce à l'adresse email
-        $requete = "SELECT userID FROM utilisateur WHERE adresseCourriel = :email";
-
-        // on récupère le résultat de la requête
-        $resultat = $this->executeQuery(
-            $requete,
-            ['email' => $utilisateur]
-        );
-
-        // on teste le nombre de lignes renvoyées
-        if ($resultat->rowCount() > 0) {
-            // on récupère la première (et seule) ligne retournée
-            $row = $resultat->fetch();
-            // l'id est le premier élément du tableau de résultats
-            return $row[0];
-        } else {
-            return null;
-        }
-    }
-
     /*
      * Méthode qui retourne l'utilisateur initialisé
      *
