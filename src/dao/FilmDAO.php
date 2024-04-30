@@ -85,18 +85,6 @@ class FilmDAO extends DAO
         // on extrait les objets métiers des résultats
         return $this->extractObjects($resultats);
     }
-    public function getOnAirMoviesId(): array
-    {
-        $resultats = [];
-        $requete = "SELECT DISTINCT FILMID FROM seance";
-        $statement = $this->executeQuery($requete);
-        while (($row = $statement->fetch(\PDO::FETCH_NUM)) !== false) {
-            $resultats[] = $row[0];
-        }
-        return $resultats;
-    }
-
-
 
     /**
      * Méthode qui ne renvoie que les films non encore marqués
