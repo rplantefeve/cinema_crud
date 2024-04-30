@@ -61,7 +61,7 @@ class FavoriteController extends Controller
      *
      * @param Request|null $request
      * @param Application|null $app
-     * @return void
+     * @return RedirectResponse|string
      */
     public function editFavoriteMovie(Request $request = null, Application $app = null)
     {
@@ -111,19 +111,22 @@ class FavoriteController extends Controller
                 // et la listes des films favoris
                 $preferences = $app['dao.prefere']->findAllByUserId($utilisateur->getUserId());
             }
+
+            $donnees = [
+                'utilisateur'  => $utilisateur,
+                'preferences'  => $preferences,
+                'films'        => $films,
+                'addMode'      => "add",
+                'noneSelected' => $noneSelected,
+            ];
+            // On génère la vue Films préférés
+            $vue = new View("FavoriteMoviesList");
+            // En passant les variables nécessaires à son bon affichage
+            return $vue->generer($request, $donnees);
         }
 
-        $donnees = [
-            'utilisateur'  => $utilisateur,
-            'preferences'  => $preferences,
-            'films'        => $films,
-            'addMode'      => "add",
-            'noneSelected' => $noneSelected,
-        ];
-        // On génère la vue Films préférés
-        $vue = new View("FavoriteMoviesList");
-        // En passant les variables nécessaires à son bon affichage
-        return $vue->generer($request, $donnees);
+        // retour à l'accueil par défaut
+        return $app->redirect($request->getBasePath() . '/home');
     }
 
     /**

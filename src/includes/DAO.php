@@ -9,13 +9,13 @@ abstract class DAO
 {
     /**
      * Connexion à la BDD
-     * @var Doctrine\DBAL\Connection
+     * @var Connection
      */
     private $db;
 
     /**
      * Logger du DAO
-     * @var Psr\Log\LoggerInterface
+     * @var LoggerInterface
      */
     protected $logger;
 
@@ -45,7 +45,7 @@ abstract class DAO
 
     /**
      * Donne accès au logger du DAO
-     * @return Psr\Log\LoggerInterface
+     * @return LoggerInterface
      */
     public function getLogger()
     {
@@ -70,8 +70,8 @@ abstract class DAO
 
     /**
      * Construit un tableau d'objets métiers à partir d'un résultat de BDD
-     * @param type $rows
-     * @return array
+     * @param array $rows
+     * @return array<Object>
      */
     protected function buildBusinessObjects($rows)
     {
@@ -79,7 +79,7 @@ abstract class DAO
         foreach ($rows as $row) {
             $objets[] = $this->buildBusinessObject($row);
         }
-        return ($objets ?? null);
+        return $objets;
     }
 
     /**

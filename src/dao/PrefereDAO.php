@@ -55,9 +55,9 @@ class PrefereDAO extends DAO
 
     /**
      * Renvoie les informations sur un film favori donné pour un utilisateur donné
-     * @param type $userIdAndFilmId
-     * @return type
-     * @throws Exception
+     * @param array<string> $userIdAndFilmId
+     * @return Prefere
+     * @throws \Exception
      */
     public function find(...$userIdAndFilmId)
     {
@@ -77,7 +77,7 @@ class PrefereDAO extends DAO
             // on récupère et on retourne l'objet préférence
             return $this->buildBusinessObject($resultat);
         } else {
-            throw new BusinessObjectDoNotExist('Aucune préférence trouvée pour l\'utilisateur d\'id=' . $userIdAndFilmId[0] . ' pour le film d\'id=' . $userIdAndFilmId[1]);
+            throw new BusinessObjectDoNotExist("Aucune préférence trouvée pour l'utilisateur d'id=" . $userIdAndFilmId[0] . " pour le film d'id=" . $userIdAndFilmId[1]);
         }
     }
 
@@ -154,8 +154,8 @@ class PrefereDAO extends DAO
 
     /**
      * Supprime une préférence de film
-     * @param type $userID
-     * @param type $filmID
+     * @param string $userID
+     * @param string $filmID
      */
     public function delete($userID, $filmID)
     {

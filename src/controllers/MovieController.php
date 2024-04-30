@@ -4,9 +4,9 @@ namespace Semeformation\Mvc\Cinema_crud\controllers;
 
 use Semeformation\Mvc\Cinema_crud\views\View;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Semeformation\Mvc\Cinema_crud\models\Film;
 use Silex\Application;
-use Psr\Log\LoggerInterface;
 
 /**
  * Description of MovieController
@@ -64,7 +64,7 @@ class MovieController extends Controller
         Application $app = null,
         string $filmId = null
     ) {
-        // si l'utilisateur n'est pas connecté ou sinon s'il n'est pas amdinistrateur
+        // si l'utilisateur n'est pas connecté ou sinon s'il n'est pas administrateur
         $this->redirectIfUserNotConnectedOrNotAdmin($request, $app);
 
         // si la méthode de formulaire est la méthode POST
@@ -89,6 +89,9 @@ class MovieController extends Controller
             // on revient à la liste des films
             return $app->redirect($request->getBasePath() . '/movie/list');
         }
+
+        // renvoi à la page d'accueil
+        return $app->redirect($request->getBasePath() . '/home');
     }
 
 

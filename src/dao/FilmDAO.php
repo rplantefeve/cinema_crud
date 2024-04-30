@@ -32,9 +32,9 @@ class FilmDAO extends DAO
 
     /**
      * Retourne le BO Film en fonction de son identifiant
-     * @param type $filmId
-     * @return type
-     * @throws Exception
+     * @param array<string> $filmId
+     * @return Film
+     * @throws \Exception
      */
     public function find(...$filmId)
     {
@@ -48,7 +48,7 @@ class FilmDAO extends DAO
             // on récupère et on retourne l'objet Film
             return $this->buildBusinessObject($resultat);
         } else {
-            throw new BusinessObjectDoNotExist('Aucun film trouvé pour l\'id=' . $filmId[0]);
+            throw new BusinessObjectDoNotExist("Aucun film trouvé pour l'id=" . $filmId[0]);
         }
     }
 
@@ -68,7 +68,7 @@ class FilmDAO extends DAO
 
     /**
      * Retourne les films d'un cinéma
-     * @param type $cinemaID
+     * @param string $cinemaID
      * @return array Tableau d'objes Film
      */
     public function findAllByCinemaId($cinemaID)
@@ -91,7 +91,7 @@ class FilmDAO extends DAO
      * comme favoris par l'utilisateur passé en paramètre
      * @param int $userID Identifiant de l'utilisateur
      *
-     * @return array<object>|null Films présents dans la base respectant les critères
+     * @return array<object> Films présents dans la base respectant les critères
      */
     public function findAllByUserIdNotIn($userID): array
     {
@@ -118,7 +118,7 @@ class FilmDAO extends DAO
      *
      * @param integer $cinemaID
      *
-     * @return array<object>|null
+     * @return array<object>
      */
     public function findAllByCinemaIdNotIn($cinemaID): array
     {

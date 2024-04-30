@@ -5,7 +5,6 @@ namespace Semeformation\Mvc\Cinema_crud\dao;
 use Semeformation\Mvc\Cinema_crud\includes\DAO;
 use Semeformation\Mvc\Cinema_crud\models\Utilisateur;
 use Semeformation\Mvc\Cinema_crud\exceptions\BusinessObjectDoNotExist;
-use Exception;
 
 /**
  * Description of UtilisateurDAO
@@ -35,8 +34,8 @@ class UtilisateurDAO extends DAO
 
     /**
      * Retourne le BO Utilisateur en fonction de son identifiant
-     * @param type $userId
-     * @throws Exception
+     * @param string $userId
+     * @throws \Exception
      */
     public function find(...$userId)
     {
@@ -71,7 +70,7 @@ class UtilisateurDAO extends DAO
     /**
      * Méthode qui teste si l'utilisateur est bien présent dans la BDD
      * @param string $email Email de l'utilisateur
-     * @param string $password Mot de passe de l'utilisateur
+     * @param string $passwordSaisi Mot de passe de l'utilisateur
      * @throw Exception si on ne trouve pas l'utilisateur en BDD
      */
     public function findOneByCourrielAndPassword($email, $passwordSaisi)
@@ -97,10 +96,10 @@ class UtilisateurDAO extends DAO
 
     /**
      * Teste si le password saisi correspond bien à celui de l'utilisateur
-     * @param type $passwordSaisi
-     * @param type $passwordBDD
-     * @param type $email
-     * @throws Exception
+     * @param string $passwordSaisi
+     * @param string $passwordBDD
+     * @param string $email
+     * @throws \Exception
      */
     private function testPasswords($passwordSaisi, $passwordBDD, $email)
     {

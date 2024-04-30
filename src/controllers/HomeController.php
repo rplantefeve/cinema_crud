@@ -69,7 +69,6 @@ class HomeController extends Controller
     /**
      * Vérifie si l'utilisateur existe et que son mot de passe est bon
      * @param array $sanitizedEntries
-     * @param boolean $areCredentialsOK
      * @param Application $app
      * @param Request $request
      * @return RedirectResponse

@@ -1,16 +1,6 @@
 parameters:
 	ignoreErrors:
 		-
-			message: "#^Variable \\$preferences might not be defined\\.$#"
-			count: 1
-			path: src/controllers/FavoriteController.php
-
-		-
-			message: "#^Variable \\$utilisateur might not be defined\\.$#"
-			count: 1
-			path: src/controllers/FavoriteController.php
-
-		-
 			message: "#^Variable \\$cinema might not be defined\\.$#"
 			count: 1
 			path: src/controllers/ShowtimesController.php
@@ -21,44 +11,29 @@ parameters:
 			path: src/controllers/ShowtimesController.php
 
 		-
-			message: "#^Variable \\$from might not be defined\\.$#"
+			message: "#^Binary operation \"\\.\" between 'Aucun film trouvé…' and array\\<string\\> results in an error\\.$#"
 			count: 1
-			path: src/controllers/ShowtimesController.php
-
-		-
-			message: "#^PHPDoc tag @return with type array\\<object\\>\\|null is not subtype of native type array\\.$#"
-			count: 3
-			path: src/dao/CinemaDAO.php
-
-		-
-			message: "#^PHPDoc tag @return with type array\\<object\\>\\|null is not subtype of native type array\\.$#"
-			count: 4
 			path: src/dao/FilmDAO.php
 
 		-
-			message: "#^PHPDoc tag @return with type array\\<object\\>\\|null is not subtype of native type array\\.$#"
+			message: "#^Binary operation \"\\.\" between 'Aucune préférence…' and array\\<string\\> results in an error\\.$#"
+			count: 1
+			path: src/dao/PrefereDAO.php
+
+		-
+			message: "#^Binary operation \"\\.\" between non\\-falsy\\-string and array\\<string\\> results in an error\\.$#"
+			count: 1
+			path: src/dao/PrefereDAO.php
+
+		-
+			message: "#^Binary operation \"\\.\" between 'Pas de séance…' and array\\<string\\> results in an error\\.$#"
 			count: 1
 			path: src/dao/SeanceDAO.php
 
 		-
-			message: "#^PHPDoc tag @return with type array\\<int, mixed\\>\\|null is not subtype of native type array\\.$#"
-			count: 1
-			path: src/includes/DAO.php
-
-		-
-			message: "#^PHPDoc tag @return with type array\\<object\\>\\|null is not subtype of native type array\\.$#"
-			count: 1
-			path: src/includes/DAO.php
-
-		-
-			message: "#^PHPDoc tag @return with type array\\|null is not subtype of native type array\\.$#"
-			count: 1
-			path: src/includes/DAO.php
-
-		-
-			message: "#^Else branch is unreachable because previous condition is always true\\.$#"
-			count: 2
-			path: src/includes/Utils.php
+			message: "#^Binary operation \"\\.\" between non\\-falsy\\-string and array\\<string\\> results in an error\\.$#"
+			count: 3
+			path: src/dao/SeanceDAO.php
 
 		-
 			message: "#^Property Semeformation\\\\Mvc\\\\Cinema_crud\\\\views\\\\View\\:\\:\\$titre is never written, only read\\.$#"
@@ -82,7 +57,7 @@ parameters:
 
 		-
 			message: "#^Variable \\$filmsUnplanned might not be defined\\.$#"
-			count: 1
+			count: 2
 			path: src/views/viewCinemaShowtimes.php
 
 		-
@@ -186,6 +161,11 @@ parameters:
 			path: src/views/viewCreateUser.php
 
 		-
+			message: "#^Variable \\$alreadyExists might not be defined\\.$#"
+			count: 1
+			path: src/views/viewEditShowtime.php
+
+		-
 			message: "#^Variable \\$cinema might not be defined\\.$#"
 			count: 3
 			path: src/views/viewEditShowtime.php
@@ -276,7 +256,7 @@ parameters:
 			path: src/views/viewFavoriteMoviesList.php
 
 		-
-			message: "#^Variable \\$areCredentialsOK might not be defined\\.$#"
+			message: "#^Variable \\$error might not be defined\\.$#"
 			count: 1
 			path: src/views/viewHome.php
 
@@ -307,7 +287,7 @@ parameters:
 
 		-
 			message: "#^Variable \\$cinemasUnplanned might not be defined\\.$#"
-			count: 1
+			count: 2
 			path: src/views/viewMovieShowtimes.php
 
 		-

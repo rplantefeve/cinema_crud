@@ -31,7 +31,7 @@ class SeanceDAO extends DAO
 
     /**
      * Retourne un BO Séance en fonction de l'id du cinéma, du film, de l'heure de début et de fin
-     * @param type $primaryKey
+     * @param array<string> $primaryKey
      * @return Seance
      * @throws \Exception
      */
@@ -55,7 +55,7 @@ class SeanceDAO extends DAO
         if ($resultat !== false) {
             return $this->buildBusinessObject($resultat);
         } else {
-            throw new BusinessObjectDoNotExist('Pas de séance trouvé pour le film id=' . $primaryKey[0] . ', cinema id=' . $primaryKey[1] . ', heure de début=' . $primaryKey[2] . ', heure de fin=' . $primaryKey[3]);
+            throw new BusinessObjectDoNotExist("Pas de séance trouvé pour le film id=" . $primaryKey[0] . ", cinema id=" . $primaryKey[1] . ", heure de début=" . $primaryKey[2] . ", heure de fin=" . $primaryKey[3]);
         }
     }
 
@@ -102,8 +102,8 @@ class SeanceDAO extends DAO
 
     /**
      * Retourne les séances d'un film donné dans un cinéma donné
-     * @param type $cinemaID
-     * @param type $filmID
+     * @param string $cinemaID
+     * @param string $filmID
      * @return array
      */
     public function findAllByCinemaIdAndFilmId($cinemaID, $filmID): array
@@ -127,7 +127,7 @@ class SeanceDAO extends DAO
     /**
      * Méthode qui retourne toutes les séances de tous les films présents dans un cinéma donné
      * @param array $films Liste des films du cinéma donné
-     * @param int $cinemaID Identifiant du cinéma concerné
+     * @param string $cinemaID Identifiant du cinéma concerné
      * @return array<array<Seance>> Les séances des films projetées dans ce cinéma
      */
     public function findAllByCinemaId($films, $cinemaID): array
@@ -146,14 +146,12 @@ class SeanceDAO extends DAO
         else :
                 return [];
         endif;
-            // on retourne le résultat
-            return $seances;
     }
 
     /**
      * Méthode qui retourne toutes les séances de tous les cinémas d'un film donné
      * @param array $cinemas Liste des cinémas qui projettent ce film
-     * @param int $filmID Identifiant du film concerné
+     * @param string $filmID Identifiant du film concerné
      * @return array<array<Seance>> Les séances du film projeté dans ces cinémas
      */
     public function findAllByFilmId($cinemas, $filmID): array

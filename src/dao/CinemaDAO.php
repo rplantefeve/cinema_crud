@@ -32,7 +32,7 @@ class CinemaDAO extends DAO
      * Recherche un cinéma à partir de son identifiant
      * @param string $cinemaID
      * @return Cinema
-     * @throws Exception
+     * @throws \Exception
      */
     public function find(...$cinemaID)
     {
