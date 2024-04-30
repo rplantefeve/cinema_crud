@@ -84,7 +84,7 @@ $path = $request->getBasePath();
                     </tr>
                     <?php
                 }
-            if ($adminConnected === true) :
+                if ($adminConnected === true) :
                     ?>
                     <tr class="new">
                         <td colspan="6">

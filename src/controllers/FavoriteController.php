@@ -76,8 +76,7 @@ class FavoriteController extends Controller
         $noneSelected = true;
 
         // si la méthode de formulaire est la méthode POST
-        if ($request->isMethod('POST')) {
-
+        if ($request->isMethod('POST') === true) {
             // on extrait les données post de la requête
             $entries = $this->extractArrayFromPostRequest(
                 $request,

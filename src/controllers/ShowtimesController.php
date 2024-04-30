@@ -38,9 +38,7 @@ class ShowtimesController extends Controller
 
             // on récupère les cinémas qui ne projettent pas encore le film
             $cinemasUnplanned = $app['dao.seance']->getCinemaDAO()->findAllByFilmIdNotIn($filmId);
-        }
-        // sinon, on retourne à l'accueil
-        else {
+        } else {
             // renvoi à la page d'accueil
             return $app->redirect($request->getBasePath() . '/home');
         }
@@ -86,9 +84,7 @@ class ShowtimesController extends Controller
 
             // on récupère les films pas encore projetés
             $filmsUnplanned = $app['dao.seance']->getFilmDAO()->findAllByCinemaIdNotIn($cinemaId);
-        }
-        // sinon, on retourne à l'accueil
-        else {
+        } else {
             // renvoi à la page d'accueil
             return $app->redirect($request->getBasePath() . '/home');
         }
@@ -139,7 +135,8 @@ class ShowtimesController extends Controller
                     'heureDebut',
                     'heureFin',
                     'version',
-                    'from']
+                    'from',
+                ]
             );
             $entries['cinemaID'] = $cinemaId;
             $entries['filmID'] = $filmId;
@@ -149,7 +146,7 @@ class ShowtimesController extends Controller
                 $entries['cinemaID'],
                 $entries['filmID'],
                 $entries['heureDebut'],
-                $entries['heureFin']
+                $entries['heureFin'],
             );
             // en fonction d'où je viens, je redirige
             if (strstr($entries['from'], 'movie') !== false) {
@@ -219,11 +216,12 @@ class ShowtimesController extends Controller
                 $entries['cinemaID'] = $cinemaId;
             }
             // pour l'instant, on vérifie les données en GET
-            if (isset(
-                $entries['cinemaID'],
-                $entries['filmID'],
-                $entries['from']
-            ) === true
+            if (
+                isset(
+                    $entries['cinemaID'],
+                    $entries['filmID'],
+                    $entries['from']
+                ) === true
             ) {
                 // on récupère l'identifiant du cinéma
                 $cinemaID = $entries['cinemaID'];
@@ -246,11 +244,12 @@ class ShowtimesController extends Controller
                 }
 
                 // ici, on veut savoir si on modifie ou si on ajoute
-                if (isset(
-                    $entries['heureDebut'],
-                    $entries['heureFin'],
-                    $entries['version']
-                ) === true
+                if (
+                    isset(
+                        $entries['heureDebut'],
+                        $entries['heureFin'],
+                        $entries['version']
+                    ) === true
                 ) {
                     // nous sommes dans le cas d'une modification
                     $isItACreation = false;
@@ -293,18 +292,19 @@ class ShowtimesController extends Controller
             // d'où vient on ?
             $from = $entries['from'];
             // si toutes les valeurs sont renseignées
-            if ($entries !== null && isset(
-                $entries['cinemaID'],
-                $entries['filmID'],
-                $entries['datedebut'],
-                $entries['heuredebut'],
-                $entries['datefin'],
-                $entries['heurefin'],
-                $entries['dateheuredebutOld'],
-                $entries['dateheurefinOld'],
-                $entries['version'],
-                $entries['from']
-            ) === true
+            if ($entries !== null
+                && isset(
+                    $entries['cinemaID'],
+                    $entries['filmID'],
+                    $entries['datedebut'],
+                    $entries['heuredebut'],
+                    $entries['datefin'],
+                    $entries['heurefin'],
+                    $entries['dateheuredebutOld'],
+                    $entries['dateheurefinOld'],
+                    $entries['version'],
+                    $entries['from']
+                ) === true
             ) {
                 // nous sommes en Français
                 setlocale(LC_TIME, 'fra_fra');
@@ -366,7 +366,7 @@ class ShowtimesController extends Controller
                 'isItACreation' => $isItACreation,
                 'fromCinema'    => $fromCinema,
                 'fromFilm'      => $fromFilm,
-                'alreadyExists' => $alreadyExists
+                'alreadyExists' => $alreadyExists,
             ]
         );
     }

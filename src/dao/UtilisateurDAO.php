@@ -43,11 +43,10 @@ class UtilisateurDAO extends DAO
         $requete = "SELECT * FROM utilisateur WHERE userID = ?";
         $resultat = $this->getDb()->fetchAssoc(
             $requete,
-            [
-                $userId[0]]
+            [$userId[0]]
         );
         // si trouvé
-        if ($resultat) {
+        if ($resultat !== false) {
             // on récupère l'objet Film
             return $this->buildBusinessObject($resultat);
         } else {
@@ -83,12 +82,11 @@ class UtilisateurDAO extends DAO
 
         $result = $this->getDb()->fetchAssoc(
             $requete,
-            [
-                'email' => $email]
+            ['email' => $email]
         );
 
         // on teste le nombre de lignes renvoyées
-        if ($result && $result['password'] !== '') {
+        if ($result !== false && $result['password'] !== '') {
             // on récupère le mot de passe
             $passwordBDD = $result['password'];
             $this->testPasswords($passwordSaisi, $passwordBDD, $email);

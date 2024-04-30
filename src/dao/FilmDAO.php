@@ -39,10 +39,12 @@ class FilmDAO extends DAO
     public function find(...$filmId)
     {
         $requete = "SELECT * FROM film WHERE filmID = ?";
-        $resultat = $this->getDb()->fetchAssoc($requete, [
-            $filmId[0]]);
+        $resultat = $this->getDb()->fetchAssoc(
+            $requete,
+            [$filmId[0]]
+        );
         // si trouvé
-        if ($resultat) {
+        if ($resultat !== false) {
             // on récupère et on retourne l'objet Film
             return $this->buildBusinessObject($resultat);
         } else {
@@ -78,8 +80,7 @@ class FilmDAO extends DAO
         // on extrait les résultats
         $resultats = $this->getDb()->fetchAll(
             $requete,
-            [
-                'cinemaID' => $cinemaID]
+            ['cinemaID' => $cinemaID]
         );
         // on extrait les objets métiers des résultats
         return $this->extractObjects($resultats);
@@ -116,8 +117,10 @@ class FilmDAO extends DAO
                 . " WHERE userID = :id"
                 . ")";
         // extraction de résultat
-        $resultats = $this->getDb()->fetchAll($requete, [
-            'id' => $userID]);
+        $resultats = $this->getDb()->fetchAll(
+            $requete,
+            ['id' => $userID]
+        );
         // on extrait les objets métiers des résultats
         return $this->extractObjects($resultats);
     }
@@ -141,8 +144,10 @@ class FilmDAO extends DAO
                 . " WHERE cinemaID = :id"
                 . ")";
         // extraction de résultat
-        $resultat = $this->getDb()->fetchAll($requete, [
-            'id' => $cinemaID]);
+        $resultat = $this->getDb()->fetchAll(
+            $requete,
+            ['id' => $cinemaID]
+        );
         // on extrait les objets métiers des résultats
         return $this->extractObjects($resultat);
     }
@@ -176,13 +181,14 @@ class FilmDAO extends DAO
         ];
 
         // Si le film existe déja
-        if ($film->getFilmId()) {
+        if ($film->getFilmId() !== null) {
             // il faut faire une mise à jour
             $this->getDb()->update(
                 'film',
                 $donneesFilm,
                 [
-                    'filmId' => $film->getFilmId()]
+                    'filmId' => $film->getFilmId(),
+                ]
             );
         } else {
             // Sinon, nous faisons une insertion
@@ -201,7 +207,9 @@ class FilmDAO extends DAO
      */
     public function delete($movieID)
     {
-        $this->getDb()->delete('film', [
-            'filmId' => $movieID]);
+        $this->getDb()->delete(
+            'film',
+            ['filmId' => $movieID]
+        );
     }
 }

@@ -63,9 +63,10 @@ $path = $request->getBasePath();
     <button type="submit">Sauvegarder</button>
 </form>
 <div class="error"><?php
-    if ($alreadyExists): echo 'La séance existe déjà';
-    endif;
-    ?></div>
+if ($alreadyExists === true) :
+    echo 'La séance existe déjà';
+endif;
+?></div>
 <?php if ($fromCinema === true) : ?>
     <form method="get" action="<?= $path . '/showtime/cinema/' . $cinema->getCinemaId() ?>">
         <button type="submit">Retour aux séances du cinéma</button>

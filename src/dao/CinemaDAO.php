@@ -39,7 +39,7 @@ class CinemaDAO extends DAO
         $requete = "SELECT * FROM cinema WHERE cinemaID = ?";
         $resultat = $this->getDb()->fetchAssoc($requete, [$cinemaID[0]]);
         // si trouvé
-        if ($resultat) {
+        if ($resultat !== false) {
             // on crée et on retourne l'objet métier Cinema
             return $this->buildBusinessObject($resultat);
         } else {
@@ -134,7 +134,7 @@ class CinemaDAO extends DAO
         ];
 
         // Si le cinéma existe déja
-        if ($cinema->getCinemaId()) {
+        if ($cinema->getCinemaId() !== null) {
             // il faut faire une mise à jour
             $this->getDb()->update(
                 'cinema',

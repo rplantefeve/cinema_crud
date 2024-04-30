@@ -48,10 +48,11 @@ class SeanceDAO extends DAO
                 $primaryKey[0],
                 $primaryKey[1],
                 $primaryKey[2],
-                $primaryKey[3]]
+                $primaryKey[3],
+            ]
         );
         // si trouvé
-        if ($resultat) {
+        if ($resultat !== false) {
             return $this->buildBusinessObject($resultat);
         } else {
             throw new BusinessObjectDoNotExist('Pas de séance trouvé pour le film id=' . $primaryKey[0] . ', cinema id=' . $primaryKey[1] . ', heure de début=' . $primaryKey[2] . ', heure de fin=' . $primaryKey[3]);
@@ -140,12 +141,13 @@ class SeanceDAO extends DAO
                     $film->getFilmId()
                 );
             }
-        // on retourne le résultat
-        return $seances; else:
-            return [];
+            // on retourne le résultat
+            return $seances;
+        else :
+                return [];
         endif;
-        // on retourne le résultat
-        return $seances;
+            // on retourne le résultat
+            return $seances;
     }
 
     /**
@@ -178,15 +180,14 @@ class SeanceDAO extends DAO
         Seance $seance,
         $dateheuredebutOld = null,
         $dateheurefinOld = null
-    )
-    {
+    ) {
         // je récupère les données de l'objet métier sous forme de tableau
         $donneesSeance = [
             'cinemaId'   => $seance->getCinema()->getCinemaId(),
             'filmId'     => $seance->getFilm()->getFilmId(),
             'heureDebut' => $seance->getHeureDebut()->format('Y-m-d H:i'),
             'heureFin'   => $seance->getHeureFin()->format('Y-m-d H:i'),
-            'version'    => $seance->getVersion()
+            'version'    => $seance->getVersion(),
         ];
 
         if ($dateheuredebutOld !== '' && $dateheurefinOld !== '') {
@@ -198,7 +199,8 @@ class SeanceDAO extends DAO
                     'cinemaId'   => $seance->getCinema()->getCinemaId(),
                     'filmId'     => $seance->getFilm()->getFilmId(),
                     'heureDebut' => $dateheuredebutOld,
-                    'heureFin'   => $dateheurefinOld]
+                    'heureFin'   => $dateheurefinOld,
+                ]
             );
         } else {
             // Sinon, nous faisons une insertion
@@ -234,7 +236,8 @@ class SeanceDAO extends DAO
                 'cinemaId'   => $cinemaID,
                 'filmID'     => $filmID,
                 'heureDebut' => $heureDebut,
-                'heureFin'   => $heureFin]
+                'heureFin'   => $heureFin,
+            ]
         );
     }
 

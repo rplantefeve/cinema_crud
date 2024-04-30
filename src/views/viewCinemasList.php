@@ -93,7 +93,7 @@ $path = $request->getBasePath();
                 </td>
             </tr>
 
-        <?php
+            <?php
         }
     endif; ?>
 </table>

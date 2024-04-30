@@ -69,10 +69,11 @@ class PrefereDAO extends DAO
             $requete,
             [
                 $userIdAndFilmId[0],
-                $userIdAndFilmId[1]]
+                $userIdAndFilmId[1],
+            ]
         );
         // si trouvé
-        if ($resultat) {
+        if ($resultat !== false) {
             // on récupère et on retourne l'objet préférence
             return $this->buildBusinessObject($resultat);
         } else {
@@ -111,8 +112,7 @@ class PrefereDAO extends DAO
         // on extrait le résultat de la BDD sous forme de tableau associatif
         $resultats = $this->getDb()->fetchAll(
             $requete,
-            [
-                'userID' => $id]
+            ['userID' => $id]
         );
         // on extrait les objets métiers des résultats
         return $this->extractObjects($resultats);
@@ -128,7 +128,7 @@ class PrefereDAO extends DAO
         $donneesPrefere = [
             'filmId'      => $prefere->getFilm()->getFilmId(),
             'userId'      => $prefere->getUtilisateur()->getUserId(),
-            'commentaire' => $prefere->getCommentaire()
+            'commentaire' => $prefere->getCommentaire(),
         ];
 
         try {
@@ -143,7 +143,8 @@ class PrefereDAO extends DAO
                 $donneesPrefere,
                 [
                     'filmId' => $prefere->getFilm()->getFilmId(),
-                    'userId' => $prefere->getUtilisateur()->getUserId()]
+                    'userId' => $prefere->getUtilisateur()->getUserId(),
+                ]
             );
         } catch (BusinessObjectDoNotExist $e) {
             // Sinon, nous faisons une insertion
@@ -162,7 +163,8 @@ class PrefereDAO extends DAO
             'prefere',
             [
                 'userId' => $userID,
-                'filmId' => $filmID]
+                'filmId' => $filmID,
+            ]
         );
     }
 

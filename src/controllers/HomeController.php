@@ -48,7 +48,7 @@ class HomeController extends Controller
             $request,
             [
                 'loginSuccess' => $loginSuccess,
-                'error'        => $error
+                'error'        => $error,
             ]
         );
     }

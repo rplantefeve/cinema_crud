@@ -69,8 +69,7 @@ class CinemaController extends Controller
         $this->redirectIfUserNotConnectedOrNotAdmin($request, $app);
 
         // si la méthode de formulaire est la méthode POST
-        if ($request->isMethod('POST')) {
-
+        if ($request->isMethod('POST') === true) {
             // on assainit les entrées
             $entries = $this->extractArrayFromPostRequest(
                 $request,

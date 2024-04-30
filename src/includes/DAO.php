@@ -28,8 +28,7 @@ abstract class DAO
     public function __construct(
         Connection $connexion = null,
         LoggerInterface $logger = null
-    )
-    {
+    ) {
         // init. de la connexion à la BDD
         $this->db = $connexion;
         // init. du logger
