@@ -40,7 +40,7 @@ $app->match('/favorite/list/{addMode}/{filmId}',
         'Semeformation\\Mvc\\Cinema_crud\\controllers\\FavoriteController::editFavoriteMoviesList'
 )->bind('favorite_list_edit');
 
-$app->match('/favorite/add',
+$app->post('/favorite/add',
                 'Semeformation\\Mvc\\Cinema_crud\\controllers\\FavoriteController::editFavoriteMovie')
 ->bind('favorite_add');
 
