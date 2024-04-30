@@ -11,19 +11,20 @@ use Semeformation\Mvc\Cinema_crud\exceptions\BusinessObjectDoNotExist;
  *
  * @author User
  */
-class FilmDAO extends DAO {
-
+class FilmDAO extends DAO
+{
     /**
      * Crée un film à partir d'une ligne de la BDD.
      *
      * @param array $row La ligne de résultat de la BDD.
      * @return Film
      */
-    protected function buildBusinessObject($row) {
+    protected function buildBusinessObject($row)
+    {
         $film = new Film();
         $film->setFilmId($row['FILMID']);
         $film->setTitre($row['TITRE']);
-        if (array_key_exists('TITREORIGINAL', $row)) {
+        if (array_key_exists('TITREORIGINAL', $row) === true) {
             $film->setTitreOriginal($row['TITREORIGINAL']);
         }
         return $film;
@@ -61,14 +62,14 @@ class FilmDAO extends DAO {
         return $this->extractObjects($resultats);
     }
 
-    /**
+	/**
      * Retourne les films d'un cinéma
      * @param type $cinemaID
      * @return array Tableau d'objes Film
      */
     public function findAllByCinemaId($cinemaID) {
         // requête qui nous permet de récupérer la liste des films pour un cinéma donné
-        $requete   = "SELECT DISTINCT f.* FROM film f"
+        $requete = "SELECT DISTINCT f.* FROM film f"
                 . " INNER JOIN seance s ON f.filmID = s.filmID"
                 . " AND s.cinemaID = :cinemaID";
         // on extrait les résultats
@@ -78,17 +79,31 @@ class FilmDAO extends DAO {
         // on extrait les objets métiers des résultats
         return $this->extractObjects($resultats);
     }
+    public function getOnAirMoviesId(): array
+    {
+        $resultats = [];
+        $requete = "SELECT DISTINCT FILMID FROM seance";
+        $statement = $this->executeQuery($requete);
+        while (($row = $statement->fetch(\PDO::FETCH_NUM)) !== false) {
+            $resultats[] = $row[0];
+        }
+        return $resultats;
+    }
+
+    
 
     /**
      * Méthode qui ne renvoie que les films non encore marqués
      * comme favoris par l'utilisateur passé en paramètre
      * @param int $userID Identifiant de l'utilisateur
-     * @return Film[] Films présents dans la base respectant les critÃ¨res
+     *
+     * @return array<object>|null Films présents dans la base respectant les critères
      */
-    public function findAllByUserIdNotIn($userID) {
+    public function findAllByUserIdNotIn($userID): array
+    {
         // requête de récupération des titres et des identifiants des films
         // qui n'ont pas encore été marqués comme favoris par l'utilisateur
-        $requete   = "SELECT f.FILMID, f.TITRE "
+        $requete = "SELECT f.FILMID, f.TITRE "
                 . "FROM film f"
                 . " WHERE f.filmID NOT IN ("
                 . "SELECT filmID"
@@ -104,13 +119,16 @@ class FilmDAO extends DAO {
 
     /**
      * Renvoie une liste de films pas encore programmés pour un cinema donné
+     *
      * @param integer $cinemaID
-     * @return array
+     *
+     * @return array<object>|null
      */
-    public function findAllByCinemaIdNotIn($cinemaID) {
+    public function findAllByCinemaIdNotIn($cinemaID): array
+    {
         // requête de récupération des titres et des identifiants des films
         // qui n'ont pas encore été programmés dans ce cinéma
-        $requete  = "SELECT f.FILMID, f.TITRE "
+        $requete = "SELECT f.FILMID, f.TITRE "
                 . "FROM film f"
                 . " WHERE f.filmID NOT IN ("
                 . "SELECT filmID"
@@ -122,6 +140,21 @@ class FilmDAO extends DAO {
             'id' => $cinemaID]);
         // on extrait les objets métiers des résultats
         return $this->extractObjects($resultat);
+    }
+
+    /**
+     * Renvoie une liste de films qui sont projetés dans au moins un cinéma
+     *
+     * @return array<object>|null Le tableau d'objets Film
+     */
+    public function findAllOnAir() {
+        $resultatsFormatted = [];
+        $requete = "SELECT DISTINCT FILMID FROM seance";
+        $resultats = $this->getDb()->fetchAll($requete);
+        foreach ($resultats as $row) {
+            $resultatsFormatted[] = $row['FILMID'];
+        }
+        return $resultatsFormatted;
     }
 
     /**
@@ -153,11 +186,11 @@ class FilmDAO extends DAO {
 
     /**
      * Supprime un film
+     *
      * @param integer $movieID
      */
     public function delete($movieID) {
         $this->getDb()->delete('film', array(
             'filmId' => $movieID));
     }
-
 }

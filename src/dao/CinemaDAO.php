@@ -11,15 +11,16 @@ use Semeformation\Mvc\Cinema_crud\exceptions\BusinessObjectDoNotExist;
  *
  * @author User
  */
-class CinemaDAO extends DAO {
-
+class CinemaDAO extends DAO
+{
     /**
      * Crée un cinéma à partir d'une ligne de la BDD.
      *
      * @param array $row La ligne de résultat de la BDD.
      * @return Cinema
      */
-    protected function buildBusinessObject($row) {
+    protected function buildBusinessObject($row)
+    {
         $cinema = new Cinema();
         $cinema->setCinemaId($row['CINEMAID']);
         $cinema->setDenomination($row['DENOMINATION']);
@@ -61,11 +62,12 @@ class CinemaDAO extends DAO {
     /**
      * Renvoie la liste des cinémas d'un film
      * @param integer $filmID
-     * @return array Le tableau d'objets Cinema
+     *
+     * @return array<object>|null Le tableau d'objets Cinema
      */
     public function findAllByFilmId($filmID) {
         // requête qui nous permet de récupérer la liste des cinémas pour un film donné
-        $requete   = "SELECT DISTINCT c.* FROM cinema c"
+        $requete = "SELECT DISTINCT c.* FROM cinema c"
                 . " INNER JOIN seance s ON c.cinemaID = s.cinemaID"
                 . " AND s.filmID = " . $filmID;
         // on extrait les résultats
@@ -76,8 +78,10 @@ class CinemaDAO extends DAO {
 
     /**
      * Renvoie une liste de cinémas qui ne projettent pas le film donné
+     *
      * @param integer $filmID
-     * @return array Le tableau d'objets Cinema
+     *
+     * @return array<object>|null Le tableau d'objets Cinema
      */
     public function findAllByFilmIdNotIn($filmID) {
         // requête de récupération des titres et des identifiants des films
@@ -93,6 +97,23 @@ class CinemaDAO extends DAO {
         $resultats = $this->getDb()->fetchAll($requete, ['id' => $filmID]);
         // retour du résultat
         return $this->extractObjects($resultats);
+    }
+
+    /**
+     * Renvoie une liste de cinémas qui projettent au moins un film
+     *
+     * @return array<object>|null Le tableau d'objets Cinema
+     */
+    public function findAllOnAir() {
+        $resultatsFormatted = [];
+        $requete = "SELECT DISTINCT CINEMAID FROM seance";
+        // extraction des résultats
+        $resultats = $this->getDb()->fetchAll($requete);
+        foreach ($resultats as $row) {
+            $resultatsFormatted[] = $row['CINEMAID'];
+        }
+        // retour du résultat
+        return $resultatsFormatted;
     }
 
     /**
@@ -123,11 +144,11 @@ class CinemaDAO extends DAO {
 
     /**
      * Supprime un cinéma
+     *
      * @param integer $cinemaID
      */
     public function delete($cinemaID) {
         // Supprime le cinéma
         $this->getDb()->delete('cinema', array('cinemaId' => $cinemaID));
     }
-
 }

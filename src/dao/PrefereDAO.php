@@ -13,7 +13,8 @@ use Semeformation\Mvc\Cinema_crud\exceptions\BusinessObjectDoNotExist;
  *
  * @author User
  */
-class PrefereDAO extends DAO {
+class PrefereDAO extends DAO 
+{
 
     /**
      * DAO Film
@@ -33,19 +34,20 @@ class PrefereDAO extends DAO {
      * @param array $row La ligne de résultat de la BDD.
      * @return Prefere
      */
-    protected function buildBusinessObject($row) {
+    protected function buildBusinessObject($row)
+    {
         $prefere = new Prefere();
         $prefere->setCommentaire($row['COMMENTAIRE']);
         // trouver l'utilisateur concerné grâce à son identifiant
-        if (array_key_exists('USERID', $row)) {
-            $userId      = $row['USERID'];
+        if (array_key_exists('USERID', $row) === true) {
+            $userId = $row['USERID'];
             $utilisateur = $this->utilisateurDAO->find($userId);
             $prefere->setUtilisateur($utilisateur);
         }
         // trouver le film concerné grâce à son identifiant
-        if (array_key_exists('FILMID', $row)) {
+        if (array_key_exists('FILMID', $row) === true) {
             $filmId = $row['FILMID'];
-            $film   = $this->filmDAO->find($filmId);
+            $film = $this->filmDAO->find($filmId);
             $prefere->setFilm($film);
         }
         // on retourne l'objet métier ainsi "hydraté"
@@ -53,7 +55,7 @@ class PrefereDAO extends DAO {
     }
 
     /**
-     * Méthode qui renvoie les informations sur un film favori donné pour un utilisateur donné
+     * Renvoie les informations sur un film favori donné pour un utilisateur donné
      * @param type $userIdAndFilmId
      * @return type
      * @throws Exception
@@ -76,6 +78,11 @@ class PrefereDAO extends DAO {
         }
     }
 
+    /**
+     * Retourne toutes les préférences de films
+     *
+     * @return array<Prefere>
+     */
     public function findAll() {
         // requête d'extraction de toutes les préférences
         $sql       = "SELECT * FROM prefere";
@@ -86,11 +93,13 @@ class PrefereDAO extends DAO {
     }
 
     /**
-     * Méthode qui retourne les films préférés d'un utilisateur donné
-     * @param string $utilisateur Adresse email de l'utilisateur
-     * @return array[][] Les films préférés (sous forme de tableau associatif) de l'utilisateur
+     * Retourne les films préférés d'un utilisateur donné à partir de l'id
+     *
+     * @param int $id Identifiant de l'utilisateur
+     * @return array<Prefere> Les films préférés (sous forme de tableau associatif) de l'utilisateur
      */
-    public function findAllByUserId($id) {
+    public function findAllByUserId(int $id): array
+    {
         // on construit la requête qui va récupérer les films de l'utilisateur
         $requete = "SELECT f.FILMID, f.TITRE, p.COMMENTAIRE, p.USERID from film f" .
                 " INNER JOIN prefere p ON f.filmID = p.filmID" .
@@ -158,5 +167,4 @@ class PrefereDAO extends DAO {
     public function setUtilisateurDAO(UtilisateurDAO $utilisateurDAO) {
         $this->utilisateurDAO = $utilisateurDAO;
     }
-
 }

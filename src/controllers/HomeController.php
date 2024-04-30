@@ -15,32 +15,28 @@ use Exception;
  *
  * @author User
  */
-class HomeController extends Controller {
+class HomeController extends Controller 
+{
 
     /**
      * Route Accueil
      */
-    public function home(Request $request = null, Application $app = null) {
-        //session_start();
-        // personne d'authentifié à ce niveau
-        $loginSuccess = false;
+    public function home(Request $request = null, Application $app = null, string $error = null)
+    {
+        // le user est-il authentifié à ce niveau ?
+        $loginSuccess = $this->checkIfUserIsConnected($app);
 
-        // variables de contrôle du formulaire
-        $areCredentialsOK = true;
-
-
-        // si l'utilisateur est déjà authentifié
-        if ($app['session']->get('user')) {
-            $loginSuccess = true;
-            // Sinon (pas d'utilisateur authentifié pour l'instant)
-        } else {
+        // si l'utilisateur n'est pas authentifié
+        if ($loginSuccess === false) {
             // si la méthode POST a été employée
             if (filter_input(INPUT_SERVER, 'REQUEST_METHOD') === "POST") {
-
-                $entries = $this->extractArrayFromPostRequest($request,
-                        [
-                    'email',
-                    'password']);
+                $entries = $this->extractArrayFromPostRequest(
+                    $request,
+                    [
+                        'email',
+                        'password',
+                    ]
+                );
 
                 return $this->login($entries, $areCredentialsOK, $app, $request);
             }
@@ -49,22 +45,29 @@ class HomeController extends Controller {
         // On génère la vue Accueil
         $vue = new View("Home");
         // En passant les variables nécessaires à son bon affichage
-        return $vue->generer($request,
-                        [
-                    'areCredentialsOK' => $areCredentialsOK,
-                    'loginSuccess'     => $loginSuccess]);
+        return $vue->generer(
+            $request,
+            [
+                'loginSuccess'     => $loginSuccess,
+                'error'            => $error
+            ]
+        );
     }
 
     /**
      * Vérifie si l'utilisateur existe et que son mot de passe est bon
-     * @param type $sanitizedEntries
+     * @param array $sanitizedEntries
      * @param boolean $areCredentialsOK
      * @param Application $app
      * @param Request $request
      * @return RedirectResponse
      */
-    private function login($sanitizedEntries, &$areCredentialsOK,
-            Application $app, Request $request) {
+    private function login(
+        $sanitizedEntries,
+        &$areCredentialsOK,
+        Application $app,
+        Request $request
+    ): RedirectResponse {
         try {
             // On vérifie l'existence de l'utilisateur
             $app['dao.utilisateur']->findOneByCourrielAndPassword($sanitizedEntries['email'],
@@ -72,23 +75,22 @@ class HomeController extends Controller {
 
             // on enregistre l'utilisateur en session
             $username = $sanitizedEntries['email'];
-            $userId   = $app['dao.utilisateur']->findOneByCourriel($username)->getUserId();
-            $app['session']->set('user',
-                    array(
-                'username' => $username,
-                'userId'   => $userId));
+            $userId = $app['dao.utilisateur']->findOneByCourriel($username)->getUserId();
+            $app['session']->set(
+                'user',
+                [
+                    'username' => $username,
+                    'userId'     => $userId,
+                ]
+            );
             // redirection vers la liste des préférences de films
             return $app->redirect($request->getBasePath() . '/favorite/list');
         } catch (Exception $ex) {
-            $areCredentialsOK = false;
-            $loginSuccess     = false;
-            // On génère la vue Accueil
-            $vue              = new View("Home");
-            // En passant les variables nécessaires à son bon affichage
-            return $vue->generer($request,
-                            [
-                        'areCredentialsOK' => $areCredentialsOK,
-                        'loginSuccess'     => $loginSuccess]);
+            // redirection vers la page de login
+            $redirectUrl = $app['url_generator']->generate('home', ['error' => 'bad_login']);
+
+            // Redirection vers l'URL construite
+            return new RedirectResponse($redirectUrl);
         }
     }
 
@@ -96,29 +98,34 @@ class HomeController extends Controller {
      * Route Création d'un nouvel utilisateur
      * @param Request $request
      * @param Application $app
-     * @return type
+     * @return string
      */
-    public function createNewUser(Request $request = null,
-            Application $app = null) {
+    public function createNewUser(
+        Request $request = null,
+        Application $app = null
+    ) {
         // variables de contrôles du formulaire de création
-        $isFirstNameEmpty            = false;
-        $isLastNameEmpty             = false;
-        $isEmailAddressEmpty         = false;
-        $isUserUnique                = true;
-        $isPasswordEmpty             = false;
+        $isFirstNameEmpty = false;
+        $isLastNameEmpty = false;
+        $isEmailAddressEmpty = false;
+        $isUserUnique = true;
+        $isPasswordEmpty = false;
         $isPasswordConfirmationEmpty = false;
-        $isPasswordValid             = true;
+        $isPasswordValid = true;
 
         // si la méthode POST est utilisée, cela signifie que le formulaire a été envoyé
         if (filter_input(INPUT_SERVER, 'REQUEST_METHOD') === "POST") {
             // on assainit les entrées
-            $entries = $this->extractArrayFromPostRequest($request,
-                    [
-                'firstName',
-                'lastName',
-                'email',
-                'password',
-                'passwordConfirmation']);
+            $entries = $this->extractArrayFromPostRequest(
+                $request,
+                [
+                    'firstName',
+                    'lastName',
+                    'email',
+                    'password',
+                    'passwordConfirmation',
+                ]
+            );
 
             // si le prénom n'a pas été renseigné
             if ($entries['firstName'] === "") {
@@ -137,7 +144,7 @@ class HomeController extends Controller {
                 // On vérifie l'existence de l'utilisateur
                 $user = $app['dao.utilisateur']->findOneByCourriel($entries['email']);
                 // si on a un résultat, cela signifie que cette adresse email existe déjà
-                if ($user->getUserId()) {
+                if ($user->getUserId() !== null) {
                     $isUserUnique = false;
                 }
             }
@@ -156,8 +163,7 @@ class HomeController extends Controller {
             }
 
             // si les champs nécessaires ne sont pas vides, que l'utilisateur est unique et que le mot de passe est valide
-            if (!$isFirstNameEmpty && !$isLastNameEmpty && !$isEmailAddressEmpty &&
-                    $isUserUnique && !$isPasswordEmpty && $isPasswordValid) {
+            if ($isFirstNameEmpty === false && $isLastNameEmpty === false && $isEmailAddressEmpty === false && $isUserUnique === true && $isPasswordEmpty === false && $isPasswordValid === true) {
                 // hash du mot de passe
                 $password = password_hash($entries['password'], PASSWORD_DEFAULT);
                 $utilisateur = new Utilisateur();
@@ -169,21 +175,22 @@ class HomeController extends Controller {
                 $app['dao.utilisateur']->save($utilisateur);
 
                 $username = $entries['email'];
-                $userId   = $utilisateur->getUserId();
-                $app['session']->set('user',
-                        array(
-                    'username' => $username,
-                    'userId'   => $userId));
+                $userId = $utilisateur->getUserId();
+                $app['session']->set(
+                    'user',
+                    [   
+                        'username' => $username,
+                        'userId'     => $userId,
+                    ]
+                );
                 // redirection vers la liste des préférences de films
                 return $app->redirect($request->getBasePath() . '/favorite/list');
             }
-        }
-        // sinon (le formulaire n'a pas été envoyé)
-        else {
+        } else { // sinon (le formulaire n'a pas été envoyé)
             // initialisation des variables du formulaire
             $entries['firstName'] = '';
-            $entries['lastName']  = '';
-            $entries['email']     = '';
+            $entries['lastName'] = '';
+            $entries['email'] = '';
         }
 
         $donnees = [
@@ -194,9 +201,10 @@ class HomeController extends Controller {
             'isUserUnique'                => $isUserUnique,
             'isPasswordEmpty'             => $isPasswordEmpty,
             'isPasswordConfirmationEmpty' => $isPasswordConfirmationEmpty,
-            'isPasswordValid'             => $isPasswordValid];
+            'isPasswordValid'             => $isPasswordValid,
+        ];
         // On génère la vue Création d'un utilisateur
-        $vue     = new View("CreateUser");
+        $vue = new View("CreateUser");
         // En passant les variables nécessaires à son bon affichage
         return $vue->generer($request, $donnees);
     }
@@ -207,7 +215,8 @@ class HomeController extends Controller {
      * @param Application $app
      * @return RedirectResponse
      */
-    public function logout(Request $request, Application $app): RedirectResponse {
+    public function logout(Request $request, Application $app): RedirectResponse
+    {
         // démarrage de la session
         $app['session']->start();
         // destruction de la sessions
@@ -215,12 +224,10 @@ class HomeController extends Controller {
         return $app->redirect($request->getBasePath() . '/home');
     }
 
-    public function error($e) {
-
+    public function error(Request $request, Exception $e): string
+    {
         $app['dao.utilisateur']->getLogger()->error('Exception : ' . $e->getMessage() . ', File : ' . $e->getFile() . ', Line : ' . $e->getLine() . ', Stack trace : ' . $e->getTraceAsString());
         $vue = new View("Error");
-        return $vue->generer([
-                    'messageErreur' => $e->getMessage()]);
+        return $vue->generer($request, ['messageErreur' => $e->getMessage()]);
     }
-
 }

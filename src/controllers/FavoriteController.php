@@ -14,125 +14,118 @@ use Silex\Application;
  *
  * @author User
  */
-class FavoriteController extends Controller {
+class FavoriteController extends Controller 
+{
 
-    public function editFavoriteMoviesList(Request $request = null,
-            Application $app = null) {
+    public function editFavoriteMoviesList(
+        Request $request = null,
+        Application $app = null,
+        $addMode = "",
+        $filmId = null
+    ) {
         // si l'utilisateur n'est pas connecté
-        if (!$app['session']->get('user')) {
-            // renvoi à la page d'accueil
-            return $app->redirect($request->getBasePath() . '/home');
-        }
+        $this->redirectIfUserNotConnected($request, $app);
         // l'utilisateur est loggué
-        else {
-            $utilisateur = $app['dao.prefere']->getUtilisateurDAO()->findOneByCourriel($app['session']->get('user')['username']);
-        }
+        $utilisateur = $app['dao.prefere']->getUtilisateurDAO()->findOneByCourriel($app['session']->get('user')['username']);
 
         // on récupère la liste des films préférés grâce à l'utilisateur identifié
-        $preferes = $app['dao.prefere']->findAllByUserId($utilisateur->getUserId());
+        $preferences = $app['dao.prefere']->findAllByUserId($utilisateur->getUserId());
+        $preferenceToBeModified = [];
+        $toBeModified = null;
+        // on récupère la liste des films non marqués comme ayant un commentaire QUE SI NOUS SOMMES EN AJOUT !
+        $films = $app['dao.prefere']->getFilmDAO()->findAllByUserIdNotIn($utilisateur->getUserId());
+        // si nous sommes en mode modification
+        if ($addMode === "edit") {
+            // on a besoin de récupérer le commentaire à partir du film
+            $preferenceToBeModified = $app['dao.prefere']->find($utilisateur->getUserId(), $filmId);
+            $toBeModified = $preferenceToBeModified->getFilm()->getFilmId();
+        }
 
         // On génère la vue Films préférés
         $vue = new View("FavoriteMoviesList");
         // En passant les variables nécessaires à son bon affichage
-        return $vue->generer($request,
-                        array(
-                    'utilisateur' => $utilisateur,
-                    'preferes'    => $preferes));
+        return $vue->generer(
+            $request,
+            [
+                'utilisateur'            => $utilisateur,
+                'preferences'            => $preferences,
+                'preferenceToBeModified' => $preferenceToBeModified,
+                'addMode'                => $addMode,
+                'films'                  => $films,
+                'toBeModified'           => $toBeModified,
+            ]
+        );
     }
 
-    public function editFavoriteMovie(Request $request = null,
-            Application $app = null, $userId = null, $filmId = null) {
+    /**
+     * Undocumented function
+     *
+     * @param Request|null $request
+     * @param Application|null $app
+     * @param [type] $filmId
+     * @return void
+     */
+    public function editFavoriteMovie(Request $request = null, Application $app = null, $filmId = null)
+    {
         // si l'utilisateur n'est pas connecté
-        if (!$app['session']->get('user')) {
-            // renvoi à la page d'accueil
-            return $app->redirect($request->getBasePath() . '/home');
-        }
+        $this->redirectIfUserNotConnected($request, $app);
 
-        $films           = null;
+        $films = null;
         // variable de contrôle de formulaire
         $aFilmIsSelected = true;
         $prefere = null;
+        $noneSelected = true;
 
         // si la méthode de formulaire est la méthode POST
         if ($request->isMethod('POST')) {
 
             // on extrait les données post de la requête
-            $entries = $this->extractArrayFromPostRequest($request,
-                    [
-                'backToList',
-                'filmID',
-                'userID',
-                'comment']);
+            $entries = $this->extractArrayFromPostRequest(
+                $request,
+                [
+                    'backToList',
+                    'filmID',
+                    'userID',
+                    'comment',
+                    'modificationInProgress',
+                ]
+            );
 
+            $utilisateur = $app['dao.prefere']->getUtilisateurDAO()->find($entries['userID']);
 
-            // si l'action demandée est retour en arrière
-            if (!is_null($entries['backToList'])) {
-                // redirection vers la liste des préférences de films
-                return $app->redirect($request->getBasePath() . '/favorite/list');
-            }
-            // sinon (l'action demandée est la sauvegarde d'un favori)
-            else {
+            // si un film a été selectionné
+            if ($entries['filmID'] !== null && $entries['filmID'] !== "") {
                 // on crée la préférence 
                 $prefere     = new Prefere();
                 // on récupère l'utilisateur
                 $utilisateur = $app['dao.prefere']->getUtilisateurDAO()->find($entries['userID']);
                 $prefere->setUtilisateur($utilisateur);
                 $prefere->setCommentaire($entries['comment']);
-                // si un film a été selectionné 
-                if (!is_null($entries['filmID'])) {
-                    // On récupère le film
-                    $film = $app['dao.prefere']->getFilmDAO()->find($entries['filmID']);
-                    // on hydrate l'objet
-                    $prefere->setFilm($film);
-                    // on sauvegarde l'objet métier en BDD
-                    $app['dao.prefere']->save($prefere);
-                    // redirection vers la liste des préférences de films
-                    return $app->redirect($request->getBasePath() . '/favorite/list');
-                }
-                // sinon (un film n'a pas été sélectionné)
-                else {
-                    // 
-                    $aFilmIsSelected = false;
-                    $films           = $app['dao.prefere']->getFilmDAO()->findAllByUserIdNotIn($app['session']->get('user')['userId']);
-                }
-            }
-            // sinon (nous sommes en GET) et que l'id du film et l'id du user sont bien renseignés
-        } elseif ($request->isMethod('GET')) {
-
-            // on récupère les données depuis l'URL (transmises en paramètres d'entrée de la fonction
-            $entries['filmID'] = $filmId;
-            $entries['userID'] = $userId;
-
-            if ($entries && !is_null($entries['filmID']) && $entries['filmID'] !==
-                    '' && !is_null($entries['userID']) && $entries['userID'] !==
-                    '') {
-                // on récupère les informations manquantes (le commentaire afférent)
-                $prefere    = $app['dao.prefere']->find($entries['userID'],
-                        $entries['filmID']);
-                // TODO : faire autrement qu'avec un vecteur
-                $preference = [
-                    "userID"      => $app['session']->get('user')['userId'],
-                    "filmID"      => $prefere->getFilm()->getFilmId(),
-                    "titre"       => $prefere->getFilm()->getTitre(),
-                    "commentaire" => $prefere->getCommentaire()];
-                // sinon, c'est une création
-            } else {
-                $films      = $app['dao.prefere']->getFilmDAO()->findAllByUserIdNotIn($app['session']->get('user')['userId']);
-                // on initialise les autres variables de formulaire à vide
-                $prefere = new Prefere();
-                $utilisateur = $app['dao.prefere']->getUtilisateurDAO()->find($app['session']->get('user')['userId']);
-                $prefere->setUtilisateur($utilisateur);
+                // On récupère le film
+                $film = $app['dao.prefere']->getFilmDAO()->find($entries['filmID']);
+                // on hydrate l'objet
+                $prefere->setFilm($film);
+                // on sauvegarde l'objet métier en BDD
+                $app['dao.prefere']->save($prefere);
+                // on revient à la liste des préférences
+                // redirection vers la liste des préférences de films
+                return $app->redirect($request->getBasePath() . '/favorite/list');
+            } else { // sinon (un film n'a pas été sélectionné)
+                $films = $app['dao.prefere']->getFilmDAO()->findAllByUserIdNotIn($app['session']->get('user')['userId']);
+                // et la listes des films favoris
+                $preferences = $app['dao.prefere']->findAllByUserId($utilisateur->getUserId());
             }
         }
 
         $donnees = [
-            'aFilmIsSelected' => $aFilmIsSelected,
-            'prefere'         => $prefere,
-            'userID'          => $userId,
-            'films'           => $films
+            'utilisateur'  => $utilisateur,
+            'preferences'  => $preferences,
+            'films'        => $films,
+            'addMode'      => "add",
+            'noneSelected' => $noneSelected,
         ];
         // On génère la vue Films préférés
-        $vue     = new View("FavoriteMovie");
+        $vue = new View("FavoriteMoviesList");
         // En passant les variables nécessaires à son bon affichage
         return $vue->generer($request, $donnees);
     }
@@ -145,18 +138,18 @@ class FavoriteController extends Controller {
      * @param int $filmId
      * @return RedirectResponse
      */
-    public function deleteFavoriteMovie(Request $request = null,
-            Application $app = null, $userId = null, $filmId = null): RedirectResponse {
+    public function deleteFavoriteMovie(
+        Request $request = null,
+        Application $app = null,
+        $userId = null,
+        $filmId = null
+    ) {
         // si l'utilisateur n'est pas connecté
-        if (!$app['session']->get('user')) {
-            // renvoi à la page d'accueil
-            return $app->redirect($request->getBasePath() . '/home');
-        }
+        $this->redirectIfUserNotConnected($request, $app);
 
         // suppression de la préférence de film
         $app['dao.prefere']->delete($userId, $filmId);
         // redirection vers la liste des préférences de films
         return $app->redirect($request->getBasePath() . '/favorite/list');
     }
-
 }

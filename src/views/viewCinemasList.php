@@ -1,6 +1,6 @@
 <?php
 $this->titre = "Cinémas";
-$path        = $request->getBasePath();
+$path = $request->getBasePath();
 ?>
 <header><h1>Liste des cinémas</h1></header>
 <table class="std">
@@ -12,43 +12,93 @@ $path        = $request->getBasePath();
     <?php
     // boucle de construction de la liste des cinémas
     foreach ($cinemas as $cinema) {
-        ?>
-        <tr>
-            <td><?= $cinema->getDenomination(); ?></td>
-            <td><?= $cinema->getAdresse(); ?></td>
-            <td>
-                <form name="cinemaShowtimes" action="<?= $path . '/showtime/cinema/' . $cinema->getCinemaId() ?>" method="GET">
-                    <input type="submit" value="Consulter les séances"/>
+        if ($mode === "edit" && isset($toBeModified) === true && $cinema->getCinemaId() === $toBeModified) {
+            ?>
+            <tr>
+                <form name="editCinema" action="<?= $path . '/cinema/save/' . $toBeModified ?>" method="POST">
+                    <td><input name="denomination" value="<?= $cinemaToBeModified->getDenomination() ?>" /></td>
+                    <td><textarea name="adresse"><?= $cinemaToBeModified->getAdresse() ?></textarea></td>
+                    <td colspan="3" class="centered">
+                        <input name="cinemaID" type="hidden" value="<?= $toBeModified ?>" />
+                        <input name="modificationInProgress" type="hidden" value="" />
+                        <input type="image" src="<?= $path . '/images/cancelIcon.png' ?>" alt="Cancel" form="cancelForm" />
+                        <input type="image" src="<?= $path . '/images/validateIcon.png' ?>" alt="Validate" />
+                    </td>
                 </form>
-            </td>
+            </tr>
             <?php
-            if ($isUserAdmin):
-                ?>
+        } else {
+            ?>
+            <tr>
+                <td><?= $cinema->getDenomination(); ?></td>
+                <td><?= $cinema->getAdresse(); ?></td>
                 <td>
-                    <form name="modifyCinema" action="<?= $path . '/cinema/edit/' . $cinema->getCinemaId() ?>" method="GET">
-                        <input type="submit" id="modify" value="" />
+                    <form name="cinemaShowtimes" action="<?= $path . '/showtime/cinema/' . $cinema->getCinemaId() ?>" method="GET">
+                        <input type="submit" value="Consulter les séances" />
                     </form>
                 </td>
-                <td>
-                    <form name="deleteCinema" action="<?= $path . '/cinema/delete/' . $cinema->getCinemaId() ?>" method="POST">
-                        <input type="image" src="<?= $path . '/images/deleteIcon.png' ?>" alt="Delete"/>
-                    </form>
-                </td>
-            <?php endif; ?>
-        </tr>
-        <?php
+                <?php
+                if ($isUserAdmin === true) :
+                    ?>
+                    <td>
+                        <form name="modifyCinema" action="<?= $path . '/cinema/list/edit/' . $cinema->getCinemaId() ?>" method="GET">
+                            <input type="hidden" name="cinemaID" value="<?= $cinema->getCinemaId() ?>" />
+                            <input type="image" src="<?= $path . '/images/modifyIcon.png' ?>" alt="Modify" />
+                        </form>
+                    </td>
+                    <td>
+                        <form name="deleteCinema" action="<?= $path . '/cinema/delete/' . $cinema->getCinemaId() ?>" method="POST">
+                            <?php
+                            if (in_array($cinema->getCinemaId(), $onAirCinemas) === true) {
+                                ?>
+                                <input type="image" src="<?= $path . '/images/deleteIconDisabled.png' ?>" alt="Delete" disabled/>
+                                <?php
+                            } else {
+                                ?>
+                                <input type="image" src="<?= $path . '/images/deleteIcon.png' ?>" alt="Delete" />
+                                <?php
+                            } ?>
+                        </form>
+                    </td>
+                <?php endif; ?>
+            </tr>
+            <?php
+        }
     }
-    if ($isUserAdmin):
-        ?>
-        <tr class="new">
-            <td colspan="5">
-                <form name="addCinema" method="get" action="<?= $path . '/cinema/add' ?>">
-                    <button class="add" type="submit">Cliquer ici pour ajouter un cinéma</button>
+    if ($isUserAdmin === true) :
+        if (isset($mode) === true && $mode === "add") {
+            ?>
+            <tr>
+                <form name="addCinema" action="<?= $path . '/cinema/add' ?>" method="POST">
+                    <td>
+                        <input name="denomination" placeholder="Dénomination" required />
+                    </td>
+                    <td>
+                        <textarea name="adresse" placeholder="Renseignez l'adresse ici..." required></textarea>
+                    </td>
+                    <td colspan="3" class="centered">
+                        <input type="image" src="<?= $path . '/images/cancelIcon.png' ?>" alt="Cancel" form="cancelForm" />
+                        <input type="image" src="<?= $path . '/images/addIcon.png' ?>" alt="Add" />
+                    </td>
                 </form>
-            </td>
-        </tr>
-    <?php endif; ?>
+            </tr>
+            <?php
+        } else {
+            ?>
+            <tr class="new">
+                <td colspan="5">
+                    <form name="addCinema" method="get" action="<?= $request->getBasePath() . '/cinema/list/add' ?>">
+                        <button class="add" type="submit">Cliquer ici pour ajouter un cinéma</button>
+                    </form>
+                </td>
+            </tr>
+
+        <?php
+        }
+    endif; ?>
 </table>
+<form name="cancelForm" id="cancelForm" method="GET" action="<?= $path . '/cinema/list' ?>">
+</form>
 <form name="backToMainPage" action="<?= $path . '/home' ?>">
-    <input type="submit" value="Retour à l'accueil"/>
+    <input type="submit" value="Retour à l'accueil" />
 </form>

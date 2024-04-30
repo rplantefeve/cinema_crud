@@ -11,8 +11,8 @@ use DateTime;
  *
  * @author User
  */
-class Seance {
-
+class Seance
+{
     /**
      *
      * @var Cinema
@@ -21,7 +21,7 @@ class Seance {
 
     /**
      *
-     * @var Film 
+     * @var Film
      */
     private $film;
 
@@ -43,44 +43,53 @@ class Seance {
      */
     private $version;
 
-    public function getCinema() {
+    public function getCinema(): Cinema
+    {
         return $this->cinema;
     }
 
-    public function getFilm() {
+    public function getFilm(): Film
+    {
         return $this->film;
     }
 
-    public function getHeureDebut() {
+    public function getHeureDebut(): DateTime
+    {
         return $this->heureDebut;
     }
 
-    public function getHeureFin() {
+    public function getHeureFin(): DateTime
+    {
         return $this->heureFin;
     }
 
-    public function getVersion() {
+    public function getVersion(): string
+    {
         return $this->version;
     }
 
-    public function setCinema(Cinema $cinema) {
+    public function setCinema(Cinema $cinema): void
+    {
         $this->cinema = $cinema;
     }
 
-    public function setFilm(Film $film) {
+    public function setFilm(Film $film): void
+    {
         $this->film = $film;
     }
 
-    public function setHeureDebut(DateTime $heureDebut) {
+    public function setHeureDebut(DateTime $heureDebut): void
+    {
         $this->heureDebut = $heureDebut;
     }
 
-    public function setHeureFin(DateTime $heureFin) {
+    public function setHeureFin(DateTime $heureFin): void
+    {
         $this->heureFin = $heureFin;
     }
 
-    public function setVersion($version) {
+    public function setVersion($version): void
+    {
         $this->version = $version;
     }
-
 }

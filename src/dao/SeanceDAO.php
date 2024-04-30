@@ -15,8 +15,8 @@ use DateTime;
  *
  * @author User
  */
-class SeanceDAO extends DAO {
-
+class SeanceDAO extends DAO
+{
     /**
      *
      * @var FilmDAO
@@ -74,19 +74,20 @@ class SeanceDAO extends DAO {
      * @param array $row La ligne de résultat de la BDD.
      * @return Seance
      */
-    protected function buildBusinessObject($row) {
+    protected function buildBusinessObject($row)
+    {
         $seance = new Seance();
         $seance->setHeureDebut(new DateTime($row['HEUREDEBUT']));
         $seance->setHeureFin(new DateTime($row['HEUREFIN']));
         $seance->setVersion($row['VERSION']);
         // trouver le film concerné grâce à son identifiant
-        if (array_key_exists('FILMID', $row)) {
+        if (array_key_exists('FILMID', $row) === true) {
             $filmID = $row['FILMID'];
-            $film   = $this->filmDAO->find($filmID);
+            $film = $this->filmDAO->find($filmID);
             $seance->setFilm($film);
         }
         // trouver le cinéma concerné grâce à son identifiant
-        if (array_key_exists('CINEMAID', $row)) {
+        if (array_key_exists('CINEMAID', $row) === true) {
             $cinemaID = $row['CINEMAID'];
             $cinema   = $this->cinemaDAO->find($cinemaID);
             $seance->setCinema($cinema);
@@ -100,16 +101,20 @@ class SeanceDAO extends DAO {
      * @param type $filmID
      * @return array
      */
-    public function findAllByCinemaIdAndFilmId($cinemaID, $filmID) {
+    public function findAllByCinemaIdAndFilmId($cinemaID, $filmID): array
+    {
         // requête qui permet de récupérer la liste des séances d'un film donné dans un cinéma donné
-        $requete   = "SELECT s.* FROM seance s"
+        $requete = "SELECT s.* FROM seance s"
                 . " WHERE s.filmID = :filmID"
                 . " AND s.cinemaID = :cinemaID";
         // on extrait les résultats
-        $resultats = $this->getDb()->fetchAll($requete,
-                array(
-            'filmID'   => $filmID,
-            'cinemaID' => $cinemaID));
+        $resultats = $this->getDb()->fetchAll(
+            $requete,
+            [
+                'filmID'   => $filmID,
+                'cinemaID' => $cinemaID,
+            ]
+        );
         // on extrait les objets métiers des résultats
         return $this->extractObjects($resultats);
     }
@@ -118,10 +123,12 @@ class SeanceDAO extends DAO {
      * Méthode qui retourne toutes les séances de tous les films présents dans un cinéma donné
      * @param array $films Liste des films du cinéma donné
      * @param int $cinemaID Identifiant du cinéma concerné
-     * @return Les séances des films projetés dans ce cinéma
+     * @return array<array<Seance>> Les séances des films projetées dans ce cinéma
      */
-    public function findAllByCinemaId($films, $cinemaID) {
-        if ($films):
+    public function findAllByCinemaId($films, $cinemaID): array
+    {
+        $seances = [];
+        if ($films !== null && count($films) > 0) :
             // Boucle de récupération de toutes les séances indexés sur l'identifiant du film
             foreach ($films as $film) {
                 $seances[$film->getFilmId()] = $this->findAllByCinemaIdAndFilmId($cinemaID,
@@ -130,22 +137,29 @@ class SeanceDAO extends DAO {
             // on retourne le résultat
             return $seances;
         else:
-            return null;
+            return [];
         endif;
+        // on retourne le résultat
+        return $seances;
     }
 
     /**
      * Méthode qui retourne toutes les séances de tous les cinémas d'un film donné
      * @param array $cinemas Liste des cinémas qui projettent ce film
      * @param int $filmID Identifiant du film concerné
-     * @return Les séances du film projeté dans ces cinémas
+     * @return array<array<Seance>> Les séances du film projeté dans ces cinémas
      */
-    public function findAllByFilmId($cinemas, $filmID) {
-        $seances = null;
-        // Boucle de récupération de toutes les séances indexés sur l'identifiant du film
-        foreach ($cinemas as $cinema) {
-            $seances[$cinema->getCinemaId()] = $this->findAllByCinemaIdAndFilmId($cinema->getCinemaId(),
-                    $filmID);
+    public function findAllByFilmId($cinemas, $filmID): array
+    {
+        $seances = [];
+        if ($cinemas !== null && count($cinemas) > 0) {
+            // Boucle de récupération de toutes les séances indexés sur l'identifiant du film
+            foreach ($cinemas as $cinema) {
+                $seances[$cinema->getCinemaId()] = $this->findAllByCinemaIdAndFilmId(
+                    $cinema->getCinemaId(),
+                    $filmID
+                );
+            }
         }
         // on retourne le résultat
         return $seances;
@@ -191,10 +205,11 @@ class SeanceDAO extends DAO {
 
     /**
      * Supprime une séance pour un film donné et un cinéma donné
-     * @param type $cinemaID
-     * @param type $filmID
-     * @param type $heureDebut
-     * @param type $heureFin
+     *
+     * @param int $cinemaID
+     * @param int $filmID
+     * @param string $heureDebut
+     * @param string $heureFin
      */
     public function delete($cinemaID, $filmID, $heureDebut, $heureFin) {
         $this->getDb()->delete('seance',
@@ -220,5 +235,4 @@ class SeanceDAO extends DAO {
     public function setCinemaDAO(CinemaDAO $cinemaDAO) {
         $this->cinemaDAO = $cinemaDAO;
     }
-
 }

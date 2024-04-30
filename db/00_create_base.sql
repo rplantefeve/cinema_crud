@@ -118,7 +118,7 @@ ALTER TABLE `prefere`
 -- Index pour la table `seance`
 --
 ALTER TABLE `seance`
-  ADD PRIMARY KEY (`CINEMAID`,`FILMID`,`HEUREDEBUT`,`HEUREFIN`),
+  ADD PRIMARY KEY (`CINEMAID`,`FILMID`,`HEUREDEBUT`, `HEUREFIN`),
   ADD KEY `fk_seance_film` (`FILMID`);
 
 --

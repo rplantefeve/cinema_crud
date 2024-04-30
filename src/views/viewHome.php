@@ -5,7 +5,7 @@
     </header>
     <?php
     // si pas encore authentifié
-    if (!$loginSuccess):
+    if ($loginSuccess === false) :
         ?>
         <form method="post" name="editFavoriteMoviesList" action="<?= $request->getBasePath() . '/login' ?>">
 
@@ -15,7 +15,7 @@
             <input type="password" name="password" required/>
             <div class="error">
                 <?php
-                if (!$areCredentialsOK):
+                if ($error === null) :
                     echo "Les informations de connexions ne sont pas correctes.";
                 endif;
                 ?>
@@ -24,8 +24,8 @@
         </form>
         <p>Pas encore d'espace personnel ? <a href="<?= $request->getBasePath() . '/user/add' ?>">Créer sa liste de films préférés.</a></p>
         <?php
-    // sinon (utilisateur authentifié)
-    else:
+        // sinon (utilisateur authentifié)
+    else :
         ?>
         <form action="<?= $request->getBasePath() . '/favorite/list' ?>">
             <input type="submit" value="Editer ma liste de films préférés"/>
@@ -45,6 +45,3 @@
         </form>
     </header>
 </div>
-
-
-

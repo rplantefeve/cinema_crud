@@ -13,29 +13,44 @@ use Psr\Log\LoggerInterface;
  *
  * @author User
  */
-class MovieController extends Controller {
+class MovieController extends Controller 
+{
 
     /**
      * Route Liste des films
      */
-    function moviesList(Request $request = null, Application $app = null) {
-        $isUserAdmin = false;
+    public function moviesList(Request $request = null, Application $app = null, $addMode = "", $filmId = null)
+    {
+        $isUserAdmin = $this->checkIfUserIsConnectedAndAdmin($app);
 
-        // si l'utilisateur est pas connecté et qu'il est amdinistrateur
-        if ($app['session']->get('user') and $app['session']->get('user')['username'] ==
-                'admin@adm.adm') {
-            $isUserAdmin = true;
-        }
         // on récupère la liste des films ainsi que leurs informations
         $films = $app['dao.film']->findAll();
+        // liste des cinémas qui diffuse au moins un film
+        $moviesUndeletable = $app['dao.film']->findAllOnAir();
+        $filmToBeModified = [];
+        $toBeModified = null;
+
+        // si nous sommes en mode modification
+        if ($addMode === "edit") {
+            // on a besoin de récupérer les infos du film à partir de l'identifiant du film
+            $filmToBeModified = $app['dao.film']->find($filmId);
+            $toBeModified = $filmToBeModified->getFilmId();
+        }
 
         // On génère la vue films
         $vue = new View("MoviesList");
         // En passant les variables nécessaires à son bon affichage
-        return $vue->generer($request,
-                        [
-                    'films'       => $films,
-                    'isUserAdmin' => $isUserAdmin]);
+        return $vue->generer(
+            $request,
+            [
+                'films'            => $films,
+                'onAirFilms'       => $moviesUndeletable,
+                'isUserAdmin'      => $isUserAdmin,
+                'mode'             => $addMode,
+                'filmToBeModified' => $filmToBeModified,
+                'toBeModified'     => $toBeModified,
+            ]
+        );
     }
 
     /**
@@ -43,96 +58,59 @@ class MovieController extends Controller {
      * @param Request $request
      * @param Application $app
      * @param string $filmId
-     * @return string La vue générée
+     * @return RedirectResponse
      */
-    function editMovie(Request $request = null, Application $app = null,
-            string $filmId = null) {
-
+    public function editMovie(
+        Request $request = null,
+        Application $app = null,
+        string $filmId = null
+    ) {
         // si l'utilisateur n'est pas connecté ou sinon s'il n'est pas amdinistrateur
-        if (!$app['session']->get('user') or $app['session']->get('user')['username'] !==
-                'admin@adm.adm') {
-            // renvoi à la page d'accueil
-            return $app->redirect($request->getBasePath() . '/home');
-        }
+        $this->redirectIfUserNotConnectedOrNotAdmin($request, $app);
 
         // si la méthode de formulaire est la méthode POST
         if ($request->isMethod('POST')) {
 
             // on assainit les entrées
-            $entries = $this->extractArrayFromPostRequest($request,
-                    [
-                'backToList',
-                'titre',
-                'titreOriginal',
-            ]);
+            $entries = $this->extractArrayFromPostRequest(
+                $request,
+                [
+                    'backToList',
+                    'titre',
+                    'titreOriginal',
+                    'modificationInProgress',
+                ]
+            );
 
-            // si l'action demandée est retour en arrière
-            if ($entries['backToList'] !== null) {
-                // on redirige vers la page des films
-                return $app->redirect($request->getBasePath() . '/movie/list');
-            }
-            // sinon (l'action demandée est la sauvegarde d'un film)
-            else {
-
-                $film = new Film();
-                $film->setTitre($entries['titre']);
-                $film->setTitreOriginal($entries['titreOriginal']);
-                $film->setFilmId($filmId);
-                // on sauvegarde le film
-                $app['dao.film']->save($film);
-                // on revient à la liste des films
-                return $app->redirect($request->getBasePath() . '/movie/list');
-            }
-        }// si la page est chargée avec $_GET
-        elseif ($request->isMethod('GET')) {
-            // on assainit les entrées
-            $entries['filmID'] = $filmId;
-            if ($entries && $entries['filmID'] !== null && $entries['filmID'] !==
-                    '') {
-                // on récupère les informations manquantes 
-                $film = $app['dao.film']->find($entries['filmID']);
-            }
-            // sinon, c'est une création
-            else {
-                $film = null;
-            }
+            $film = new Film();
+            $film->setTitre($entries['titre']);
+            $film->setTitreOriginal($entries['titreOriginal']);
+            $film->setFilmId($filmId);
+            // on sauvegarde le film
+            $app['dao.film']->save($film);
+            // on revient à la liste des films
+            return $app->redirect($request->getBasePath() . '/movie/list');
         }
-
-        // On génère la vue films
-        $vue = new View("EditMovie");
-        // En passant les variables nécessaires à son bon affichage
-        return $vue->generer($request, [
-                    'film' => $film]);
     }
+
 
     /**
      * Route Supprimer un film
      * @param string $filmId
      * @param Request $request
      * @param Application $app
-     * @return string La vue générée
+     * @return RedirectResponse
      */
-    public function deleteMovie(string $filmId, Request $request = null,
-            Application $app = null) {
-
+    public function deleteMovie(Request $request = null, Application $app = null, string $filmId)
+    {
         // si l'utilisateur n'est pas connecté ou sinon s'il n'est pas administrateur
-        if (!$app['session']->get('user') or $app['session']->get('user')['username'] !==
-                'admin@adm.adm') {
-            // renvoi à la page d'accueil
-            return $app->redirect($request->getBasePath() . '/home');
-        }
-
+        $this->redirectIfUserNotConnectedOrNotAdmin($request, $app);
         // si la méthode de formulaire est la méthode POST
-        if (filter_input(INPUT_SERVER, 'REQUEST_METHOD') === "POST") {
-
-            // on assainit les entrées
-            $entries['filmID'] = $filmId;
-
+        if ($filmId !== null && $filmId !== "") {
             // suppression de la préférence de film
-            $app['dao.film']->delete($entries['filmID']);
+            $app['dao.film']->delete($filmId);
         }
         // redirection vers la liste des films
         return $app->redirect($request->getBasePath() . '/movie/list');
     }
-
 }

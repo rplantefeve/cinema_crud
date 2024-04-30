@@ -12,21 +12,24 @@ use Exception;
  *
  * @author User
  */
-class UtilisateurDAO extends DAO {
-
+class UtilisateurDAO extends DAO
+{
     /**
      * Crée un utilisateur à partir d'une ligne de la BDD.
      *
      * @param array $row La ligne de résultat de la BDD.
      * @return Utilisateur
      */
-    protected function buildBusinessObject($row) {
+    protected function buildBusinessObject($row)
+    {
         $utilisateur = new Utilisateur();
-        $utilisateur->setUserId($row['USERID']);
-        $utilisateur->setNom($row['NOM']);
-        $utilisateur->setPrenom($row['PRENOM']);
-        $utilisateur->setAdresseCourriel($row['ADRESSECOURRIEL']);
-        $utilisateur->setPassword($row['PASSWORD']);
+        if($row !== false) {
+            $utilisateur->setUserId($row['USERID']);
+            $utilisateur->setNom($row['NOM']);
+            $utilisateur->setPrenom($row['PRENOM']);
+            $utilisateur->setAdresseCourriel($row['ADRESSECOURRIEL']);
+            $utilisateur->setPassword($row['PASSWORD']);
+        }
         return $utilisateur;
     }
 
@@ -94,10 +97,16 @@ class UtilisateurDAO extends DAO {
      * @param type $email
      * @throws Exception
      */
-    private function testPasswords($passwordSaisi, $passwordBDD, $email) {
+    private function testPasswords($passwordSaisi, $passwordBDD, $email)
+    {
         // on teste si les mots de passe correspondent
-        if (password_verify($passwordSaisi, $passwordBDD)) {
-            if ($this->logger) {
+        if (
+            password_verify(
+                $passwordSaisi,
+                $passwordBDD
+            ) === true
+        ) {
+            if ($this->logger !== null) {
                 $this->logger->info('User ' . $email . ' now connected.');
             }
         } else {
@@ -105,9 +114,34 @@ class UtilisateurDAO extends DAO {
         }
     }
 
-    /**
-     * Méthode qui retourne l'utilisateur initialisé
+    /** 
+     * Méthode qui retourne l'id d'un utilisateur passé en paramètre
      * @param string $utilisateur Adresse email de l'utilisateur
+     * @return string $id Identifiant de l'utilisateur
+     */
+    public function getUserIDByEmailAddress($utilisateur) {
+        // requête qui récupère l'ID grâce à l'adresse email
+        $requete = "SELECT userID FROM utilisateur WHERE adresseCourriel = :email";
+
+        // on récupère le résultat de la requête
+        $resultat = $this->executeQuery($requete,
+                ['email' => $utilisateur]);
+
+        // on teste le nombre de lignes renvoyées
+        if ($resultat->rowCount() > 0) {
+            // on récupère la première (et seule) ligne retournée
+            $row = $resultat->fetch();
+            // l'id est le premier élément du tableau de résultats
+            return $row[0];
+        } else {
+            return null;
+        }
+    }
+
+    /*
+     * Méthode qui retourne l'utilisateur initialisé
+     *
+     * @param string $email Adresse email de l'utilisateur
      * @return Utilisateur L'Utilisateur initialisé
      */
     public function findOneByCourriel($email) {
@@ -117,8 +151,7 @@ class UtilisateurDAO extends DAO {
 
         // on extrait le résultat de la BDD sous forme de tableau associatif
         $resultat = $this->getDb()->fetchAssoc($requete,
-                [
-            'email' => $email]);
+                ['email' => $email]);
 
         // on construit l'objet Utilisateur
         $utilisateur = $this->buildBusinessObject($resultat);
@@ -147,5 +180,4 @@ class UtilisateurDAO extends DAO {
         // affectation
         $utilisateur->setUserId($id);
     }
-
 }
