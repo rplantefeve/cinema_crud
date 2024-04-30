@@ -30,20 +30,20 @@ class CinemaDAO extends DAO
 
     /**
      * Recherche un cinéma à partir de son identifiant
-     * @param string $cinemaID
+     * @param string $id
      * @return Cinema
      * @throws \Exception
      */
-    public function find(...$cinemaID)
+    public function find(...$id)
     {
         $requete = "SELECT * FROM cinema WHERE cinemaID = ?";
-        $resultat = $this->getDb()->fetchAssoc($requete, [$cinemaID[0]]);
+        $resultat = $this->getDb()->fetchAssoc($requete, [$id[0]]);
         // si trouvé
         if ($resultat !== false) {
             // on crée et on retourne l'objet métier Cinema
             return $this->buildBusinessObject($resultat);
         } else {
-            throw new BusinessObjectDoNotExist('Aucun cinéma trouvé pour l\'id=' . $cinemaID[0]);
+            throw new BusinessObjectDoNotExist('Aucun cinéma trouvé pour l\'id=' . $id[0]);
         }
     }
 

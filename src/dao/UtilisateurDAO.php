@@ -34,22 +34,22 @@ class UtilisateurDAO extends DAO
 
     /**
      * Retourne le BO Utilisateur en fonction de son identifiant
-     * @param string $userId
+     * @param string $id
      * @throws \Exception
      */
-    public function find(...$userId)
+    public function find(...$id)
     {
         $requete = "SELECT * FROM utilisateur WHERE userID = ?";
         $resultat = $this->getDb()->fetchAssoc(
             $requete,
-            [$userId[0]]
+            [$id[0]]
         );
         // si trouvé
         if ($resultat !== false) {
             // on récupère l'objet Film
             return $this->buildBusinessObject($resultat);
         } else {
-            throw new BusinessObjectDoNotExist('Aucun utilisateur trouvé pour l\'id=' . $userId[0]);
+            throw new BusinessObjectDoNotExist('Aucun utilisateur trouvé pour l\'id=' . $id[0]);
         }
     }
 

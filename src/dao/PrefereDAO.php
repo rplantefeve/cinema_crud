@@ -55,11 +55,11 @@ class PrefereDAO extends DAO
 
     /**
      * Renvoie les informations sur un film favori donné pour un utilisateur donné
-     * @param array<string> $userIdAndFilmId
+     * @param array<string> $id
      * @return Prefere
      * @throws \Exception
      */
-    public function find(...$userIdAndFilmId)
+    public function find(...$id)
     {
         // requête qui récupère les informations d'une préférence de film pour un utilisateur donné
         $requete = "SELECT f.TITRE, p.*"
@@ -68,8 +68,8 @@ class PrefereDAO extends DAO
         $resultat = $this->getDb()->fetchAssoc(
             $requete,
             [
-                $userIdAndFilmId[0],
-                $userIdAndFilmId[1],
+                $id[0],
+                $id[1],
             ]
         );
         // si trouvé
@@ -77,7 +77,7 @@ class PrefereDAO extends DAO
             // on récupère et on retourne l'objet préférence
             return $this->buildBusinessObject($resultat);
         } else {
-            throw new BusinessObjectDoNotExist("Aucune préférence trouvée pour l'utilisateur d'id=" . $userIdAndFilmId[0] . " pour le film d'id=" . $userIdAndFilmId[1]);
+            throw new BusinessObjectDoNotExist("Aucune préférence trouvée pour l'utilisateur d'id=" . $id[0] . " pour le film d'id=" . $id[1]);
         }
     }
 

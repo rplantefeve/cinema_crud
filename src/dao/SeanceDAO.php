@@ -31,11 +31,11 @@ class SeanceDAO extends DAO
 
     /**
      * Retourne un BO Séance en fonction de l'id du cinéma, du film, de l'heure de début et de fin
-     * @param array<string> $primaryKey
+     * @param array<string> $id
      * @return Seance
      * @throws \Exception
      */
-    public function find(...$primaryKey)
+    public function find(...$id)
     {
         $requete = "SELECT * FROM seance "
                 . "WHERE cinemaID = ? "
@@ -45,17 +45,17 @@ class SeanceDAO extends DAO
         $resultat = $this->getDb()->fetchAssoc(
             $requete,
             [
-                $primaryKey[0],
-                $primaryKey[1],
-                $primaryKey[2],
-                $primaryKey[3],
+                $id[0],
+                $id[1],
+                $id[2],
+                $id[3],
             ]
         );
         // si trouvé
         if ($resultat !== false) {
             return $this->buildBusinessObject($resultat);
         } else {
-            throw new BusinessObjectDoNotExist("Pas de séance trouvé pour le film id=" . $primaryKey[0] . ", cinema id=" . $primaryKey[1] . ", heure de début=" . $primaryKey[2] . ", heure de fin=" . $primaryKey[3]);
+            throw new BusinessObjectDoNotExist("Pas de séance trouvé pour le film id=" . $id[0] . ", cinema id=" . $id[1] . ", heure de début=" . $id[2] . ", heure de fin=" . $id[3]);
         }
     }
 

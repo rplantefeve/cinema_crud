@@ -32,23 +32,23 @@ class FilmDAO extends DAO
 
     /**
      * Retourne le BO Film en fonction de son identifiant
-     * @param array<string> $filmId
+     * @param array<string> $id
      * @return Film
      * @throws \Exception
      */
-    public function find(...$filmId)
+    public function find(...$id)
     {
         $requete = "SELECT * FROM film WHERE filmID = ?";
         $resultat = $this->getDb()->fetchAssoc(
             $requete,
-            [$filmId[0]]
+            [$id[0]]
         );
         // si trouvé
         if ($resultat !== false) {
             // on récupère et on retourne l'objet Film
             return $this->buildBusinessObject($resultat);
         } else {
-            throw new BusinessObjectDoNotExist("Aucun film trouvé pour l'id=" . $filmId[0]);
+            throw new BusinessObjectDoNotExist("Aucun film trouvé pour l'id=" . $id[0]);
         }
     }
 
