@@ -16,7 +16,7 @@
                         {% endfor %}
                     </select>
                     <input name="from" type="hidden" value="movie">
-                    <button type = "submit">Ajouter</button>
+                    <button type="submit">Ajouter</button>
                 </fieldset>
             </form>
         {% endif %}
@@ -25,7 +25,7 @@
         {# on boucle sur les résultats #}
         {% for cinema in cinemas %}
             <li><h3>{{ cinema.getDenomination }}</h3></li>
-            <table class="std">
+            <table class="showtime">
                 <tr>
                     <th>Date</th>
                     <th>Début</th>

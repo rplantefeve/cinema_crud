@@ -7,34 +7,39 @@ namespace Semeformation\Mvc\Cinema_crud\models;
  *
  * @author User
  */
-class Cinema {
-
+class Cinema
+{
     private $cinemaId;
     private $denomination;
     private $adresse;
 
-    public function getCinemaId() {
+    public function getCinemaId()
+    {
         return $this->cinemaId;
     }
 
-    public function getDenomination() {
+    public function getDenomination()
+    {
         return $this->denomination;
     }
 
-    public function getAdresse() {
+    public function getAdresse()
+    {
         return $this->adresse;
     }
 
-    public function setCinemaId($cinemaId) {
+    public function setCinemaId($cinemaId): void
+    {
         $this->cinemaId = $cinemaId;
     }
 
-    public function setDenomination($denomination) {
+    public function setDenomination($denomination): void
+    {
         $this->denomination = $denomination;
     }
 
-    public function setAdresse($adresse) {
+    public function setAdresse($adresse): void
+    {
         $this->adresse = $adresse;
     }
-
 }

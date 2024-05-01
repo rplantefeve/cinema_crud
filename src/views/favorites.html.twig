@@ -11,31 +11,76 @@
             <th colspan="2">Action</th>
         </tr>
         {# boucle de création du tableau #}
-        {% for prefere in preferes %}
-            <tr>
-                <td>{{ prefere.getFilm.getTitre }}</td>
-                <td>{{ prefere.getCommentaire }}</td>
-                <td>
-                    <form name="modifyFavoriteMovie" action="{{ path('favorite_edit' , { 'userId' : utilisateur.getUserId, 'filmId' : prefere.getFilm.getFilmId }) }}" method="get">
-                        <input type="submit" id="modify" value=""/>
+        {% for prefere in preferences %}
+            {% if addMode == "edit" and toBeModified == true and prefere.getFilm.getFilmId == toBeModified %}
+                <tr>
+                    <form name="editFavoriteMovie" action="{{ path('favorite_save' , { 'filmId' : toBeModified }) }}" method="POST">
+                        <td>{{ preferenceToBeModified.getFilm.getTitre}}</td>
+                        <td><textarea name="comment">{{ preferenceToBeModified.getCommentaire }}</textarea></td>
+                        <td colspan="2" class="centered">
+                            <input type="hidden" name="userID" value="{{ utilisateur.getUserId }}" />
+                            <input name="filmID" type="hidden" value="{{ toBeModified }}" />
+                            <input name="modificationInProgress" type="hidden" value="" />
+                            <input type="image" src="{{ asset('/images/cancelIcon.png') }}" alt="Cancel" form="cancelForm" />
+                            <input type="image" src="{{ asset('/images/validateIcon.png') }}" alt="Validate" />
+                        </td>
                     </form>
-                </td>
-                <td>
-                    <form name="deleteFavoriteMovie" action="{{ path('favorite_delete' , { 'userId' : utilisateur.getUserId, 'filmId' : prefere.getFilm.getFilmId }) }}" method="POST">
-                        <input type="image" src="{{ asset('/images/deleteIcon.png') }}" alt="Delete"/>
-                    </form>
-                </td>
-            </tr>
+                </tr>
+            {% else %}
+                <tr>
+                    <td>{{ prefere.getFilm.getTitre }}</td>
+                    <td>{{ prefere.getCommentaire }}</td>
+                    <td>
+                        <form name="modifyFavoriteMovie" action="{{ path('favorite_list_edit' , { 'addMode' : 'edit', 'filmId' : prefere.getFilm.getFilmId }) }}" method="get">
+                            <input type="submit" id="modify" value=""/>
+                        </form>
+                    </td>
+                    <td>
+                        <form name="deleteFavoriteMovie" action="{{ path('favorite_delete' , { 'userId' : utilisateur.getUserId, 'filmId' : prefere.getFilm.getFilmId }) }}" method="POST">
+                            <input type="image" src="{{ asset('/images/deleteIcon.png') }}" alt="Delete"/>
+                        </form>
+                    </td>
+                </tr>
+            {% endif %}
         {% endfor %}
-        <tr class="new">
-            <td colspan="4">
-                <form name="addFavoriteMovie" method="get" action="{{ path('favorite_add') }}">
-                    <button class="add" type="submit">Cliquer pour ajouter un film préféré...</button>
+        {% if addMode == "add" %}
+            <tr>
+                <form name="addFavoriteMovie" action="{{ path('favorite_add') }}" method="POST">
+                    <td>
+                        <select name="filmID">
+                            <option value="">Choisissez un film</option>
+                            {% if filmsNotCommented != null %}
+                                {% for film in filmsNotCommented %}
+                                    <option value="{{ film.getFilmId }}">{{ film.getTitre }}</option>
+                                {% endfor %}
+                            {% endif %}
+                        </select>
+                        {% if noneSelected is defined and noneSelected == true %}
+                            <div class="error">Veuillez renseigner un titre de film.</div>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <textarea name="comment" placeholder="Écrivez un commentaire ici..."></textarea>
+                    </td>
+                    <td colspan="2" class="centered">
+                        <input type="hidden" name="userID" value="{{ utilisateur.getUserId }}" />
+                        <input type="image" src="{{ asset('/images/cancelIcon.png') }}" alt="Cancel" form="cancelForm" />
+                        <input type="image" src="{{ asset('/images/addIcon.png') }}" alt="Add" />
+                    </td>
                 </form>
-            </td>
-        </tr>        
+            </tr>
+        {% else %}
+            <tr class="new">
+                <td colspan="4">
+                    <form name="addFavoriteMovie" method="get" action="{{ path('favorite_list_add', { 'addMode' : 'add' }) }}">
+                        <button class="add" type="submit">Cliquer pour ajouter un film préféré...</button>
+                    </form>
+                </td>
+            </tr> 
+        {% endif %}       
     </table>
-
+    <form name="cancelForm" id="cancelForm" method="GET" action="{{ path('favorite_list') }}">
+    </form>
     <form name="backToMainPage" action="{{ path('home') }}">
         <input type="submit" value="Retour à l'accueil"/>
     </form>

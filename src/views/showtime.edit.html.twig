@@ -10,14 +10,14 @@
     <form method="post" action="{{ path('showtime_add' , { 'filmId' : film.getFilmId , 'cinemaId' : cinema.getCinemaId }) }}">
         <fieldset>
             <label for="datedebut">Date de début : </label>
-            <input id="datedebut" type="text" name="datedebut" placeholder="jj/mm/aaaa" value="{% if seance %}{{ seance.getHeureDebut|date('d/m/Y') }}{% endif %}">
+            <input id="datedebut" type="date" name="datedebut" placeholder="jj/mm/aaaa" value="{% if seance %}{{ seance.getHeureDebut|date('Y-m-d') }}{% endif %}">
             <label for="heuredebut">Heure de début : </label>
-            <input type="text" name="heuredebut" placeholder="hh:mm" value="{% if seance %}{{ seance.getHeureDebut|date('H:i') }}{% endif %}">
+            <input type="time" name="heuredebut" placeholder="hh:mm" value="{% if seance %}{{ seance.getHeureDebut|date('H:i') }}{% endif %}">
 
             <label for="datefin">Date de fin : </label>
-            <input type="text" name="datefin" placeholder="jj/mm/aaaa" value="{% if seance %}{{ seance.getHeureFin|date('d/m/Y') }}{% endif %}">
+            <input type="date" name="datefin" placeholder="jj/mm/aaaa" value="{% if seance %}{{ seance.getHeureFin|date('Y-m-d') }}{% endif %}">
             <label for="heurefin">Heure de fin : </label>
-            <input type="text" name="heurefin" placeholder="hh:mm" value="{% if seance %}{{ seance.getHeureFin|date('H:i') }}{% endif %}">
+            <input type="time" name="heurefin" placeholder="hh:mm" value="{% if seance %}{{ seance.getHeureFin|date('H:i') }}{% endif %}">
             <!-- les anciennes date et heure début et fin -->
             <input type="hidden" name="dateheurefinOld" value="{{ seanceOld['dateheureFinOld'] }}">
             <input type="hidden" name="dateheuredebutOld" value="{{ seanceOld['dateheureDebutOld'] }}">
@@ -41,11 +41,11 @@
         {% endif %}
     </div>
     {% if fromCinema %}
-        <form method="get" action="{{ path('showtime_cinema_list' , { 'cinemaId' : cinema.getCinemaId })}}">
+        <form method="get" action="{{ path('showtime_cinema_list' , { 'cinemaId' : cinema.getCinemaId }) }}">
             <button type="submit">Retour aux séances du cinéma</button>
         </form>
     {% else %}
-        <form method="get" action="{{ path('showtime_movie_list' , { 'filmId' : film.getFilmId })}}">
+        <form method="get" action="{{ path('showtime_movie_list' , { 'filmId' : film.getFilmId }) }}">
             <button type="submit">Retour aux séances du film</button>
         </form>
     {% endif %}

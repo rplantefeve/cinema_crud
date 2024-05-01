@@ -7,34 +7,39 @@ namespace Semeformation\Mvc\Cinema_crud\models;
  *
  * @author User
  */
-class Film {
-
+class Film
+{
     private $filmId;
     private $titre;
     private $titreOriginal;
 
-    public function getFilmId() {
+    public function getFilmId()
+    {
         return $this->filmId;
     }
 
-    public function getTitre() {
+    public function getTitre()
+    {
         return $this->titre;
     }
 
-    public function getTitreOriginal() {
+    public function getTitreOriginal()
+    {
         return $this->titreOriginal;
     }
 
-    public function setFilmId($filmId) {
+    public function setFilmId($filmId): void
+    {
         $this->filmId = $filmId;
     }
 
-    public function setTitre($titre) {
+    public function setTitre($titre): void
+    {
         $this->titre = $titre;
     }
 
-    public function setTitreOriginal($titreOriginal) {
+    public function setTitreOriginal($titreOriginal): void
+    {
         $this->titreOriginal = $titreOriginal;
     }
-
 }

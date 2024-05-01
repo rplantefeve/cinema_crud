@@ -25,15 +25,15 @@
         {# on boucle sur les résultats #}
         {% for film in films %}
             <li><h3>{{ film.getTitre }}</h3></li>
-            <table class="std">
+            <table class="showtime">
                 <tr>
                     <th>Date</th>
                     <th>Début</th>
                     <th>Fin</th>
                     <th>Version</th>
-                        {% if adminConnected %}
+                    {% if adminConnected %}
                         <th colspan="2">Action</th>
-                        {% endif %}
+                    {% endif %}
                 </tr>
                 {# boucle sur les séances #}
                 {% for seance in seances[film.getFilmId] %}

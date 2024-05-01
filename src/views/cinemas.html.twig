@@ -10,40 +10,78 @@
             <th>Adresse</th>
             <th colspan="3">Action</th>
         </tr>
+        {# boucle de construction de la liste des cinémas #}
         {% for cinema in cinemas %}
-            {# boucle de construction de la liste des cinémas #}
-            <tr>
-                <td>{{ cinema.denomination }}</td>
-                <td>{{ cinema.adresse }}</td>
-                <td>
-                    <form name="cinemaShowtimes" action="{{ path('showtime_cinema_list', { 'cinemaId': cinema.cinemaId }) }}" method="GET">
-                        <input type="submit" value="Consulter les séances"/>
+            {% if addMode is defined and addMode == "edit" and cinema.getCinemaId == toBeModified %}
+                <tr>
+                    <form name="editCinema" action="{{ path('cinema_save' , { 'cinemaId' : toBeModified }) }}" method="POST">
+                        <td><input name="denomination" value="{{ cinemaToBeModified.getDenomination }}" /></td>
+                        <td><textarea name="adresse">{{ cinemaToBeModified.getAdresse }}</textarea></td>
+                        <td colspan="3" class="centered">
+                            <input name="cinemaID" type="hidden" value="{{ toBeModified }}" />
+                            <input name="modificationInProgress" type="hidden" value="" />
+                            <input type="image" src="{{ asset('/images/cancelIcon.png') }}" alt="Cancel" form="cancelForm" />
+                            <input type="image" src="{{ asset('/images/validateIcon.png') }}" alt="Validate" />
+                        </td>
                     </form>
-                </td>
-                {% if (isUserAdmin == true) %}
+                </tr>
+            {% else %}
+                <tr>
+                    <td>{{ cinema.denomination }}</td>
+                    <td>{{ cinema.adresse }}</td>
                     <td>
-                        <form name="modifyCinema" action="{{ path('cinema_edit' , { 'cinemaId': cinema.cinemaId }) }}" method="GET">
-                            <input type="submit" id="modify" value="" />
+                        <form name="cinemaShowtimes" action="{{ path('showtime_cinema_list', { 'cinemaId': cinema.cinemaId }) }}" method="GET">
+                            <input type="submit" value="Consulter les séances"/>
                         </form>
                     </td>
-                    <td>
-                        <form name="deleteCinema" action="{{ path('cinema_delete' , { 'cinemaId': cinema.cinemaId }) }}" method="POST">
-                            <input type="image" src="{{ asset('/images/deleteIcon.png') }}" alt="Delete"/>
-                        </form>
-                    </td>
-                {% endif %}
-            </tr>
+                    {% if (isUserAdmin == true) %}
+                        <td>
+                            <form name="modifyCinema" action="{{ path('cinema_list_edit' , { 'addMode' : 'edit', 'cinemaId': cinema.cinemaId }) }}" method="GET">
+                                <input type="submit" id="modify" value="" />
+                            </form>
+                        </td>
+                        <td>
+                            <form name="deleteCinema" action="{{ path('cinema_delete' , { 'cinemaId': cinema.cinemaId }) }}" method="POST">
+                                {% if cinema.getCinemaId in onAirCinemas %}
+                                    <input type="image" src="{{ asset('/images/deleteIconDisabled.png') }}" alt="Delete" disabled />
+                                {% else %}
+                                    <input type="image" src="{{ asset('/images/deleteIcon.png') }}" alt="Delete"/>
+                                {% endif %}
+                            </form>
+                        </td>
+                    {% endif %}
+                </tr>
+            {% endif %}
         {% endfor %}
         {% if (isUserAdmin == true) %}
-            <tr class="new">
-                <td colspan="5">
-                    <form name="addCinema" method="get" action="{{ path('cinema_add') }}">
-                        <button class="add" type="submit">Cliquer ici pour ajouter un cinéma</button>
+            {% if addMode is defined and addMode == "add" %}
+                <tr>
+                    <form name="addCinema" action="{{ path('cinema_add') }}" method="POST">
+                        <td>
+                            <input name="denomination" placeholder="Dénomination" required />
+                        </td>
+                        <td>
+                            <textarea name="adresse" placeholder="Renseignez l'adresse ici..." required></textarea>
+                        </td>
+                        <td colspan="3" class="centered">
+                            <input type="image" src="{{ asset('/images/cancelIcon.png') }}" alt="Cancel" form="cancelForm" />
+                            <input type="image" src="{{ asset('/images/addIcon.png') }}" alt="Add" />
+                        </td>
                     </form>
-                </td>
-            </tr>
+                </tr>
+            {% else %}
+                <tr class="new">
+                    <td colspan="5">
+                        <form name="addCinema" method="get" action="{{ path('cinema_list_add', { 'addMode' : 'add' }) }}">
+                            <button class="add" type="submit">Cliquer ici pour ajouter un cinéma</button>
+                        </form>
+                    </td>
+                </tr>
+            {% endif %}
         {% endif %}
     </table>
+    <form name="cancelForm" id="cancelForm" method="GET" action="{{ path('cinema_list') }}">
+    </form>
     <form name="backToMainPage" action="{{ path('home') }}">
         <input type="submit" value="Retour à l'accueil"/>
     </form>

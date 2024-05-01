@@ -2,6 +2,7 @@
 
 namespace Semeformation\Mvc\Cinema_crud\controllers;
 
+use Semeformation\Mvc\Cinema_crud\controllers\Controller;
 use Semeformation\Mvc\Cinema_crud\models\Cinema;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -12,29 +13,42 @@ use Silex\Application;
  *
  * @author User
  */
-class CinemaController extends Controller {
-
+class CinemaController extends Controller
+{
     /**
      * Route Liste des cinémas
      * @param Request $request
      * @param Application $app
      */
-    public function cinemasList(Request $request = null, Application $app = null) {
-        $isUserAdmin = false;
+    public function cinemasList(Request $request = null, Application $app = null, $addMode = "", $cinemaId = null)
+    {
+        // si l'utilisateur est connecté et qu'il est amdinistrateur
+        $isUserAdmin = $this->checkIfUserIsConnectedAndAdmin($app);
 
-        // si l'utilisateur est pas connecté et qu'il est amdinistrateur
-        if ($app['session']->get('user') && $app['session']->get('user')['username'] ==
-                'admin@adm.adm') {
-            $isUserAdmin = true;
-        }
         // on récupère la liste des cinémas ainsi que leurs informations
         $cinemas = $app['dao.cinema']->findAll();
-        // on génère la vue cinémas
+        // liste des cinémas qui diffuse au moins un film
+        $cinemasUndeletable = $app['dao.cinema']->findAllOnAir();
+        $cinemaToBeModified = [];
+        $toBeModified = null;
+
+        // si nous sommes en mode modification
+        if ($addMode === "edit") {
+            // on a besoin de récupérer les infos du cinéma à partir de l'identifiant du cinéma
+            $cinemaToBeModified = $app['dao.cinema']->find($cinemaId);
+            $toBeModified = $cinemaToBeModified->getCinemaId();
+        }
+
         return $app['twig']->render('cinemas.html.twig',
-                        [
-                    'titre'       => 'Cinémas',
-                    'cinemas'     => $cinemas,
-                    'isUserAdmin' => $isUserAdmin]);
+                [
+                    'titre'              => 'Cinémas',
+                    'cinemas'            => $cinemas,
+                    'addMode'               => $addMode,
+                    'cinemaToBeModified' => $cinemaToBeModified,
+                    'toBeModified'       => $toBeModified,
+                    'onAirCinemas'       => $cinemasUndeletable,
+                    'isUserAdmin'        => $isUserAdmin
+                ]);
     }
 
     /**
@@ -42,66 +56,37 @@ class CinemaController extends Controller {
      * @param Request $request
      * @param Application $app
      * @param string $cinemaId
-     * @return string La vue générée
+     * @return RedirectResponse|void
      */
-    public function editCinema(Request $request = null, Application $app = null,
-            string $cinemaId = null) {
+    public function editCinema(Request $request = null, Application $app = null, string $cinemaId = null)
+    {
         // si l'utilisateur n'est pas connecté ou sinon s'il n'est pas amdinistrateur
-        if (!$app['session']->get('user') || $app['session']->get('user')['username'] !==
-                'admin@adm.adm') {
-            // renvoi à la page d'accueil
-            return $app->redirect($request->getBasePath() . '/home');
-        }
-
-        // init. de l'objet à null
-        $cinema = null;
+        $this->redirectIfUserNotConnectedOrNotAdmin($request, $app);
 
         // si la méthode de formulaire est la méthode POST
-        if ($request->isMethod('POST')) {
-
+        if ($request->isMethod('POST') === true) {
             // on assainit les entrées
-            $entries = $this->extractArrayFromPostRequest($request,
-                    [
-                'backToList',
-                'adresse',
-                'denomination']);
+            $entries = $this->extractArrayFromPostRequest(
+                $request,
+                [
+                    'backToList',
+                    'adresse',
+                    'denomination',
+					'modificationInProgress',
+                ]
+            );
 
-            // si l'action demandée est retour en arrière
-            if ($entries['backToList'] !== null) {
-                // on redirige vers la page des cinémas
-                return $app->redirect($request->getBasePath() . '/cinema/list');
-            }
-            // sinon (l'action demandée est la sauvegarde d'un cinéma)
-            else {
-
-                // Je crée l'objet $cinema
-                $cinema = new Cinema();
-                // je mets à jour les infos
-                $cinema->setDenomination($entries['denomination']);
-                $cinema->setAdresse($entries['adresse']);
-                $cinema->setCinemaId($cinemaId);
-                // on sauvegarde le cinéma
-                $app['dao.cinema']->save($cinema);
-                // on revient à la liste des cinémas
-                return $app->redirect($request->getBasePath() . '/cinema/list');
-            }
-        }// si la page est chargée avec $_GET
-        elseif ($request->isMethod('GET')) {
-            // on assainit les entrées
-            $entries['cinemaID'] = $cinemaId;
-            // si l'id est bien renseigné
-            if ($entries && $entries['cinemaID'] !== null && $entries['cinemaID'] !==
-                    '') {
-                // on récupère les informations manquantes 
-                $cinema = $app['dao.cinema']->find($entries['cinemaID']);
-            }
+            // Je crée l'objet $cinema
+            $cinema = new Cinema();
+            // je mets à jour les infos
+            $cinema->setDenomination($entries['denomination']);
+            $cinema->setAdresse($entries['adresse']);
+            $cinema->setCinemaId($cinemaId);
+            // on sauvegarde le cinéma
+            $app['dao.cinema']->save($cinema);
+            // on revient à la liste des cinémas
+            return $app->redirect($request->getBasePath() . '/cinema/list');
         }
-
-        $donnees = [
-            'titre'  => 'Ajouter/Modifier un cinéma',
-            'cinema' => $cinema];
-        // On génère la vue films
-        return $app['twig']->render('cinema.edit.html.twig', $donnees);
     }
 
     /**
@@ -111,26 +96,15 @@ class CinemaController extends Controller {
      * @param string $cinemaId
      * @return RedirectResponse
      */
-    public function deleteCinema(Request $request = null,
-            Application $app = null, string $cinemaId): RedirectResponse {
+    public function deleteCinema(Request $request = null, Application $app = null, string $cinemaId = null)
+    {
         // si l'utilisateur n'est pas connecté ou sinon s'il n'est pas administrateur
-        if (!$app['session']->get('user') || $app['session']->get('user')['username'] !==
-                'admin@adm.adm') {
-            // renvoi à la page d'accueil
-            return $app->redirect($request->getBasePath() . '/home');
-        }
-
-        // si la méthode de formulaire est la méthode POST
-        if ($request->isMethod('POST')) {
-
-            // on assainit les entrées
-            $entries['cinemaID'] = $cinemaId;
-
-            // suppression de la préférence de film
-            $app['dao.cinema']->delete($entries['cinemaID']);
+        $this->redirectIfUserNotConnectedOrNotAdmin($request, $app);
+        // suppression de la préférence de film
+        if ($cinemaId !== null) {
+            $app['dao.cinema']->delete($cinemaId);
         }
         // redirection vers la liste des cinémas
         return $app->redirect($request->getBasePath() . '/cinema/list');
     }
-
 }

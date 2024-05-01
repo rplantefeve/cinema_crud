@@ -1,0 +1,361 @@
+parameters:
+	ignoreErrors:
+		-
+			message: "#^Variable \\$cinema might not be defined\\.$#"
+			count: 1
+			path: src/controllers/ShowtimesController.php
+
+		-
+			message: "#^Variable \\$film might not be defined\\.$#"
+			count: 1
+			path: src/controllers/ShowtimesController.php
+
+		-
+			message: "#^Binary operation \"\\.\" between 'Aucun film trouvé…' and array\\<string\\> results in an error\\.$#"
+			count: 1
+			path: src/dao/FilmDAO.php
+
+		-
+			message: "#^Binary operation \"\\.\" between 'Aucune préférence…' and array\\<string\\> results in an error\\.$#"
+			count: 1
+			path: src/dao/PrefereDAO.php
+
+		-
+			message: "#^Binary operation \"\\.\" between non\\-falsy\\-string and array\\<string\\> results in an error\\.$#"
+			count: 1
+			path: src/dao/PrefereDAO.php
+
+		-
+			message: "#^Binary operation \"\\.\" between 'Pas de séance…' and array\\<string\\> results in an error\\.$#"
+			count: 1
+			path: src/dao/SeanceDAO.php
+
+		-
+			message: "#^Binary operation \"\\.\" between non\\-falsy\\-string and array\\<string\\> results in an error\\.$#"
+			count: 3
+			path: src/dao/SeanceDAO.php
+
+		-
+			message: "#^Property Semeformation\\\\Mvc\\\\Cinema_crud\\\\views\\\\View\\:\\:\\$titre is never written, only read\\.$#"
+			count: 1
+			path: src/views/View.php
+
+		-
+			message: "#^Variable \\$adminConnected might not be defined\\.$#"
+			count: 2
+			path: src/views/viewCinemaShowtimes.php
+
+		-
+			message: "#^Variable \\$cinema might not be defined\\.$#"
+			count: 6
+			path: src/views/viewCinemaShowtimes.php
+
+		-
+			message: "#^Variable \\$films might not be defined\\.$#"
+			count: 1
+			path: src/views/viewCinemaShowtimes.php
+
+		-
+			message: "#^Variable \\$filmsUnplanned might not be defined\\.$#"
+			count: 2
+			path: src/views/viewCinemaShowtimes.php
+
+		-
+			message: "#^Variable \\$request might not be defined\\.$#"
+			count: 1
+			path: src/views/viewCinemaShowtimes.php
+
+		-
+			message: "#^Variable \\$seances might not be defined\\.$#"
+			count: 1
+			path: src/views/viewCinemaShowtimes.php
+
+		-
+			message: "#^Variable \\$this might not be defined\\.$#"
+			count: 1
+			path: src/views/viewCinemaShowtimes.php
+
+		-
+			message: "#^Variable \\$cinemaToBeModified might not be defined\\.$#"
+			count: 2
+			path: src/views/viewCinemasList.php
+
+		-
+			message: "#^Variable \\$cinemas might not be defined\\.$#"
+			count: 1
+			path: src/views/viewCinemasList.php
+
+		-
+			message: "#^Variable \\$isUserAdmin might not be defined\\.$#"
+			count: 2
+			path: src/views/viewCinemasList.php
+
+		-
+			message: "#^Variable \\$mode might not be defined\\.$#"
+			count: 1
+			path: src/views/viewCinemasList.php
+
+		-
+			message: "#^Variable \\$onAirCinemas might not be defined\\.$#"
+			count: 1
+			path: src/views/viewCinemasList.php
+
+		-
+			message: "#^Variable \\$request might not be defined\\.$#"
+			count: 2
+			path: src/views/viewCinemasList.php
+
+		-
+			message: "#^Variable \\$this might not be defined\\.$#"
+			count: 1
+			path: src/views/viewCinemasList.php
+
+		-
+			message: "#^Variable \\$isEmailAddressEmpty might not be defined\\.$#"
+			count: 1
+			path: src/views/viewCreateUser.php
+
+		-
+			message: "#^Variable \\$isFirstNameEmpty might not be defined\\.$#"
+			count: 1
+			path: src/views/viewCreateUser.php
+
+		-
+			message: "#^Variable \\$isLastNameEmpty might not be defined\\.$#"
+			count: 1
+			path: src/views/viewCreateUser.php
+
+		-
+			message: "#^Variable \\$isPasswordConfirmationEmpty might not be defined\\.$#"
+			count: 1
+			path: src/views/viewCreateUser.php
+
+		-
+			message: "#^Variable \\$isPasswordEmpty might not be defined\\.$#"
+			count: 1
+			path: src/views/viewCreateUser.php
+
+		-
+			message: "#^Variable \\$isPasswordValid might not be defined\\.$#"
+			count: 1
+			path: src/views/viewCreateUser.php
+
+		-
+			message: "#^Variable \\$isUserUnique might not be defined\\.$#"
+			count: 1
+			path: src/views/viewCreateUser.php
+
+		-
+			message: "#^Variable \\$request might not be defined\\.$#"
+			count: 2
+			path: src/views/viewCreateUser.php
+
+		-
+			message: "#^Variable \\$sanitizedEntries might not be defined\\.$#"
+			count: 3
+			path: src/views/viewCreateUser.php
+
+		-
+			message: "#^Variable \\$this might not be defined\\.$#"
+			count: 1
+			path: src/views/viewCreateUser.php
+
+		-
+			message: "#^Variable \\$alreadyExists might not be defined\\.$#"
+			count: 1
+			path: src/views/viewEditShowtime.php
+
+		-
+			message: "#^Variable \\$cinema might not be defined\\.$#"
+			count: 3
+			path: src/views/viewEditShowtime.php
+
+		-
+			message: "#^Variable \\$film might not be defined\\.$#"
+			count: 3
+			path: src/views/viewEditShowtime.php
+
+		-
+			message: "#^Variable \\$from might not be defined\\.$#"
+			count: 1
+			path: src/views/viewEditShowtime.php
+
+		-
+			message: "#^Variable \\$fromCinema might not be defined\\.$#"
+			count: 1
+			path: src/views/viewEditShowtime.php
+
+		-
+			message: "#^Variable \\$isItACreation might not be defined\\.$#"
+			count: 1
+			path: src/views/viewEditShowtime.php
+
+		-
+			message: "#^Variable \\$request might not be defined\\.$#"
+			count: 1
+			path: src/views/viewEditShowtime.php
+
+		-
+			message: "#^Variable \\$seance might not be defined\\.$#"
+			count: 1
+			path: src/views/viewEditShowtime.php
+
+		-
+			message: "#^Variable \\$seanceOld might not be defined\\.$#"
+			count: 2
+			path: src/views/viewEditShowtime.php
+
+		-
+			message: "#^Variable \\$this might not be defined\\.$#"
+			count: 1
+			path: src/views/viewEditShowtime.php
+
+		-
+			message: "#^Variable \\$messageErreur might not be defined\\.$#"
+			count: 1
+			path: src/views/viewError.php
+
+		-
+			message: "#^Variable \\$this might not be defined\\.$#"
+			count: 1
+			path: src/views/viewError.php
+
+		-
+			message: "#^Variable \\$addMode might not be defined\\.$#"
+			count: 2
+			path: src/views/viewFavoriteMoviesList.php
+
+		-
+			message: "#^Variable \\$films might not be defined\\.$#"
+			count: 1
+			path: src/views/viewFavoriteMoviesList.php
+
+		-
+			message: "#^Variable \\$preferenceToBeModified might not be defined\\.$#"
+			count: 2
+			path: src/views/viewFavoriteMoviesList.php
+
+		-
+			message: "#^Variable \\$preferences might not be defined\\.$#"
+			count: 1
+			path: src/views/viewFavoriteMoviesList.php
+
+		-
+			message: "#^Variable \\$request might not be defined\\.$#"
+			count: 13
+			path: src/views/viewFavoriteMoviesList.php
+
+		-
+			message: "#^Variable \\$this might not be defined\\.$#"
+			count: 1
+			path: src/views/viewFavoriteMoviesList.php
+
+		-
+			message: "#^Variable \\$utilisateur might not be defined\\.$#"
+			count: 7
+			path: src/views/viewFavoriteMoviesList.php
+
+		-
+			message: "#^Variable \\$error might not be defined\\.$#"
+			count: 1
+			path: src/views/viewHome.php
+
+		-
+			message: "#^Variable \\$loginSuccess might not be defined\\.$#"
+			count: 1
+			path: src/views/viewHome.php
+
+		-
+			message: "#^Variable \\$request might not be defined\\.$#"
+			count: 6
+			path: src/views/viewHome.php
+
+		-
+			message: "#^Variable \\$this might not be defined\\.$#"
+			count: 1
+			path: src/views/viewHome.php
+
+		-
+			message: "#^Variable \\$adminConnected might not be defined\\.$#"
+			count: 2
+			path: src/views/viewMovieShowtimes.php
+
+		-
+			message: "#^Variable \\$cinemas might not be defined\\.$#"
+			count: 1
+			path: src/views/viewMovieShowtimes.php
+
+		-
+			message: "#^Variable \\$cinemasUnplanned might not be defined\\.$#"
+			count: 2
+			path: src/views/viewMovieShowtimes.php
+
+		-
+			message: "#^Variable \\$film might not be defined\\.$#"
+			count: 6
+			path: src/views/viewMovieShowtimes.php
+
+		-
+			message: "#^Variable \\$request might not be defined\\.$#"
+			count: 1
+			path: src/views/viewMovieShowtimes.php
+
+		-
+			message: "#^Variable \\$seances might not be defined\\.$#"
+			count: 1
+			path: src/views/viewMovieShowtimes.php
+
+		-
+			message: "#^Variable \\$this might not be defined\\.$#"
+			count: 1
+			path: src/views/viewMovieShowtimes.php
+
+		-
+			message: "#^Variable \\$filmToBeModified might not be defined\\.$#"
+			count: 2
+			path: src/views/viewMoviesList.php
+
+		-
+			message: "#^Variable \\$films might not be defined\\.$#"
+			count: 1
+			path: src/views/viewMoviesList.php
+
+		-
+			message: "#^Variable \\$isUserAdmin might not be defined\\.$#"
+			count: 2
+			path: src/views/viewMoviesList.php
+
+		-
+			message: "#^Variable \\$mode might not be defined\\.$#"
+			count: 1
+			path: src/views/viewMoviesList.php
+
+		-
+			message: "#^Variable \\$onAirFilms might not be defined\\.$#"
+			count: 1
+			path: src/views/viewMoviesList.php
+
+		-
+			message: "#^Variable \\$request might not be defined\\.$#"
+			count: 2
+			path: src/views/viewMoviesList.php
+
+		-
+			message: "#^Variable \\$this might not be defined\\.$#"
+			count: 1
+			path: src/views/viewMoviesList.php
+
+		-
+			message: "#^Variable \\$content might not be defined\\.$#"
+			count: 1
+			path: src/views/viewTemplate.php
+
+		-
+			message: "#^Variable \\$request might not be defined\\.$#"
+			count: 1
+			path: src/views/viewTemplate.php
+
+		-
+			message: "#^Variable \\$title might not be defined\\.$#"
+			count: 1
+			path: src/views/viewTemplate.php

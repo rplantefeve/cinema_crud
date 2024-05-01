@@ -12,32 +12,42 @@ use Silex\Application;
  *
  * @author User
  */
-class HomeController extends Controller {
-
+class HomeController extends Controller
+{
     /**
      * Route Accueil
-     * @param Request $request
-     * @param Application $app
-     * @return string Le vue générée
+     *
+     * @param Request|null $request
+     * @param Application|null $app
+     * @return RedirectResponse|string
      */
-    public function home(Request $request = null, Application $app = null) {
-        // personne d'authentifié à ce niveau
-        $loginSuccess = false;
+    public function home(Request $request = null, Application $app = null)
+    {
+        // le user est-il authentifié à ce niveau ?
+        $loginSuccess = $this->checkIfUserIsConnected($app);
 
-        // si l'utilisateur est déjà authentifié
-        if ($app['session']->get('user')) {
-            $loginSuccess = true;
-            // Sinon (pas d'utilisateur authentifié pour l'instant)
-        } else {
+        // si l'utilisateur n'est pas authentifié
+        if ($loginSuccess === false) {
             // si la méthode POST a été employée
-            if ($request->isMethod('POST')) {
-                // on extrait les paramètres de la requête POST
-                $entries = $this->extractArrayFromPostRequest($request,
-                        [
-                    'email',
-                    'password']);
-                // on vérifie que l'utilisateur existe et que son mot de passe est correct
+            if (filter_input(INPUT_SERVER, 'REQUEST_METHOD') === "POST") {
+                $entries = $this->extractArrayFromPostRequest(
+                    $request,
+                    [
+                        'email',
+                        'password',
+                    ]
+                );
+
                 return $this->login($entries, $app, $request);
+            }
+        }
+
+        $error = null;
+        // si une erreur est présente dans la requête GET
+        if ($request->getMethod() === 'GET'){
+            $entries = $this->extractArrayFromGetRequest($request, ['error']);
+            if ($entries['error'] !== null) {
+                $error = $entries['error'];
             }
         }
 
@@ -52,25 +62,34 @@ class HomeController extends Controller {
 
     /**
      * Vérifie si l'utilisateur existe et que son mot de passe est bon
-     * @param type $entries
+     * @param array $sanitizedEntries
      * @param Application $app
      * @param Request $request
      * @return string La vue générée
      */
-    private function login($entries, Application $app, Request $request) {
+    private function login(
+        $sanitizedEntries,
+        Application $app,
+        Request $request
+    ) {
         try {
             $errorMessage = false;
             // On vérifie l'existence de l'utilisateur
-            $utilisateur  = $app['dao.utilisateur']->findOneByCourrielAndPassword($entries['email'],
-                    $entries['password']);
+            $utilisateur = $app['dao.utilisateur']->findOneByCourrielAndPassword(
+                $sanitizedEntries['email'],
+                $sanitizedEntries['password']
+            );
 
             // on enregistre l'utilisateur en session
-            $username = $entries['email'];
-            $userId   = $utilisateur->getUserId();
-            $app['session']->set('user',
-                    array(
-                'username' => $username,
-                'userId'   => $userId));
+            $username = $sanitizedEntries['email'];
+            $userId = $utilisateur->getUserId();
+            $app['session']->set(
+                'user',
+                [
+                    'username' => $username,
+                    'userId'   => $userId,
+                ]
+            );
             // redirection vers la liste des préférences de films
             return $app->redirect($request->getBasePath() . '/favorite/list');
         } catch (\Exception $ex) {
@@ -79,7 +98,7 @@ class HomeController extends Controller {
             return $app['twig']->render('index.html.twig',
                             [
                         'titre'        => 'Accueil',
-                        'email'        => $entries['email'],
+                        'email'        => $sanitizedEntries['email'],
                         'loginSuccess' => $loginSuccess,
                         'errorMessage' => $errorMessage]);
         }
@@ -91,27 +110,32 @@ class HomeController extends Controller {
      * @param Application $app
      * @return string La vue générée
      */
-    public function createNewUser(Request $request = null,
-            Application $app = null) {
+    public function createNewUser(
+        Request $request = null,
+        Application $app = null
+    ) {
         // variables de contrôles du formulaire de création
-        $isFirstNameEmpty            = false;
-        $isLastNameEmpty             = false;
-        $isEmailAddressEmpty         = false;
-        $isUserUnique                = true;
-        $isPasswordEmpty             = false;
+        $isFirstNameEmpty = false;
+        $isLastNameEmpty = false;
+        $isEmailAddressEmpty = false;
+        $isUserUnique = true;
+        $isPasswordEmpty = false;
         $isPasswordConfirmationEmpty = false;
-        $isPasswordValid             = true;
+        $isPasswordValid = true;
 
         // si la méthode POST est utilisée, cela signifie que le formulaire a été envoyé
         if ($request->isMethod('POST')) {
             // on assainit les entrées
-            $entries = $this->extractArrayFromPostRequest($request,
-                    [
-                'firstName',
-                'lastName',
-                'email',
-                'password',
-                'passwordConfirmation']);
+            $entries = $this->extractArrayFromPostRequest(
+                $request,
+                [
+                    'firstName',
+                    'lastName',
+                    'email',
+                    'password',
+                    'passwordConfirmation',
+                ]
+            );
 
             // si le prénom n'a pas été renseigné
             if ($entries['firstName'] === "") {
@@ -130,7 +154,7 @@ class HomeController extends Controller {
                 // On vérifie l'existence de l'utilisateur
                 $user = $app['dao.utilisateur']->findOneByCourriel($entries['email']);
                 // si on a un résultat, cela signifie que cette adresse email existe déjà
-                if ($user->getUserId()) {
+                if ($user->getUserId() !== null) {
                     $isUserUnique = false;
                 }
             }
@@ -149,8 +173,7 @@ class HomeController extends Controller {
             }
 
             // si les champs nécessaires ne sont pas vides, que l'utilisateur est unique et que le mot de passe est valide
-            if (!$isFirstNameEmpty && !$isLastNameEmpty && !$isEmailAddressEmpty &&
-                    $isUserUnique && !$isPasswordEmpty && $isPasswordValid) {
+            if ($isFirstNameEmpty === false && $isLastNameEmpty === false && $isEmailAddressEmpty === false && $isUserUnique === true && $isPasswordEmpty === false && $isPasswordValid === true) {
                 // hash du mot de passe
                 $password    = password_hash($entries['password'],
                         PASSWORD_DEFAULT);
@@ -163,21 +186,22 @@ class HomeController extends Controller {
                 $app['dao.utilisateur']->save($utilisateur);
 
                 $username = $entries['email'];
-                $userId   = $utilisateur->getUserId();
-                $app['session']->set('user',
-                        array(
-                    'username' => $username,
-                    'userId'   => $userId));
+                $userId = $utilisateur->getUserId();
+                $app['session']->set(
+                    'user',
+                    [
+                        'username' => $username,
+                        'userId'   => $userId,
+                    ]
+                );
                 // redirection vers la liste des préférences de films
                 return $app->redirect($request->getBasePath() . '/favorite/list');
             }
-        }
-        // sinon (le formulaire n'a pas été envoyé)
-        else {
+        } else { // sinon (le formulaire n'a pas été envoyé)
             // initialisation des variables du formulaire
             $entries['firstName'] = '';
-            $entries['lastName']  = '';
-            $entries['email']     = '';
+            $entries['lastName'] = '';
+            $entries['email'] = '';
         }
         $utilisateur = new Utilisateur();
         $utilisateur->setNom($entries['lastName']);
@@ -193,7 +217,8 @@ class HomeController extends Controller {
             'isUserUnique'                => $isUserUnique,
             'isPasswordEmpty'             => $isPasswordEmpty,
             'isPasswordConfirmationEmpty' => $isPasswordConfirmationEmpty,
-            'isPasswordValid'             => $isPasswordValid];
+            'isPasswordValid'             => $isPasswordValid,
+        ];
         // On génère la vue Création d'un utilisateur
         return $app['twig']->render('user.create.html.twig', $donnees);
     }
@@ -204,7 +229,8 @@ class HomeController extends Controller {
      * @param Application $app
      * @return RedirectResponse
      */
-    public function logout(Request $request, Application $app): RedirectResponse {
+    public function logout(Request $request, Application $app): RedirectResponse
+    {
         // démarrage de la session
         $app['session']->start();
         // destruction de la sessions

@@ -10,40 +10,78 @@
             <th>Titre original</th>
             <th colspan="3">Action</th>
         </tr>
-        {# boucle de construction de la liste des cinémas #}
+        {# boucle de construction de la liste des films #}
         {% for film in films %}
-            <tr>
-                <td>{{ film.titre }}</td>
-                <td>{{ film.titreOriginal }}</td>
-                <td>
-                    <form name="movieShowtimes" action="{{ path('showtime_movie_list' , { 'filmId' : film.filmId }) }}" method="GET">
-                        <input type="submit" value="Consulter les séances"/>
+            {% if addMode is defined and addMode == "edit" and film.getFilmId == toBeModified %}
+                <tr>
+                    <form name="editMovie" action="{{ path('movie_save' , { 'filmId' : toBeModified }) }}" method="POST">
+                        <td><input name="titre" value="{{ filmToBeModified.getTitre }}" /></td>
+                        <td><input name="titreOriginal" value="{{ filmToBeModified.getTitreOriginal }}" /></td>
+                        <td colspan="3" class="centered">
+                            <input name="filmID" type="hidden" value="{{ toBeModified }}" />
+                            <input name="modificationInProgress" type="hidden" value="" />
+                            <input type="image" src="{{ asset('/images/cancelIcon.png') }}" alt="Cancel" form="cancelForm" />
+                            <input type="image" src="{{ asset('/images/validateIcon.png') }}" alt="Validate" />
+                        </td>
                     </form>
-                </td>
-                {% if isUserAdmin %}
+                </tr>
+            {% else %}
+                <tr>
+                    <td>{{ film.titre }}</td>
+                    <td>{{ film.titreOriginal }}</td>
                     <td>
-                        <form name="modifyMovie" action="{{ path('movie_edit' , { 'filmId' : film.filmId }) }}" method="GET">
-                            <input type="submit" id="modify" value="" />
+                        <form name="movieShowtimes" action="{{ path('showtime_movie_list' , { 'filmId' : film.filmId }) }}" method="GET">
+                            <input type="submit" value="Consulter les séances"/>
                         </form>
                     </td>
-                    <td>
-                        <form name="deleteMovie" action="{{ path('movie_delete' , { 'filmId' : film.filmId }) }}" method="POST">
-                            <input type="image" src="{{ asset('/images/deleteIcon.png') }}" alt="Delete"/>
-                        </form>
-                    </td>
-                {% endif %}
-            </tr>
+                    {% if isUserAdmin %}
+                        <td>
+                            <form name="modifyMovie" action="{{ path('movie_list_edit' , { 'addMode' : 'edit', 'filmId' : film.filmId }) }}" method="GET">
+                                <input type="submit" id="modify" value="" />
+                            </form>
+                        </td>
+                        <td>
+                            <form name="deleteMovie" action="{{ path('movie_delete' , { 'filmId' : film.filmId }) }}" method="POST">
+                                {% if film.getFilmId in onAirMovies %}
+                                    <input type="image" src="{{ asset('/images/deleteIconDisabled.png') }}" alt="Delete" disabled />
+                                {% else %}
+                                    <input type="image" src="{{ asset('/images/deleteIcon.png') }}" alt="Delete"/>
+                                {% endif %}
+                            </form>
+                        </td>
+                    {% endif %}
+                </tr>
+            {% endif %}
         {% endfor %}
         {% if isUserAdmin %}
-            <tr class="new">
-                <td colspan="5">
-                    <form name="addMovie" action="{{ path('movie_add') }}">
-                        <button class="add" type="submit">Cliquer ici pour ajouter un film...</button>
+            {% if addMode is defined and addMode == "add" %}
+                <tr>
+                    <form name="addMovie" action="{{ path('movie_add') }}" method="POST">
+                        <td>
+                            <input name="titre" placeholder="Titre" required />
+                        </td>
+                        <td>
+                            <input name="titreOriginal" placeholder="Titre original"/>
+                        </td>
+                        <td colspan="3" class="centered">
+                            <input type="image" src="{{ asset('/images/cancelIcon.png') }}" alt="Cancel" form="cancelForm" />
+                            <input type="image" src="{{ asset('/images/addIcon.png') }}" alt="Add" />
+                        </td>
                     </form>
-                </td>
-            </tr>
+                </tr>
+            {% else %}
+                <tr class="new">
+                    <td colspan="5">
+                        <form name="addMovie" action="{{ path('movie_list_add', { 'addMode' : 'add' }) }}">
+                            <button class="add" type="submit">Cliquer ici pour ajouter un film...</button>
+                        </form>
+                    </td>
+                </tr>
+            {% endif %}
         {% endif %}
     </table>
+    <form name="cancelForm" id="cancelForm" method="GET" action="{{ path('movie_list') }}">
+    </form>
     <form name="backToMainPage" action="{{ path('home') }}">
         <input type="submit" value="Retour à l'accueil"/>
     </form>

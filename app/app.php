@@ -25,23 +25,29 @@ $config = $app['db']->getConfiguration();
 $config->setResultCacheImpl($cache);
 
 // Service de templates de vues (Twig)
-$app->register(new Silex\Provider\TwigServiceProvider(),
-        array(
-    'twig.path'    => __DIR__ . '/../src/views',
-    'twig.options' => [
-        'cache' => __DIR__ . '/../src/cache'
-    ],
-));
+$app->register(
+    new Silex\Provider\TwigServiceProvider(),
+    [
+        'twig.path'    => __DIR__ . '/../src/views',
+        'twig.options' => [
+            'cache' => __DIR__ . '/../src/cache'
+        ],
+    ]
+);
 // Gestion des CSS, JS, images, ...
-$app->register(new Silex\Provider\AssetServiceProvider(),
-        array(
-    'assets.version' => 'v1'
-));
+$app->register(
+    new Silex\Provider\AssetServiceProvider(),
+    [
+        'assets.version' => 'v1'
+    ]
+);
 // Gestion de la consignation
-$app->register(new Silex\Provider\MonologServiceProvider(),
-        array(
-    'monolog.logfile' => dirname(__DIR__) . '/logs/application.log',
-));
+$app->register(
+    new Silex\Provider\MonologServiceProvider(),
+    [
+        'monolog.logfile' => dirname(__DIR__) . '/logs/application.log',
+    ]
+);
 
 // enregistrement du CinemaDAO
 $app['dao.cinema'] = function () use ($app) {
@@ -81,4 +87,3 @@ $app['dao.seance'] = function () use ($app) {
 require dirname(__DIR__) . '/app/routes.php';
 // Démarrage de l'application
 $app->run();
-
