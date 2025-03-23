@@ -1,20 +1,64 @@
 #!/bin/bash
 
+# Function to display usage instructions
+print_usage() {
+    echo "Usage: $0 <project_directory> [--fpm <socket_path>]"
+    echo "  <project_directory> : The directory where the project is located."
+    echo "  --fpm <socket_path> : (Optional) Enable PHP-FPM with the specified socket path."
+}
+
+# Vérification du nombre d'arguments
+if [ "$#" -lt 1 ] || [ "$#" -gt 3 ]; then
+    echo "Error: Invalid number of arguments."
+    print_usage
+    exit 1
+fi
+
+fpm_flag=false
+fpm_socket=""
+project_dir=""
+
+# Analyse des arguments
+while [ $# -gt 0 ]; do
+    key="$1"
+    case $key in
+        --fpm)
+            fpm_flag=true
+            shift
+            if [ $# -eq 0 ] ; then
+                echo "Error: --fpm option requires a socket path."
+                print_usage
+                exit 1
+            fi
+            fpm_socket="$1"
+            ;;
+        *)
+            if [ -z "$project_dir" ]; then
+                project_dir="$1"
+            else
+                echo "Error: Unexpected argument '$1'."
+                print_usage
+                exit 1
+            fi
+            ;;
+    esac
+    shift
+done
+
 # Check if the script is executed with a directory parameter
-if [ -z "$1" ]; then
+if [ -z "$project_dir" ]; then
     echo "Error: No project directory provided."
-    echo "Usage: $0 <project_directory>"
+    print_usage
     exit 1
 fi
 
 # Check if the provided directory exists
-if [ ! -d "$1" ]; then
+if [ ! -d "$project_dir" ]; then
     echo "Error: The provided directory does not exist."
+    print_usage
     exit 1
 fi
 
-# récupérer le répertoire d'installation du projet passé en paramètre du script
-project_dir=$1
 # Définir le répertoire des scripts SQL
 sql_dir="$project_dir/../db"
 
@@ -30,7 +74,7 @@ echo "Deployment started at $(date)" > "$log_file"
 
 # 1. Create a new available site in Apache
 sudo cp /etc/apache2/sites-available/000-default.conf /etc/apache2/sites-available/cinema.local.conf | sudo tee -a "$log_file" > /dev/null 2>&1
-# add DocumentRoot dynamically with $projet_dir
+# add DocumentRoot dynamically with $project_dir
 sudo sed -i "s|/var/www/html|${project_dir}|g" /etc/apache2/sites-available/cinema.local.conf
 # add server alias
 sudo sed -i '/DocumentRoot/i \\tServerAlias www.cinema.local' /etc/apache2/sites-available/cinema.local.conf
@@ -38,6 +82,13 @@ sudo sed -i '/DocumentRoot/i \\tServerAlias www.cinema.local' /etc/apache2/sites
 sudo sed -i '/ServerAlias/i \\tServerName cinema.local' /etc/apache2/sites-available/cinema.local.conf
 # insert Directory node
 sudo sed -i "/<\/VirtualHost>/i \\\t<Directory ${project_dir}>\n\t\tOptions Indexes FollowSymLinks\n\t\tAllowOverride All\n\t\tRequire all granted\n\t<\/Directory>" /etc/apache2/sites-available/cinema.local.conf 2>&1 | sudo tee -a "$log_file"
+
+# Add <FilesMatch> block if --fpm is provided
+if [ -n "$fpm_socket" ]; then
+    sudo sed -i "/<\/VirtualHost>/i \\\t<FilesMatch \\.php$>\n\t\tSetHandler \"proxy:unix:${fpm_socket}|fcgi://localhost/\"\n\t<\/FilesMatch>" /etc/apache2/sites-available/cinema.local.conf 2>&1 | sudo tee -a "$log_file"
+    echo "FPM configuration added with socket path: $fpm_socket" | sudo tee -a "$log_file"
+fi
+
 echo "Apache site configuration for cinema.local created successfully."
 
 # 2. Create a new database
