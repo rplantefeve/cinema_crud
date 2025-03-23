@@ -84,7 +84,7 @@ sudo sed -i '/ServerAlias/i \\tServerName cinema.local' /etc/apache2/sites-avail
 sudo sed -i "/<\/VirtualHost>/i \\\t<Directory ${project_dir}>\n\t\tOptions Indexes FollowSymLinks\n\t\tAllowOverride All\n\t\tRequire all granted\n\t<\/Directory>" /etc/apache2/sites-available/cinema.local.conf 2>&1 | sudo tee -a "$log_file"
 
 # Add <FilesMatch> block if --fpm is provided
-if [ -n "$fpm_socket" ]; then
+if $fpm_flag; then
     sudo sed -i "/<\/VirtualHost>/i \\\t<FilesMatch \\.php$>\n\t\tSetHandler \"proxy:unix:${fpm_socket}|fcgi://localhost/\"\n\t<\/FilesMatch>" /etc/apache2/sites-available/cinema.local.conf 2>&1 | sudo tee -a "$log_file"
     echo "FPM configuration added with socket path: $fpm_socket" | sudo tee -a "$log_file"
 fi
