@@ -49,7 +49,7 @@ if (array_key_exists("user", $_SESSION)) {
 <!DOCTYPE html>
 <html lang="fr">
     <head>
-        <meta charset="UTF-8">
+        <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Bienvenue dans la gestion de cinéma</title>
         <link rel="stylesheet" href="css/cinema.css">
@@ -68,10 +68,10 @@ if (array_key_exists("user", $_SESSION)) {
         if (!$loginSuccess):
             ?>
             <form method="POST" name="editFavoriteMoviesList" action="index.php">
-                <label>Adresse email : </label>
-                <input type="email" name="email" required>
-                <label>Mot de passe  : </label>
-                <input type="password" name="password" required>
+                <label for="email">Adresse email : </label>
+                <input type="email" name="email" id="email" required>
+                <label for="password">Mot de passe  : </label>
+                <input type="password" name="password" id="password" required>
                 <div class="error">
                     <?php
                     if (!$areCredentialsOK):
@@ -79,16 +79,16 @@ if (array_key_exists("user", $_SESSION)) {
                     endif;
                     ?>
                 </div>
-                <button type="submit">Editer ma liste de films préférés</button>
+                <button type="submit" class="button-right">Editer ma liste de films préférés</button>
             </form>
-            <p>Pas encore d'espace personnel ? <a href="createNewUser.php">Créer sa liste de films préférés.</a></p>
+            <p class="create-account">Pas encore d'espace personnel ? <a href="createNewUser.php">Créer sa liste de films préférés.</a></p>
             <?php
         // sinon (utilisateur authentifié)
         else:
             ?>
             <p>Vous êtes connecté en tant que <?= $_SESSION['user'] ?>.</p>
             <form action="editFavoriteMoviesList.php">
-                <button type="submit">Editer ma liste de films préférés</button>
+                <button type="submit" class="button-right">Editer ma liste de films préférés</button>
             </form>
             <a href="logout.php">Se déconnecter</a>
         <?php endif; ?>

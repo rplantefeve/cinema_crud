@@ -5,10 +5,7 @@ require __DIR__ . '/includes/fctManager.php';
 
 session_start();
 // si l'utilisateur n'est pas connecté
-if (!array_key_exists(
-    "user",
-                $_SESSION
-)) {
+if (!array_key_exists("user", $_SESSION)) {
     // renvoi à la page d'accueil
     header('Location: index.php');
     exit;
@@ -18,25 +15,20 @@ if (!array_key_exists(
 $aFilmIsSelected = true;
 
 // si la méthode de formulaire est la méthode POST
-if (filter_input(
-    INPUT_SERVER,
-                'REQUEST_METHOD'
-) === "POST") {
+if (filter_input(INPUT_SERVER, 'REQUEST_METHOD') === "POST") {
 
     // on "sainifie" les entrées
     $sanitizedEntries = filter_input_array(
         INPUT_POST,
-            ['backToList' => FILTER_DEFAULT,
+        ['backToList' => FILTER_DEFAULT,
         'filmID' => FILTER_SANITIZE_NUMBER_INT,
         'userID' => FILTER_SANITIZE_NUMBER_INT,
         'comment' => FILTER_DEFAULT]
     );
 
     // si l'action demandée est retour en arrière
-    if (array_key_exists(
-        "backToList",
-                    $sanitizedEntries
-    ) && $sanitizedEntries['backToList'] !== null) {
+    if (array_key_exists("backToList", $sanitizedEntries) 
+        && $sanitizedEntries['backToList'] !== null) {
         // on redirige vers la page d'édition des films favoris
         header('Location: editFavoriteMoviesList.php');
         exit;
@@ -94,34 +86,44 @@ else {
         <link rel="stylesheet" type="text/css" href="css/cinema.css"/>
     </head>
     <body>
-        <form method="POST" name="editFavoriteMovie" action="editFavoriteMovie.php">
-            <label>Titre :</label>
-            <select name="filmID">
-                <?php
-                $films = $fctManager->getMoviesNonAlreadyMarkedAsFavorite($_SESSION['userID']);
-                // s'il y a des résultats
-                if ($films) {
-                    foreach ($films as $film) {
-                        ?>
-                        <option value="<?= $film['filmID'] ?>"><?= $film['titre'] ?></option>
-                        <?php
+        <header>
+            <h1>Ajout d'une préférence de film</h1>
+        </header>
+        <main>
+            <form method="POST" name="editFavoriteMovie" action="editFavoriteMovie.php">
+                <label>Titre :</label>
+                <select name="filmID">
+                    <?php
+                    $films = $fctManager->getMoviesNonAlreadyMarkedAsFavorite($_SESSION['userID']);
+                    // s'il y a des résultats
+                    if ($films) {
+                        foreach ($films as $film) {
+                            ?>
+                            <option value="<?= $film['filmID'] ?>"><?= $film['titre'] ?></option>
+                            <?php
+                        }
                     }
-                }
-                ?>
-            </select>
-            <div class="error">
-                <?php
-                if (!$aFilmIsSelected) {
-                    echo "Veuillez renseigner un titre de film.";
-                }
-                ?>
-            </div>
-            <label>Commentaire :</label>
-            <textarea name="comment"><?= $preference['commentaire'] ?></textarea>
-            <br/>
-            <input type="hidden" value="<?= $preference['userID'] ?>" name="userID"/>
-            <input type="submit" name="saveEntry" value="Sauvegarder"/>
-            <input type="submit" name="backToList" value="Retour à la liste"/>
-        </form>
+                    ?>
+                </select>
+                <div class="error">
+                    <?php
+                    if (!$aFilmIsSelected) {
+                        echo "Veuillez renseigner un titre de film.";
+                    }
+                    ?>
+                </div>
+                <label>Commentaire :</label>
+                <textarea name="comment"><?= $preference['commentaire'] ?></textarea>
+                <br/>
+                <input type="hidden" value="<?= $preference['userID'] ?>" name="userID"/>
+                <div class="button-container">
+                    <button type="submit" name="backToList">Retour à la liste</button>
+                    <button type="submit" name="saveEntry">Sauvegarder</button>
+                </div>
+            </form>
+        </main>
+        <footer>
+            <p><span class="copyleft">&copy;</span> 2025 Gestion de Cinéma. Tous droits inversés.</p>
+        </footer>
     </body>
 </html>
