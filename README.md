@@ -175,7 +175,7 @@ Ce qu’il reste à faire :
         - `MovieController` pour gérer les actions liées aux films
         - `ShowtimesController` pour gérer les actions liées aux séances
         - `FavoriteController` pour gérer les actions liées aux films préférés
-    - ``DBFunctions.php```renommée en ``Model.php``
+    - `DBFunctions.php` renommée en `Model.php`
     - création de la classe `Router` pour gérer les routes
 
 #### Récapitulatif des modifications
