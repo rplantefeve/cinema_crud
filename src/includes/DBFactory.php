@@ -15,8 +15,8 @@ class DBFactory
     // instance de la classe PDO
     private $pdoInstance = null;
     // Champs de connexion à la BDD
-    private $user = "user";
-    private $pass = "Us3rUs€r";
+    private $user = "cinema";
+    private $pass = "cinema";
     private $dataSourceName = "mysql:host=127.0.0.1;dbname=cinema_crud;charset=utf8";
 
     /*
