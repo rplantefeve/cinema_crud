@@ -7,6 +7,6 @@ $app['db.options'] = array(
     'host'     => 'localhost',
     'port'     => '3306',
     'dbname'   => 'cinema_crud',
-    'user'     => 'user',
-    'password' => 'pwdCinema',
+    'user'     => 'cinema',
+    'password' => 'cinema',
 );
