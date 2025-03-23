@@ -15,6 +15,8 @@ fi
 
 # récupérer le répertoire d'installation du projet passé en paramètre du script
 project_dir=$1
+# Définir le répertoire des scripts SQL
+sql_dir="$project_dir/../db"
 
 # Définir le fichier de log
 log_file="/var/log/cinema_crud_deploy.log"
@@ -40,14 +42,34 @@ echo "Apache site configuration for cinema.local created successfully."
 
 # 2. Create a new database
 sudo echo "DROP DATABASE IF EXISTS cinema_crud;" | sudo mysql 2>&1 | sudo tee -a "$log_file"
-sudo cat "$project_dir"/db/00_create_base.sql | sudo mysql 2>&1 | sudo tee -a "$log_file"
-sudo cat "$project_dir"/db/01_insert_data.sql | sudo mysql 2>&1 | sudo tee -a "$log_file" 
-sudo cat "$project_dir"/db/02_create_constraints.sql | sudo mysql 2>&1 | sudo tee -a "$log_file"
+if ! sudo cat "$sql_dir"/00_create_base.sql > /dev/null ; then
+    echo "Error: Failed to execute 00_create_base.sql. Aborting deployment." | sudo tee -a "$log_file" >&2
+    exit 1
+else
+    sudo cat "$sql_dir"/00_create_base.sql | sudo mysql 2>&1 | sudo tee -a "$log_file"
+fi
+if ! sudo cat "$sql_dir"/01_insert_data.sql > /dev/null ; then
+    echo "Error: Failed to execute 01_insert_data.sql. Aborting deployment." | sudo tee -a "$log_file" >&2
+    exit 1
+else
+    sudo cat "$sql_dir"/01_insert_data.sql | sudo mysql 2>&1 | sudo tee -a "$log_file" 
+fi
+if ! sudo cat "$sql_dir"/02_create_constraints.sql > /dev/null ; then
+    echo "Error: Failed to execute 02_create_constraints.sql. Aborting deployment." | sudo tee -a "$log_file" >&2
+    exit 1
+else
+    sudo cat "$sql_dir"/02_create_constraints.sql | sudo mysql 2>&1 | sudo tee -a "$log_file"
+fi
 echo "Database cinema_crud created and initialized successfully."
 
 # 3. Create a new user and grant privileges to the database
 sudo echo "DROP USER IF EXISTS 'cinema'@'localhost';" | sudo mysql 2>&1 | sudo tee -a "$log_file"
-sudo cat "$project_dir"/db/03_create_user.sql | sudo mysql 2>&1 | sudo tee -a "$log_file"
+if ! sudo cat "$sql_dir"/03_create_user.sql > /dev/null ; then
+    echo "Error: Failed to execute 03_create_user.sql. Aborting deployment." | sudo tee -a "$log_file" >&2
+    exit 1
+else
+    sudo cat "$sql_dir"/03_create_user.sql | sudo mysql 2>&1 | sudo tee -a "$log_file"
+fi
 echo "Database user created and privileges granted successfully."
 
 # 4. Add a new entry in the hosts file
@@ -69,5 +91,9 @@ echo "Apache site cinema.local enabled successfully."
 sudo systemctl restart apache2 2>&1 | sudo tee -a "$log_file" > /dev/null
 echo "Apache server restarted successfully."
 
-echo "Deployment completed at $(date)"
+# 7. Dealing with permissions
+sudo chown -R www-data:www-data "$project_dir" 2>&1 | sudo tee -a "$log_file" > /dev/null
+sudo chmod -R 755 "$project_dir" 2>&1 | sudo tee -a "$log_file" > /dev/null
+echo "Permissions set successfully."
 
+echo "Deployment completed at $(date)"
