@@ -47,7 +47,7 @@ if (filter_input(
         <ul>
             <?php
             // on récupère la liste des films de ce cinéma
-            $films = $fctManager->getCinemaMoviesByCinemaID($cinemaID);
+            $films = $fctManager->getCinemaMoviesByCinemaID($cinemaID) ?? [];
             // on boucle sur les résultats
             foreach ($films as $film) {
                 ?>

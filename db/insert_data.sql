@@ -27,7 +27,11 @@ TRUNCATE TABLE `cinema`;
 
 INSERT INTO `cinema` (`CINEMAID`, `DENOMINATION`, `ADRESSE`) VALUES
 (1, 'Décavision', '7 avenue de Brogny, 74000 ANNECY'),
-(2, 'Les Nemours', '22 rue Ste Claire, 74000 ANNECY');
+(2, 'Les Nemours', '22 rue Ste Claire, 74000 ANNECY'),
+(3, 'UGC Astoria', '31 Cours Vitton, 69006 Lyon'),
+(4, 'Pathé Bellecour', '79 Rue de la République, 69002 Lyon'),
+(5, 'Cinéma Comoedia', '13 Avenue Berthelot, 69007 Lyon');
+
 
 --
 -- Vider la table avant d'insérer `film`
@@ -42,7 +46,11 @@ INSERT INTO `film` (`FILMID`, `TITRE`, `TITREORIGINAL`) VALUES
 (1, 'Un beau dimanche', NULL),
 (2, 'La Grande Aventure Lego', 'The Lego Movie'),
 (3, 'American Bluff', 'American Hustle'),
-(4, 'Dallas Buyers Club', NULL);
+(4, 'Dallas Buyers Club', NULL),
+(5, 'Wicked : Partie 1', 'Wicked: Part One'),
+(6, 'Sonic 3', 'Sonic the Hedgehog 3'),
+(7, 'Distant', 'Distant');
+
 
 --
 -- Vider la table avant d'insérer `prefere`
@@ -71,7 +79,11 @@ INSERT INTO `seance` (`CINEMAID`, `FILMID`, `HEUREDEBUT`, `HEUREFIN`, `VERSION`)
 (1, 3, '2014-02-25 19:25:00', '2014-02-25 21:55:00', 'VF'),
 (2, 1, '2014-02-24 19:00:00', '2014-02-24 20:50:00', 'VF'),
 (2, 2, '2014-02-24 20:00:00', '2014-02-24 21:50:00', 'VF'),
-(2, 4, '2014-02-24 16:30:00', '2014-02-24 18:40:00', 'VOSTFR');
+(2, 4, '2014-02-24 16:30:00', '2014-02-24 18:40:00', 'VOSTFR'),
+(3, 5, '2025-10-22 20:00:00', '2025-10-22 22:30:00', 'VOST'),
+(3, 6, '2025-04-18 19:00:00', '2025-04-18 21:30:00', 'VF'),
+(4, 7, '2025-05-01 16:00:00', '2025-05-01 18:00:00', 'VF');
+
 
 --
 -- Vider la table avant d'insérer `utilisateur`

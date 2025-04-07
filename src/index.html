@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="fr">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Bienvenue dans la gestion de cinéma</title>
+        <link rel="stylesheet" href="css/cinema.css">
+        <script src="js/main.js"></script>
+    </head>
+    <body>
+        <header>
+            <h1>Bienvenue dans l'application de gestion de cinéma</h1>
+        </header>
+        <main>
+            <p>Gérez votre cinéma efficacement avec notre application. Vous pouvez ajouter, mettre à jour et supprimer des enregistrements de films, gérer les horaires des séances, et bien plus encore.</p>
+            <div id="error" class="error"></div>
+            <div id="info" class="info"></div>
+                    <form method="POST" name="editFavoriteMoviesList" action="index.php">
+                <label for="email">Adresse email : </label>
+                <input type="email" name="email" id="email" required>
+                <label for="password">Mot de passe  : </label>
+                <input type="password" name="password" id="password" required>
+                <div class="error">
+                                    </div>
+                <button type="submit" class="button-right">Editer ma liste de films préférés</button>
+            </form>
+            <p>Pas encore d'espace personnel ? <a href="createNewUser.php">Créer sa liste de films préférés.</a></p>
+                    </main>
+        <footer>
+            <p><span class="copyleft">&copy;</span> 2025 Gestion de Cinéma. Tous droits inversés.</p>
+        </footer>
+        <script>
+                                </script>
+    </body>
+</html>
