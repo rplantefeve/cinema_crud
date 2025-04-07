@@ -53,6 +53,7 @@ if (array_key_exists("user", $_SESSION)) {
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Bienvenue dans la gestion de cinéma</title>
         <link rel="stylesheet" href="css/cinema.css">
+        <link rel="stylesheet" href="css/import/remixicon.css">
         <script src="js/main.js"></script>
     </head>
     <body>
@@ -63,38 +64,42 @@ if (array_key_exists("user", $_SESSION)) {
             <p>Gérez votre cinéma efficacement avec notre application. Vous pouvez ajouter, mettre à jour et supprimer des enregistrements de films, gérer les horaires des séances, et bien plus encore.</p>
             <div id="error" class="error"></div>
             <div id="info" class="info"></div>
-        <?php
-        // si pas encore authentifié
-        if (!$loginSuccess):
-            ?>
-            <form method="POST" name="editFavoriteMoviesList" action="index.php">
-                <label for="email">Adresse email : </label>
-                <input type="email" name="email" id="email" required>
-                <label for="password">Mot de passe  : </label>
-                <input type="password" name="password" id="password" required>
-                <div class="error">
+            <div class="mainbox">
+                <div>
                     <?php
-                    if (!$areCredentialsOK):
-                        echo "Les informations de connexions ne sont pas correctes.";
-                    endif;
-                    ?>
+                    // si pas encore authentifié
+                    if (!$loginSuccess):
+                        ?>
+                        <form method="POST" name="editFavoriteMoviesList" action="index.php">
+                            <label for="email">Adresse email : </label>
+                            <input type="email" name="email" id="email" required>
+                            <label for="password">Mot de passe  : </label>
+                            <input type="password" name="password" id="password" required>
+                            <div class="error">
+                                <?php
+                                if (!$areCredentialsOK):
+                                    echo "Les informations de connexions ne sont pas correctes.";
+                                endif;
+                                ?>
+                            </div>
+                            <button type="submit" class="button-right">Editer ma liste de films préférés</button>
+                        </form>
+                        <p class="create-account">Pas encore d'espace personnel ? <a href="createNewUser.php">Créer sa liste de films préférés.</a></p>
+                        <?php
+                    // sinon (utilisateur authentifié)
+                    else:
+                        ?>
+                        <p>Vous êtes connecté en tant que <?= $_SESSION['user'] ?>.</p>
+                        <form action="editFavoriteMoviesList.php">
+                            <button type="submit" class="button-right"><i class="ri-film-line"></i>&nbsp;Editer ma liste de films préférés</button>
+                        </form>
+                        <a href="logout.php">Se déconnecter</a>
+                    <?php endif; ?>
                 </div>
-                <button type="submit" class="button-right">Editer ma liste de films préférés</button>
-            </form>
-            <p class="create-account">Pas encore d'espace personnel ? <a href="createNewUser.php">Créer sa liste de films préférés.</a></p>
-            <?php
-        // sinon (utilisateur authentifié)
-        else:
-            ?>
-            <p>Vous êtes connecté en tant que <?= $_SESSION['user'] ?>.</p>
-            <form action="editFavoriteMoviesList.php">
-                <button type="submit" class="button-right">Editer ma liste de films préférés</button>
-            </form>
-            <a href="logout.php">Se déconnecter</a>
-        <?php endif; ?>
+            </div>
         </main>
         <footer>
-            <p><span class="copyleft">&copy;</span> 2025 Gestion de Cinéma. Tous droits inversés.</p>
+            <span class="copyleft">&copy;</span> 2025 Gestion de Cinéma. Tous droits inversés.
         </footer>
         <script>
             <?php if (isset($errorMessage)): ?>

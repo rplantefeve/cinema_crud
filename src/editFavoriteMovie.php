@@ -123,7 +123,7 @@ else {
             </form>
         </main>
         <footer>
-            <p><span class="copyleft">&copy;</span> 2025 Gestion de Cinéma. Tous droits inversés.</p>
+            <span class="copyleft">&copy;</span> 2025 Gestion de Cinéma. Tous droits inversés.
         </footer>
     </body>
 </html>

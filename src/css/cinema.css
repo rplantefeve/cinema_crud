@@ -2,24 +2,56 @@
     Created on : 3 mars 2014, 16:55:53
     Author     : ShaFaX
 */
+
+:root {
+    --text-color: #3d3d11;
+    --text-hover-color: #bb8b23;
+    --icon-yellow-color: #f4c96d;
+    --button-background-color: #be8200;
+    --button-hover-color: #dfc188;
+    --button-text-color: #ffffeb;
+    --background-case-color: #ffffff69;
+    --case-border-color: #ffffff75;
+    --case-field-background-color: #ffffff;
+    --case-field-border-color: #ffffff00;
+    --case-field-text-color: #00000050;
+    --background-image: url("/images/yellowLight.jpg");
+}
+
 body {
     font-family: "Arial", "Helvetica", sans-serif;
     font-size: 14px;
-    background-color: #DED247; /* Soft yellow */
+    background-color: var(--background-case-color);
+    background-attachment: fixed;
+	background-size: cover;
+	background-image: var(--background-image);
     margin: 0;
     padding: 0;
     line-height: 1.6;
-    color: #333333; /* Dark gray for better contrast */
+    color: var(--text-color);
     display: flex;
     flex-direction: column;
     min-height: 100vh;
 }
 
 header, footer {
-    background-color: #DE9947; /* Warm orange */
-    color: #ffffff; /* White for high contrast */
+    background-color: var(--background-case-color);
+    color: var(--button-text-color);
+    border-bottom: 2px solid var(--case-border-color);
+    box-shadow: 0 0 30px 5px #00000030;
     text-align: center;
     padding: 1em 0;
+    
+}
+
+footer {
+    background-color: var(--background-case-color);
+    color: var(--button-text-color);
+    border-top: 2px solid var(--case-border-color);
+    border-bottom: none;
+    text-align: center;
+    padding: 0.5em 0; /* Reduced padding for smaller height */
+    box-shadow: 0 0 30px 5px #00000030;
 }
 
 main {
@@ -32,12 +64,13 @@ main {
 }
 
 a {
-    color: #DE9947; /* Warm orange for emphasis */
+    color: var(--text-color);
     font-weight: bold;
     text-decoration: none;
 }
 
 a:hover {
+    color: var(--text-hover-color);
     text-decoration: underline;
 }
 
@@ -55,7 +88,6 @@ label {
     font-size: 14px;
     font-weight: bold;
     display: block;
-    margin-top: 10px;
     margin-bottom: 5px;
 }
 
@@ -67,25 +99,48 @@ table {
 }
 
 table.std th {
-    background-color: #DEC047; /* Muted gold */
+    background-color: var(--icon-yellow-color);
     padding: 6px 12px;
-    color: #000000; /* Black for better readability */
+    color: var(--text-color);
     font-weight: bold;
-    border-bottom: 1px solid #acc7dd;
-    border-right: 1px solid #acc7dd;
-    border-top: 1px solid #dceffd;
-    border-left: 1px solid #dceffd;
+    border-bottom: 1px solid var(--case-border-color);
+    border-right: 1px solid var(--case-border-color);
+    border-top: 1px solid var(--case-border-color);
+    border-left: 1px solid var(--case-border-color);
     word-wrap: break-word; /* Handle long text gracefully */
 }
 table.std td {
     padding: 6px 12px;
-    border-bottom: 1px solid #c7d8e5;
-    border-right: 1px solid #c7d8e5;
-    border-top: 1px solid #fff;
-    border-left: 1px solid #fff;
-    color: #000000; /* Black for better readability */
-    background-color: #DECE91; /* Beige */
+    border-bottom: 1px solid var(--case-border-color);
+    border-right: 1px solid var(--case-border-color);
+    border-top: 1px solid var(--case-border-color);
+    border-left: 1px solid var(--case-border-color);
+    color: var(--text-color);
+    background-color: var(--background-case-color);
     word-wrap: break-word; /* Handle long text gracefully */
+}
+
+.mainbox {
+	display: flex;
+    flex-direction: column;
+    align-items: center;
+	margin: auto;
+	margin-top: 2vh;
+	background-color: var(--background-case-color);
+	border-radius: 20px;
+	border-style: solid;
+	border-width: 2px;
+	border-color: var(--case-border-color);
+	color: var(--text-color);
+	backdrop-filter: blur(12px);
+	box-shadow: 0 0 30px 5px #00000030;
+}
+
+/* immediate div inside mainbox */  
+.mainbox > div {
+    /* all width of the container with padding */
+    width: calc(100% - 40px);
+    padding: 20px;
 }
 
 .error, .info {
@@ -107,13 +162,13 @@ table.std td {
 }
 
 .error {
-    background-color: #DEAD47; /* Golden yellow */
-    color: #ffffff; /* White for high contrast */
+    background-color: var(--button-background-color);
+    color: var(--button-text-color);
 }
 
 .info {
-    background-color: #DED247; /* Soft yellow */
-    color: #000000; /* Black for better visibility */
+    background-color: var(--icon-yellow-color);
+    color: var(--text-color);
 }
 
 .copyleft {
@@ -122,10 +177,9 @@ table.std td {
 }
 
 button {
-    background-color: #DE9947; /* Warm orange */
-    color: #ffffff; /* White for contrast */
+    background-color: var(--button-background-color);
+    color: var(--button-text-color);
     font-size: 14px;
-    font-weight: bold;
     padding: 10px 20px;
     border: none;
     border-radius: 5px;
@@ -134,7 +188,9 @@ button {
 }
 
 button:hover {
-    background-color: #DEAD47; /* Golden yellow */
+    background-color: var(--button-hover-color);
+    transition: 200ms;
+    color: var(--text-color);
 }
 
 .button-container {
@@ -147,21 +203,22 @@ button:hover {
     float: right;
 }
 
-select, textarea {
+select, textarea, input[type="text"], input[type="email"], input[type="password"] {
     font-family: "Arial", "Helvetica", sans-serif;
     font-size: 14px;
     padding: 10px;
-    border: 1px solid #ccc;
+    border: 1px solid var(--case-field-border-color);
     border-radius: 5px;
     width: 100%;
     box-sizing: border-box;
     margin-bottom: 20px;
-    background-color: #f9f9f9;
+    background-color: var(--case-field-background-color);
+    color: var(--case-field-text-color);
     transition: border-color 0.3s ease;
 }
 
-select:focus, textarea:focus {
-    border-color: #DE9947; /* Warm orange */
+select:focus, textarea:focus, input[type="text"]:focus, input[type="email"]:focus, input[type="password"]:focus {
+    border-color: var(--icon-yellow-color);
     outline: none;
 }
 
@@ -170,35 +227,9 @@ textarea {
     min-height: 100px;
 }
 
-input[type="text"],
-input[type="email"],
-input[type="password"] {
-    font-family: "Arial", "Helvetica", sans-serif;
-    font-size: 14px;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    width: 100%;
-    box-sizing: border-box;
-    margin-bottom: 20px;
-    background-color: #f9f9f9;
-    transition: border-color 0.3s ease;
-}
-
-input[type="text"]:focus,
-input[type="email"]:focus,
-input[type="password"]:focus {
-    border-color: #DE9947; /* Warm orange */
-    outline: none;
-}
-
 .create-account {
     font-size: 14px;
-    color: #333333; /* Dark gray for readability */
+    color: var(--text-color);
     text-align: center;
     margin-top: 20px;
 }
-
-
-
-

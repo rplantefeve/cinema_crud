@@ -113,63 +113,69 @@ else {
     <body>
         <header><h1>Création d'un nouvel utilisateur</h1></header>
         <main>
-            <form name="createUser" method="POST" action="createNewUser.php">
-                <!-- la longueur maximum des input est en corrélation avec la longueur maximum des champs dans la BDD -->
-                <label>Prénom :</label>
-                <input name='firstName' type="text" maxlength="30" value="<?= $sanitizedEntries['firstName']
-    ?>" />
-                <div class="error">
-                    <?php
-                    if ($isFirstNameEmpty) {
-                        echo "Veuillez renseigner un prénom.";
-                    }
-                    ?>
+            <div class="mainbox">
+                <div>
+                    <form name="createUser" method="POST" action="createNewUser.php">
+                        <!-- la longueur maximum des input est en corrélation avec la longueur maximum des champs dans la BDD -->
+                        <label>Prénom :</label>
+                        <input name='firstName' type="text" maxlength="30" value="<?= $sanitizedEntries['firstName'] ?>" />
+                        <div class="error">
+                            <?php
+                            if ($isFirstNameEmpty) {
+                                echo "Veuillez renseigner un prénom.";
+                            }
+                            ?>
+                        </div>
+                        <label>Nom :</label>
+                        <input name='lastName' type="text" maxlength="50" value="<?= $sanitizedEntries['lastName'] ?>" />
+                        <div class="error">
+                            <?php
+                            if ($isLastNameEmpty) {
+                                echo "Veuillez renseigner un nom.";
+                            }
+                            ?>
+                        </div>
+                        <label>Adresse email :</label>
+                        <input name='email' type="email" maxlength="90" value="<?= $sanitizedEntries['email'] ?>" />
+                        <div class="error">
+                            <?php
+                            if ($isEmailAddressEmpty) {
+                                echo "Veuillez renseigner une adresse email.";
+                            } elseif (!$isUserUnique) {
+                                echo "Cet utilisateur existe déjà !";
+                            }
+                            ?>
+                        </div>
+                        <label>Mot de passe :</label>
+                        <input name='password' type="password"/>
+                        <div class="error">
+                            <?php
+                            if ($isPasswordEmpty) {
+                                echo "Veuillez rentrer un mot de passe.";
+                            }
+                            ?>
+                        </div>
+                        <label>Confirmation :</label>
+                        <input name='passwordConfirmation' type="password"/>
+                        <div class="error">
+                            <?php
+                            if ($isPasswordConfirmationEmpty) {
+                                echo "Veuillez confirmer le mot de passe.";
+                            } elseif (!$isPasswordValid) {
+                                echo "Les mots de passe ne correspondent pas !";
+                            }
+                            ?>
+                        </div>
+                        <div class="button-container">
+                            <button type="submit" name="backToHome">Retour à l'accueil</button>
+                            <button type="submit" name="saveUser">Créer un nouvel utilisateur</button>
+                        </div>
+                    </form>
                 </div>
-                <label>Nom :</label>
-                <input name='lastName' type="text" maxlength="50" value="<?= $sanitizedEntries['lastName'] ?>" />
-                <div class="error">
-                    <?php
-                    if ($isLastNameEmpty) {
-                        echo "Veuillez renseigner un nom.";
-                    }
-                    ?>
-                </div>
-                <label>Adresse email :</label>
-                <input name='email' type="email" maxlength="90" value="<?= $sanitizedEntries['email'] ?>" />
-                <div class="error">
-                    <?php
-                    if ($isEmailAddressEmpty) {
-                        echo "Veuillez renseigner une adresse email.";
-                    } elseif (!$isUserUnique) {
-                        echo "Cet utilisateur existe déjà !";
-                    }
-                    ?>
-                </div>
-                <label>Mot de passe :</label>
-                <input name='password' type="password"/>
-                <div class="error">
-                    <?php
-                    if ($isPasswordEmpty) {
-                        echo "Veuillez rentrer un mot de passe.";
-                    }
-                    ?>
-                </div>
-                <label>Confirmation :</label>
-                <input name='passwordConfirmation' type="password"/>
-                <div class="error">
-                    <?php
-                    if ($isPasswordConfirmationEmpty) {
-                        echo "Veuillez confirmer le mot de passe.";
-                    } elseif (!$isPasswordValid) {
-                        echo "Les mots de passe ne correspondent pas !";
-                    }
-                    ?>
-                </div>
-                <div class="button-container">
-                    <button type="submit" name="backToHome">Retour à l'accueil</button>
-                    <button type="submit" name="saveUser">Créer un nouvel utilisateur</button>
-                </div>
-            </form>
+            </div>
         </main>
+        <footer>
+            <span class="copyleft">&copy;</span> 2025 Gestion de Cinéma. Tous droits inversés.
+        </footer>
     </body>
 </html>
