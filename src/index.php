@@ -66,6 +66,7 @@ if (array_key_exists("user", $_SESSION)) {
             <div id="info" class="info"></div>
             <div class="mainbox">
                 <div>
+                    <h1>Accès espace personnel</h1>
                     <?php
                     // si pas encore authentifié
                     if (!$loginSuccess):
@@ -84,7 +85,7 @@ if (array_key_exists("user", $_SESSION)) {
                             </div>
                             <button type="submit" class="button-right">Editer ma liste de films préférés</button>
                         </form>
-                        <p class="create-account">Pas encore d'espace personnel ? <a href="createNewUser.php">Créer sa liste de films préférés.</a></p>
+                        <p class="create-account">Pas encore d'espace personnel ? <a href="createNewUser.php">Commencer sa liste de films préférés.</a></p>
                         <?php
                     // sinon (utilisateur authentifié)
                     else:
@@ -95,6 +96,20 @@ if (array_key_exists("user", $_SESSION)) {
                         </form>
                         <a href="logout.php">Se déconnecter</a>
                     <?php endif; ?>
+                </div>
+            </div>
+            <!-- Gestion des cinémas -->
+            <div class="mainbox">
+                <div>
+                    <h1>Gestion des cinémas</h1>
+                    <div class="button-container">
+                        <form name="cinemasList" action="cinemasList.php">
+                            <button type="submit">Consulter la liste des cinémas</button>
+                        </form>
+                        <form name="moviesList" action="moviesList.php">
+                            <button type="submit">Consulter la liste des films</button>
+                        </form>
+                    </div>
                 </div>
             </div>
         </main>
@@ -109,17 +124,5 @@ if (array_key_exists("user", $_SESSION)) {
                 showMessage('info', '<?= $infoMessage ?>');
             <?php endif; ?>
         </script>
-        <!-- Gestion des cinémas -->
-        <div>
-            <header>
-                <h1>Gestion des cinémas</h1>
-                <form name="cinemasList" action="cinemasList.php">
-                    <input type="submit" value="Consulter la liste des cinémas"/>
-                </form>
-                <form name="moviesList" action="moviesList.php">
-                    <input type="submit" value="Consulter la liste des films"/>
-                </form>
-            </header>
-        </div>
     </body>
 </html>

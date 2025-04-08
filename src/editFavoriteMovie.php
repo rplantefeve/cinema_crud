@@ -39,13 +39,7 @@ if (filter_input(INPUT_SERVER, 'REQUEST_METHOD') === "POST") {
     // sinon (l'action demandée est la sauvegarde d'un favori)
     else {
         // si un film a été selectionné
-        if (array_key_exists(
- 
-            'filmID',
-                        $sanitizedEntries
- 
-        ) && $sanitizedEntries['filmID'] !== null) {
-
+        if (array_key_exists('filmID', $sanitizedEntries) && $sanitizedEntries['filmID'] !== null) {
             // et que nous ne sommes pas en train de modifier une préférence
             if ($sanitizedEntries['modificationInProgress'] == NULL) {
                 // on ajoute la préférence de l'utilisateur
@@ -118,29 +112,30 @@ if (filter_input(INPUT_SERVER, 'REQUEST_METHOD') === "POST") {
         <main>
             <form method="POST" name="editFavoriteMovie" action="editFavoriteMovie.php">
                 <label>Titre :</label>
-                <select name="filmID" <?php
-            if (!$isItACreation): echo "disabled";
-            endif;
-            ?>>
-                            <?php
-                            // si c'est une création, on crée la liste des films dynamiquement
-                        if ($isItACreation) {
-                            $films = $fctManager->getMoviesNonAlreadyMarkedAsFavorite($_SESSION['userID']);
-                                // s'il y a des résultats
-                                if ($films) {
-                                    foreach ($films as $film) {
-                                        ?>
-                                <option value="<?= $film['filmID'] ?>"><?= $film['titre'] ?></option>
-                                <?php
-                            }
-                        }
-                }
-                // sinon, c'est une modification, nous n'avons qu'une seule option dans la liste
-                else {
-                    ?>
-                    <option selected="selected" value="<?= $preference['filmID'] ?>"><?= $preference['titre'] ?></option>
+                <select name="filmID" 
+                <?php
+                if (!$isItACreation): echo "disabled";
+                endif;
+                ?>>
                     <?php
-                }
+                    // si c'est une création, on crée la liste des films dynamiquement
+                    if ($isItACreation) {
+                        $films = $fctManager->getMoviesNonAlreadyMarkedAsFavorite($_SESSION['userID']);
+                            // s'il y a des résultats
+                            if ($films) {
+                                foreach ($films as $film) {
+                                    ?>
+                                    <option value="<?= $film['filmID'] ?>"><?= $film['titre'] ?></option>
+                                    <?php
+                                }
+                            }
+                    }
+                    // sinon, c'est une modification, nous n'avons qu'une seule option dans la liste
+                    else {
+                        ?>
+                        <option selected="selected" value="<?= $preference['filmID'] ?>"><?= $preference['titre'] ?></option>
+                        <?php
+                    }
                     ?>
                 </select>
                 <div class="error">

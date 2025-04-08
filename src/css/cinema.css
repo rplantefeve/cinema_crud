@@ -196,6 +196,8 @@ button:hover {
 .button-container {
     display: flex;
     justify-content: space-between;
+    align-items: center;
+    width: 100%; /* Ensure buttons span the container width */
     margin-top: 20px;
 }
 
@@ -232,4 +234,80 @@ textarea {
     color: var(--text-color);
     text-align: center;
     margin-top: 20px;
+}
+
+h1 {
+    text-align: center;
+}
+
+/* Flex container helpers */
+.flex-container {
+    display: flex;
+}
+
+.flex-row {
+    flex-direction: row;
+}
+
+.flex-column {
+    flex-direction: column;
+}
+
+.flex-wrap {
+    flex-wrap: wrap;
+}
+
+.flex-nowrap {
+    flex-wrap: nowrap;
+}
+
+.flex-center {
+    justify-content: center;
+    align-items: center;
+}
+
+.flex-space-between {
+    justify-content: space-between;
+}
+
+.flex-space-around {
+    justify-content: space-around;
+}
+
+.flex-space-evenly {
+    justify-content: space-evenly;
+}
+
+.flex-start {
+    justify-content: flex-start;
+    align-items: flex-start;
+}
+
+.flex-end {
+    justify-content: flex-end;
+    align-items: flex-end;
+}
+
+.flex-align-center {
+    align-items: center;
+}
+
+.flex-align-start {
+    align-items: flex-start;
+}
+
+.flex-align-end {
+    align-items: flex-end;
+}
+
+.flex-justify-center {
+    justify-content: center;
+}
+
+.flex-justify-start {
+    justify-content: flex-start;
+}
+
+.flex-justify-end {
+    justify-content: flex-end;
 }

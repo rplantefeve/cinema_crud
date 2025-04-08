@@ -44,46 +44,51 @@ if (filter_input(
             <h1>Séances du cinéma <?= $cinema['DENOMINATION'] ?></h1>
             <h2><?= $cinema['ADRESSE'] ?></h2>
         </header>
-        <ul>
-            <?php
-            // on récupère la liste des films de ce cinéma
-            $films = $fctManager->getCinemaMoviesByCinemaID($cinemaID) ?? [];
-            // on boucle sur les résultats
-            foreach ($films as $film) {
-                ?>
-                <li><?= $film['TITRE'] ?></li>
-                <ul>
-                    <?php
-                    // on récupère pour chaque film de ce cinéma, la liste des séances
-                    $seances = $fctManager->getMovieShowtimes(
-                        $cinemaID,
-                            $film['FILMID']
-                    );
-                // boucle sur les séances
-                foreach ($seances as $seance) {
-                    /*
-                     * Formatage des dates
-                     */
-                    // nous sommes en Français
-                    $formatter = new IntlDateFormatter('fr_FR', IntlDateFormatter::LONG, IntlDateFormatter::NONE);
-
-                    // date du jour de projection de la séance
-                    $jour = new DateTime($seance['HEUREDEBUT']);
-                    // On convertit pour un affichage en français
-                    $jourConverti = $formatter->format($jour->getTimestamp());
-
-                    $heureDebut = (new DateTime($seance['HEUREDEBUT']))->format('H\hi');
-                    $heureFin = (new DateTime($seance['HEUREFIN']))->format('H\hi'); ?>
-                        <li>Séance du <?= $jourConverti ?>. Heure de début : <?= $heureDebut ?>. Heure de fin : <?= $heureFin ?>. Version : <?= $seance['VERSION'] ?></li>
-                        <?php
-                } ?>
-                </ul>
+        <main>
+            <ul>
                 <?php
-            }
-            ?>
-        </ul>
-        <form action="cinemasList.php">
-            <input type="submit" value="Retour à la liste des cinémas"/>
-        </form>
+                // on récupère la liste des films de ce cinéma
+                $films = $fctManager->getCinemaMoviesByCinemaID($cinemaID) ?? [];
+                // on boucle sur les résultats
+                foreach ($films as $film) {
+                    ?>
+                    <li><?= $film['TITRE'] ?></li>
+                    <ul>
+                        <?php
+                        // on récupère pour chaque film de ce cinéma, la liste des séances
+                        $seances = $fctManager->getMovieShowtimes(
+                            $cinemaID,
+                                $film['FILMID']
+                        );
+                    // boucle sur les séances
+                    foreach ($seances as $seance) {
+                        /*
+                        * Formatage des dates
+                        */
+                        // nous sommes en Français
+                        $formatter = new IntlDateFormatter('fr_FR', IntlDateFormatter::LONG, IntlDateFormatter::NONE);
+
+                        // date du jour de projection de la séance
+                        $jour = new DateTime($seance['HEUREDEBUT']);
+                        // On convertit pour un affichage en français
+                        $jourConverti = $formatter->format($jour->getTimestamp());
+
+                        $heureDebut = (new DateTime($seance['HEUREDEBUT']))->format('H\hi');
+                        $heureFin = (new DateTime($seance['HEUREFIN']))->format('H\hi'); ?>
+                            <li>Séance du <?= $jourConverti ?>. Heure de début : <?= $heureDebut ?>. Heure de fin : <?= $heureFin ?>. Version : <?= $seance['VERSION'] ?></li>
+                            <?php
+                    } ?>
+                    </ul>
+                    <?php
+                }
+                ?>
+            </ul>
+            <form action="cinemasList.php">
+                <button type="submit">Retour à la liste des cinémas</button>
+            </form>
+        </main>
+        <footer>
+            <span class="copyleft">&copy;</span> 2025 Gestion de Cinéma. Tous droits inversés.
+        </footer>
     </body>
 </html>

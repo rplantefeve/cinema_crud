@@ -5,10 +5,7 @@ require __DIR__ . '/includes/fctManager.php';
 
 session_start();
 // si l'utilisateur n'est pas connecté
-if (!array_key_exists(
-    "user",
-                $_SESSION
-)) {
+if (!array_key_exists("user", $_SESSION)) {
     // renvoi à la page d'accueil
     header('Location: index.php');
     exit;
@@ -32,6 +29,7 @@ else {
                 <tr>
                     <th>Titre</th>
                     <th>Commentaire</th>
+                    <th colspan="2">Actions</th>
                 </tr>
                 <?php
                 // on récupère la liste des films préférés grâce à l'utilisateur identifié
