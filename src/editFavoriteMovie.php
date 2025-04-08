@@ -5,10 +5,7 @@ require __DIR__ . '/includes/fctManager.php';
 
 session_start();
 // si l'utilisateur n'est pas connecté
-if (!array_key_exists(
-    "user",
-                $_SESSION
-)) {
+if (!array_key_exists("user", $_SESSION)) {
     // renvoi à la page d'accueil
     header('Location: index.php');
     exit;
@@ -20,30 +17,34 @@ $aFilmIsSelected = true;
 $isItACreation = false;
 
 // si la méthode de formulaire est la méthode POST
-if (filter_input(
-    INPUT_SERVER,
-                'REQUEST_METHOD'
-) === "POST") {
+if (filter_input(INPUT_SERVER, 'REQUEST_METHOD') === "POST") {
 
     // on "sainifie" les entrées
     $sanitizedEntries = filter_input_array(
+        
         INPUT_POST,
-            ['backToList' => FILTER_DEFAULT,
+        ['backToList' => FILTER_DEFAULT,
         'filmID' => FILTER_SANITIZE_NUMBER_INT,
         'userID' => FILTER_SANITIZE_NUMBER_INT,
         'comment' => FILTER_DEFAULT,
         'modificationInProgress' => FILTER_DEFAULT]);
 
     // si l'action demandée est retour en arrière
-    if ($sanitizedEntries['backToList'] !== NULL) {
+    if (array_key_exists("backToList", $sanitizedEntries) 
+        && $sanitizedEntries['backToList'] !== null) {
         // on redirige vers la page d'édition des films favoris
         header('Location: editFavoriteMoviesList.php');
         exit;
     }
     // sinon (l'action demandée est la sauvegarde d'un favori)
     else {
-        // si un film a été selectionné 
-        if ($sanitizedEntries['filmID'] !== NULL) {
+        // si un film a été selectionné
+        if (array_key_exists(
+ 
+            'filmID',
+                        $sanitizedEntries
+ 
+        ) && $sanitizedEntries['filmID'] !== null) {
 
             // et que nous ne sommes pas en train de modifier une préférence
             if ($sanitizedEntries['modificationInProgress'] == NULL) {
@@ -111,24 +112,28 @@ if (filter_input(
         <link rel="stylesheet" type="text/css" href="css/cinema.css"/>
     </head>
     <body>
-        <form method="POST" name="editFavoriteMovie" action="editFavoriteMovie.php">
-            <label>Titre :</label>
-            <select name="filmID" <?php
+        <header>
+            <h1>Ajout d'une préférence de film</h1>
+        </header>
+        <main>
+            <form method="POST" name="editFavoriteMovie" action="editFavoriteMovie.php">
+                <label>Titre :</label>
+                <select name="filmID" <?php
             if (!$isItACreation): echo "disabled";
             endif;
             ?>>
-                        <?php
-                        // si c'est une création, on crée la liste des films dynamiquement
+                            <?php
+                            // si c'est une création, on crée la liste des films dynamiquement
                         if ($isItACreation) {
                             $films = $fctManager->getMoviesNonAlreadyMarkedAsFavorite($_SESSION['userID']);
-                            // s'il y a des résultats
-                            if ($films) {
-                                foreach ($films as $film) {
-                                    ?>
-                            <option value="<?= $film['filmID'] ?>"><?= $film['titre'] ?></option>
-                            <?php
+                                // s'il y a des résultats
+                                if ($films) {
+                                    foreach ($films as $film) {
+                                        ?>
+                                <option value="<?= $film['filmID'] ?>"><?= $film['titre'] ?></option>
+                                <?php
+                            }
                         }
-                    }
                 }
                 // sinon, c'est une modification, nous n'avons qu'une seule option dans la liste
                 else {
@@ -136,20 +141,20 @@ if (filter_input(
                     <option selected="selected" value="<?= $preference['filmID'] ?>"><?= $preference['titre'] ?></option>
                     <?php
                 }
-                ?>
-            </select>
-            <div class="error">
+                    ?>
+                </select>
+                <div class="error">
+                    <?php
+                    if (!$aFilmIsSelected) {
+                        echo "Veuillez renseigner un titre de film.";
+                    }
+                    ?>
+                </div>
+                <label>Commentaire :</label>
+                <textarea name="comment"><?= $preference['commentaire'] ?></textarea>
+                <br/>
+                <input type="hidden" value="<?= $preference['userID'] ?>" name="userID"/>
                 <?php
-                if (!$aFilmIsSelected) {
-                    echo "Veuillez renseigner un titre de film.";
-                }
-                ?>
-            </div>
-            <label>Commentaire :</label>
-            <textarea name="comment"><?= $preference['commentaire'] ?></textarea>
-            <br/>
-            <input type="hidden" value="<?= $preference['userID'] ?>" name="userID"/>
-            <?php
             // si c'est une modification, c'est une information dont nous avons besoin
             if (!$isItACreation) {
                 ?>
@@ -158,8 +163,14 @@ if (filter_input(
                 <?php
             }
             ?>
-            <input type="submit" name="saveEntry" value="Sauvegarder"/>
-            <input type="submit" name="backToList" value="Retour à la liste"/>
-        </form>
+            <div class="button-container">
+                    <button type="submit" name="backToList">Retour à la liste</button>
+                    <button type="submit" name="saveEntry">Sauvegarder</button>
+                </div>
+            </form>
+        </main>
+        <footer>
+            <span class="copyleft">&copy;</span> 2025 Gestion de Cinéma. Tous droits inversés.
+        </footer>
     </body>
 </html>

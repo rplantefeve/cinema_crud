@@ -19,11 +19,6 @@ else {
 }
 ?>
 <!DOCTYPE html>
-<!--
-To change this license header, choose License Headers in Project Properties.
-To change this template file, choose Tools | Templates
-and open the template in the editor.
--->
 <html>
     <head>
         <meta charset="UTF-8">
@@ -32,23 +27,24 @@ and open the template in the editor.
     </head>
     <body>
         <header><h1><?= $utilisateur['prenom'] ?> <?= $utilisateur['nom'] ?>, ci-dessous vos films préférés</h1></header>
-        <table class="std">
-            <tr>
-                <th>Titre</th>
-                <th>Commentaire</th>
-            </tr>
-            <?php
-            // on récupère la liste des films préférés grâce à l'utilisateur identifié
-            $films = $fctManager->getFavoriteMoviesFromUser($utilisateur['userID']);
-            // si des films ont été trouvés
-            if ($films) {
-                // boucle de création du tableau
-                foreach ($films as $film) {
-                    ?>
-                    <tr>
-                        <td><?= $film['titre'] ?></td>
-                        <td><?= $film['commentaire'] ?></td>
-                        <td>
+        <main>
+            <table class="std">
+                <tr>
+                    <th>Titre</th>
+                    <th>Commentaire</th>
+                </tr>
+                <?php
+                // on récupère la liste des films préférés grâce à l'utilisateur identifié
+                $films = $fctManager->getFavoriteMoviesFromUser($utilisateur['userID']);
+                // si des films ont été trouvés
+                if ($films) {
+                    // boucle de création du tableau
+                    foreach ($films as $film) {
+                        ?>
+                        <tr>
+                            <td><?= $film['titre'] ?></td>
+                            <td><?= $film['commentaire'] ?></td>
+                            <td>
                             <form name="modifyFavoriteMovie" action="editFavoriteMovie.php" method="GET">
                                 <input type="hidden" name="userID" value="<?= $utilisateur['userID'] ?>"/>
                                 <input type="hidden" name="filmID" value="<?= $film['filmID'] ?>"/>
@@ -63,16 +59,22 @@ and open the template in the editor.
                             </form>
                         </td>
                     </tr>
-                    <?php
+                        <?php
+                    }
                 }
-            }
-            ?>
-        </table>
-        <form name="addFavoriteMovie" action="editFavoriteMovie.php">
-            <input type="submit" value="Ajouter un film préféré"/>
-        </form>
-        <form name="backToMainPage" action="index.php">
-            <input type="submit" value="Retour à l'accueil"/>
-        </form>
+                ?>
+            </table>
+            <div class="button-container">
+                <form name="backToMainPage" action="index.php">
+                    <button type="submit">Retour à l'accueil</button>
+                </form>
+                <form name="addFavoriteMovie" action="editFavoriteMovie.php">
+                    <button type="submit">Ajouter un film préféré</button>
+                </form>
+            </div>
+        </main>
+        <footer>
+            <span class="copyleft">&copy;</span> 2025 Gestion de Cinéma. Tous droits inversés.
+        </footer>
     </body>
 </html>
