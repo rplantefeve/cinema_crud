@@ -13,19 +13,24 @@ if (!array_key_exists("user", $_SESSION)) {
 }
 
 // si la méthode de formulaire est la méthode POST
-if (filter_input(INPUT_SERVER,
-                'REQUEST_METHOD') === "POST") {
+if (filter_input(
+    INPUT_SERVER,
+                'REQUEST_METHOD'
+) === "POST") {
 
     // on "sainifie" les entrées
-    $sanitizedEntries = filter_input_array(INPUT_POST,
+    $sanitizedEntries = filter_input_array(
+        INPUT_POST,
             ['userID' => FILTER_SANITIZE_NUMBER_INT,
-        'filmID' => FILTER_SANITIZE_NUMBER_INT]);
+        'filmID' => FILTER_SANITIZE_NUMBER_INT]
+    );
 
     // suppression de la préférence de film
-    $fctManager->deleteFavoriteMovie($sanitizedEntries['userID'],
-            $sanitizedEntries['filmID']);
+    $fctManager->deleteFavoriteMovie(
+        $sanitizedEntries['userID'],
+            $sanitizedEntries['filmID']
+    );
 }
 // redirection vers la liste des préférences de films
 header("Location: editFavoriteMoviesList.php");
 exit;
-

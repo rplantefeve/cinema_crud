@@ -14,7 +14,8 @@ SET time_zone = "+00:00";
 --
 -- Database: `cinema_crud`
 --
-CREATE DATABASE IF NOT EXISTS `cinema_crud` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
+DROP DATABASE IF EXISTS `cinema_crud`;
+CREATE DATABASE `cinema_crud` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
 USE `cinema_crud`;
 
 -- --------------------------------------------------------
@@ -68,12 +69,12 @@ CREATE TABLE IF NOT EXISTS `prefere` (
 
 DROP TABLE IF EXISTS `seance`;
 CREATE TABLE IF NOT EXISTS `seance` (
-  `CINEMAID` int NOT NULL DEFAULT '0',
-  `FILMID` int NOT NULL DEFAULT '0',
+  `CINEMAID` int NOT NULL DEFAULT 0,
+  `FILMID` int NOT NULL DEFAULT 0,
   `HEUREDEBUT` datetime NOT NULL,
   `HEUREFIN` datetime NOT NULL,
   `VERSION` varchar(6) NOT NULL,
-  PRIMARY KEY (`CINEMAID`,`FILMID`),
+  PRIMARY KEY (`CINEMAID`,`FILMID`,`HEUREDEBUT`),
   KEY `fk_seance_film` (`FILMID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 

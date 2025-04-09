@@ -67,31 +67,44 @@ elseif (filter_input(INPUT_SERVER, 'REQUEST_METHOD') === "GET") {
 }
 ?>
 <!DOCTYPE html>
-<html>
+<html lang="fr">
     <head>
         <meta charset="UTF-8">
         <title>Cinéma - Editer un cinéma</title>
         <link rel="stylesheet" type="text/css" href="css/cinema.css"/>
     </head>
     <body>
-        <h1>Ajouter/Modifier un cinéma</h1>
-        <form method="POST" name="editCinema" action="editCinema.php">
-            <label>Dénomination :</label>
-            <input name="denomination" type="text" value="<?= $cinema['DENOMINATION'] ?>" required/>
-            <label>Adresse :</label>
-            <textarea name="adresse" required><?= $cinema['ADRESSE'] ?></textarea>
-            <br/>
-            <input type="hidden" value="<?= $cinema['CINEMAID'] ?>" name="cinemaID"/>
-            <?php
-            // si c'est une modification, c'est une information dont nous avons besoin
-            if (!$isItACreation) {
-                ?>
-                <input type="hidden" name="modificationInProgress" value="true"/>
-                <?php
-            }
-            ?>
-            <input type="submit" name="saveEntry" value="Sauvegarder"/>
-            <input type="submit" name="backToList" value="Retour à la liste"/>
-        </form>
+        <header>
+            <h1>Ajouter/Modifier un cinéma</h1>
+        </header>
+        <main>
+            <div class="mainbox">
+                <div>
+                    <form method="POST" name="editCinema" action="editCinema.php">
+                        <label>Dénomination :</label>
+                        <input name="denomination" type="text" value="<?= $cinema['DENOMINATION'] ?>" required/>
+                        <label>Adresse :</label>
+                        <textarea name="adresse" required><?= $cinema['ADRESSE'] ?></textarea>
+                        <br/>
+                        <input type="hidden" value="<?= $cinema['CINEMAID'] ?>" name="cinemaID"/>
+                        <?php
+                        // si c'est une modification, c'est une information dont nous avons besoin
+                        if (!$isItACreation) {
+                            ?>
+                            <input type="hidden" name="modificationInProgress" value="true"/>
+                            <?php
+                        }
+                        ?>
+                        <div class="button-container">
+                            <button type="submit" name="backToList">Retour à la liste</button>
+                            <button type="submit" name="saveEntry">Sauvegarder</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </main>
+        <footer>
+            <span class="copyleft">&copy;</span> 2025 Gestion de Cinéma. Tous droits inversés.
+        </footer>
     </body>
 </html>

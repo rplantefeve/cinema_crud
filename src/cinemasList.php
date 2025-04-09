@@ -13,35 +13,36 @@ if (array_key_exists("user", $_SESSION) and $_SESSION['user'] == 'admin@adm.adm'
 ?>
 
 <!DOCTYPE html>
-<html>
+<html lang="fr">
     <head>
         <meta charset="UTF-8">
         <title>Gestion des cinémas - Cinémas</title>
-        <link type="text/css" href="css/cinema.css" rel="stylesheet"/>
+        <link type="text/css" href="css/cinema.css" rel="stylesheet">
     </head>
     <body>
         <header><h1>Liste des cinémas</h1></header>
-        <table class="std">
-            <tr>
-                <th>Nom</th>
-                <th>Adresse</th>
-                <th colspan="3">Action</th>
-            </tr>
-            <?php
-            // on récupère la liste des cinémas ainsi que leurs informations
-            $cinemas = $fctManager->getCinemasList();
-            // boucle de construction de la liste des cinémas
-            foreach ($cinemas as $cinema) {
-                ?>
+        <main>
+            <table class="std">
                 <tr>
-                    <td><?= $cinema['DENOMINATION'] ?></td>
-                    <td><?= $cinema['ADRESSE'] ?></td>
-                    <td>
-                        <form name="cinemaShowtimes" action="cinemaShowtimes.php" method="GET">
-                            <input name="cinemaID" type="hidden" value="<?= $cinema['CINEMAID'] ?>"/>
-                            <input type="submit" value="Consulter les séances"/>
-                        </form>
-                    </td>
+                    <th>Nom</th>
+                    <th>Adresse</th>
+                    <th colspan="<?= $isUserAdmin === true ? '3' : '1' ?>">Action</th>
+                </tr>
+                <?php
+                // on récupère la liste des cinémas ainsi que leurs informations
+                $cinemas = $fctManager->getCinemasList();
+                // boucle de construction de la liste des cinémas
+                foreach ($cinemas as $cinema) {
+                    ?>
+                    <tr>
+                        <td><?= $cinema['DENOMINATION'] ?></td>
+                        <td><?= $cinema['ADRESSE'] ?></td>
+                        <td>
+                            <form name="cinemaShowtimes" action="cinemaShowtimes.php" method="GET">
+                                <input name="cinemaID" type="hidden" value="<?= $cinema['CINEMAID'] ?>"/>
+                                <button type="submit">Consulter les séances</button>
+                            </form>
+                        </td>
                     <?php
                     if ($isUserAdmin):
                         ?>
@@ -58,10 +59,10 @@ if (array_key_exists("user", $_SESSION) and $_SESSION['user'] == 'admin@adm.adm'
                             </form>
                         </td>
                     <?php endif; ?>
-                </tr>
-                <?php
-            }
-            if ($isUserAdmin):
+                    </tr>
+                    <?php
+                }
+                if ($isUserAdmin):
                 ?>
                 <tr class="new">
                     <td colspan="5">
@@ -70,12 +71,15 @@ if (array_key_exists("user", $_SESSION) and $_SESSION['user'] == 'admin@adm.adm'
                         </form>
                     </td>
                 </tr>
+                <?php endif; ?>
+            </table>
 
-            <?php endif; ?>
-        </table>
-
-        <form name="backToMainPage" action="index.php">
-            <input type="submit" value="Retour à l'accueil"/>
-        </form>
+            <form name="backToMainPage" action="index.php">
+                <button type="submit">Retour à l'accueil</button>
+            </form>
+        </main>
+        <footer>
+            <span class="copyleft">&copy;</span> 2025 Gestion de Cinéma. Tous droits inversés.
+        </footer>
     </body>
 </html>
