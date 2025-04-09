@@ -48,22 +48,20 @@ INSERT INTO `film` (`FILMID`, `TITRE`, `TITREORIGINAL`) VALUES
 (3, 'American Bluff', 'American Hustle'),
 (4, 'Dallas Buyers Club', NULL),
 (5, 'Wicked : Partie 1', 'Wicked: Part One'),
-(6, 'Sonic 3', 'Sonic the Hedgehog 3'),
-(7, 'Distant', 'Distant');
+(6, 'Sonic 3: Le film', 'Sonic the Hedgehog 3'),
+(7, 'Long Distance', 'Distant'),
+(8, 'Avatar : La Voie de l''eau', 'Avatar: The Way of Water'),
+(9, 'Spider-Man: Across the Spider-Verse', NULL),
+(10, 'Mission Impossible : Dead Reckoning, Partie 2', 'Mission: Impossible - The Final Reckoning'),
+(11, 'Dune : Deuxième Partie', 'Dune: Part Two'),
+(12, 'The Marvels', NULL),
+(13, 'Indiana Jones et le Cadran de la destinée', 'Indiana Jones and the Dial of Destiny'),
+(14, 'Barbie', NULL),
+(15, 'Oppenheimer', NULL),
+(16, 'La Petite Sirène', 'The Little Mermaid'),
+(17, 'The Flash', NULL);
 
 
---
--- Vider la table avant d'insérer `prefere`
---
-
-TRUNCATE TABLE `prefere`;
---
--- Contenu de la table `prefere`
---
-
-INSERT INTO `prefere` (`USERID`, `FILMID`, `COMMENTAIRE`) VALUES
-(18, 1, ''),
-(18, 2, 'Super !');
 
 --
 -- Vider la table avant d'insérer `seance`
@@ -82,7 +80,22 @@ INSERT INTO `seance` (`CINEMAID`, `FILMID`, `HEUREDEBUT`, `HEUREFIN`, `VERSION`)
 (2, 4, '2014-02-24 16:30:00', '2014-02-24 18:40:00', 'VOSTFR'),
 (3, 5, '2025-10-22 20:00:00', '2025-10-22 22:30:00', 'VOST'),
 (3, 6, '2025-04-18 19:00:00', '2025-04-18 21:30:00', 'VF'),
-(4, 7, '2025-05-01 16:00:00', '2025-05-01 18:00:00', 'VF');
+(4, 7, '2025-05-01 16:00:00', '2025-05-01 18:00:00', 'VF'),
+(1, 7, '2025-04-12 14:00:00', '2025-04-12 16:00:00', 'VOSTFR'),
+(1, 1, '2025-04-12 16:30:00', '2025-04-12 18:20:00', 'VF'),
+(1, 8, '2025-04-12 20:00:00', '2025-04-12 23:00:00', '3D'),
+(2, 5, '2025-04-13 13:45:00', '2025-04-13 16:15:00', 'VF'),
+(2, 6, '2025-04-13 17:00:00', '2025-04-13 19:30:00', 'VOST'),
+(2, 9, '2025-04-13 20:00:00', '2025-04-13 22:30:00', 'VF'),
+(3, 10, '2025-04-14 18:30:00', '2025-04-14 21:00:00', 'VOSTFR'),
+(3, 11, '2025-04-14 21:30:00', '2025-04-15 00:00:00', 'VF'),
+(3, 14, '2025-04-15 10:00:00', '2025-04-15 12:00:00', 'VF'),
+(4, 12, '2025-04-15 14:00:00', '2025-04-15 16:00:00', 'VF'),
+(4, 13, '2025-04-15 16:30:00', '2025-04-15 19:00:00', 'VOST'),
+(4, 15, '2025-04-15 19:30:00', '2025-04-15 22:30:00', 'VO'),
+(5, 16, '2025-04-16 11:00:00', '2025-04-16 13:00:00', 'VF'),
+(5, 17, '2025-04-16 14:00:00', '2025-04-16 16:30:00', '3D'),
+(5, 3,  '2025-04-16 17:00:00', '2025-04-16 19:30:00', 'VOSTFR');
 
 
 --
