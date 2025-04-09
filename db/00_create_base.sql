@@ -14,7 +14,8 @@ SET time_zone = "+00:00";
 --
 -- Database: `cinema_crud`
 --
-CREATE DATABASE IF NOT EXISTS `cinema_crud` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
+DROP DATABASE IF EXISTS `cinema_crud`;
+CREATE DATABASE `cinema_crud` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
 USE `cinema_crud`;
 
 -- --------------------------------------------------------
